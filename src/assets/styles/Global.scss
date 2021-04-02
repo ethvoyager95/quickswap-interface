@@ -1,0 +1,44 @@
+:root {
+    /* Common styles */
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --color-orange: #ff4a21;
+    --color-yellow: #f8b94b;
+    --color-purple: #906DE5;
+    --color-red: #f9053e;
+    --color-green: #9dd562;
+    --color-blue: #277ee6;
+    --color-dark-grey: #666771;
+    /* Background colors */
+    --color-bg-main: #eef1fa;
+    --color-bg-primary: #ffffff;
+    --color-bg-active: #f8f9fa;
+    /* Typography colors */
+    --color-text-main: #39496a;
+    --color-text-secondary: #c5cbd4;
+    --color-text-inactive: #5e5f6a;
+    --color-text-green: #97cc60;
+    --color-text-blue: #2fe29b;
+}
+
+@font-face {
+    font-family: AvenirNext;
+    src: url("../font/Avenir-next/AvenirNextLTPro-Regular.otf") format("opentype");
+}
+
+body * {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    font-family: "AvenirNext";
+    font-stretch: normal;
+    font-style: normal;
+}
+
+a, span, p, h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0px;
+}
+
+.input-error {
+    color: var(--color-red);
+    font-size: 18px;
+}

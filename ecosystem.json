@@ -1,0 +1,23 @@
+{
+    "apps": [],
+  
+    "deploy" : {
+      "testnet" : {
+        "user" : "ubuntu",
+        "host" : "18.224.249.233",
+        "ref"  : "origin/master",
+        "repo" : "https://github.com/StrikeFinance/strike-app.git",
+        "path" : "/home/ubuntu/repos/strike-app",
+        "post-deploy" : "npm install && sudo npm run build && cp .htaccess build/.htaccess"
+      },
+      "prod" : {
+        "user" : "ubuntu",
+        "host" : "3.129.246.227",
+        "ref"  : "origin/master",
+        "repo" : "https://github.com/StrikeFinance/strike-app.git",
+        "path" : "/home/ubuntu/repos/strike-app",
+        "post-deploy" : "npm install && sudo npm run build && cp .htaccess build/.htaccess"
+      }
+    }
+}
+  
