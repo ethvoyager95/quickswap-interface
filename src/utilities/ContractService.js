@@ -9,6 +9,7 @@ const TOKEN_ABI = {
   usdt: constants.CONTRACT_USDT_TOKEN_ABI,
   busd: constants.CONTRACT_BUSD_TOKEN_ABI,
   strk: constants.CONTRACT_STRK_TOKEN_ABI,
+  sxp: constants.CONTRACT_SXP_TOKEN_ABI,
   wbtc: constants.CONTRACT_WBTC_TOKEN_ABI,
   link: constants.CONTRACT_LINK_TOKEN_ABI,
   comp: constants.CONTRACT_COMP_TOKEN_ABI,
