@@ -394,7 +394,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
     for (let index = 0; index < Object.values(constants.CONTRACT_TOKEN_ADDRESS).length; index++) {
       const item = Object.values(constants.CONTRACT_TOKEN_ADDRESS)[index];
-      if (item.id !== 'strk' && settings.decimals[item.id]) {
+      if (settings.decimals[item.id]) {
         let market = settings.markets.find(
           ele => ele.address === constants.CONTRACT_SBEP_ADDRESS[item.id].address.toString().toLowerCase()
         );
