@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/react-hooks": "^4.0.0",
     "@material-ui/core": "^4.6.0",
     "@walletconnect/client": "^1.0.18",
     "@walletconnect/qrcode-modal": "^1.0.18",
