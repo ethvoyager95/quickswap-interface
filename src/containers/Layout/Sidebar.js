@@ -546,8 +546,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             let stokenTotalBalance = 0;
             if (userMarketInfo) {
               asset.collateral = userMarketInfo.enteredMarket;
-              asset.supplyBalance = new BigNumber(userMarketInfo.totalUnderlyingSupplied);
-              asset.borrowBalance = new BigNumber(userMarketInfo.totalUnderlyingBorrowed);
+              asset.supplyBalance = new BigNumber(userMarketInfo.sTokenBalance).times(new BigNumber(market.exchangeRate).div(Math.pow(10, 18 + tokenDecimal - stokenDecimal)));
+              asset.borrowBalance = new BigNumber(userMarketInfo.storedBorrowBalance);
               stokenTotalBalance = new BigNumber(userMarketInfo.sTokenBalance).pow(stokenDecimal);
             }
             // wallet balance

@@ -11,9 +11,8 @@ export const ACCOUNT_MARKET_INFO = gql`
         symbol
         enteredMarket
         sTokenBalance
-        totalUnderlyingSupplied
-        totalUnderlyingBorrowed
+        storedBorrowBalance
       }
     }
   }
-`
+`;
