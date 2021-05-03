@@ -25,6 +25,9 @@ import ProposalHistory from 'components/Vote/VoteOverview/ProposalHistory';
 import { promisify } from 'utilities';
 import { Row, Column } from 'components/Basic/Style';
 
+import { VOTE_INFO } from 'apollo/queries';
+import { governanceClient } from 'apollo/client';
+
 const VoteOverviewWrapper = styled.div`
   width: 100%;
 
@@ -111,11 +114,30 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
         .then(res => {
           setProposalThreshold(+Web3.utils.fromWei(res, 'ether'));
         });
-      await methods
-        .call(strkTokenContract.methods.getCurrentVotes, [proposalInfo.proposer])
-        .then(res => {
-          setProposerVotingWeight(+Web3.utils.fromWei(res, 'ether'));
+      if (process.env.REACT_APP_ENV === 'dev') {
+        await methods
+          .call(strkTokenContract.methods.getCurrentVotes, [proposalInfo.proposer])
+          .then(res => {
+            setProposerVotingWeight(+Web3.utils.fromWei(res, 'ether'));
+          });
+      } else {
+        const { data: result } = await governanceClient.query({
+          query: VOTE_INFO,
+          variables: {
+            id: `${proposalInfo.proposer.toLowerCase()}`
+          },
+          fetchPolicy: 'cache-first'
         });
+        if (result.delegate) {
+          const weight = +Web3.utils.fromWei(
+            result.delegate.delegatedVotes,
+            'ether'
+          );
+          setProposerVotingWeight(weight);
+        } else {
+          setProposerVotingWeight('0');
+        }
+      }
     }
   }, [settings.selectedAddress, proposalInfo]);
   useEffect(() => {

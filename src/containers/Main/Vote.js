@@ -23,6 +23,8 @@ import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Row, Column } from 'components/Basic/Style';
 import { checkIsValidNetwork } from 'utilities/common';
 import * as constants from 'utilities/constants';
+import { VOTE_INFO, STRK_BALANCE } from 'apollo/queries';
+import { governanceClient } from 'apollo/client';
 
 const VoteWrapper = styled.div`
   height: 100%;
@@ -83,15 +85,48 @@ function Vote({ settings, history, getProposals, setSetting }) {
   const updateBalance = useCallback(async () => {
     if (settings.selectedAddress && checkIsValidNetwork()) {
       const strkTokenContract = getTokenContract('strk');
-      await methods
-        .call(strkTokenContract.methods.getCurrentVotes, [settings.selectedAddress])
-        .then(res => {
-          const weight = new BigNumber(res).div(new BigNumber(10).pow(18)).toString(10);
-          setVotingWeight(weight);
+      if (process.env.REACT_APP_ENV === 'dev') {
+        await methods
+          .call(strkTokenContract.methods.getCurrentVotes, [settings.selectedAddress])
+          .then(res => {
+            const weight = new BigNumber(res).div(new BigNumber(10).pow(18)).toString(10);
+            setVotingWeight(weight);
+          });
+      } else {
+        const { data: result } = await governanceClient.query({
+          query: VOTE_INFO,
+          variables: {
+            id: `${settings.selectedAddress.toLowerCase()}`
+          },
+          fetchPolicy: 'cache-first'
         });
-      let temp = await methods.call(strkTokenContract.methods.balanceOf, [settings.selectedAddress]);
-      temp = new BigNumber(temp).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
-      setBalance(temp);
+        if (result.delegate) {
+          const weight = new BigNumber(result.delegate.delegatedVotes).div(new BigNumber(10).pow(18)).toString(10);
+          setVotingWeight(weight);
+        } else {
+          setVotingWeight('0');
+        }
+      }
+
+      if (process.env.REACT_APP_ENV === 'dev') {
+        let temp = await methods.call(strkTokenContract.methods.balanceOf, [settings.selectedAddress]);
+        temp = new BigNumber(temp).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
+        setBalance(temp);
+      } else {
+        const { data: result } = await governanceClient.query({
+          query: STRK_BALANCE,
+          variables: {
+            id: `${settings.selectedAddress.toLowerCase()}`
+          },
+          fetchPolicy: 'cache-first'
+        });
+        if (result.tokenHolder) {
+          const temp = new BigNumber(result.tokenHolder.tokenBalance).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
+          setBalance(temp);
+        } else {
+          setBalance('0');
+        }
+      }
     }
   }, [settings.markets]);
 

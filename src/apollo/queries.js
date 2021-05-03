@@ -16,3 +16,21 @@ export const ACCOUNT_MARKET_INFO = gql`
     }
   }
 `;
+
+export const VOTE_INFO = gql`
+  query delegate($id: ID!) {
+    delegate(id: $id) {
+      id
+      delegatedVotes
+    }
+  }
+`;
+
+export const STRK_BALANCE = gql`
+  query tokenHolder($id: ID!) {
+    tokenHolder(id: $id) {
+      id
+      tokenBalance
+    }
+  }
+`;
