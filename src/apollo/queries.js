@@ -31,6 +31,9 @@ export const STRK_BALANCE = gql`
     tokenHolder(id: $id) {
       id
       tokenBalance
+      delegate {
+        id
+      }
     }
   }
 `;

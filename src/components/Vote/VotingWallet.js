@@ -16,6 +16,9 @@ import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Card } from 'components/Basic/Card';
 import coinImg from 'assets/img/strike_32.png';
 
+import { STRK_BALANCE } from 'apollo/queries';
+import { governanceClient } from 'apollo/client';
+
 const VotingWalletWrapper = styled.div`
   width: 100%;
   border-radius: 5px;
@@ -137,22 +140,48 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingEarn, setIsLoadingEarn] = useState(false);
 
+  const getDelegateAddress = async () => {
+    const { data: result } = await governanceClient.query({
+      query: STRK_BALANCE,
+      variables: {
+        id: `${settings.selectedAddress.toLowerCase()}`
+      },
+      fetchPolicy: 'cache-first'
+    });
+    if (result.tokenHolder && result.tokenHolder.delegate) {
+      setDelegateAddress(result.tokenHolder.delegate.id);
+      if (result.tokenHolder.delegate.id !== '0x0000000000000000000000000000000000000000') {
+        setDelegateStatus(
+          result.tokenHolder.delegate.id === settings.selectedAddress ? 'self' : 'delegate'
+        );
+      } else {
+        setDelegateStatus('');
+      }
+    } else {
+      setDelegateAddress('');
+    }
+  };
+
   useEffect(() => {
     if (settings.selectedAddress && timeStamp % 3 === 0) {
-      const tokenContract = getTokenContract('strk');
-      methods
-        .call(tokenContract.methods.delegates, [settings.selectedAddress])
-        .then(res => {
-          setDelegateAddress(res);
-          if (res !== '0x0000000000000000000000000000000000000000') {
-            setDelegateStatus(
-              res === settings.selectedAddress ? 'self' : 'delegate'
-            );
-          } else {
-            setDelegateStatus('');
-          }
-        })
-        .catch(() => {});
+      if (process.env.REACT_APP_ENV === 'dev') {
+        const tokenContract = getTokenContract('strk');
+        methods
+          .call(tokenContract.methods.delegates, [settings.selectedAddress])
+          .then(res => {
+            setDelegateAddress(res);
+            if (res !== '0x0000000000000000000000000000000000000000') {
+              setDelegateStatus(
+                res === settings.selectedAddress ? 'self' : 'delegate'
+              );
+            } else {
+              setDelegateStatus('');
+            }
+          })
+          .catch(() => {});
+      } else {
+        getDelegateAddress();
+      }
     }
     timeStamp = Date.now();
   }, [settings.markets]);
