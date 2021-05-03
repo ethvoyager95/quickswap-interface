@@ -17,6 +17,9 @@ import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import { Card } from 'components/Basic/Card';
 
+import { STRK_BALANCE } from 'apollo/queries';
+import { governanceClient } from 'apollo/client';
+
 const ProposalsWrapper = styled.div`
   width: 100%;
   height: 555px;
@@ -162,19 +165,38 @@ function Proposals({
     }
   }, [address]);
 
+  const getDelegateAddress = async () => {
+    const { data: result } = await governanceClient.query({
+      query: STRK_BALANCE,
+      variables: {
+        id: `${settings.selectedAddress.toLowerCase()}`
+      },
+      fetchPolicy: 'cache-first'
+    });
+    if (result.tokenHolder && result.tokenHolder.delegate) {
+      setDelegateAddress(result.tokenHolder.delegate.id);
+    } else {
+      setDelegateAddress('');
+    }
+  };
+
   useEffect(() => {
     if (
       settings.selectedAddress &&
       (delegateAddress === '' ||
         delegateAddress === '0x0000000000000000000000000000000000000000')
     ) {
-      const tokenContract = getTokenContract('strk');
-      methods
-        .call(tokenContract.methods.delegates, [address])
-        .then(res => {
-          setDelegateAddress(res);
-        })
-        .catch(() => {});
+      if (process.env.REACT_APP_ENV === 'dev') {
+        const tokenContract = getTokenContract('strk');
+        methods
+          .call(tokenContract.methods.delegates, [address])
+          .then(res => {
+            setDelegateAddress(res);
+          })
+          .catch(() => {});
+      } else {
+        getDelegateAddress();
+      }
     }
   }, [settings.selectedAddress, address, delegateAddress]);
 
