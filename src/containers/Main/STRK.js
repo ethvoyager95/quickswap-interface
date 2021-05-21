@@ -9,7 +9,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Row, Col, Icon, Progress } from 'antd';
 import styled from 'styled-components';
 import { connectAccount, accountActionCreators } from 'core';
-import { getTokenContract, methods } from 'utilities/ContractService';
+import { getTokenContract, getComptrollerContract, getSbepContract, methods } from 'utilities/ContractService';
 import MainLayout from 'containers/Layout/MainLayout';
 import VotingWallet from 'components/Vote/VotingWallet';
 import * as constants from 'utilities/constants';
@@ -218,6 +218,54 @@ function STRK({ settings }) {
   const [dailyDistribution, setDailyDistribution] = useState('0');
   const [totalDistributed, setTotalDistributed] = useState('0');
   const [remainAmount, setRemainAmount] = useState('0');
+  const [earnedBalance, setEarnedBalance] = useState('0.00000000');
+
+  const getPendingRewards = async () => {
+    const myAddress = settings.selectedAddress;
+    if (!myAddress) return;
+    const appContract = getComptrollerContract();
+    const [strikeInitialIndex, strikeAccrued] = await Promise.all([
+      methods.call(appContract.methods.strikeInitialIndex, []),
+      methods.call(appContract.methods.strikeAccrued, [myAddress])
+    ]);
+    let strikeEarned = new BigNumber(strikeAccrued);
+    await Promise.all(Object.values(constants.CONTRACT_SBEP_ADDRESS).map(async (item, index) => {
+      const sBepContract = getSbepContract(item.id);
+      let [supplyState, supplierIndex, supplierTokens, borrowState, borrowerIndex, borrowBalanceStored, borrowIndex] = await Promise.all([
+        methods.call(appContract.methods.strikeSupplyState, [item.address]),
+        methods.call(appContract.methods.strikeSupplierIndex, [item.address, myAddress]),
+        methods.call(sBepContract.methods.balanceOf, [myAddress]),
+        methods.call(appContract.methods.strikeBorrowState, [item.address]),
+        methods.call(appContract.methods.strikeBorrowerIndex, [item.address, myAddress]),
+        methods.call(sBepContract.methods.borrowBalanceStored, [myAddress]),
+        methods.call(sBepContract.methods.borrowIndex, []),
+      ]);
+      const supplyIndex = supplyState.index;
+      if (+supplierIndex === 0 && +supplyIndex > 0) {
+        supplierIndex = strikeInitialIndex;
+      }
+      let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
+
+      const supplierDelta = new BigNumber(supplierTokens)
+        .multipliedBy(deltaIndex)
+        .dividedBy(1e36);
+
+      strikeEarned = strikeEarned.plus(supplierDelta);
+      if (+borrowerIndex > 0) {
+        deltaIndex = new BigNumber(borrowState.index).minus(borrowerIndex);
+        const borrowerAmount = new BigNumber(borrowBalanceStored)
+          .multipliedBy(1e18)
+          .dividedBy(borrowIndex);
+        const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
+        strikeEarned = strikeEarned.plus(borrowerDelta);
+      }
+    }));
+
+    strikeEarned = strikeEarned.dividedBy(1e18).dp(8, 1).toString(10);
+    setEarnedBalance(
+      strikeEarned && strikeEarned !== '0' ? `${strikeEarned}` : '0.00000000'
+    );
+  };
 
   const updateRemainAmount = async () => {
     const strkTokenContract = getTokenContract('strk');
@@ -243,6 +291,7 @@ function STRK({ settings }) {
   };
 
   useEffect(() => {
+    getPendingRewards();
     if (settings.markets && settings.dailyStrike) {
       const sum = (settings.markets || []).reduce((accumulator, market) => {
         return new BigNumber(accumulator).plus(new BigNumber(market.totalDistributed));
@@ -351,11 +400,7 @@ function STRK({ settings }) {
             <RewardsInfoWrapper>
               <VotingWallet
                   balance={balance !== '0' ? `${balance}` : '0.00000000'}
-                  earnedBalance={
-                    settings.strikeEarned && settings.strikeEarned !== '0'
-                      ? `${settings.strikeEarned}`
-                      : '0.00000000'
-                  }
+                  earnedBalance={earnedBalance}
                   pageType="strk"
                 />
             </RewardsInfoWrapper>
