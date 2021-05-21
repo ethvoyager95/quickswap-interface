@@ -134,44 +134,44 @@ function Vote({ settings, history, getProposals, setSetting }) {
     const myAddress = settings.selectedAddress;
     if (!myAddress) return;
     const appContract = getComptrollerContract();
-    const strikeInitialIndex = await methods.call(appContract.methods.strikeInitialIndex, []);
-    let strikeEarned = new BigNumber(0);
-    for (
-      let index = 0;
-      index < Object.values(constants.CONTRACT_SBEP_ADDRESS).length;
-      index += 1
-    ) {
-      const item = Object.values(constants.CONTRACT_SBEP_ADDRESS)[index];
-      if (item.id === 'strk') return;
+    const [strikeInitialIndex, strikeAccrued] = await Promise.all([
+      methods.call(appContract.methods.strikeInitialIndex, []),
+      methods.call(appContract.methods.strikeAccrued, [myAddress])
+    ]);
+    let strikeEarned = new BigNumber(strikeAccrued);
+    await Promise.all(Object.values(constants.CONTRACT_SBEP_ADDRESS).map(async (item, index) => {
       const sBepContract = getSbepContract(item.id);
-      const supplyState = await methods.call(appContract.methods.strikeSupplyState, [item.address]);
+      let [supplyState, supplierIndex, supplierTokens, borrowState, borrowerIndex, borrowBalanceStored, borrowIndex] = await Promise.all([
+        methods.call(appContract.methods.strikeSupplyState, [item.address]),
+        methods.call(appContract.methods.strikeSupplierIndex, [item.address, myAddress]),
+        methods.call(sBepContract.methods.balanceOf, [myAddress]),
+        methods.call(appContract.methods.strikeBorrowState, [item.address]),
+        methods.call(appContract.methods.strikeBorrowerIndex, [item.address, myAddress]),
+        methods.call(sBepContract.methods.borrowBalanceStored, [myAddress]),
+        methods.call(sBepContract.methods.borrowIndex, []),
+      ]);
       const supplyIndex = supplyState.index;
-      let supplierIndex = await methods.call(appContract.methods.strikeSupplierIndex, [item.address, myAddress]);
       if (+supplierIndex === 0 && +supplyIndex > 0) {
         supplierIndex = strikeInitialIndex;
       }
       let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
 
-      const supplierTokens = await methods.call(sBepContract.methods.balanceOf, [myAddress]);
-      const supplierDelta = new BigNumber(supplierTokens).multipliedBy(deltaIndex).dividedBy(1e36);
+      const supplierDelta = new BigNumber(supplierTokens)
+        .multipliedBy(deltaIndex)
+        .dividedBy(1e36);
 
       strikeEarned = strikeEarned.plus(supplierDelta);
-
-      const borrowState = await methods.call(appContract.methods.strikeBorrowState, [item.address]);
-      let borrowIndex = borrowState.index;
-      const borrowerIndex  = await methods.call(appContract.methods.strikeBorrowerIndex, [item.address, myAddress]);
       if (+borrowerIndex > 0) {
-        deltaIndex = new BigNumber(borrowIndex).minus(borrowerIndex);
-        const borrowBalanceStored = await methods.call(sBepContract.methods.borrowBalanceStored, [myAddress]);
-        borrowIndex = await methods.call(sBepContract.methods.borrowIndex, []);
-        const borrowerAmount = new BigNumber(borrowBalanceStored).multipliedBy(1e18).dividedBy(borrowIndex);
-        const borrowerDelta = borrowerAmount.multipliedBy(deltaIndex).dividedBy(1e36);
+        deltaIndex = new BigNumber(borrowState.index).minus(borrowerIndex);
+        const borrowerAmount = new BigNumber(borrowBalanceStored)
+          .multipliedBy(1e18)
+          .dividedBy(borrowIndex);
+        const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
         strikeEarned = strikeEarned.plus(borrowerDelta);
       }
-    }
+    }));
 
-    const strikeAccrued = await methods.call(appContract.methods.strikeAccrued, [myAddress]);
-    strikeEarned = strikeEarned.plus(strikeAccrued).dividedBy(1e18).dp(8, 1).toString(10);
+    strikeEarned = strikeEarned.dividedBy(1e18).dp(8, 1).toString(10);
     setEarnedBalance(
       strikeEarned && strikeEarned !== '0' ? `${strikeEarned}` : '0.00000000'
     );
