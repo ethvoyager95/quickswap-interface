@@ -393,7 +393,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     let totalLiquidity = new BigNumber(0);
     const assetList = [];
     switch (process.env.REACT_APP_ENV) {
-      case "dev": 
+      case "prod": 
         const assetsIn = await methods.call(appContract.methods.getAssetsIn, [accountAddress]);
         for (let index = 0; index < Object.values(constants.CONTRACT_TOKEN_ADDRESS).length; index++) {
           const item = Object.values(constants.CONTRACT_TOKEN_ADDRESS)[index];
