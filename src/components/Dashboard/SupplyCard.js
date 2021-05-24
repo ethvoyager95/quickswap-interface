@@ -12,6 +12,7 @@ import { compose } from 'recompose';
 import { connectAccount } from 'core';
 import { addToken } from 'utilities/common';
 import metaMaskImg from 'assets/img/metamask.png';
+import { getBigNumber } from 'utilities/common';
 
 const CardWrapper = styled.div`
   position: relative;
@@ -83,7 +84,7 @@ const Tabs = styled.div`
 
 function SupplyCard({ currentMarket, settings }) {
   const [currentTab, setCurrentTab] = useState('supply');
-  const [currentAsset, setCurrentAsset] = useState('usdc');
+  const [currentAsset, setCurrentAsset] = useState({});
 
   useEffect(() => {
     if (currentMarket) {
@@ -92,30 +93,44 @@ function SupplyCard({ currentMarket, settings }) {
   }, [currentMarket]);
 
   useEffect(() => {
-    setCurrentAsset(settings.selectedAsset && settings.selectedAsset.id ? settings.selectedAsset.id : 'usdc');
+    const asset = settings.selectedAsset;
+    if (asset) {
+      setCurrentAsset({
+        ...asset,
+        supplyApy: getBigNumber(asset.supplyApy),
+        borrowApy: getBigNumber(asset.borrowApy),
+        walletBalance: getBigNumber(asset.walletBalance),
+        supplyBalance: getBigNumber(asset.supplyBalance),
+        sTokenBalance: getBigNumber(asset.sTokenBalance),
+        borrowBalance: getBigNumber(asset.borrowBalance),
+        collateralFactor: getBigNumber(asset.collateralFactor),
+        tokenPrice: getBigNumber(asset.tokenPrice),
+        liquidity: getBigNumber(asset.liquidity)
+      })
+    }
   }, [settings.selectedAsset]);
 
   return (
     <Card>
       <CardWrapper>
-        {window.ethereum && window.ethereum.networkVersion && (
+        {window.ethereum && window.ethereum.networkVersion && currentAsset.id && (
           <div className="flex align-center add-token-wrapper">
-            {currentAsset !== 'eth' && (
+            {currentAsset.id !== 'eth' && (
               <div className="flex align-center underlying-asset">
-                {currentAsset.toUpperCase()}
+                {currentAsset.id.toUpperCase()}
                 <img
                   className="add-token pointer"
                   src={metaMaskImg}
-                  onClick={() => addToken(currentAsset, settings.decimals[currentAsset].token, 'token')}
+                  onClick={() => addToken(currentAsset.id, settings.decimals[currentAsset.id].token, 'token')}
                 />
               </div>
             )}
             <div className="flex align-center stoken-asset">
-              {`s${currentAsset === 'wbtc' ? 'BTC' : currentAsset.toUpperCase()}`}
+              {`s${currentAsset.id === 'wbtc' ? 'BTC' : currentAsset.id.toUpperCase()}`}
               <img
                 className="add-token pointer"
                 src={metaMaskImg}
-                onClick={() => addToken(currentAsset, settings.decimals[currentAsset].stoken, 'stoken')}
+                onClick={() => addToken(currentAsset.id, settings.decimals[currentAsset.id].stoken, 'stoken')}
               />
             </div>
           </div>
@@ -144,18 +159,18 @@ function SupplyCard({ currentMarket, settings }) {
                 Withdraw
               </div>
             </Tabs>
-            {!settings.selectedAsset ||
-            Object.keys(settings.selectedAsset).length === 0 ? (
+            {!currentAsset ||
+            Object.keys(currentAsset).length === 0 ? (
               <div className="loading-section">
                 <LoadingSpinner />
               </div>
             ) : (
               <>
                 {currentTab === 'supply' && (
-                  <SupplySection asset={settings.selectedAsset} />
+                  <SupplySection asset={currentAsset} />
                 )}
                 {currentTab === 'withdraw' && (
-                  <WithdrawSection asset={settings.selectedAsset} />
+                  <WithdrawSection asset={currentAsset} />
                 )}
               </>
             )}
@@ -184,18 +199,18 @@ function SupplyCard({ currentMarket, settings }) {
                 Repay Borrow
               </div>
             </Tabs>
-            {!settings.selectedAsset ||
-            Object.keys(settings.selectedAsset).length === 0 ? (
+            {!currentAsset ||
+            Object.keys(currentAsset).length === 0 ? (
               <div className="loading-section">
                 <LoadingSpinner />
               </div>
             ) : (
               <>
                 {currentTab === 'borrow' && (
-                  <BorrowSection asset={settings.selectedAsset} />
+                  <BorrowSection asset={currentAsset} />
                 )}
                 {currentTab === 'repay' && (
-                  <RepaySection asset={settings.selectedAsset} />
+                  <RepaySection asset={currentAsset} />
                 )}
               </>
             )}
