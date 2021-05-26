@@ -224,7 +224,6 @@ function Market({ history, settings }) {
       setBorrowVolume(settings.marketVolumeLog.totalBorrowsUsd24h);
     }
   }, [settings.markets]);
-
   return (
     <MainLayout title="Market Overview">
       <MarketWrapper>
@@ -324,16 +323,19 @@ function Market({ history, settings }) {
                 <Col xs={{ span: 24 }} lg={{ span: 4 }} className="market">
                   Market
                 </Col>
-                <Col xs={{ span: 6 }} lg={{ span: 5 }} className="total-supply right">
+                <Col xs={{ span: 4 }} lg={{ span: 4 }} className="borrow-apy right">
+                  Price
+                </Col>
+                <Col xs={{ span: 5 }} lg={{ span: 4 }} className="total-supply right">
                   Total Supply
                 </Col>
-                <Col xs={{ span: 6 }} lg={{ span: 5 }} className="supply-apy right">
+                <Col xs={{ span: 5 }} lg={{ span: 4 }} className="supply-apy right">
                   Supply APY
                 </Col>
-                <Col xs={{ span: 6 }} lg={{ span: 5 }} className="total-borrow right">
+                <Col xs={{ span: 5 }} lg={{ span: 4 }} className="total-borrow right">
                   Total Borrow
                 </Col>
-                <Col xs={{ span: 6 }} lg={{ span: 5 }} className="borrow-apy right">
+                <Col xs={{ span: 5 }} lg={{ span: 4 }} className="borrow-apy right">
                   Borrow APY
                 </Col>
               </Row>
@@ -360,14 +362,30 @@ function Market({ history, settings }) {
                           />
                           <p className="item-title">{item.underlyingSymbol}</p>
                         </Col>
-                        <Col xs={{ span: 24 }} lg={{ span: 5 }} className="total-supply right">
+                        <Col xs={{ span: 24 }} lg={{ span: 4 }} className="total-supply right">
+                          <p className="mobile-label">Price</p>
+                          <p className="item-title">
+                            ${
+                              new BigNumber(item.underlyingPrice || 0)
+                                .div(
+                                  new BigNumber(10).pow(
+                                    settings.decimals[item.underlyingSymbol.toLowerCase()]
+                                      .token
+                                  )
+                                )
+                                .dp(8, 1)
+                                .toString(10)
+                            }
+                          </p>
+                        </Col>
+                        <Col xs={{ span: 24 }} lg={{ span: 4 }} className="total-supply right">
                           <p className="mobile-label">Total Supply</p>
                           <p className="item-title">
                             {currencyFormatter(item.totalSupplyUsd)}
                           </p>
                           <p className="item-value">{format(new BigNumber(item.totalSupplyUsd).div(new BigNumber(item.tokenPrice)).dp(0, 1).toString(10))} {item.underlyingSymbol}</p>
                         </Col>
-                        <Col xs={{ span: 24 }} lg={{ span: 5 }} className="supply-apy right">
+                        <Col xs={{ span: 24 }} lg={{ span: 4 }} className="supply-apy right">
                           <p className="mobile-label">Supply APY</p>
                           <p className="item-title">
                             {new BigNumber(item.supplyApy).plus(new BigNumber(item.supplyStrikeApy)).isLessThan(0.01) ? '0.01' : new BigNumber(item.supplyApy).plus(new BigNumber(item.supplyStrikeApy)).dp(2, 1).toString(10)}%
@@ -376,14 +394,14 @@ function Market({ history, settings }) {
                             {new BigNumber(item.supplyStrikeApy).dp(2, 1).toString(10)}%
                           </p>
                         </Col>
-                        <Col xs={{ span: 24 }} lg={{ span: 5 }} className="total-borrow right">
+                        <Col xs={{ span: 24 }} lg={{ span: 4 }} className="total-borrow right">
                           <p className="mobile-label">Total Borrow</p>
                           <p className="item-title">
                             {currencyFormatter(item.totalBorrowsUsd)}
                           </p>
                           <p className="item-value">{format(new BigNumber(item.totalBorrowsUsd).div(new BigNumber(item.tokenPrice)).dp(0, 1).toString(10))} {item.underlyingSymbol}</p>
                         </Col>
-                        <Col xs={{ span: 24 }} lg={{ span: 5 }} className="borrow-apy right">
+                        <Col xs={{ span: 24 }} lg={{ span: 4 }} className="borrow-apy right">
                           <p className="mobile-label">Borrow APY</p>
                           <p className="item-title">
                             {new BigNumber(item.borrowApy).plus(new BigNumber(item.borrowStrikeApy)).isLessThan(0.01) ? '0.01' : new BigNumber(item.borrowApy).plus(new BigNumber(item.borrowStrikeApy)).dp(2, 1).toString(10)}%
