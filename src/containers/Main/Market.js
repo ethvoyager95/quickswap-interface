@@ -365,17 +365,7 @@ function Market({ history, settings }) {
                         <Col xs={{ span: 24 }} lg={{ span: 4 }} className="total-supply right">
                           <p className="mobile-label">Price</p>
                           <p className="item-title">
-                            ${
-                              new BigNumber(item.underlyingPrice || 0)
-                                .div(
-                                  new BigNumber(10).pow(
-                                    settings.decimals[item.underlyingSymbol.toLowerCase()]
-                                      .token
-                                  )
-                                )
-                                .dp(8, 1)
-                                .toString(10)
-                            }
+                            ${new BigNumber(item.tokenPrice).dp(2, 1).toString(10)}
                           </p>
                         </Col>
                         <Col xs={{ span: 24 }} lg={{ span: 4 }} className="total-supply right">
