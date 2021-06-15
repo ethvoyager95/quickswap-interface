@@ -9,8 +9,6 @@ import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import AnimatedNumber from 'animated-number-react';
 import { getBigNumber } from 'utilities/common';
-import Toggle from 'components/Basic/Toggle';
-import { Label } from 'components/Basic/Label';
 
 const CardWrapper = styled.div`
   width: 100%;
@@ -88,13 +86,12 @@ const abortController = new AbortController();
 
 function WalletBalance({ settings, setSetting }) {
   const [netAPY, setNetAPY] = useState('0');
-  const [withSTRK, setWithSTRK] = useState(false);
 
   const updateNetAPY = useCallback(async () => {
     let totalSum = new BigNumber(0);
     let totalSupplied = new BigNumber(0);
     let totalBorrowed = new BigNumber(0);
-    const { assetList } = settings;
+    const { assetList, withSTRK } = settings;
     assetList.forEach(asset => {
       const {
         supplyBalance,
@@ -149,7 +146,7 @@ function WalletBalance({ settings, setSetting }) {
               .toString(10)
       );
     }
-  }, [settings.assetList, withSTRK]);
+  }, [settings.assetList, settings.withSTRK]);
 
   useEffect(() => {
     if (
@@ -163,12 +160,6 @@ function WalletBalance({ settings, setSetting }) {
       abortController.abort();
     };
   }, [settings.selectedAddress, updateNetAPY]);
-
-  useEffect(() => {
-    setSetting({
-      withSTRK
-    });
-  }, [withSTRK]);
 
   const formatValue = value => {
     return `$${format(
@@ -218,18 +209,6 @@ function WalletBalance({ settings, setSetting }) {
             .dp(2, 1)
             .toString(10)}
         />
-        {/* <div className="apy-toggle">
-          <Toggle checked={withSTRK} onChecked={() => setWithSTRK(!withSTRK)} />
-          <Label size="14" primary className="toggel-label">
-            {withSTRK ? (
-              '🔥 APY with STRK'
-            ) : (
-              <div>
-                <span className="emoji">🔥</span>APY without STRK
-              </div>
-            )}
-          </Label>
-        </div> */}
       </div>
     </CardWrapper>
   );

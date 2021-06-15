@@ -136,15 +136,15 @@ function BorrowMarket({
       key: 'borrowApy',
       render(borrowApy, asset) {
         const apy = settings.withSTRK
-          ? getBigNumber(asset.strkBorrowApy).minus(borrowApy).isNegative() ? new BigNumber(0) : getBigNumber(asset.strkBorrowApy).minus(borrowApy)
+          ? getBigNumber(asset.strkBorrowApy).minus(borrowApy).absoluteValue()
           : borrowApy;
         return {
           children: (
             <div className="apy-content">
-              {settings.withSTRK ? <span /> : <span className="red" />}
+              {settings.withSTRK && !getBigNumber(asset.strkBorrowApy).minus(borrowApy).isNegative() ? <span /> : <span className="red" />}
               <div
                 className={
-                  settings.withSTRK ? 'apy-green-label' : 'apy-red-label'
+                  settings.withSTRK && !getBigNumber(asset.strkBorrowApy).minus(borrowApy).isNegative() ? 'apy-green-label' : 'apy-red-label'
                 }
               >
                 {apy.dp(2, 1).toString(10)}%

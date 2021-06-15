@@ -8,6 +8,8 @@ import SupplyMarket from 'components/Dashboard/Market/SupplyMarket';
 import BorrowMarket from 'components/Dashboard/Market/BorrowMarket';
 import { Card } from 'components/Basic/Card';
 import { getBigNumber } from 'utilities/common';
+import Toggle from 'components/Basic/Toggle';
+import { Label } from 'components/Basic/Label';
 
 const CardWrapper = styled.div`
   position: relative;
@@ -16,6 +18,22 @@ const CardWrapper = styled.div`
   border-radius: 5px;
   background-color: var(--color-bg-primary);
   padding: 15px 14px;
+`;
+
+const TabContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  .apy-toggle {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    .toggel-label {
+      margin: 5px 10px;
+    }
+  }
 `;
 
 const Tabs = styled.div`
@@ -45,7 +63,7 @@ const Tabs = styled.div`
 const TabContent = styled.div`
   width: 100%;
   height: calc(100% - 75px);
-  margin-top: 35px;
+  margin-top: 10px;
   display: flex;
   justify-content: center;
 `;
@@ -56,6 +74,7 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
   const [borrowedAssets, setBorrowedAssets] = useState([]);
   const [nonBorrowedAssets, setNonBorrowedAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState({});
+  const [withSTRK, setWithSTRK] = useState(false);
 
   const updateMarketTable = async () => {
     const tempArr = [];
@@ -105,7 +124,10 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
   }, [settings.assetList]);
 
   useEffect(() => {
-    if (settings.selectedAsset && Object.keys(settings.selectedAsset).length > 0) {
+    if (
+      settings.selectedAsset &&
+      Object.keys(settings.selectedAsset).length > 0
+    ) {
       return;
     }
     if (currentMarket === 'supply') {
@@ -137,31 +159,51 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
     }
   }, [selectedAsset]);
 
+  useEffect(() => {
+    setSetting({
+      withSTRK
+    });
+  }, [withSTRK]);
+
   return (
     <Card>
       <CardWrapper>
-        <Tabs>
-          <div
-            className={`tab-item center ${
-              currentMarket === 'supply' ? 'tab-active' : ''
-            }`}
-            onClick={() => {
-              setCurrentMarket('supply');
-            }}
-          >
-            Supply Market
+        <TabContainer>
+          <Tabs>
+            <div
+              className={`tab-item center ${
+                currentMarket === 'supply' ? 'tab-active' : ''
+              }`}
+              onClick={() => {
+                setCurrentMarket('supply');
+              }}
+            >
+              Supply Market
+            </div>
+            <div
+              className={`tab-item center ${
+                currentMarket === 'borrow' ? 'tab-active' : ''
+              }`}
+              onClick={() => {
+                setCurrentMarket('borrow');
+              }}
+            >
+              Borrow Market
+            </div>
+          </Tabs>
+          <div className="apy-toggle">
+            <Label size="14" primary className="toggel-label">
+              <div>Lending APY</div>
+            </Label>
+            <Toggle
+              checked={withSTRK}
+              onChecked={() => setWithSTRK(!withSTRK)}
+            />
+            <Label size="14" primary className="toggel-label">
+              <div>Net APY</div>
+            </Label>
           </div>
-          <div
-            className={`tab-item center ${
-              currentMarket === 'borrow' ? 'tab-active' : ''
-            }`}
-            onClick={() => {
-              setCurrentMarket('borrow');
-            }}
-          >
-            Borrow Market
-          </div>
-        </Tabs>
+        </TabContainer>
         <TabContent>
           {currentMarket === 'supply' && (
             <SupplyMarket
