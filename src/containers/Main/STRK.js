@@ -9,7 +9,12 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Row, Col, Icon, Progress } from 'antd';
 import styled from 'styled-components';
 import { connectAccount, accountActionCreators } from 'core';
-import { getTokenContract, getComptrollerContract, getSbepContract, methods } from 'utilities/ContractService';
+import {
+  getTokenContract,
+  getComptrollerContract,
+  getSbepContract,
+  methods
+} from 'utilities/ContractService';
 import MainLayout from 'containers/Layout/MainLayout';
 import VotingWallet from 'components/Vote/VotingWallet';
 import * as constants from 'utilities/constants';
@@ -46,7 +51,7 @@ const STRKWrapper = styled.div`
       margin-right: 0px;
       .user-distribution {
         display: block;
-      } 
+      }
     }
   }
 
@@ -91,6 +96,7 @@ const TableWrapper = styled.div`
   .table_header {
     padding: 20px 45px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    cursor: pointer;
     > div {
       color: #c5cbd4;
       font-weight: bold;
@@ -162,7 +168,7 @@ const UserDistributionWrapper = styled.div`
     padding-bottom: 41px;
     margin-bottom: 50px;
     border-bottom: 1px solid #eef1fa;
-    
+
     img {
       width: 24px;
       height: 24px;
@@ -219,6 +225,7 @@ function STRK({ settings }) {
   const [totalDistributed, setTotalDistributed] = useState('0');
   const [remainAmount, setRemainAmount] = useState('0');
   const [earnedBalance, setEarnedBalance] = useState('0.00000000');
+  const [sortInfo, setSortInfo] = useState({ field: '', sort: 'desc' });
 
   const getPendingRewards = async () => {
     const myAddress = settings.selectedAddress;
@@ -229,39 +236,62 @@ function STRK({ settings }) {
       methods.call(appContract.methods.strikeAccrued, [myAddress])
     ]);
     let strikeEarned = new BigNumber(strikeAccrued);
-    await Promise.all(Object.values(constants.CONTRACT_SBEP_ADDRESS).map(async (item, index) => {
-      const sBepContract = getSbepContract(item.id);
-      let [supplyState, supplierIndex, supplierTokens, borrowState, borrowerIndex, borrowBalanceStored, borrowIndex] = await Promise.all([
-        methods.call(appContract.methods.strikeSupplyState, [item.address]),
-        methods.call(appContract.methods.strikeSupplierIndex, [item.address, myAddress]),
-        methods.call(sBepContract.methods.balanceOf, [myAddress]),
-        methods.call(appContract.methods.strikeBorrowState, [item.address]),
-        methods.call(appContract.methods.strikeBorrowerIndex, [item.address, myAddress]),
-        methods.call(sBepContract.methods.borrowBalanceStored, [myAddress]),
-        methods.call(sBepContract.methods.borrowIndex, []),
-      ]);
-      const supplyIndex = supplyState.index;
-      if (+supplierIndex === 0 && +supplyIndex > 0) {
-        supplierIndex = strikeInitialIndex;
-      }
-      let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
+    await Promise.all(
+      Object.values(constants.CONTRACT_SBEP_ADDRESS).map(
+        async (item, index) => {
+          const sBepContract = getSbepContract(item.id);
+          let [
+            supplyState,
+            supplierIndex,
+            supplierTokens,
+            borrowState,
+            borrowerIndex,
+            borrowBalanceStored,
+            borrowIndex
+          ] = await Promise.all([
+            methods.call(appContract.methods.strikeSupplyState, [item.address]),
+            methods.call(appContract.methods.strikeSupplierIndex, [
+              item.address,
+              myAddress
+            ]),
+            methods.call(sBepContract.methods.balanceOf, [myAddress]),
+            methods.call(appContract.methods.strikeBorrowState, [item.address]),
+            methods.call(appContract.methods.strikeBorrowerIndex, [
+              item.address,
+              myAddress
+            ]),
+            methods.call(sBepContract.methods.borrowBalanceStored, [myAddress]),
+            methods.call(sBepContract.methods.borrowIndex, [])
+          ]);
+          const supplyIndex = supplyState.index;
+          if (+supplierIndex === 0 && +supplyIndex > 0) {
+            supplierIndex = strikeInitialIndex;
+          }
+          let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
 
-      const supplierDelta = new BigNumber(supplierTokens)
-        .multipliedBy(deltaIndex)
-        .dividedBy(1e36);
+          const supplierDelta = new BigNumber(supplierTokens)
+            .multipliedBy(deltaIndex)
+            .dividedBy(1e36);
 
-      strikeEarned = strikeEarned.plus(supplierDelta);
-      if (+borrowerIndex > 0) {
-        deltaIndex = new BigNumber(borrowState.index).minus(borrowerIndex);
-        const borrowerAmount = new BigNumber(borrowBalanceStored)
-          .multipliedBy(1e18)
-          .dividedBy(borrowIndex);
-        const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
-        strikeEarned = strikeEarned.plus(borrowerDelta);
-      }
-    }));
+          strikeEarned = strikeEarned.plus(supplierDelta);
+          if (+borrowerIndex > 0) {
+            deltaIndex = new BigNumber(borrowState.index).minus(borrowerIndex);
+            const borrowerAmount = new BigNumber(borrowBalanceStored)
+              .multipliedBy(1e18)
+              .dividedBy(borrowIndex);
+            const borrowerDelta = borrowerAmount
+              .times(deltaIndex)
+              .dividedBy(1e36);
+            strikeEarned = strikeEarned.plus(borrowerDelta);
+          }
+        }
+      )
+    );
 
-    strikeEarned = strikeEarned.dividedBy(1e18).dp(8, 1).toString(10);
+    strikeEarned = strikeEarned
+      .dividedBy(1e18)
+      .dp(8, 1)
+      .toString(10);
     setEarnedBalance(
       strikeEarned && strikeEarned !== '0' ? `${strikeEarned}` : '0.00000000'
     );
@@ -270,8 +300,13 @@ function STRK({ settings }) {
   const updateRemainAmount = async () => {
     const strkTokenContract = getTokenContract('strk');
     if (process.env.REACT_APP_ENV === 'dev') {
-      let temp = await methods.call(strkTokenContract.methods.balanceOf, [constants.CONTRACT_COMPTROLLER_ADDRESS]);
-      temp = new BigNumber(temp).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
+      let temp = await methods.call(strkTokenContract.methods.balanceOf, [
+        constants.CONTRACT_COMPTROLLER_ADDRESS
+      ]);
+      temp = new BigNumber(temp)
+        .dividedBy(new BigNumber(10).pow(18))
+        .dp(4, 1)
+        .toString(10);
       setRemainAmount(temp);
     } else {
       const { data: result } = await governanceClient.query({
@@ -282,7 +317,10 @@ function STRK({ settings }) {
         fetchPolicy: 'cache-first'
       });
       if (result.tokenHolder) {
-        const temp = new BigNumber(result.tokenHolder.tokenBalance).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
+        const temp = new BigNumber(result.tokenHolder.tokenBalance)
+          .dividedBy(new BigNumber(10).pow(18))
+          .dp(4, 1)
+          .toString(10);
         setRemainAmount(temp);
       } else {
         setRemainAmount('0');
@@ -294,9 +332,15 @@ function STRK({ settings }) {
     getPendingRewards();
     if (settings.markets && settings.dailyStrike) {
       const sum = (settings.markets || []).reduce((accumulator, market) => {
-        return new BigNumber(accumulator).plus(new BigNumber(market.totalDistributed));
+        return new BigNumber(accumulator).plus(
+          new BigNumber(market.totalDistributed)
+        );
       }, 0);
-      setDailyDistribution(new BigNumber(settings.dailyStrike).div(new BigNumber(10).pow(18)).toString(10));
+      setDailyDistribution(
+        new BigNumber(settings.dailyStrike)
+          .div(new BigNumber(10).pow(18))
+          .toString(10)
+      );
       setTotalDistributed(sum.toString(10));
       updateRemainAmount();
     }
@@ -306,8 +350,13 @@ function STRK({ settings }) {
     if (settings.selectedAddress) {
       const strkTokenContract = getTokenContract('strk');
       if (process.env.REACT_APP_ENV === 'dev') {
-        let temp = await methods.call(strkTokenContract.methods.balanceOf, [settings.selectedAddress]);
-        temp = new BigNumber(temp).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
+        let temp = await methods.call(strkTokenContract.methods.balanceOf, [
+          settings.selectedAddress
+        ]);
+        temp = new BigNumber(temp)
+          .dividedBy(new BigNumber(10).pow(18))
+          .dp(4, 1)
+          .toString(10);
         setBalance(temp);
       } else {
         const { data: result } = await governanceClient.query({
@@ -318,7 +367,10 @@ function STRK({ settings }) {
           fetchPolicy: 'cache-first'
         });
         if (result.tokenHolder) {
-          const temp = new BigNumber(result.tokenHolder.tokenBalance).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
+          const temp = new BigNumber(result.tokenHolder.tokenBalance)
+            .dividedBy(new BigNumber(10).pow(18))
+            .dp(4, 1)
+            .toString(10);
           setBalance(temp);
         } else {
           setBalance('0');
@@ -332,6 +384,14 @@ function STRK({ settings }) {
       updateBalance();
     }
   }, [settings.selectedAddress, updateBalance]);
+
+  const handleSort = field => {
+    setSortInfo({
+      field,
+      sort:
+        sortInfo.field === field && sortInfo.sort === 'desc' ? 'asc' : 'desc'
+    });
+  };
 
   const UserDistribution = () => {
     return (
@@ -389,8 +449,8 @@ function STRK({ settings }) {
           </div>
         </div>
       </UserDistributionWrapper>
-    )
-  }
+    );
+  };
 
   return (
     <STRKLayout>
@@ -399,10 +459,10 @@ function STRK({ settings }) {
           <div className="column1">
             <RewardsInfoWrapper>
               <VotingWallet
-                  balance={balance !== '0' ? `${balance}` : '0.00000000'}
-                  earnedBalance={earnedBalance}
-                  pageType="strk"
-                />
+                balance={balance !== '0' ? `${balance}` : '0.00000000'}
+                earnedBalance={earnedBalance}
+                pageType="strk"
+              />
             </RewardsInfoWrapper>
             <div className="user-distribution">
               <UserDistribution />
@@ -413,57 +473,202 @@ function STRK({ settings }) {
                 <Col xs={{ span: 24 }} lg={{ span: 4 }} className="market">
                   Market
                 </Col>
-                <Col xs={{ span: 6 }} lg={{ span: 5 }} className="per-day right">
-                  <img src={coinImg} alt="strk" /> Per Day
+                <Col
+                  xs={{ span: 6 }}
+                  lg={{ span: 5 }}
+                  className="per-day right"
+                >
+                  <span onClick={() => handleSort('perDay')}>
+                    <img src={coinImg} alt="strk" /> Per Day{' '}
+                    {sortInfo.field === 'perDay' && (
+                      <Icon
+                        type={
+                          sortInfo.sort === 'desc' ? 'caret-down' : 'caret-up'
+                        }
+                      />
+                    )}
+                  </span>
                 </Col>
-                <Col xs={{ span: 6 }} lg={{ span: 5 }} className="supply-apy right">
-                  Supply<img src={coinImg} alt="strk" />APY
+                <Col
+                  xs={{ span: 6 }}
+                  lg={{ span: 5 }}
+                  className="supply-apy right"
+                >
+                  <span onClick={() => handleSort('supplyAPY')}>
+                    Supply
+                    <img src={coinImg} alt="strk" />
+                    APY{' '}
+                    {sortInfo.field === 'supplyAPY' && (
+                      <Icon
+                        type={
+                          sortInfo.sort === 'desc' ? 'caret-down' : 'caret-up'
+                        }
+                      />
+                    )}
+                  </span>
                 </Col>
-                <Col xs={{ span: 6 }} lg={{ span: 5 }} className="borrow-apy right">
-                  Borrow<img src={coinImg} alt="strk" />APY
+                <Col
+                  xs={{ span: 6 }}
+                  lg={{ span: 5 }}
+                  className="borrow-apy right"
+                >
+                  <span onClick={() => handleSort('borrowAPY')}>
+                    Borrow
+                    <img src={coinImg} alt="strk" />
+                    APY{' '}
+                    {sortInfo.field === 'borrowAPY' && (
+                      <Icon
+                        type={
+                          sortInfo.sort === 'desc' ? 'caret-down' : 'caret-up'
+                        }
+                      />
+                    )}
+                  </span>
                 </Col>
-                <Col xs={{ span: 6 }} lg={{ span: 5 }} className="total-distributed right">
-                  Total Distributed
+                <Col
+                  xs={{ span: 6 }}
+                  lg={{ span: 5 }}
+                  className="total-distributed right"
+                >
+                  <span onClick={() => handleSort('total')}>
+                    Total Distributed
+                    {sortInfo.field === 'total' && (
+                      <Icon
+                        type={
+                          sortInfo.sort === 'desc' ? 'caret-down' : 'caret-up'
+                        }
+                      />
+                    )}
+                  </span>
                 </Col>
               </Row>
               <div className="table_content">
                 {settings.markets &&
                   (settings.markets || [])
-                  .filter(m => m.underlyingSymbol !== 'ZRX' && m.underlyingSymbol !== 'BAT')
-                  .map((item, index) => (
-                    <Row className="table_item pointer" key={index}>
-                      <Col xs={{ span: 24 }} lg={{ span: 4 }} className="flex align-center market">
-                        <img
-                          className="asset-img"
-                          src={constants.CONTRACT_TOKEN_ADDRESS[item.underlyingSymbol.toLowerCase()].asset}
-                          alt="asset"
-                        />
-                        <p>{item.underlyingName}</p>
-                      </Col>
-                      <Col xs={{ span: 24 }} lg={{ span: 5 }} className="per-day right">
-                        <p className="mobile-label">Per day</p>
-                        <p>
-                          {new BigNumber(item.supplierDailyStrike).plus(new BigNumber(item.borrowerDailyStrike)).div(new BigNumber(10).pow(18)).dp(2, 1).toString(10)}
-                        </p>
-                      </Col>
-                      <Col xs={{ span: 24 }} lg={{ span: 5 }} className="supply-apy right">
-                        <p className="mobile-label">Supply APY</p>
-                        <p>
-                          {new BigNumber(item.supplyStrikeApy).isLessThan(0.01) ? '0.01' : new BigNumber(item.supplyStrikeApy).dp(2, 1).toString(10)}%
-                        </p>
-                      </Col>
-                      <Col xs={{ span: 24 }} lg={{ span: 5 }} className="borrow-apy right">
-                        <p className="mobile-label">Borrow APY</p>
-                        <p>
-                          {new BigNumber(item.borrowStrikeApy).isLessThan(0.01) ? '0.01' : new BigNumber(item.borrowStrikeApy).dp(2, 1).toString(10)}%
-                        </p>
-                      </Col>
-                      <Col xs={{ span: 24 }} lg={{ span: 5 }} className="total-distributed right">
-                        <p className="mobile-label">Total Distributed</p>
-                        <p>{format(item.totalDistributed.toString())}</p>
-                      </Col>
-                    </Row>
-                  ))}
+                    .filter(
+                      m =>
+                        m.underlyingSymbol !== 'ZRX' &&
+                        m.underlyingSymbol !== 'BAT'
+                    )
+                    .map(market => {
+                      return {
+                        ...market,
+                        perDay: new BigNumber(market.supplierDailyStrike)
+                          .plus(new BigNumber(market.borrowerDailyStrike))
+                          .div(new BigNumber(10).pow(18))
+                          .dp(2, 1)
+                          .toNumber(),
+                        supplyAPY: new BigNumber(
+                          market.supplyStrikeApy
+                        ).isLessThan(0.01)
+                          ? '0.01'
+                          : new BigNumber(market.supplyStrikeApy)
+                              .dp(2, 1)
+                              .toNumber(),
+                        borrowAPY: new BigNumber(
+                          market.borrowStrikeApy
+                        ).isLessThan(0.01)
+                          ? '0.01'
+                          : new BigNumber(market.borrowStrikeApy)
+                              .dp(2, 1)
+                              .toNumber()
+                      };
+                    })
+                    .sort((a, b) => {
+                      if (sortInfo.field) {
+                        if (sortInfo.field === 'perDay') {
+                          return sortInfo.sort === 'desc'
+                            ? new BigNumber(b.perDay)
+                                .minus(new BigNumber(a.perDay))
+                                .toNumber()
+                            : new BigNumber(a.perDay)
+                                .minus(new BigNumber(b.perDay))
+                                .toNumber();
+                        }
+                        if (sortInfo.field === 'supplyAPY') {
+                          return sortInfo.sort === 'desc'
+                            ? new BigNumber(b.supplyAPY)
+                                .minus(new BigNumber(a.supplyAPY))
+                                .toNumber()
+                            : new BigNumber(a.supplyAPY)
+                                .minus(new BigNumber(b.supplyAPY))
+                                .toNumber();
+                        }
+                        if (sortInfo.field === 'borrowAPY') {
+                          return sortInfo.sort === 'desc'
+                            ? new BigNumber(b.borrowAPY)
+                                .minus(new BigNumber(a.borrowAPY))
+                                .toNumber()
+                            : new BigNumber(a.borrowAPY)
+                                .minus(new BigNumber(b.borrowAPY))
+                                .toNumber();
+                        }
+                        if (sortInfo.field === 'total') {
+                          return sortInfo.sort === 'desc'
+                            ? new BigNumber(b.totalDistributed)
+                                .minus(new BigNumber(a.totalDistributed))
+                                .toNumber()
+                            : new BigNumber(a.totalDistributed)
+                                .minus(new BigNumber(b.totalDistributed))
+                                .toNumber();
+                        }
+                      }
+                      return +new BigNumber(b.perDay)
+                        .minus(new BigNumber(a.perDay))
+                        .toString(10);
+                    })
+                    .map((item, index) => (
+                      <Row className="table_item pointer" key={index}>
+                        <Col
+                          xs={{ span: 24 }}
+                          lg={{ span: 4 }}
+                          className="flex align-center market"
+                        >
+                          <img
+                            className="asset-img"
+                            src={
+                              constants.CONTRACT_TOKEN_ADDRESS[
+                                item.underlyingSymbol.toLowerCase()
+                              ].asset
+                            }
+                            alt="asset"
+                          />
+                          <p>{item.underlyingName}</p>
+                        </Col>
+                        <Col
+                          xs={{ span: 24 }}
+                          lg={{ span: 5 }}
+                          className="per-day right"
+                        >
+                          <p className="mobile-label">Per day</p>
+                          <p>{item.perDay}</p>
+                        </Col>
+                        <Col
+                          xs={{ span: 24 }}
+                          lg={{ span: 5 }}
+                          className="supply-apy right"
+                        >
+                          <p className="mobile-label">Supply APY</p>
+                          <p>{item.supplyAPY}%</p>
+                        </Col>
+                        <Col
+                          xs={{ span: 24 }}
+                          lg={{ span: 5 }}
+                          className="borrow-apy right"
+                        >
+                          <p className="mobile-label">Borrow APY</p>
+                          <p>{item.borrowAPY}%</p>
+                        </Col>
+                        <Col
+                          xs={{ span: 24 }}
+                          lg={{ span: 5 }}
+                          className="total-distributed right"
+                        >
+                          <p className="mobile-label">Total Distributed</p>
+                          <p>{format(item.totalDistributed.toString())}</p>
+                        </Col>
+                      </Row>
+                    ))}
               </div>
             </TableWrapper>
           </div>
