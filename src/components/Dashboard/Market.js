@@ -74,7 +74,7 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
   const [borrowedAssets, setBorrowedAssets] = useState([]);
   const [nonBorrowedAssets, setNonBorrowedAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState({});
-  const [withSTRK, setWithSTRK] = useState(false);
+  const [withSTRK, setWithSTRK] = useState(true);
 
   const updateMarketTable = async () => {
     const tempArr = [];
