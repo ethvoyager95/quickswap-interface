@@ -318,7 +318,6 @@ function STRK({ settings }) {
       });
       if (result.tokenHolder) {
         const temp = new BigNumber(result.tokenHolder.tokenBalance)
-          .dividedBy(new BigNumber(10).pow(18))
           .dp(4, 1)
           .toString(10);
         setRemainAmount(temp);
