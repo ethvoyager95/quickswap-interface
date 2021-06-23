@@ -299,7 +299,7 @@ function STRK({ settings }) {
 
   const updateRemainAmount = async () => {
     const strkTokenContract = getTokenContract('strk');
-    if (process.env.REACT_APP_ENV === 'dev') {
+    if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
       let temp = await methods.call(strkTokenContract.methods.balanceOf, [
         constants.CONTRACT_COMPTROLLER_ADDRESS
       ]);
@@ -348,7 +348,7 @@ function STRK({ settings }) {
   const updateBalance = useCallback(async () => {
     if (settings.selectedAddress) {
       const strkTokenContract = getTokenContract('strk');
-      if (process.env.REACT_APP_ENV === 'dev') {
+      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
         let temp = await methods.call(strkTokenContract.methods.balanceOf, [
           settings.selectedAddress
         ]);

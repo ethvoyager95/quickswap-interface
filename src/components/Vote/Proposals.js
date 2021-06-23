@@ -186,7 +186,7 @@ function Proposals({
       (delegateAddress === '' ||
         delegateAddress === '0x0000000000000000000000000000000000000000')
     ) {
-      if (process.env.REACT_APP_ENV === 'dev') {
+      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
         const tokenContract = getTokenContract('strk');
         methods
           .call(tokenContract.methods.delegates, [address])

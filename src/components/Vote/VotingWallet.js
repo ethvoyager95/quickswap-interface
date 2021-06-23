@@ -164,7 +164,7 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
 
   useEffect(() => {
     if (settings.selectedAddress && timeStamp % 3 === 0) {
-      if (process.env.REACT_APP_ENV === 'dev') {
+      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
         const tokenContract = getTokenContract('strk');
         methods
           .call(tokenContract.methods.delegates, [settings.selectedAddress])

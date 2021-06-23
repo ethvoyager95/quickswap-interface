@@ -70,7 +70,7 @@ function CoinInfo({ settings }) {
   const updateBalance = useCallback(async () => {
     if (window.ethereum && checkIsValidNetwork() && settings.selectedAddress) {
       const strkTokenContract = getTokenContract('strk');
-      if (process.env.REACT_APP_ENV === 'dev') {
+      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
         let temp = await methods.call(strkTokenContract.methods.balanceOf, [settings.selectedAddress]);
         temp = new BigNumber(temp).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
         setBalance(temp);

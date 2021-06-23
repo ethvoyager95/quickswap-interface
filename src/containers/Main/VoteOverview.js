@@ -114,7 +114,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
         .then(res => {
           setProposalThreshold(+Web3.utils.fromWei(res, 'ether'));
         });
-      if (process.env.REACT_APP_ENV === 'dev') {
+      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
         await methods
           .call(strkTokenContract.methods.getCurrentVotes, [proposalInfo.proposer])
           .then(res => {
