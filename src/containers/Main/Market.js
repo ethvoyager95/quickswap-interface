@@ -291,7 +291,7 @@ function Market({ history, settings }) {
                 <div className="footer">
                   <div className="volume">
                     <div className="value">
-                      {`$${new BigNumber(supplyVolume).dp(2, 1).toString(10)}`}
+                      {`$${format(new BigNumber(supplyVolume).toFormat(2))}`}
                     </div>
                     <div className="label">24H Supply Volume</div>
                   </div>
@@ -348,7 +348,7 @@ function Market({ history, settings }) {
                 <div className="footer">
                   <div className="volume">
                     <div className="value">
-                      {`$${new BigNumber(borrowVolume).dp(2, 1).toString(10)}`}
+                      {`$${format(new BigNumber(borrowVolume).toFormat(2))}`}
                     </div>
                     <div className="label">24H Borrow Volume</div>
                   </div>
@@ -567,9 +567,7 @@ function Market({ history, settings }) {
                           <p className="mobile-label">Price</p>
                           <p className="item-title">
                             $
-                            {new BigNumber(item.tokenPrice)
-                              .dp(2, 1)
-                              .toString(10)}
+                            {format(new BigNumber(item.tokenPrice).toFormat(2))}
                           </p>
                         </Col>
                         <Col
