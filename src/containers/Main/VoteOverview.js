@@ -25,9 +25,6 @@ import ProposalHistory from 'components/Vote/VoteOverview/ProposalHistory';
 import { promisify } from 'utilities';
 import { Row, Column } from 'components/Basic/Style';
 
-import { VOTE_INFO } from 'apollo/queries';
-import { governanceClient } from 'apollo/client';
-
 const VoteOverviewWrapper = styled.div`
   width: 100%;
 
@@ -114,30 +111,13 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
         .then(res => {
           setProposalThreshold(+Web3.utils.fromWei(res, 'ether'));
         });
-      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
-        await methods
-          .call(strkTokenContract.methods.getCurrentVotes, [proposalInfo.proposer])
-          .then(res => {
-            setProposerVotingWeight(+Web3.utils.fromWei(res, 'ether'));
-          });
-      } else {
-        const { data: result } = await governanceClient.query({
-          query: VOTE_INFO,
-          variables: {
-            id: `${proposalInfo.proposer.toLowerCase()}`
-          },
-          fetchPolicy: 'cache-first'
+      await methods
+        .call(strkTokenContract.methods.getCurrentVotes, [
+          proposalInfo.proposer
+        ])
+        .then(res => {
+          setProposerVotingWeight(+Web3.utils.fromWei(res, 'ether'));
         });
-        if (result.delegate) {
-          const weight = +Web3.utils.fromWei(
-            result.delegate.delegatedVotes,
-            'ether'
-          );
-          setProposerVotingWeight(weight);
-        } else {
-          setProposerVotingWeight('0');
-        }
-      }
     }
   }, [settings.selectedAddress, proposalInfo]);
   useEffect(() => {
@@ -159,7 +139,11 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
   const loadVotes = useCallback(
     async limit => {
       if (proposalInfo.id) {
-        await promisify(getVoters, { id: proposalInfo.id, limit, filter: 'for' })
+        await promisify(getVoters, {
+          id: proposalInfo.id,
+          limit,
+          filter: 'for'
+        })
           .then(res => setAgreeVotes(res.data || {}))
           .catch(err => {
             setAgreeVotes({});
@@ -269,7 +253,9 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
         .then(() => {
           setIsCancelLoading(false);
           setCancelStatus('success');
-          message.success(`Current proposal is cancelled successfully. Proposal list will update within a few seconds`);
+          message.success(
+            `Current proposal is cancelled successfully. Proposal list will update within a few seconds`
+          );
         })
         .catch(() => {
           setIsCancelLoading(false);
@@ -309,7 +295,10 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                   addressNumber={
                     isNaN(BigNumber(agreeVotes.total)) ? 0 : agreeVotes.total
                   }
-                  emptyNumber={4 - (isNaN(BigNumber(agreeVotes.total)) ? 0 : agreeVotes.total)}
+                  emptyNumber={
+                    4 -
+                    (isNaN(BigNumber(agreeVotes.total)) ? 0 : agreeVotes.total)
+                  }
                   list={
                     agreeVotes.result &&
                     agreeVotes.result.map(v => ({
@@ -335,9 +324,16 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                   }
                   type="against"
                   addressNumber={
-                    isNaN(BigNumber(againstVotes.total)) ? 0 : againstVotes.total
+                    isNaN(BigNumber(againstVotes.total))
+                      ? 0
+                      : againstVotes.total
                   }
-                  emptyNumber={4 - (isNaN(BigNumber(againstVotes.total)) ? 0 : againstVotes.total)}
+                  emptyNumber={
+                    4 -
+                    (isNaN(BigNumber(againstVotes.total))
+                      ? 0
+                      : againstVotes.total)
+                  }
                   list={
                     againstVotes.result &&
                     againstVotes.result.map(v => ({
@@ -356,10 +352,17 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                   <div className="flex align-center just-center update-proposal-status">
                     <Button
                       className="cancel-btn"
-                      disabled={isCancelLoading || proposerVotingWeight >= proposalThreshold || cancelStatus === 'success'}
+                      disabled={
+                        isCancelLoading ||
+                        proposerVotingWeight >= proposalThreshold ||
+                        cancelStatus === 'success'
+                      }
                       onClick={() => handleUpdateProposal('Cancel')}
                     >
-                      {isCancelLoading && <Icon type="loading" />} {(cancelStatus === 'pending' || cancelStatus === 'failure') ? 'Cancel' : 'Cancelled'}
+                      {isCancelLoading && <Icon type="loading" />}{' '}
+                      {cancelStatus === 'pending' || cancelStatus === 'failure'
+                        ? 'Cancel'
+                        : 'Cancelled'}
                     </Button>
                     {proposalInfo.state === 'Succeeded' && (
                       <Button
@@ -367,21 +370,35 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                         disabled={isLoading || status === 'success'}
                         onClick={() => handleUpdateProposal('Queue')}
                       >
-                        {isLoading && <Icon type="loading" />} {(status === 'pending' || status === 'failure') ? 'Queue' : 'Queued'}
+                        {isLoading && <Icon type="loading" />}{' '}
+                        {status === 'pending' || status === 'failure'
+                          ? 'Queue'
+                          : 'Queued'}
                       </Button>
                     )}
                     {proposalInfo.state === 'Queued' && (
                       <Button
                         className="execute-btn"
-                        disabled={isLoading || status === 'success' || !isPossibleExcuted}
+                        disabled={
+                          isLoading ||
+                          status === 'success' ||
+                          !isPossibleExcuted
+                        }
                         onClick={() => handleUpdateProposal('Execute')}
                       >
-                        {isLoading && <Icon type="loading" />} {(status === 'pending' || status === 'failure') ? 'Execute' : 'Executed'}
+                        {isLoading && <Icon type="loading" />}{' '}
+                        {status === 'pending' || status === 'failure'
+                          ? 'Execute'
+                          : 'Executed'}
                       </Button>
                     )}
                     {proposalInfo.state === 'Queued' && !isPossibleExcuted && (
                       <Tooltip title={`You are able to excute at ${excuteEta}`}>
-                        <Icon className="pointer" type="info-circle" theme="filled" />
+                        <Icon
+                          className="pointer"
+                          type="info-circle"
+                          theme="filled"
+                        />
                       </Tooltip>
                     )}
                   </div>
@@ -391,7 +408,8 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                 proposalInfo.state !== 'Canceled' &&
                 proposerVotingWeight >= proposalThreshold && (
                   <p className="center warning">
-                    You can't cancel the proposal while the proposer voting weight meets proposal threshold
+                    You can't cancel the proposal while the proposer voting
+                    weight meets proposal threshold
                   </p>
                 )}
             </div>

@@ -17,9 +17,6 @@ import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import { Card } from 'components/Basic/Card';
 
-import { STRK_BALANCE } from 'apollo/queries';
-import { governanceClient } from 'apollo/client';
-
 const ProposalsWrapper = styled.div`
   width: 100%;
   height: 555px;
@@ -165,38 +162,19 @@ function Proposals({
     }
   }, [address]);
 
-  const getDelegateAddress = async () => {
-    const { data: result } = await governanceClient.query({
-      query: STRK_BALANCE,
-      variables: {
-        id: `${settings.selectedAddress.toLowerCase()}`
-      },
-      fetchPolicy: 'cache-first'
-    });
-    if (result.tokenHolder && result.tokenHolder.delegate) {
-      setDelegateAddress(result.tokenHolder.delegate.id);
-    } else {
-      setDelegateAddress('');
-    }
-  };
-
   useEffect(() => {
     if (
       settings.selectedAddress &&
       (delegateAddress === '' ||
         delegateAddress === '0x0000000000000000000000000000000000000000')
     ) {
-      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
-        const tokenContract = getTokenContract('strk');
-        methods
-          .call(tokenContract.methods.delegates, [address])
-          .then(res => {
-            setDelegateAddress(res);
-          })
-          .catch(() => {});
-      } else {
-        getDelegateAddress();
-      }
+      const tokenContract = getTokenContract('strk');
+      methods
+        .call(tokenContract.methods.delegates, [address])
+        .then(res => {
+          setDelegateAddress(res);
+        })
+        .catch(() => {});
     }
   }, [settings.selectedAddress, address, delegateAddress]);
 
@@ -216,7 +194,9 @@ function Proposals({
 
   const handleShowProposalModal = () => {
     if (+votingWeight < +proposalThreshold) {
-      message.error(`You can't create proposal. Your voting power should be ${proposalThreshold} STRK at least`);
+      message.error(
+        `You can't create proposal. Your voting power should be ${proposalThreshold} STRK at least`
+      );
       return;
     }
     const voteContract = getVoteContract();
@@ -227,7 +207,9 @@ function Proposals({
         if (pId !== '0') {
           methods.call(voteContract.methods.state, [pId]).then(status => {
             if (status === '0' || status === '1') {
-              message.error(`You can't create proposal. there is proposal in progress!`);
+              message.error(
+                `You can't create proposal. there is proposal in progress!`
+              );
             } else {
               setProposalModal(true);
             }
@@ -255,8 +237,9 @@ function Proposals({
           )}
         </div>
         <div className="body">
-        {isLoadingProposal ? <LoadingSpinner /> : 
-          proposals && proposals.length !== 0 ? (        
+          {isLoadingProposal ? (
+            <LoadingSpinner />
+          ) : proposals && proposals.length !== 0 ? (
             proposals.map(item => {
               return (
                 <Proposal
@@ -267,12 +250,12 @@ function Proposals({
                   key={item.id}
                 />
               );
-            })        
+            })
           ) : (
-          <NoProposalWrapper className="flex just-center align-center">
-            <div className="title">No Proposals</div>
-          </NoProposalWrapper>
-        )}
+            <NoProposalWrapper className="flex just-center align-center">
+              <div className="title">No Proposals</div>
+            </NoProposalWrapper>
+          )}
         </div>
         {proposals && proposals.length !== 0 && (
           <div className="flex align-center just-between footer">

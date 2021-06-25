@@ -23,8 +23,6 @@ import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Row, Column } from 'components/Basic/Style';
 import { checkIsValidNetwork } from 'utilities/common';
 import * as constants from 'utilities/constants';
-import { VOTE_INFO, STRK_BALANCE } from 'apollo/queries';
-import { governanceClient } from 'apollo/client';
 
 const VoteWrapper = styled.div`
   height: 100%;
@@ -85,48 +83,25 @@ function Vote({ settings, history, getProposals, setSetting }) {
   const updateBalance = useCallback(async () => {
     if (settings.selectedAddress && checkIsValidNetwork()) {
       const strkTokenContract = getTokenContract('strk');
-      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
-        await methods
-          .call(strkTokenContract.methods.getCurrentVotes, [settings.selectedAddress])
-          .then(res => {
-            const weight = new BigNumber(res).div(new BigNumber(10).pow(18)).toString(10);
-            setVotingWeight(weight);
-          });
-      } else {
-        const { data: result } = await governanceClient.query({
-          query: VOTE_INFO,
-          variables: {
-            id: `${settings.selectedAddress.toLowerCase()}`
-          },
-          fetchPolicy: 'cache-first'
-        });
-        if (result.delegate) {
-          const weight = new BigNumber(result.delegate.delegatedVotes).div(new BigNumber(10).pow(18)).toString(10);
+      await methods
+        .call(strkTokenContract.methods.getCurrentVotes, [
+          settings.selectedAddress
+        ])
+        .then(res => {
+          const weight = new BigNumber(res)
+            .div(new BigNumber(10).pow(18))
+            .toString(10);
           setVotingWeight(weight);
-        } else {
-          setVotingWeight('0');
-        }
-      }
-
-      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
-        let temp = await methods.call(strkTokenContract.methods.balanceOf, [settings.selectedAddress]);
-        temp = new BigNumber(temp).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
-        setBalance(temp);
-      } else {
-        const { data: result } = await governanceClient.query({
-          query: STRK_BALANCE,
-          variables: {
-            id: `${settings.selectedAddress.toLowerCase()}`
-          },
-          fetchPolicy: 'cache-first'
         });
-        if (result.tokenHolder) {
-          const temp = new BigNumber(result.tokenHolder.tokenBalance).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
-          setBalance(temp);
-        } else {
-          setBalance('0');
-        }
-      }
+
+      let temp = await methods.call(strkTokenContract.methods.balanceOf, [
+        settings.selectedAddress
+      ]);
+      temp = new BigNumber(temp)
+        .dividedBy(new BigNumber(10).pow(18))
+        .dp(4, 1)
+        .toString(10);
+      setBalance(temp);
     }
   }, [settings.markets]);
 
@@ -139,39 +114,62 @@ function Vote({ settings, history, getProposals, setSetting }) {
       methods.call(appContract.methods.strikeAccrued, [myAddress])
     ]);
     let strikeEarned = new BigNumber(strikeAccrued);
-    await Promise.all(Object.values(constants.CONTRACT_SBEP_ADDRESS).map(async (item, index) => {
-      const sBepContract = getSbepContract(item.id);
-      let [supplyState, supplierIndex, supplierTokens, borrowState, borrowerIndex, borrowBalanceStored, borrowIndex] = await Promise.all([
-        methods.call(appContract.methods.strikeSupplyState, [item.address]),
-        methods.call(appContract.methods.strikeSupplierIndex, [item.address, myAddress]),
-        methods.call(sBepContract.methods.balanceOf, [myAddress]),
-        methods.call(appContract.methods.strikeBorrowState, [item.address]),
-        methods.call(appContract.methods.strikeBorrowerIndex, [item.address, myAddress]),
-        methods.call(sBepContract.methods.borrowBalanceStored, [myAddress]),
-        methods.call(sBepContract.methods.borrowIndex, []),
-      ]);
-      const supplyIndex = supplyState.index;
-      if (+supplierIndex === 0 && +supplyIndex > 0) {
-        supplierIndex = strikeInitialIndex;
-      }
-      let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
+    await Promise.all(
+      Object.values(constants.CONTRACT_SBEP_ADDRESS).map(
+        async (item, index) => {
+          const sBepContract = getSbepContract(item.id);
+          let [
+            supplyState,
+            supplierIndex,
+            supplierTokens,
+            borrowState,
+            borrowerIndex,
+            borrowBalanceStored,
+            borrowIndex
+          ] = await Promise.all([
+            methods.call(appContract.methods.strikeSupplyState, [item.address]),
+            methods.call(appContract.methods.strikeSupplierIndex, [
+              item.address,
+              myAddress
+            ]),
+            methods.call(sBepContract.methods.balanceOf, [myAddress]),
+            methods.call(appContract.methods.strikeBorrowState, [item.address]),
+            methods.call(appContract.methods.strikeBorrowerIndex, [
+              item.address,
+              myAddress
+            ]),
+            methods.call(sBepContract.methods.borrowBalanceStored, [myAddress]),
+            methods.call(sBepContract.methods.borrowIndex, [])
+          ]);
+          const supplyIndex = supplyState.index;
+          if (+supplierIndex === 0 && +supplyIndex > 0) {
+            supplierIndex = strikeInitialIndex;
+          }
+          let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
 
-      const supplierDelta = new BigNumber(supplierTokens)
-        .multipliedBy(deltaIndex)
-        .dividedBy(1e36);
+          const supplierDelta = new BigNumber(supplierTokens)
+            .multipliedBy(deltaIndex)
+            .dividedBy(1e36);
 
-      strikeEarned = strikeEarned.plus(supplierDelta);
-      if (+borrowerIndex > 0) {
-        deltaIndex = new BigNumber(borrowState.index).minus(borrowerIndex);
-        const borrowerAmount = new BigNumber(borrowBalanceStored)
-          .multipliedBy(1e18)
-          .dividedBy(borrowIndex);
-        const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
-        strikeEarned = strikeEarned.plus(borrowerDelta);
-      }
-    }));
+          strikeEarned = strikeEarned.plus(supplierDelta);
+          if (+borrowerIndex > 0) {
+            deltaIndex = new BigNumber(borrowState.index).minus(borrowerIndex);
+            const borrowerAmount = new BigNumber(borrowBalanceStored)
+              .multipliedBy(1e18)
+              .dividedBy(borrowIndex);
+            const borrowerDelta = borrowerAmount
+              .times(deltaIndex)
+              .dividedBy(1e36);
+            strikeEarned = strikeEarned.plus(borrowerDelta);
+          }
+        }
+      )
+    );
 
-    strikeEarned = strikeEarned.dividedBy(1e18).dp(8, 1).toString(10);
+    strikeEarned = strikeEarned
+      .dividedBy(1e18)
+      .dp(8, 1)
+      .toString(10);
     setEarnedBalance(
       strikeEarned && strikeEarned !== '0' ? `${strikeEarned}` : '0.00000000'
     );
@@ -218,7 +216,11 @@ function Vote({ settings, history, getProposals, setSetting }) {
               </Column>
               <Column xs="12" sm="12" md="7">
                 <VotingPower
-                  power={votingWeight !== '0' ? `${new BigNumber(votingWeight).dp(8, 1).toString(10)}` : '0.00000000'}
+                  power={
+                    votingWeight !== '0'
+                      ? `${new BigNumber(votingWeight).dp(8, 1).toString(10)}`
+                      : '0.00000000'
+                  }
                 />
               </Column>
             </Row>

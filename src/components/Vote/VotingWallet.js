@@ -16,14 +16,11 @@ import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Card } from 'components/Basic/Card';
 import coinImg from 'assets/img/strike_32.png';
 
-import { STRK_BALANCE } from 'apollo/queries';
-import { governanceClient } from 'apollo/client';
-
 const VotingWalletWrapper = styled.div`
   width: 100%;
   border-radius: 5px;
   background-color: var(--color-bg-primary);
-  padding: ${props => props.pageType !== 'strk' ? '36px 22px 48px 15px' : ''};
+  padding: ${props => (props.pageType !== 'strk' ? '36px 22px 48px 15px' : '')};
 
   .balance-info {
     padding-left: 30px;
@@ -50,7 +47,8 @@ const VotingWalletWrapper = styled.div`
       margin-right: 9px;
     }
 
-    a, p {
+    a,
+    p {
       font-size: 16px;
       font-weight: bold;
       color: var(--color-text-green);
@@ -140,48 +138,22 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingEarn, setIsLoadingEarn] = useState(false);
 
-  const getDelegateAddress = async () => {
-    const { data: result } = await governanceClient.query({
-      query: STRK_BALANCE,
-      variables: {
-        id: `${settings.selectedAddress.toLowerCase()}`
-      },
-      fetchPolicy: 'cache-first'
-    });
-    if (result.tokenHolder && result.tokenHolder.delegate) {
-      setDelegateAddress(result.tokenHolder.delegate.id);
-      if (result.tokenHolder.delegate.id !== '0x0000000000000000000000000000000000000000') {
-        setDelegateStatus(
-          result.tokenHolder.delegate.id === settings.selectedAddress ? 'self' : 'delegate'
-        );
-      } else {
-        setDelegateStatus('');
-      }
-    } else {
-      setDelegateAddress('');
-    }
-  };
-
   useEffect(() => {
     if (settings.selectedAddress && timeStamp % 3 === 0) {
-      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
-        const tokenContract = getTokenContract('strk');
-        methods
-          .call(tokenContract.methods.delegates, [settings.selectedAddress])
-          .then(res => {
-            setDelegateAddress(res);
-            if (res !== '0x0000000000000000000000000000000000000000') {
-              setDelegateStatus(
-                res === settings.selectedAddress ? 'self' : 'delegate'
-              );
-            } else {
-              setDelegateStatus('');
-            }
-          })
-          .catch(() => {});
-      } else {
-        getDelegateAddress();
-      }
+      const tokenContract = getTokenContract('strk');
+      methods
+        .call(tokenContract.methods.delegates, [settings.selectedAddress])
+        .then(res => {
+          setDelegateAddress(res);
+          if (res !== '0x0000000000000000000000000000000000000000') {
+            setDelegateStatus(
+              res === settings.selectedAddress ? 'self' : 'delegate'
+            );
+          } else {
+            setDelegateStatus('');
+          }
+        })
+        .catch(() => {});
     }
     timeStamp = Date.now();
   }, [settings.markets]);
@@ -280,7 +252,10 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
                 >
                   {delegateStatus === 'self'
                     ? 'Self'
-                    : `${delegateAddress.substr(0, 4)}...${delegateAddress.substr(
+                    : `${delegateAddress.substr(
+                        0,
+                        4
+                      )}...${delegateAddress.substr(
                         delegateAddress.length - 4,
                         4
                       )}`}
@@ -301,16 +276,19 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
           <div className="flex flex-column setup">
             <p className="setup-header">Setup Voting</p>
             <p className="setup-content">
-              You can either vote on each proposal yourself or delegate your votes
-              to a third party. Strike Governance puts you in charge of the future of
-              Strike.
+              You can either vote on each proposal yourself or delegate your
+              votes to a third party. Strike Governance puts you in charge of
+              the future of Strike.
               {/* <a href="/#">Learn more.</a> */}
             </p>
           </div>
         )}
         {pageType !== 'strk' && settings.selectedAddress && !delegateStatus && (
           <div className="center footer">
-            <Button className="started-btn" onClick={() => setIsOpenModal(true)}>
+            <Button
+              className="started-btn"
+              onClick={() => setIsOpenModal(true)}
+            >
               Get Started
             </Button>
           </div>
@@ -331,7 +309,7 @@ VotingWallet.propTypes = {
   balance: PropTypes.string.isRequired,
   pageType: PropTypes.string.isRequired,
   earnedBalance: PropTypes.string.isRequired,
-  settings: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired
 };
 
 const mapStateToProps = ({ account }) => ({

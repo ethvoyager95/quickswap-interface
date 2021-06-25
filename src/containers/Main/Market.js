@@ -205,7 +205,6 @@ function Market({ history, settings }) {
   const [sortInfo, setSortInfo] = useState({ field: '', sort: 'desc' });
 
   useEffect(() => {
-    console.log('settings.markets :>> ', settings.markets);
     if (settings.markets && settings.marketVolumeLog && settings.dailyStrike) {
       const tempTS = (settings.markets || []).reduce((accumulator, market) => {
         return new BigNumber(accumulator).plus(

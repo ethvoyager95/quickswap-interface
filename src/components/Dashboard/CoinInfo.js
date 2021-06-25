@@ -11,9 +11,6 @@ import * as constants from 'utilities/constants';
 import { checkIsValidNetwork } from 'utilities/common';
 import coinImg from 'assets/img/strike_32.png';
 
-import { STRK_BALANCE } from 'apollo/queries';
-import { governanceClient } from 'apollo/client';
-
 const CardWrapper = styled.div`
   width: 100%;
   padding: 24px 45px;
@@ -70,25 +67,14 @@ function CoinInfo({ settings }) {
   const updateBalance = useCallback(async () => {
     if (window.ethereum && checkIsValidNetwork() && settings.selectedAddress) {
       const strkTokenContract = getTokenContract('strk');
-      if (process.env.REACT_APP_ENV === 'dev' || 1 === 1) {
-        let temp = await methods.call(strkTokenContract.methods.balanceOf, [settings.selectedAddress]);
-        temp = new BigNumber(temp).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
-        setBalance(temp);
-      } else {
-        const { data: result } = await governanceClient.query({
-          query: STRK_BALANCE,
-          variables: {
-            id: `${settings.selectedAddress.toLowerCase()}`
-          },
-          fetchPolicy: 'cache-first'
-        });
-        if (result.tokenHolder) {
-          const temp = new BigNumber(result.tokenHolder.tokenBalance).dividedBy(new BigNumber(10).pow(18)).dp(4, 1).toString(10);
-          setBalance(temp);
-        } else {
-          setBalance('0');
-        }
-      }
+      let temp = await methods.call(strkTokenContract.methods.balanceOf, [
+        settings.selectedAddress
+      ]);
+      temp = new BigNumber(temp)
+        .dividedBy(new BigNumber(10).pow(18))
+        .dp(4, 1)
+        .toString(10);
+      setBalance(temp);
       setAddress(settings.selectedAddress);
     }
   }, [window.ethereum, settings.markets]);
