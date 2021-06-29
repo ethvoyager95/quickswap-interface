@@ -186,8 +186,15 @@ function Rewards({ settings }) {
       const sum = (settings.markets || []).reduce((accumulator, market) => {
         return new BigNumber(accumulator).plus(new BigNumber(market.totalDistributed));
       }, 0);
-      setDailyDistribution(new BigNumber(settings.dailyStrike).div(new BigNumber(10).pow(18)).toString(10));
       setTotalDistributed(sum.toString(10));
+      const daily = (settings.markets || []).reduce((acc, market) => {
+        return new BigNumber(acc).plus(
+          new BigNumber(market.supplierDailyStrike)
+            .plus(new BigNumber(market.borrowerDailyStrike))
+            .div(1e18)
+        );
+      }, 0);
+      setDailyDistribution(daily.toFormat(2));
       setRemainAmount(new BigNumber(mintedAmount).minus(sum).toString(10));
     }
   }, [settings.markets]);
