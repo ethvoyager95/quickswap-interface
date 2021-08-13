@@ -15,6 +15,7 @@ import MarketDetail from 'containers/Main/MarketDetail';
 import VoteOverview from 'containers/Main/VoteOverview';
 import ProposerDetail from 'containers/Main/ProposerDetail';
 import VoterLeaderboard from 'containers/Main/VoterLeaderboard';
+import Forbidden from 'containers/Main/Forbidden';
 import Theme from './Theme';
 import { ApolloProvider } from 'react-apollo'
 import { client } from '../apollo/client'
@@ -56,6 +57,7 @@ class App extends React.Component {
                   <Route exact path="/strk" component={STRK} />
                   <Route exact path="/market" component={Market} />
                   <Route exact path="/market/:asset" component={MarketDetail} />
+                  <Route exact path="/forbidden" component={Forbidden} />                  
                   <Route
                     exact
                     path="/vote/leaderboard"
