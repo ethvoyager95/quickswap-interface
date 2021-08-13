@@ -15,6 +15,8 @@ import DelegationTypeModal from 'components/Basic/DelegationTypeModal';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Card } from 'components/Basic/Card';
 import coinImg from 'assets/img/strike_32.png';
+import { addToken } from 'utilities/common';
+import metaMaskImg from 'assets/img/metamask.png';
 
 const VotingWalletWrapper = styled.div`
   width: 100%;
@@ -40,7 +42,7 @@ const VotingWalletWrapper = styled.div`
     padding: 20px 0px;
     border-bottom: 1px solid var(--color-bg-active);
 
-    img {
+    .coin-img {
       width: 25px;
       height: 25px;
       border-radius: 50%;
@@ -58,6 +60,14 @@ const VotingWalletWrapper = styled.div`
       padding-left: 35px;
       font-size: 16px;
       color: var(--color-text-secondary);
+
+      &.balance {
+        img {
+          margin-left: 10px;
+          width: 25px;
+          height: 25px;
+        }
+      }
     }
 
     .content-value {
@@ -204,10 +214,19 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
           </div>
         )}
         <div className="flex flex-column content">
-          <p className="content-label">STRK Balance</p>
+          <p className="content-label balance">
+            <span>STRK Balance</span>
+            <img
+              className="add-token pointer"
+              src={metaMaskImg}
+              onClick={() =>
+                addToken('strk', settings.decimals['strk'].token, 'token')
+              }
+            />
+          </p>
           <div className="flex align-center just-between">
             <div className="flex align-center balance-info">
-              <img src={coinImg} alt="coin" />
+              <img className="coin-img" src={coinImg} alt="coin" />
               <p className="content-value">
                 {getBefore(format(balance))}
                 <span>{getAfter(format(balance))}</span>
@@ -222,7 +241,7 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
               <div className="flex flex-column">
                 <p className="content-label">STRK Earned</p>
                 <div className="flex align-center balance-info">
-                  <img src={coinImg} alt="coin" />
+                  <img className="coin-img" src={coinImg} alt="coin" />
                   <p className="content-value">
                     {getBefore(format(earnedBalance))}
                     <span>{getAfter(format(earnedBalance))}</span>
