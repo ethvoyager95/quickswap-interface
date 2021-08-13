@@ -239,7 +239,7 @@ function Footer({ settings }) {
           </a>
         </div>
         <p className="copyright">
-          © {new Date().getUTCFullYear()} Strike.org All Rights Reserved
+          © {new Date().getUTCFullYear()} Strike.org All Rights Reserved. The Strike Decentralized App does not support US based users.
         </p>
       </div>
     </FooterWrapper>
