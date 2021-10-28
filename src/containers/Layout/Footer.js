@@ -194,6 +194,9 @@ function Footer({ settings }) {
             <a href="https://strike.org/terms" target="_blank" rel="noreferrer">
               Terms
             </a>
+            <a href="https://www.immunefi.com/bounty/strikefinance">
+              Bug Bounty
+            </a>
           </div>
           <div className="link-list">
             <p>Governance</p>
