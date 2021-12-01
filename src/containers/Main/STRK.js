@@ -286,8 +286,8 @@ function STRK({ settings }) {
     );
 
     strikeEarned = strikeEarned
-      .dividedBy(1e18)
-      .dp(8, 1)
+      .dividedBy(new BigNumber(10).pow(18))
+      .dp(10, 1)
       .toString(10);
     setEarnedBalance(
       strikeEarned && strikeEarned !== '0' ? `${strikeEarned}` : '0.00000000'
