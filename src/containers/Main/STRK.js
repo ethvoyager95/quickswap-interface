@@ -287,7 +287,7 @@ function STRK({ settings }) {
 
     strikeEarned = strikeEarned
       .dividedBy(1e18)
-      .dp(8, 1)
+      .dp(10, 1)
       .toString(10);
     setEarnedBalance(
       strikeEarned && strikeEarned !== '0' ? `${strikeEarned}` : '0.00000000'
