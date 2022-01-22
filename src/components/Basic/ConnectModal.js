@@ -4,9 +4,13 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import * as constants from 'utilities/constants';
 import metamaskImg from 'assets/img/metamask.png';
+import coinbaseImg from 'assets/img/coinbase.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
+import WalletLink from 'walletlink';
+import { Web3Provider } from '@ethersproject/providers';
+
 
 const ModalContent = styled.div`
   border-radius: 5px;
@@ -35,7 +39,6 @@ const ModalContent = styled.div`
     .metamask-connect-btn {
       width: 100%;
       cursor: pointer;
-      padding: 27px 0px;
 
       & > div {
         img {
@@ -80,6 +83,9 @@ function ConnectModal({
   onCancel,
   onConnectMetaMask
 }) {
+  const [ web3Library, setWeb3Library ] = React.useState();
+	const [ web3Account, setWeb3Account ] = React.useState();
+
   const MetaMaskStatus = () => {
     if (error && error.message === constants.NOT_INSTALLED) {
       return (
@@ -107,6 +113,35 @@ function ConnectModal({
     }
     return null;
   };
+
+  const connectCoinbase = async () => {
+		try {
+			// Initialize WalletLink
+			const walletLink = new WalletLink({
+				appName: 'STRIKE-APP',
+				darkMode: true
+			});
+			
+			const provider = walletLink.makeWeb3Provider(
+				'https://rinkeby.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4',
+				4
+			);
+			// setWalletlinkProvider(provider);
+			const accounts = await provider.request({
+				method: 'eth_requestAccounts'
+			});
+			const account = accounts[0];
+
+			const library = new Web3Provider(provider, 'any');
+
+			console.log('library');
+			console.log(library);
+			setWeb3Library(library);
+			setWeb3Account(account);
+		} catch (ex) {
+			console.log(ex);
+		}
+	};
 
   return (
     <Modal
@@ -146,6 +181,23 @@ function ConnectModal({
               <MetaMaskStatus />
             </div>
           )}
+        </div>
+        <div className="connect-wallet-content">
+          <div
+            className="flex align-center just-between metamask-connect-btn"
+            onClick={connectCoinbase}
+          >
+            <div className="flex align-center">
+              <img src={coinbaseImg} alt="metamask" />
+              <span>Coinbase</span>
+            </div>
+            <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+          </div>
+          {/* {(error || !web3) && (
+            <div className="metamask-status">
+              <MetaMaskStatus />
+            </div>
+          )} */}
         </div>
       </ModalContent>
     </Modal>
