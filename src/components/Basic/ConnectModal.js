@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
@@ -10,7 +10,10 @@ import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
 import WalletLink from 'walletlink';
 import { Web3Provider } from '@ethersproject/providers';
-
+import { connectAccount, accountActionCreators } from 'core';
+import { bindActionCreators } from 'redux';
+import { compose } from 'recompose';
+import { checkIsValidNetwork } from 'utilities/common';
 
 const ModalContent = styled.div`
   border-radius: 5px;
@@ -81,10 +84,13 @@ function ConnectModal({
   error,
   awaiting,
   onCancel,
-  onConnectMetaMask
+  onConnectMetaMask,
+  checkNetwork,
+  settings,
+  setSetting
 }) {
-  const [ web3Library, setWeb3Library ] = React.useState();
-	const [ web3Account, setWeb3Account ] = React.useState();
+  const [web3Library, setWeb3Library] = React.useState();
+  const [web3Account, setWeb3Account] = React.useState();
 
   const MetaMaskStatus = () => {
     if (error && error.message === constants.NOT_INSTALLED) {
@@ -115,33 +121,55 @@ function ConnectModal({
   };
 
   const connectCoinbase = async () => {
-		try {
-			// Initialize WalletLink
-			const walletLink = new WalletLink({
-				appName: 'STRIKE-APP',
-				darkMode: true
-			});
-			
-			const provider = walletLink.makeWeb3Provider(
-				'https://rinkeby.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4',
-				4
-			);
-			// setWalletlinkProvider(provider);
-			const accounts = await provider.request({
-				method: 'eth_requestAccounts'
-			});
-			const account = accounts[0];
+    try {
+      // Initialize WalletLink
+      const walletLink = new WalletLink({
+        appName: 'STRIKE-APP',
+        darkMode: true
+      });
 
-			const library = new Web3Provider(provider, 'any');
+      const provider = walletLink.makeWeb3Provider(
+        'https://rinkeby.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4',
+        4
+      );
+      // setWalletlinkProvider(provider);
+      const accounts = await provider.request({
+        method: 'eth_requestAccounts'
+      });
+      const account = accounts[0];
 
-			console.log('library');
-			console.log(library);
-			setWeb3Library(library);
-			setWeb3Account(account);
-		} catch (ex) {
-			console.log(ex);
-		}
-	};
+      console.log(account);
+      const library = new Web3Provider(provider, 'any');
+      setWeb3Library(library);
+      setSetting({
+        selectedAddress: accounts
+      });
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
+  useEffect(() => {
+    if (window.ethereum) {
+      window.addEventListener('load', event => {
+        checkNetwork();
+      });
+    }
+  }, [window.ethereum]);
+
+  useEffect(() => {
+    if (!settings.selectedAddress) {
+      return;
+    }
+    if (window.ethereum && checkIsValidNetwork()) {
+      window.ethereum.on('accountsChanged', accs => {
+        setSetting({
+          selectedAddress: accs[0],
+          accountLoading: true
+        });
+      });
+    }
+  }, [window.ethereum, settings.selectedAddress]);
 
   return (
     <Modal
@@ -221,4 +249,22 @@ ConnectModal.defaultProps = {
   onCancel: () => {}
 };
 
-export default ConnectModal;
+const mapStateToProps = ({ account }) => ({
+  settings: account.setting
+});
+
+const mapDispatchToProps = dispatch => {
+  const { setSetting, getGovernanceStrike } = accountActionCreators;
+
+  return bindActionCreators(
+    {
+      setSetting,
+      getGovernanceStrike
+    },
+    dispatch
+  );
+};
+
+export default compose(connectAccount(mapStateToProps, mapDispatchToProps))(
+  ConnectModal
+);
