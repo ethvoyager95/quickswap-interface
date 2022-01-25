@@ -675,6 +675,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         awaiting={awaiting}
         onCancel={() => setIsOpenModal(false)}
         onConnectMetaMask={handleMetaMask}
+        checkNetwork={checkNetwork}
       />
     </SidebarWrapper>
   );

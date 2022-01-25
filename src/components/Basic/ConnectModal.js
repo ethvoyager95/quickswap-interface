@@ -7,17 +7,23 @@ import metamaskImg from 'assets/img/metamask.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
+import WalletLink from 'walletlink';
+import { Web3Provider } from '@ethersproject/providers';
+import { connectAccount, accountActionCreators } from 'core';
+import { bindActionCreators } from 'redux';
+import { compose } from 'recompose';
+import { checkIsValidNetwork } from 'utilities/common';
+import coinbaseImg from 'assets/img/coinbase.png';
+import { useEffect } from 'react';
 
 const ModalContent = styled.div`
   border-radius: 5px;
   background-color: var(--color-bg-primary);
-
   .close-btn {
     position: absolute;
     top: 23px;
     right: 23px;
   }
-
   .header-content {
     margin-top: 79px;
     .logo-image {
@@ -31,12 +37,9 @@ const ModalContent = styled.div`
   .connect-wallet-content {
     width: 100%;
     padding: 38px 78px 32px 66px;
-
     .metamask-connect-btn {
       width: 100%;
       cursor: pointer;
-      padding: 27px 0px;
-
       & > div {
         img {
           width: 45px;
@@ -48,7 +51,6 @@ const ModalContent = styled.div`
           font-size: 17px;
         }
       }
-
       span {
         color: var(--color-text-secondary);
         font-weight: normal;
@@ -58,7 +60,6 @@ const ModalContent = styled.div`
         width: 32px;
       }
     }
-
     .metamask-status {
       margin-top: 20px;
       background-color: rgba(255, 0, 0, 0.03);
@@ -78,14 +79,17 @@ function ConnectModal({
   error,
   awaiting,
   onCancel,
-  onConnectMetaMask
+  onConnectMetaMask,
+  checkNetwork,
+  settings,
+  setSetting
 }) {
   const MetaMaskStatus = () => {
     if (error && error.message === constants.NOT_INSTALLED) {
       return (
         <p className="center">
           We could not locate a supported web3 browser extension. We recommend
-          using MetaMask.
+          using MetaMask or Coinbase.
           <a
             href="https://metamask.io/"
             target="_blank"
@@ -93,6 +97,14 @@ function ConnectModal({
           >
             Download MetaMask here.
           </a>
+          <a
+            href="https://www.coinbase.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download Coinbase here.
+          </a>
+          
         </p>
       );
     }
@@ -107,6 +119,64 @@ function ConnectModal({
     }
     return null;
   };
+
+  const connectCoinbase = async () => {
+    try {
+      // Initialize WalletLink
+      const walletLink = new WalletLink({
+        appName: 'STRIKE-APP',
+        darkMode: true
+      });
+
+      const provider = walletLink.makeWeb3Provider(
+        'https://rinkeby.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4',
+        4
+      );
+      // setWalletlinkProvider(provider);
+      const accounts = await provider.request({
+        method: 'eth_requestAccounts'
+      });
+      const account = accounts[0];
+      if (!account) {
+        setSetting({
+          selectedAddress: null
+        });
+      } else {
+        console.log(account);
+        const library = new Web3Provider(provider, 'any');
+        console.log(settings);
+        console.log(library);
+        setSetting({
+          selectedAddress: account.toString()
+        });
+        onCancel();
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
+  useEffect(() => {
+    if (window.ethereum) {
+      window.addEventListener('load', event => {
+        checkNetwork();
+      });
+    }
+  }, [window.ethereum]);
+
+  useEffect(() => {
+    if (!settings.selectedAddress) {
+      return;
+    }
+    if (window.ethereum && checkIsValidNetwork()) {
+      window.ethereum.on('accountsChanged', accs => {
+        setSetting({
+          selectedAddress: accs[0],
+          accountLoading: true
+        });
+      });
+    }
+  }, [window.ethereum, settings.selectedAddress]);
 
   return (
     <Modal
@@ -147,6 +217,23 @@ function ConnectModal({
             </div>
           )}
         </div>
+        <div className="connect-wallet-content">
+          <div
+            className="flex align-center just-between metamask-connect-btn"
+            onClick={connectCoinbase}
+          >
+            <div className="flex align-center">
+              <img src={coinbaseImg} alt="metamask" />
+              <span>Coinbase</span>
+            </div>
+            <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+          </div>
+          {/* {(error || !web3) && (
+          <div className="metamask-status">
+            <MetaMaskStatus />
+          </div>
+        )} */}
+        </div>
       </ModalContent>
     </Modal>
   );
@@ -169,4 +256,22 @@ ConnectModal.defaultProps = {
   onCancel: () => {}
 };
 
-export default ConnectModal;
+const mapStateToProps = ({ account }) => ({
+  settings: account.setting
+});
+
+const mapDispatchToProps = dispatch => {
+  const { setSetting, getGovernanceStrike } = accountActionCreators;
+
+  return bindActionCreators(
+    {
+      setSetting,
+      getGovernanceStrike
+    },
+    dispatch
+  );
+};
+
+export default compose(connectAccount(mapStateToProps, mapDispatchToProps))(
+  ConnectModal
+);
