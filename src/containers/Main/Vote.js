@@ -212,6 +212,8 @@ function Vote({ settings, history, getProposals, setSetting }) {
                   address={
                     settings.selectedAddress ? settings.selectedAddress : ''
                   }
+                  ensName={settings.selectedENSName ? settings.selectedENSName: ''}
+                  ensAvatar={settings.selectedENSAvatar ? settings.selectedENSAvatar : ''}
                 />
               </Column>
               <Column xs="12" sm="12" md="7">

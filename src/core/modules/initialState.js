@@ -5,6 +5,8 @@ const auth = {
 const account = {
   setting: {
     selectedAddress: null,
+    selectedENSName: null,
+    selectedENSAvatar: null,
     marketType: 'supply',
     borrowMarket: [],
     supplyMarket: [],

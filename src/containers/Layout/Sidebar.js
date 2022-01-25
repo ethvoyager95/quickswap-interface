@@ -6,6 +6,7 @@ import { NavLink, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { message } from 'antd';
 import BigNumber from 'bignumber.js';
+import { ethers } from 'ethers';
 import {
   getTokenContract,
   getSbepContract,
@@ -239,6 +240,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
     let tempWeb3 = null;
     let tempAccounts = [];
+    let tempENSName = null;
+    let tempENSAvatar = null;
     let tempError = error;
     let latestBlockNumber = 0;
     try {
@@ -251,6 +254,10 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       }
       tempWeb3 = await metamask.getWeb3();
       tempAccounts = await metamask.getAccounts();
+      // Lookup ENS name and avatar when possible
+      const ethersProvider = new ethers.providers.Web3Provider(tempWeb3.currentProvider);
+      tempENSName = await ethersProvider.lookupAddress(tempAccounts[0]);
+      tempENSAvatar = tempENSName ? await ethersProvider.getAvatar(tempENSName) : null;
       latestBlockNumber = await metamask.getLatestBlockNumber();
       if (latestBlockNumber) {
         await setSetting({ latestBlockNumber });
@@ -261,7 +268,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       accounts = [];
       await setSetting({ selectedAddress: null });
     }
-    await setSetting({ selectedAddress: tempAccounts[0] });
+    await setSetting({
+      selectedAddress: tempAccounts[0],
+      selectedENSName: tempENSName,
+      selectedENSAvatar: tempENSAvatar
+    });
     accounts = tempAccounts;
     setWeb3(tempWeb3);
     setError(tempError);
