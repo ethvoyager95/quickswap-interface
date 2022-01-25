@@ -46,7 +46,7 @@ const CardWrapper = styled.div`
 
 const format = commaNumber.bindWith(',', '.');
 
-function CoinInfo({ address, balance }) {
+function CoinInfo({ address, balance, ensName, ensAvatar }) {
   const handleLink = () => {
     window.open(
       `${process.env.REACT_APP_ETH_EXPLORER}/address/${address}`,
@@ -65,8 +65,9 @@ function CoinInfo({ address, balance }) {
           className="flex align-center just-center pointer"
           onClick={() => handleLink()}
         >
+          {ensAvatar && <img src={ensAvatar} alt="avatar" />}
           <p className="highlight">
-            {`${address.substr(0, 4)}...${address.substr(address.length - 4, 4)}`}
+            {ensName || `${address.substr(0, 4)}...${address.substr(address.length - 4, 4)}`}
           </p>
           <div className="flex align-center just-center copy-btn">
             <Icon type="arrow-right" />

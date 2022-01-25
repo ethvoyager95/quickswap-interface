@@ -63,6 +63,8 @@ const abortController = new AbortController();
 function CoinInfo({ settings }) {
   const [address, setAddress] = useState('');
   const [balance, setBalance] = useState('');
+  const [ensName, setENSName] = useState('');
+  const [ensAvatar, setENSAvatar] = useState('');
 
   const updateBalance = useCallback(async () => {
     if (window.ethereum && checkIsValidNetwork() && settings.selectedAddress) {
@@ -76,6 +78,8 @@ function CoinInfo({ settings }) {
         .toString(10);
       setBalance(temp);
       setAddress(settings.selectedAddress);
+      setENSName(settings.selectedENSName);
+      setENSAvatar(settings.selectedENSAvatar);
     }
   }, [window.ethereum, settings.markets]);
 
@@ -111,8 +115,9 @@ function CoinInfo({ settings }) {
         className="flex align-center just-center pointer"
         onClick={() => handleLink()}
       >
+        {ensAvatar && <img src={ensAvatar} alt="avatar" />}
         <p className="highlight">
-          {`${address.substr(0, 4)}...${address.substr(address.length - 4, 4)}`}
+          {ensName || `${address.substr(0, 4)}...${address.substr(address.length - 4, 4)}`}
         </p>
         <div className="flex align-center just-center copy-btn">
           <Icon type="arrow-right" />

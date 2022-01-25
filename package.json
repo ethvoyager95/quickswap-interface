@@ -17,7 +17,7 @@
     "axios": "^0.18.0",
     "bignumber.js": "^9.0.0",
     "comma-number": "^2.0.1",
-    "ethers": "^5.0.17",
+    "ethers": "^5.5.0",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",
     "i": "^0.3.6",
