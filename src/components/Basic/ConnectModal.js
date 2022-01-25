@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
@@ -14,7 +14,6 @@ import { bindActionCreators } from 'redux';
 import { compose } from 'recompose';
 import { checkIsValidNetwork } from 'utilities/common';
 import coinbaseImg from 'assets/img/coinbase.png';
-import { useEffect } from 'react';
 
 const ModalContent = styled.div`
   border-radius: 5px;
@@ -84,6 +83,9 @@ function ConnectModal({
   settings,
   setSetting
 }) {
+  const [web3Library, setWeb3Library] = React.useState();
+  const [web3Account, setWeb3Account] = React.useState();
+
   const MetaMaskStatus = () => {
     if (error && error.message === constants.NOT_INSTALLED) {
       return (
