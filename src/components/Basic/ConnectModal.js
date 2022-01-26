@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import * as constants from 'utilities/constants';
 import metamaskImg from 'assets/img/metamask.png';
-import coinbaseImg from 'assets/img/coinbase.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
@@ -14,17 +13,16 @@ import { connectAccount, accountActionCreators } from 'core';
 import { bindActionCreators } from 'redux';
 import { compose } from 'recompose';
 import { checkIsValidNetwork } from 'utilities/common';
+import coinbaseImg from 'assets/img/coinbase.png';
 
 const ModalContent = styled.div`
   border-radius: 5px;
   background-color: var(--color-bg-primary);
-
   .close-btn {
     position: absolute;
     top: 23px;
     right: 23px;
   }
-
   .header-content {
     margin-top: 79px;
     .logo-image {
@@ -38,11 +36,9 @@ const ModalContent = styled.div`
   .connect-wallet-content {
     width: 100%;
     padding: 38px 78px 32px 66px;
-
     .metamask-connect-btn {
       width: 100%;
       cursor: pointer;
-
       & > div {
         img {
           width: 45px;
@@ -54,7 +50,6 @@ const ModalContent = styled.div`
           font-size: 17px;
         }
       }
-
       span {
         color: var(--color-text-secondary);
         font-weight: normal;
@@ -64,7 +59,6 @@ const ModalContent = styled.div`
         width: 32px;
       }
     }
-
     .metamask-status {
       margin-top: 20px;
       background-color: rgba(255, 0, 0, 0.03);
@@ -97,7 +91,7 @@ function ConnectModal({
       return (
         <p className="center">
           We could not locate a supported web3 browser extension. We recommend
-          using MetaMask.
+          using MetaMask or Coinbase.
           <a
             href="https://metamask.io/"
             target="_blank"
@@ -105,6 +99,14 @@ function ConnectModal({
           >
             Download MetaMask here.
           </a>
+          <a
+            href="https://www.coinbase.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download Coinbase here.
+          </a>
+          
         </p>
       );
     }
@@ -137,13 +139,20 @@ function ConnectModal({
         method: 'eth_requestAccounts'
       });
       const account = accounts[0];
-
-      console.log(account);
-      const library = new Web3Provider(provider, 'any');
-      setWeb3Library(library);
-      setSetting({
-        selectedAddress: accounts
-      });
+      if (!account) {
+        setSetting({
+          selectedAddress: null
+        });
+      } else {
+        console.log(account);
+        const library = new Web3Provider(provider, 'any');
+        console.log(settings);
+        console.log(library);
+        setSetting({
+          selectedAddress: account.toString()
+        });
+        onCancel();
+      }
     } catch (ex) {
       console.log(ex);
     }
@@ -222,10 +231,10 @@ function ConnectModal({
             <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
           </div>
           {/* {(error || !web3) && (
-            <div className="metamask-status">
-              <MetaMaskStatus />
-            </div>
-          )} */}
+          <div className="metamask-status">
+            <MetaMaskStatus />
+          </div>
+        )} */}
         </div>
       </ModalContent>
     </Modal>

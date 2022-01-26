@@ -31,7 +31,7 @@ export const checkIsValidNetwork = () => {
   if (window.ethereum) {
     const netId = window.ethereum.networkVersion ? +window.ethereum.networkVersion : +window.ethereum.chainId
     if (netId) {
-      if (netId === 1 || netId === 3 || netId === 4) {
+      if (netId === 1 || netId === 3) {
         if (netId === 3 && process.env.REACT_APP_ENV === 'prod') {
           return false;
         }
