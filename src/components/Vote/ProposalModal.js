@@ -215,6 +215,8 @@ function ProposalModal({
             for (let j = 0; j < formData[i].callData.length; j += 1) {
               if (callDataTypes[j].toLowerCase() === 'bool') {
                 callDataValues.push(formValues[`calldata_${i}_${j}`].toLowerCase() === 'true' ? true : false);
+              } else if (callDataTypes[j].includes('[]')) {
+                callDataValues.push(formValues[`calldata_${i}_${j}`].slice(1, -1).split(','));
               } else {
                 callDataValues.push(formValues[`calldata_${i}_${j}`]);
               }
