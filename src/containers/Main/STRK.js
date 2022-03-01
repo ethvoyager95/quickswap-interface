@@ -131,6 +131,16 @@ const TableWrapper = styled.div`
           display: block;
         }
       }
+      p {
+        img {
+          width: 16px;
+          height: 16px;
+          margin: 0 3px;
+        }
+      }
+      .apy-value {
+        color: #3d9e0c;
+      }
       .market {
         .highlight {
           word-break: break-all;
@@ -611,7 +621,14 @@ function STRK({ settings }) {
                           className="supply-apy right"
                         >
                           <p className="mobile-label">Supply APY</p>
-                          <p>{item.supplyAPY}%</p>
+                          <p className="apy-value">{item.supplyAPY}%</p>
+                          <p>
+                            {new BigNumber(item.supplierDailyStrike)
+                              .div(new BigNumber(10).pow(18))
+                              .dp(2, 1)
+                              .toNumber()}
+                            <img src={coinImg} alt="strk" />
+                          </p>
                         </Col>
                         <Col
                           xs={{ span: 24 }}
@@ -619,7 +636,14 @@ function STRK({ settings }) {
                           className="borrow-apy right"
                         >
                           <p className="mobile-label">Borrow APY</p>
-                          <p>{item.borrowAPY}%</p>
+                          <p className="apy-value">{item.borrowAPY}%</p>
+                          <p>
+                            {new BigNumber(item.borrowerDailyStrike)
+                              .div(new BigNumber(10).pow(18))
+                              .dp(2, 1)
+                              .toNumber()}
+                            <img src={coinImg} alt="strk" />
+                          </p>
                         </Col>
                         <Col
                           xs={{ span: 24 }}
