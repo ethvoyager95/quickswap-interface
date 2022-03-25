@@ -226,7 +226,7 @@ function ConnectModal({
           >
             <div className="flex align-center">
               <img src={coinbaseImg} alt="metamask" />
-              <span>Coinbase</span>
+              <span>Coinbase Wallet</span>
             </div>
             <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
           </div>
