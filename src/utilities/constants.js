@@ -8,6 +8,8 @@ import eth from 'assets/img/coins/eth.png';
 import link from 'assets/img/coins/link.png';
 import comp from 'assets/img/coins/comp.png';
 import uni from 'assets/img/coins/uni.png';
+import ape from 'assets/img/coins/ape.png';
+import ust from 'assets/img/coins/ust.png';
 
 import susdc from 'assets/img/coins/susdc.png';
 import susdt from 'assets/img/coins/susdt.png';
@@ -19,6 +21,8 @@ import seth from 'assets/img/coins/seth.png';
 import slink from 'assets/img/coins/slink.png';
 import scomp from 'assets/img/coins/scomp.png';
 import suni from 'assets/img/coins/suni.png';
+import sape from 'assets/img/coins/sape.png';
+import sust from 'assets/img/coins/sust.png';
 
 export const NOT_INSTALLED = 'MetaMask not installed';
 export const MISSING_PROVIDER = 'Missing provider';
@@ -91,6 +95,20 @@ export const CONTRACT_TOKEN_ADDRESS =
           address: process.env.REACT_APP_TEST_UNI_TOKEN_ADDRESS,
           asset: uni,
           sasset: suni
+        },
+        ape: {
+          id: 'ape',
+          symbol: 'APE',
+          address: process.env.REACT_APP_TEST_APE_TOKEN_ADDRESS,
+          asset: ape,
+          sasset: sape
+        },
+        ust: {
+          id: 'ust',
+          symbol: 'UST',
+          address: process.env.REACT_APP_TEST_UST_TOKEN_ADDRESS,
+          asset: ust,
+          sasset: sust
         }
       }
     : {
@@ -163,6 +181,20 @@ export const CONTRACT_TOKEN_ADDRESS =
           address: process.env.REACT_APP_MAIN_UNI_TOKEN_ADDRESS,
           asset: uni,
           sasset: suni
+        },
+        ape: {
+          id: 'ape',
+          symbol: 'APE',
+          address: process.env.REACT_APP_MAIN_APE_TOKEN_ADDRESS,
+          asset: ape,
+          sasset: sape
+        },
+        ust: {
+          id: 'ust',
+          symbol: 'UST',
+          address: process.env.REACT_APP_MAIN_UST_TOKEN_ADDRESS,
+          asset: ust,
+          sasset: sust
         }
       };
 
@@ -192,6 +224,12 @@ export const CONTRACT_UNI_TOKEN_ABI =
 
 export const CONTRACT_LINK_TOKEN_ABI =
   '[{"inputs":[{"internalType":"uint256","name":"_initialAmount","type":"uint256"},{"internalType":"string","name":"_tokenName","type":"string"},{"internalType":"uint8","name":"_decimalUnits","type":"uint8"},{"internalType":"string","name":"_tokenSymbol","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"allocateTo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"dst","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"src","type":"address"},{"internalType":"address","name":"dst","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
+
+export const CONTRACT_UST_TOKEN_ABI =
+  '[{"inputs":[{"internalType":"address","name":"beacon","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"beacon","type":"address"}],"name":"BeaconUpgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"stateMutability":"payable","type":"fallback"},{"stateMutability":"payable","type":"receive"}]';
+
+export const CONTRACT_APE_TOKEN_ABI =
+  '[{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint256","name":"totalSupply_","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]';
 
 export const CONTRACT_SBEP_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
@@ -240,6 +278,16 @@ export const CONTRACT_SBEP_ADDRESS =
           id: 'uni',
           symbol: 'sUNI',
           address: process.env.REACT_APP_TEST_UNI_SBEP_ADDRESS
+        },
+        ape: {
+          id: 'ape',
+          symbol: 'sAPE',
+          address: process.env.REACT_APP_TEST_APE_SBEP_ADDRESS
+        },
+        ust: {
+          id: 'ust',
+          symbol: 'sUST',
+          address: process.env.REACT_APP_TEST_UST_SBEP_ADDRESS
         }
       }
     : {
@@ -292,6 +340,16 @@ export const CONTRACT_SBEP_ADDRESS =
           id: 'uni',
           symbol: 'sUNI',
           address: process.env.REACT_APP_MAIN_UNI_SBEP_ADDRESS
+        },
+        ape: {
+          id: 'ape',
+          symbol: 'sAPE',
+          address: process.env.REACT_APP_MAIN_APE_SBEP_ADDRESS
+        },
+        ust: {
+          id: 'ust',
+          symbol: 'sUST',
+          address: process.env.REACT_APP_MAIN_UST_SBEP_ADDRESS
         }
       };
 export const CONTRACT_SBEP_ABI =
