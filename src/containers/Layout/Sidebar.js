@@ -251,9 +251,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       tempWeb3 = await metamask.getWeb3();
       tempAccounts = await metamask.getAccounts();
       // Lookup ENS name and avatar when possible
-      const ethersProvider = new ethers.providers.Web3Provider(tempWeb3.currentProvider);
+      const ethersProvider = new ethers.providers.Web3Provider(
+        tempWeb3.currentProvider
+      );
       tempENSName = await ethersProvider.lookupAddress(tempAccounts[0]);
-      tempENSAvatar = tempENSName ? await ethersProvider.getAvatar(tempENSName) : null;
+      tempENSAvatar = tempENSName
+        ? await ethersProvider.getAvatar(tempENSName)
+        : null;
       latestBlockNumber = await metamask.getLatestBlockNumber();
       if (latestBlockNumber) {
         await setSetting({ latestBlockNumber });
@@ -644,6 +648,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             <Label>Faucet</Label>
           </NavLink>
         )}
+        <NavLink
+          className="flex flex-start align-center"
+          to="/staking"
+          activeClassName="active"
+        >
+          <Label>Staking</Label>
+        </NavLink>
         {!settings.selectedAddress && (
           <ConnectButton>
             <Button
