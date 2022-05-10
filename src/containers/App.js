@@ -21,7 +21,7 @@ import { ApolloProvider } from 'react-apollo';
 import { client } from '../apollo/client';
 
 import 'assets/styles/App.scss';
-import Staking from './Main/Staking';
+import Staking from './Main/Staking/Staking';
 
 addLocaleData([...en]);
 const initialLang = 'en';
