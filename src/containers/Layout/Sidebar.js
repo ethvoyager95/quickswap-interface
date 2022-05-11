@@ -16,13 +16,15 @@ import {
 import { promisify } from 'utilities';
 import * as constants from 'utilities/constants';
 import ConnectModal from 'components/Basic/ConnectModal';
+import UserInfoModal from 'components/Basic/UserInfoModal';
 import { Label } from 'components/Basic/Label';
 import Button from '@material-ui/core/Button';
 import { connectAccount, accountActionCreators } from 'core';
 import MetaMaskClass from 'utilities/MetaMask';
 import logoImg from 'assets/img/logo.png';
 import commaNumber from 'comma-number';
-import { checkIsValidNetwork } from 'utilities/common';
+import { checkIsValidNetwork, getBigNumber } from 'utilities/common';
+
 import { check } from 'prettier';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
@@ -143,7 +145,7 @@ const ConnectButton = styled.div`
     width: 150px;
     height: 32px;
     box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
-    background-color: #277ee6;
+    background-color: rgba(39, 126, 230, 0.7);
 
     @media only screen and (max-width: 768px) {
       width: 100px;
@@ -158,6 +160,48 @@ const ConnectButton = styled.div`
   }
 `;
 
+const UserInfoButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 40px;
+  padding: 0;
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    margin: 20px 0 0;
+  }
+
+  .user-info-btn {
+    padding: 0 8px;
+    height: 32px;
+    box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
+    background-color: rgba(39, 126, 230, 0.7);
+    display: flex;
+    align-items: center;
+    @media only screen and (max-width: 768px) {
+      padding: 0 8px;
+    }
+
+    .MuiButton-label {
+      font-size: 13.5px;
+      line-height: 1;
+      font-weight: 500;
+      color: var(--color-white);
+      text-transform: capitalize;
+      display: flex;
+      align-items: center;
+    }
+
+    img {
+      width: 16px;
+      height: 16px;
+      margin-left: 4px;
+      margin-bottom: 3px;
+    }
+  }
+`;
+
 let metamask = null;
 let accounts = [];
 let metamaskWatcher = null;
@@ -166,10 +210,12 @@ const abortController = new AbortController();
 
 function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const [error, setError] = useState('');
   const [web3, setWeb3] = useState(null);
   const [awaiting, setAwaiting] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [available, setAvailable] = useState('0');
 
   const checkNetwork = () => {
     const netId = window.ethereum.networkVersion
@@ -251,9 +297,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       tempWeb3 = await metamask.getWeb3();
       tempAccounts = await metamask.getAccounts();
       // Lookup ENS name and avatar when possible
-      const ethersProvider = new ethers.providers.Web3Provider(tempWeb3.currentProvider);
+      const ethersProvider = new ethers.providers.Web3Provider(
+        tempWeb3.currentProvider
+      );
       tempENSName = await ethersProvider.lookupAddress(tempAccounts[0]);
-      tempENSAvatar = tempENSName ? await ethersProvider.getAvatar(tempENSName) : null;
+      tempENSAvatar = tempENSName
+        ? await ethersProvider.getAvatar(tempENSName)
+        : null;
       latestBlockNumber = await metamask.getLatestBlockNumber();
       if (latestBlockNumber) {
         await setSetting({ latestBlockNumber });
@@ -596,6 +646,22 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     }
   }, [settings.accountLoading]);
 
+  useEffect(() => {
+    if (settings.selectedAddress) {
+      const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
+      const total = BigNumber.maximum(totalBorrowLimit, 0);
+      setAvailable(total.dp(2, 1).toString(10));
+    }
+    return function cleanup() {
+      abortController.abort();
+    };
+  }, [settings.totalBorrowLimit, settings.selectedAddress]);
+
+  const handleDisconnect = () => {
+    setSetting({
+      selectedAddress: null
+    });
+  };
   return (
     <SidebarWrapper>
       <Logo>
@@ -644,15 +710,36 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             <Label>Faucet</Label>
           </NavLink>
         )}
-        {!settings.selectedAddress && (
-          <ConnectButton>
+        {settings.selectedAddress && (
+          <UserInfoButton>
             <Button
-              className="connect-btn"
-              onClick={() => setIsOpenModal(true)}
+              className="user-info-btn"
+              onClick={() => setIsOpenInfoModal(true)}
             >
-              Connect
+              <div>{available}</div>
+              <img src={`${process.env.PUBLIC_URL}/icon16.png`} alt="" />
             </Button>
-          </ConnectButton>
+          </UserInfoButton>
+        )}
+        <ConnectButton>
+          <Button className="connect-btn" onClick={() => setIsOpenModal(true)}>
+            {settings.selectedAddress
+              ? `${settings.selectedAddress.substr(
+                  0,
+                  4
+                )}...${settings.selectedAddress.substr(
+                  settings.selectedAddress.length - 4,
+                  4
+                )}`
+              : 'Connect'}
+          </Button>
+        </ConnectButton>
+        {settings.selectedAddress && (
+          <UserInfoButton>
+            <Button className="user-info-btn" onClick={handleDisconnect}>
+              Disconnect
+            </Button>
+          </UserInfoButton>
         )}
       </MainMenu>
       {/* {settings.selectedAddress && (
@@ -676,6 +763,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         onCancel={() => setIsOpenModal(false)}
         onConnectMetaMask={handleMetaMask}
         checkNetwork={checkNetwork}
+      />
+      <UserInfoModal
+        visible={isOpenInfoModal}
+        onCancel={() => setIsOpenInfoModal(false)}
+        available={available}
       />
     </SidebarWrapper>
   );
