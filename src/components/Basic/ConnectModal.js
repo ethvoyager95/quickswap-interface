@@ -249,16 +249,6 @@ function ConnectModal({
           </div>
         )} */}
         </div>
-        {/* {settings.selectedAddress && (
-          <div className="connect-wallet-content">
-            <div
-              className="flex align-center just-center metamask-connect-btn disconnect-btn"
-              onClick={handleDisconnect}
-            >
-              <div className="flex align-center just-center ">Disconnect</div>
-            </div>
-          </div>
-        )} */}
       </ModalContent>
     </Modal>
   );
