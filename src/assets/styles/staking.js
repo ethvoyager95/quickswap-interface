@@ -5,6 +5,9 @@ export const SDiv = styled.div`
   background: #fff;
   padding: 15px;
   margin-top: 10px;
+  border-radius: 8px;
+  box-sizing: content-box;
+  box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
   .box-staking {
     text-align: center;
   }
@@ -60,7 +63,7 @@ export const SText = styled.div`
   color: rgba(0, 28, 78, 0.87);
   font-style: normal;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 24px;
   line-height: 35px;
   margin-top: 10px;
   img {
@@ -169,6 +172,13 @@ export const SInfor = styled.div`
   justify-content: space-between;
   margin-top: 10px;
 `;
+export const SInforClaim = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  margin-top: 10px;
+`;
 export const SInforText = styled.div`
   font-weight: 400;
   font-size: 18px;
@@ -252,9 +262,10 @@ export const SFlash = styled.img`
 export const SDetails = styled.div`
   font-style: normal;
   font-weight: 700;
-  font-size: 22px;
+  font-size: 16px;
   line-height: 28px;
   color: #343434;
+  margin-top: 20px;
   @media only screen and (max-width: 768px) {
     font-size: 18px;
   }
@@ -333,11 +344,46 @@ export const SPrevSlider = styled.img`
   border-radius: 50%;
 `;
 export const SSactive = styled.div`
-  background: blue;
+  background: #ffffff;
+  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
+  border-radius: 50px;
+  width: 220px;
+  margin: auto;
+  margin-top: 20px;
+  text-align: center;
+  padding: 8px 10px;
+  color: #107def;
+  cursor: pointer;
+`;
+export const SSUnactive = styled.div`
+  background: #ff0606;
+  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
+  border-radius: 50px;
+  width: 220px;
+  margin: auto;
+  margin-top: 20px;
+  text-align: center;
+  padding: 8px 10px;
+  color: #fff;
+  cursor: pointer;
+`;
+export const SDivBlack = styled.div`
+  background: #333;
+  width: 100%;
+  height: 100%;
   position: absolute;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  top: 15px;
-  right: 10px;
+  top: 0;
+  right: 0;
+  opacity: 0.5;
+`;
+export const STextSelecT = styled.div`
+  width: 100%;
+  text-align: center;
+  margin: auto;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 28px;
+  color: #27282b;
+  margin-top: 15px;
 `;

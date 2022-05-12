@@ -8,9 +8,9 @@ import MainLayout from 'containers/Layout/MainLayout';
 import { Row, Col, Tooltip } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
 import IconQuestion from '../../../assets/img/question.png';
-import DialogLp from './DialogLp';
+import DialogUnStake from './DialogUnStake';
+import DialogStake from './DialogStake';
 import IconDuck from '../../../assets/img/duck.png';
-import IconFlash from '../../../assets/img/flash.png';
 import '../../../assets/styles/slick.scss';
 import {
   SDiv,
@@ -26,6 +26,7 @@ import {
   SBtnClaimStart,
   SInforText,
   SInfor,
+  SInforClaim,
   SInforValue,
   SQuestion,
   SBtnStake,
@@ -42,7 +43,6 @@ import {
   STimeText,
   SUnClaim,
   SItemTime,
-  SFlash,
   SDetails,
   SDetailsColor,
   SFlex,
@@ -56,9 +56,11 @@ import {
   SNexSlider,
   SPrevSlider,
   SError,
-  SSactive
+  SSactive,
+  SSUnactive,
+  STextSelecT
 } from '../../../assets/styles/staking.js';
-import DialogNFT from './DialogNFT';
+import DialogConfirm from './DialogConfirm';
 
 const DATA_SLIDER = [
   {
@@ -86,7 +88,8 @@ const DATA_SLIDER = [
     id: 4,
     name: 'B.Duck',
     description: 'B.Duck #3119',
-    img: IconDuck
+    img: IconDuck,
+    active: false
   },
   {
     id: 5,
@@ -122,7 +125,8 @@ const DATA_NFT = [
     id: 4,
     name: 'B.Duck',
     description: 'B.Duck #3119',
-    img: IconDuck
+    img: IconDuck,
+    active: false
   },
   {
     id: 5,
@@ -220,9 +224,12 @@ function Staking() {
   const [messErr, setMessErr] = useState({ mess: '', show: false });
   const [text, setText] = useState('');
   const [textNFT, setTextNFT] = useState('');
-  const [isStakeLp, setIsStakeLp] = useState(false);
   const [isStakeNFT, setIsStakeNFT] = useState(false);
+  const [isUnStakeNFT, setIsUnStakeNFT] = useState(false);
+  const [isConfirm, setiIsConfirm] = useState(false);
   const [data] = useState(DATA_SLIDER);
+  const [itemStaking, setItemStaking] = useState([]);
+  const [itemStaked, setItemStaked] = useState([]);
   const handleChangeValue = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
     if (!numberDigitsRegex.test(event.target.value)) {
@@ -239,15 +246,13 @@ function Staking() {
       setVal(valueFormat);
     }
   };
-
   const handleStake = () => {
-    if (val === undefined || val === 0) {
+    if (!val || val === 0) {
       setMessErr({
         mess: 'Invalid amount',
         show: true
       });
     } else {
-      setIsStakeLp(true);
       setText('Stake STRK-ETH LPs');
       setMessErr({
         mess: '',
@@ -256,14 +261,13 @@ function Staking() {
     }
   };
   const handleUnStake = () => {
-    if (val === undefined) {
+    if (!val || val === 0) {
       setMessErr({
         mess: 'Invalid amount',
         show: true
       });
     } else {
       setText('Unstake STRK-ETH LPs');
-      setIsStakeLp(true);
       setMessErr({
         mess: '',
         show: false
@@ -272,17 +276,19 @@ function Staking() {
   };
   const handleStakeNFT = () => {
     setIsStakeNFT(true);
-    setTextNFT('Stake DASC NFTs');
+    setTextNFT('Stake NFT');
   };
   const handleUnStakeNFT = () => {
-    setIsStakeNFT(true);
-    setTextNFT('Unstake DASC NFTs');
+    setIsUnStakeNFT(true);
+    setTextNFT('Unstake NFT');
   };
 
-  const handleClose = () => {
-    setIsStakeLp(false);
+  const handleCloseUnStake = () => {
+    console.log('close stake');
+    setIsUnStakeNFT(false);
   };
-  const handleCloseNFT = () => {
+  const handleCloseStake = () => {
+    console.log('close unstake');
     setIsStakeNFT(false);
   };
   const handleSelectItem = (e, item) => {
@@ -292,9 +298,12 @@ function Staking() {
       });
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < DATA_SLIDER.length; i++) {
-        DATA_SLIDER[i].active = false;
-        DATA_SLIDER[index].active = true;
+        DATA_SLIDER[index].active = !DATA_SLIDER[index].active;
       }
+      const dataStaking = DATA_SLIDER.filter(it => {
+        return it.active === true;
+      });
+      setItemStaking(dataStaking);
     }
   };
   const handleSelectItemNFT = (e, item) => {
@@ -304,11 +313,24 @@ function Staking() {
       });
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < DATA_NFT.length; i++) {
-        DATA_NFT[i].active = false;
-        DATA_NFT[index].active = true;
+        DATA_NFT[index].active = !DATA_NFT[index].active;
       }
+      const dataStaked = DATA_NFT.filter(it => {
+        return it.active === true;
+      });
+      console.log(dataStaked, 'dataStaked');
+      setItemStaked(dataStaked);
     }
   };
+  const handleStakeDialog = () => {
+    console.log('111');
+    setIsStakeNFT(false);
+    setiIsConfirm(true);
+  };
+  const handleCloseConfirm = () => {
+    setiIsConfirm(false);
+  };
+
   return (
     <>
       <React.Fragment>
@@ -345,8 +367,6 @@ function Staking() {
                 Get STRK-ETH LPs
               </SHref>
             </SText>
-          </SDiv>
-          <SDiv>
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <SInput>
@@ -404,15 +424,20 @@ function Staking() {
             <SText>STRK-ETH Harvest</SText>
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                <SInfor>
+                <SInforClaim>
                   <SInforText>Base Reward</SInforText>
                   <SInforValue>0.00</SInforValue>
-                </SInfor>
-                <SInfor>
+                </SInforClaim>
+                <SInforClaim>
                   <SInforText>Boost Reward</SInforText>
                   <SInforValue>32</SInforValue>
-                </SInfor>
+                </SInforClaim>
+                <SInforClaim>
+                  <SInforText>vStrk</SInforText>
+                  <SInforValue>0.00</SInforValue>
+                </SInforClaim>
               </Col>
+              {/* Claim */}
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
@@ -461,6 +486,22 @@ function Staking() {
                     {}
                   </Col>
                 </Row>
+                <Row>
+                  <Col xs={{ span: 24 }} lg={{ span: 18 }}>
+                    <SBtnClaimStart>
+                      <SUnClaim>Claim</SUnClaim>
+                      <Tooltip
+                        placement="top"
+                        title="You can only claim reward once monthly"
+                      >
+                        <SQuestion src={IconQuestion} />
+                      </Tooltip>
+                    </SBtnClaimStart>
+                  </Col>
+                  <Col xs={{ span: 24 }} lg={{ span: 6 }}>
+                    {}
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </SDiv>
@@ -474,21 +515,15 @@ function Staking() {
                 <SQuestion src={IconQuestion} />
               </Tooltip>
             </SText>
-          </SDiv>
-          <SDiv>
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 9 }}>
                 <SFlex>
                   <SDetails>NFT selected: 0/4</SDetails>
-                  <SSTake onClick={handleStakeNFT}>Stake</SSTake>
                 </SFlex>
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                 <SFlexEnd>
-                  <SDetails>
-                    <SFlash src={IconFlash} />
-                    STRK staking value: 0
-                  </SDetails>
+                  <SSTake onClick={handleStakeNFT}>Stake</SSTake>
                 </SFlexEnd>
               </Col>
             </Row>
@@ -507,19 +542,23 @@ function Staking() {
                           {item.description}
                         </SDescriptionSlider>
                       </SBoxSlider>
-                      {item.active === true && <SSactive />}
+                      {item.active === false ? (
+                        <SSactive>Select</SSactive>
+                      ) : (
+                        <SSUnactive>Remove</SSUnactive>
+                      )}
                     </SItemSlider>
                   );
                 })}
               </Slider>
             </SSlider>
+            <STextSelecT>Please select NFTs you want to stake</STextSelecT>
           </SDiv>
-
           <SDiv>
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 9 }}>
                 <SFlex>
-                  <SDetails>NFT staked</SDetails>
+                  <SText>NFT staked</SText>
                 </SFlex>
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
@@ -528,21 +567,15 @@ function Staking() {
                 </SFlexEnd>
               </Col>
             </Row>
-          </SDiv>
-          <SDiv>
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 9 }}>
                 <SFlex>
-                  <SDetails>NFT staked 2/6</SDetails>
-                  <SSUnTake onClick={handleUnStakeNFT}>UnStake</SSUnTake>
+                  <SDetails>NFT staked 0/10</SDetails>
                 </SFlex>
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                 <SFlexEnd>
-                  <SDetails>
-                    <SFlash src={IconFlash} />
-                    STRK staking value: 0
-                  </SDetails>
+                  <SSUnTake onClick={handleUnStakeNFT}>UnStake</SSUnTake>
                 </SFlexEnd>
               </Col>
             </Row>
@@ -561,25 +594,37 @@ function Staking() {
                           {item.description}
                         </SDescriptionSlider>
                       </SBoxSlider>
-                      {item.active === true && <SSactive />}
+                      {item.active === false ? (
+                        <>
+                          <SSactive>Select</SSactive>
+                        </>
+                      ) : (
+                        <SSUnactive>Remove</SSUnactive>
+                      )}
                     </SItemSlider>
                   );
                 })}
               </Slider>
             </SSlider>
+            <STextSelecT>Please select NFTs you want to unstake</STextSelecT>
           </SDiv>
         </MainLayout>
-        <DialogLp
-          isStakeLp={isStakeLp}
-          text={text}
-          close={handleClose}
-          value={val}
-        />
-        <DialogNFT
+        {/* Stake */}
+        <DialogStake
           isStakeNFT={isStakeNFT}
           text={textNFT}
-          close={handleCloseNFT}
+          close={handleCloseStake}
+          itemStaking={itemStaking}
+          handleStakeDialog={handleStakeDialog}
         />
+        {/* UnStake */}
+        <DialogUnStake
+          isUnStakeNFT={isUnStakeNFT}
+          text={text}
+          close={handleCloseUnStake}
+          itemStaked={itemStaked}
+        />
+        <DialogConfirm isConfirm={isConfirm} close={handleCloseConfirm} />
       </React.Fragment>
     </>
   );
