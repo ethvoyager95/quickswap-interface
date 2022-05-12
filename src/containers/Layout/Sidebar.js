@@ -216,6 +216,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [awaiting, setAwaiting] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [available, setAvailable] = useState('0');
+  const [isConnect, setIsConnect] = useState(!!settings.selectedAddress);
 
   const checkNetwork = () => {
     const netId = window.ethereum.networkVersion
@@ -333,7 +334,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   const handleMetaMask = () => {
     setError(MetaMaskClass.hasWeb3() ? '' : new Error(constants.NOT_INSTALLED));
-    handleWatch();
+    if (isConnect) {
+      handleWatch();
+    }
   };
 
   const setDecimals = async () => {
@@ -387,7 +390,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   }, [handleWatch, settings.accounts]);
 
   useEffect(() => {
-    handleWatch();
+    if (isConnect) {
+      handleWatch();
+    }
     return function cleanup() {
       abortController.abort();
     };
@@ -656,8 +661,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       abortController.abort();
     };
   }, [settings.totalBorrowLimit, settings.selectedAddress]);
-
   const handleDisconnect = () => {
+    setIsConnect(false);
     setSetting({
       selectedAddress: null
     });
@@ -722,7 +727,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           </UserInfoButton>
         )}
         <ConnectButton>
-          <Button className="connect-btn" onClick={() => setIsOpenModal(true)}>
+          <Button
+            className="connect-btn"
+            onClick={() => {
+              setIsOpenModal(true);
+              setIsConnect(true);
+            }}
+          >
             {settings.selectedAddress
               ? `${settings.selectedAddress.substr(
                   0,

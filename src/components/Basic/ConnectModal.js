@@ -165,12 +165,6 @@ function ConnectModal({
     }
   };
 
-  const handleDisconnect = () => {
-    setSetting({
-      selectedAddress: null
-    });
-    onCancel();
-  };
   useEffect(() => {
     if (window.ethereum) {
       window.addEventListener('load', event => {
