@@ -36,6 +36,13 @@ const SpinnerWrapper = styled.div`
   }
 `;
 
+const HomePageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+`;
+
 function Dashboard({ settings }) {
   const [currentMarket, setCurrentMarket] = useState('');
 
@@ -48,7 +55,7 @@ function Dashboard({ settings }) {
       <DashboardWrapper className="flex">
         {(!settings.selectedAddress || settings.accountLoading) && (
           <SpinnerWrapper>
-            <LoadingSpinner />
+            <HomePageWrapper>HOME PAGE</HomePageWrapper>
           </SpinnerWrapper>
         )}
         {settings.selectedAddress && !settings.accountLoading && (

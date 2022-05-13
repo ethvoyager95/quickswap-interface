@@ -216,7 +216,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [awaiting, setAwaiting] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [available, setAvailable] = useState('0');
-  const [isConnect, setIsConnect] = useState(!!settings.selectedAddress);
 
   const checkNetwork = () => {
     const netId = window.ethereum.networkVersion
@@ -324,19 +323,15 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     setWeb3(tempWeb3);
     setError(tempError);
     setAwaiting(false);
-    if (!tempError) {
-      metamaskWatcher = setTimeout(() => {
-        clearTimeout(metamaskWatcher);
-        handleWatch();
-      }, 3000);
-    }
   }, [error, web3]);
 
   const handleMetaMask = () => {
+    localStorage.setItem('walletConnected', JSON.stringify(true));
+    setSetting({
+      isConnected: true
+    });
     setError(MetaMaskClass.hasWeb3() ? '' : new Error(constants.NOT_INSTALLED));
-    if (isConnect) {
-      handleWatch();
-    }
+    handleWatch();
   };
 
   const setDecimals = async () => {
@@ -390,13 +385,21 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   }, [handleWatch, settings.accounts]);
 
   useEffect(() => {
-    if (isConnect) {
+    if (settings.isConnected) {
       handleWatch();
     }
     return function cleanup() {
       abortController.abort();
     };
   }, [history]);
+
+  useEffect(() => {
+    if (settings.isConnected) {
+      setSetting({
+        accountLoading: false
+      });
+    }
+  }, [settings.isConnected]);
 
   const getMarkets = async () => {
     const res = await promisify(getGovernanceStrike, {});
@@ -662,9 +665,10 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     };
   }, [settings.totalBorrowLimit, settings.selectedAddress]);
   const handleDisconnect = () => {
-    setIsConnect(false);
+    localStorage.clear();
     setSetting({
-      selectedAddress: null
+      selectedAddress: null,
+      isConnected: false
     });
   };
   return (
@@ -731,7 +735,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             className="connect-btn"
             onClick={() => {
               setIsOpenModal(true);
-              setIsConnect(true);
             }}
           >
             {settings.selectedAddress
