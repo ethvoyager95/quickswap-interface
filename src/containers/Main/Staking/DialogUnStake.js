@@ -203,7 +203,12 @@ const SBtnUnStake = styled.div`
   cursor: pointer;
   margin-left: 10px;
 `;
-function DialogUnStake({ isUnStakeNFT, close, itemStaked }) {
+function DialogUnStake({
+  isUnStakeNFT,
+  close,
+  itemStaked,
+  handleUnStakeDialog
+}) {
   const classes = useStyles();
   return (
     <>
@@ -259,7 +264,9 @@ function DialogUnStake({ isUnStakeNFT, close, itemStaked }) {
                 <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                   <SBtn>
                     <SBtnStake onClick={close}>Cancel</SBtnStake>
-                    <SBtnUnStake>SUntake</SBtnUnStake>
+                    <SBtnUnStake onClick={handleUnStakeDialog}>
+                      SUntake
+                    </SBtnUnStake>
                   </SBtn>
                 </Col>
               </Row>
@@ -273,13 +280,15 @@ function DialogUnStake({ isUnStakeNFT, close, itemStaked }) {
 DialogUnStake.propTypes = {
   close: PropTypes.func,
   isUnStakeNFT: PropTypes.bool,
-  itemStaked: PropTypes.array
+  itemStaked: PropTypes.array,
+  handleUnStakeDialog: PropTypes.func
 };
 
 DialogUnStake.defaultProps = {
   close: func,
   isUnStakeNFT: false,
-  itemStaked: []
+  itemStaked: [],
+  handleUnStakeDialog: func
 };
 
 const mapStateToProps = ({ account }) => ({

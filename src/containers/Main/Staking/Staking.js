@@ -228,7 +228,8 @@ const AUDITOR_SETTING = {
   ]
 };
 
-function Staking() {
+function Staking(settings) {
+  const address = settings.selectedAddress;
   const [val, setVal] = useState(0);
   const [messErr, setMessErr] = useState({ mess: '', show: false });
   const [textErr, setTextErr] = useState('');
@@ -240,6 +241,8 @@ function Staking() {
   const [itemStaking, setItemStaking] = useState([]);
   const [itemStaked, setItemStaked] = useState([]);
   const [userInfo, setUserInfo] = useState({});
+  const farmingContract = getFarmingContract();
+  // change amount
   const handleChangeValue = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
     if (!numberDigitsRegex.test(event.target.value)) {
@@ -256,6 +259,7 @@ function Staking() {
       setVal(valueFormat);
     }
   };
+  // stake
   const handleStake = async () => {
     if (!val || val === 0) {
       setMessErr({
@@ -265,7 +269,6 @@ function Staking() {
     } else {
       // deposit
       setiIsConfirm(true);
-      const farmingContract = getFarmingContract();
       const accounts = await window.web3.eth.getAccounts();
       await methods
         .send(
@@ -273,17 +276,17 @@ function Staking() {
           [0, new BigNumber(val)],
           accounts[0]
         )
-        .then(res => {
-          console.log(res, 'res deposit');
+        .then(() => {
           setiIsConfirm(false);
         })
         .catch(err => {
-          console.log(err.message, 'err deposit');
           if (err.message.includes('User denied')) {
             setIsShowCancel(true);
+            setiIsConfirm(false);
             setTextErr('Decline transaction');
           } else {
             setIsShowCancel(true);
+            setiIsConfirm(false);
             setTextErr(err.message);
           }
           throw err;
@@ -302,7 +305,7 @@ function Staking() {
       });
     } else {
       // withdraw test
-      const farmingContract = getFarmingContract();
+      setiIsConfirm(true);
       const accounts = await window.web3.eth.getAccounts();
       await methods
         .send(
@@ -310,12 +313,19 @@ function Staking() {
           [0, new BigNumber(val)],
           accounts[0]
         )
-        .then(res => {
-          console.log(res, 'res draw');
+        .then(() => {
+          setiIsConfirm(false);
         })
         .catch(err => {
-          console.log(err, 'res draw');
-
+          if (err.message.includes('User denied')) {
+            setIsShowCancel(true);
+            setiIsConfirm(false);
+            setTextErr('Decline transaction');
+          } else {
+            setIsShowCancel(true);
+            setiIsConfirm(false);
+            setTextErr(err.message);
+          }
           throw err;
         });
       setMessErr({
@@ -324,19 +334,59 @@ function Staking() {
       });
     }
   };
+  // handleClaim
+  const handleClainBaseReward = async () => {
+    const accounts = await window.web3.eth.getAccounts();
+    await methods
+      .send(
+        farmingContract.methods.claimBaseRewards,
+        [new BigNumber(0)],
+        accounts[0]
+      )
+      .then(() => {})
+      .catch(err => {
+        if (err.message.includes('User denied')) {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr('Decline transaction');
+        } else {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr(err.message);
+        }
+        throw err;
+      });
+  };
+  const handleClainBootReward = async () => {
+    const accounts = await window.web3.eth.getAccounts();
+    await methods
+      .send(
+        farmingContract.methods.claimBoostReward,
+        [new BigNumber(0)],
+        accounts[0]
+      )
+      .then(() => {})
+      .catch(err => {
+        if (err.message.includes('User denied')) {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr('Decline transaction');
+        } else {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr(err.message);
+        }
+        throw err;
+      });
+  };
+  // handleOpen
   const handleStakeNFT = () => {
     setIsStakeNFT(true);
   };
   const handleUnStakeNFT = () => {
     setIsUnStakeNFT(true);
   };
-
-  const handleCloseUnStake = () => {
-    setIsUnStakeNFT(false);
-  };
-  const handleCloseStake = () => {
-    setIsStakeNFT(false);
-  };
+  // handle item slider
   const handleSelectItem = (e, item) => {
     if (e.isTrusted) {
       const index = DATA_SLIDER.findIndex(res => {
@@ -367,25 +417,87 @@ function Staking() {
       setItemStaked(dataStaked);
     }
   };
+  // Stake NFT
   const handleStakeDialog = async () => {
     setIsStakeNFT(false);
     setiIsConfirm(true);
+    const accounts = await window.web3.eth.getAccounts();
+
+    await methods
+      .send(
+        farmingContract.methods.boost,
+        [new BigNumber(0), new BigNumber(0)],
+        accounts[0]
+      )
+      .then(() => {})
+      .catch(err => {
+        if (err.message.includes('User denied')) {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr('Decline transaction');
+        } else {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr(err.message);
+        }
+        throw err;
+      });
   };
+  // unStake NFT
+  const handleUnStakeDialog = async () => {
+    setIsUnStakeNFT(false);
+    setiIsConfirm(true);
+    const accounts = await window.web3.eth.getAccounts();
+    await methods
+      .send(
+        farmingContract.methods.unboost,
+        [new BigNumber(0), new BigNumber(0)],
+        accounts[0]
+      )
+      .then(() => {})
+      .catch(err => {
+        if (err.message.includes('User denied')) {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr('Decline transaction');
+        } else {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr(err.message);
+        }
+        throw err;
+      });
+  };
+  // handleClose
+
   const handleCloseConfirm = () => {
     setiIsConfirm(false);
   };
   const handleCloseErr = () => {
     setIsShowCancel(false);
   };
+  const handleCloseUnStake = () => {
+    setIsUnStakeNFT(false);
+  };
+  const handleCloseStake = () => {
+    setIsStakeNFT(false);
+  };
+  // get userInfor
   const getDataUserInfor = async () => {
     window.web3 = new Web3(window.ethereum);
-    const farmingContract = getFarmingContract();
     const accounts = await window.web3.eth.getAccounts();
+    const balances = await window.web3.eth.getBalance(accounts[0]);
     await methods
       .call(farmingContract.methods.userInfo, [0, accounts[0]])
       .then(res => {
-        console.log(res, 'res');
-        setUserInfo(res);
+        const balanceBigNumber = new BigNumber(balances).div(
+          new BigNumber(10).pow(18)
+        );
+        const balanceBigFormat = balanceBigNumber
+          .toNumber()
+          .toFixed(4)
+          .toString();
+        setUserInfo({ ...res, available: balanceBigFormat });
       })
       .catch(err => {
         throw err;
@@ -394,6 +506,8 @@ function Staking() {
   useEffect(() => {
     getDataUserInfor();
   }, []);
+  console.log(userInfo, 'userInfo');
+
   return (
     <>
       <React.Fragment>
@@ -446,11 +560,11 @@ function Staking() {
 
                   <SInfor>
                     <SInforText>Available</SInforText>
-                    <SInforValue>1000.52</SInforValue>
+                    <SInforValue>{userInfo.available ?? '0'}</SInforValue>
                   </SInfor>
                   <SInfor>
                     <SInforText>Staked</SInforText>
-                    <SInforValue>{userInfo.amount}</SInforValue>
+                    <SInforValue>{userInfo.amount ?? '0'}</SInforValue>
                   </SInfor>
                 </SInput>
               </Col>
@@ -489,11 +603,11 @@ function Staking() {
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <SInforClaim>
                   <SInforText>Base Reward</SInforText>
-                  <SInforValue>{userInfo.accBaseReward}</SInforValue>
+                  <SInforValue>{userInfo.accBaseReward ?? '0'}</SInforValue>
                 </SInforClaim>
                 <SInforClaim>
                   <SInforText>Boost Reward</SInforText>
-                  <SInforValue>{userInfo.accBoostReward}</SInforValue>
+                  <SInforValue>{userInfo.accBoostReward ?? '0'}</SInforValue>
                 </SInforClaim>
                 <SInforClaim>
                   <SInforText>vStrk</SInforText>
@@ -505,7 +619,7 @@ function Staking() {
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
                     <SBtnClaim>
-                      <SClaim>Claim</SClaim>
+                      <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
                       <Tooltip
                         placement="top"
                         title="You can only claim reward once daily"
@@ -536,7 +650,7 @@ function Staking() {
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
                     <SBtnClaimStart>
-                      <SUnClaim>Claim</SUnClaim>
+                      <SUnClaim onClick={handleClainBootReward}>Claim</SUnClaim>
                       <Tooltip
                         placement="top"
                         title="You can only claim reward once monthly"
@@ -684,6 +798,7 @@ function Staking() {
           isUnStakeNFT={isUnStakeNFT}
           close={handleCloseUnStake}
           itemStaked={itemStaked}
+          handleUnStakeDialog={handleUnStakeDialog}
         />
         {/* err */}
         <DialogErr
