@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import MainLayout from 'containers/Layout/MainLayout';
 import { Row, Col, Tooltip } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
+import Web3 from 'web3'; // eslint-disable-line import/no-unresolved
 import IconQuestion from '../../../assets/img/question.png';
 import DialogUnStake from './DialogUnStake';
 import DialogStake from './DialogStake';
@@ -61,6 +62,14 @@ import {
   STextSelecT
 } from '../../../assets/styles/staking.js';
 import DialogConfirm from './DialogConfirm';
+import DialogErr from './DialogErr';
+import {
+  getFarmingContract,
+  methods
+} from '../../../utilities/ContractService';
+
+// eslint-disable-next-line import/order
+import BigNumber from 'bignumber.js';
 
 const DATA_SLIDER = [
   {
@@ -222,14 +231,15 @@ const AUDITOR_SETTING = {
 function Staking() {
   const [val, setVal] = useState(0);
   const [messErr, setMessErr] = useState({ mess: '', show: false });
-  const [text, setText] = useState('');
-  const [textNFT, setTextNFT] = useState('');
+  const [textErr, setTextErr] = useState('');
   const [isStakeNFT, setIsStakeNFT] = useState(false);
   const [isUnStakeNFT, setIsUnStakeNFT] = useState(false);
   const [isConfirm, setiIsConfirm] = useState(false);
+  const [isShowCancel, setIsShowCancel] = useState(false);
   const [data] = useState(DATA_SLIDER);
   const [itemStaking, setItemStaking] = useState([]);
   const [itemStaked, setItemStaked] = useState([]);
+  const [userInfo, setUserInfo] = useState({});
   const handleChangeValue = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
     if (!numberDigitsRegex.test(event.target.value)) {
@@ -246,28 +256,68 @@ function Staking() {
       setVal(valueFormat);
     }
   };
-  const handleStake = () => {
+  const handleStake = async () => {
     if (!val || val === 0) {
       setMessErr({
         mess: 'Invalid amount',
         show: true
       });
     } else {
-      setText('Stake STRK-ETH LPs');
+      // deposit
+      setiIsConfirm(true);
+      const farmingContract = getFarmingContract();
+      const accounts = await window.web3.eth.getAccounts();
+      await methods
+        .send(
+          farmingContract.methods.deposit,
+          [0, new BigNumber(val)],
+          accounts[0]
+        )
+        .then(res => {
+          console.log(res, 'res deposit');
+          setiIsConfirm(false);
+        })
+        .catch(err => {
+          console.log(err.message, 'err deposit');
+          if (err.message.includes('User denied')) {
+            setIsShowCancel(true);
+            setTextErr('Decline transaction');
+          } else {
+            setIsShowCancel(true);
+            setTextErr(err.message);
+          }
+          throw err;
+        });
       setMessErr({
         mess: '',
         show: false
       });
     }
   };
-  const handleUnStake = () => {
+  const handleUnStake = async () => {
     if (!val || val === 0) {
       setMessErr({
         mess: 'Invalid amount',
         show: true
       });
     } else {
-      setText('Unstake STRK-ETH LPs');
+      // withdraw test
+      const farmingContract = getFarmingContract();
+      const accounts = await window.web3.eth.getAccounts();
+      await methods
+        .send(
+          farmingContract.methods.withdraw,
+          [0, new BigNumber(val)],
+          accounts[0]
+        )
+        .then(res => {
+          console.log(res, 'res draw');
+        })
+        .catch(err => {
+          console.log(err, 'res draw');
+
+          throw err;
+        });
       setMessErr({
         mess: '',
         show: false
@@ -276,19 +326,15 @@ function Staking() {
   };
   const handleStakeNFT = () => {
     setIsStakeNFT(true);
-    setTextNFT('Stake NFT');
   };
   const handleUnStakeNFT = () => {
     setIsUnStakeNFT(true);
-    setTextNFT('Unstake NFT');
   };
 
   const handleCloseUnStake = () => {
-    console.log('close stake');
     setIsUnStakeNFT(false);
   };
   const handleCloseStake = () => {
-    console.log('close unstake');
     setIsStakeNFT(false);
   };
   const handleSelectItem = (e, item) => {
@@ -318,19 +364,36 @@ function Staking() {
       const dataStaked = DATA_NFT.filter(it => {
         return it.active === true;
       });
-      console.log(dataStaked, 'dataStaked');
       setItemStaked(dataStaked);
     }
   };
-  const handleStakeDialog = () => {
-    console.log('111');
+  const handleStakeDialog = async () => {
     setIsStakeNFT(false);
     setiIsConfirm(true);
   };
   const handleCloseConfirm = () => {
     setiIsConfirm(false);
   };
-
+  const handleCloseErr = () => {
+    setIsShowCancel(false);
+  };
+  const getDataUserInfor = async () => {
+    window.web3 = new Web3(window.ethereum);
+    const farmingContract = getFarmingContract();
+    const accounts = await window.web3.eth.getAccounts();
+    await methods
+      .call(farmingContract.methods.userInfo, [0, accounts[0]])
+      .then(res => {
+        console.log(res, 'res');
+        setUserInfo(res);
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
+  useEffect(() => {
+    getDataUserInfor();
+  }, []);
   return (
     <>
       <React.Fragment>
@@ -387,7 +450,7 @@ function Staking() {
                   </SInfor>
                   <SInfor>
                     <SInforText>Staked</SInforText>
-                    <SInforValue>322.25</SInforValue>
+                    <SInforValue>{userInfo.amount}</SInforValue>
                   </SInfor>
                 </SInput>
               </Col>
@@ -426,11 +489,11 @@ function Staking() {
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <SInforClaim>
                   <SInforText>Base Reward</SInforText>
-                  <SInforValue>0.00</SInforValue>
+                  <SInforValue>{userInfo.accBaseReward}</SInforValue>
                 </SInforClaim>
                 <SInforClaim>
                   <SInforText>Boost Reward</SInforText>
-                  <SInforValue>32</SInforValue>
+                  <SInforValue>{userInfo.accBoostReward}</SInforValue>
                 </SInforClaim>
                 <SInforClaim>
                   <SInforText>vStrk</SInforText>
@@ -612,7 +675,6 @@ function Staking() {
         {/* Stake */}
         <DialogStake
           isStakeNFT={isStakeNFT}
-          text={textNFT}
           close={handleCloseStake}
           itemStaking={itemStaking}
           handleStakeDialog={handleStakeDialog}
@@ -620,10 +682,16 @@ function Staking() {
         {/* UnStake */}
         <DialogUnStake
           isUnStakeNFT={isUnStakeNFT}
-          text={text}
           close={handleCloseUnStake}
           itemStaked={itemStaked}
         />
+        {/* err */}
+        <DialogErr
+          isShow={isShowCancel}
+          close={handleCloseErr}
+          text={textErr}
+        />
+        {/* Confirm */}
         <DialogConfirm isConfirm={isConfirm} close={handleCloseConfirm} />
       </React.Fragment>
     </>

@@ -203,15 +203,14 @@ const SBtnUnStake = styled.div`
   cursor: pointer;
   margin-left: 10px;
 `;
-function DialogUnStake({ isUnStakeNFT, text, close, itemStaked }) {
+function DialogUnStake({ isUnStakeNFT, close, itemStaked }) {
   const classes = useStyles();
-  console.log(itemStaked, 'itemStaked');
   return (
     <>
       <React.Fragment>
         <Dialog className={classes.root} open={isUnStakeNFT} onClose={close}>
           <SMain>
-            <STitle>{text}</STitle>
+            <STitle>Unstake NFT</STitle>
             <SCount>{itemStaked.length} items</SCount>
             <SItem>
               {itemStaked?.map(item => {
@@ -272,14 +271,12 @@ function DialogUnStake({ isUnStakeNFT, text, close, itemStaked }) {
   );
 }
 DialogUnStake.propTypes = {
-  text: PropTypes.string,
   close: PropTypes.func,
   isUnStakeNFT: PropTypes.bool,
   itemStaked: PropTypes.array
 };
 
 DialogUnStake.defaultProps = {
-  text: '',
   close: func,
   isUnStakeNFT: false,
   itemStaked: []

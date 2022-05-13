@@ -205,13 +205,7 @@ const SBtnStake = styled.div`
   margin-left: 10px;
   cursor: pointer;
 `;
-function DialogStake({
-  isStakeNFT,
-  text,
-  close,
-  itemStaking,
-  handleStakeDialog
-}) {
+function DialogStake({ isStakeNFT, close, itemStaking, handleStakeDialog }) {
   const classes = useStyles();
 
   return (
@@ -219,7 +213,7 @@ function DialogStake({
       <React.Fragment>
         <Dialog className={classes.root} open={isStakeNFT} onClose={close}>
           <SMain>
-            <STitle>{text}</STitle>
+            <STitle>Stake NFT</STitle>
             <SCount>{itemStaking.length} items</SCount>
             <SItem>
               {itemStaking?.map(item => {
@@ -281,7 +275,6 @@ function DialogStake({
   );
 }
 DialogStake.propTypes = {
-  text: PropTypes.string,
   close: PropTypes.func,
   isStakeNFT: PropTypes.bool,
   itemStaking: PropTypes.array,
@@ -289,7 +282,6 @@ DialogStake.propTypes = {
 };
 
 DialogStake.defaultProps = {
-  text: '',
   close: func,
   isStakeNFT: false,
   itemStaking: [],

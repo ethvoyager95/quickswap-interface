@@ -6,6 +6,7 @@ import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
+import ErrIcon from '../../../assets/img/err_modal.svg';
 
 const useStyles = makeStyles({
   root: {
@@ -14,7 +15,7 @@ const useStyles = makeStyles({
       position: 'relative',
       width: '700px',
       color: '#ffffff',
-      height: '450px'
+      height: '300px'
     }
   },
   closeBtn: {
@@ -53,7 +54,7 @@ const useStyles = makeStyles({
   }
 });
 const SMain = styled.div`
-  margin: 0 20px;
+  margin: 50px 0;
 `;
 const STitle = styled.div`
   font-family: 'Roboto';
@@ -61,23 +62,29 @@ const STitle = styled.div`
   font-weight: 800;
   font-size: 28px;
   line-height: 33px;
-  display: flex;
-  align-items: center;
   text-align: center;
   letter-spacing: 0.015em;
   color: rgba(0, 28, 78, 0.87);
+  width: 100%;
+  display: block;
 `;
 const SText = styled.div`
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
-  display: flex;
-  align-items: center;
   letter-spacing: 0.25px;
   color: #141414;
+  text-align: center;
+  width: 100%;
+  display: block;
+  margin-top: 20px;
 `;
-function DialogErr({ isShow, close }) {
+const SImg = styled.img`
+  margin: 30px auto;
+  display: block;
+`;
+function DialogErr({ isShow, text, close }) {
   const classes = useStyles();
 
   return (
@@ -85,7 +92,8 @@ function DialogErr({ isShow, close }) {
       <React.Fragment>
         <Dialog className={classes.root} open={isShow} onClose={close}>
           <SMain>
-            <STitle>Decline transaction</STitle>
+            <STitle>{text}</STitle>
+            <SImg src={ErrIcon} />
             <SText>You have declined the transaction in your wallet</SText>
           </SMain>
         </Dialog>
@@ -95,11 +103,13 @@ function DialogErr({ isShow, close }) {
 }
 DialogErr.propTypes = {
   close: PropTypes.func,
+  text: PropTypes.string,
   isShow: PropTypes.bool
 };
 
 DialogErr.defaultProps = {
   close: func,
+  text: '',
   isShow: false
 };
 
