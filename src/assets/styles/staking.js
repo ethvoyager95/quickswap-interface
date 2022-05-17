@@ -298,6 +298,25 @@ export const SSlider = styled.div`
     margin: auto;
   }
 `;
+export const SSliderNoData = styled.div`
+  display: block;
+  width: 100%;
+`;
+export const SSliderNoDataImg = styled.img`
+  display: block;
+  margin: auto;
+`;
+export const SSliderNoDataText = styled.div`
+  width: 100%;
+  display: block;
+  margin: auto;
+  text-align: center;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 27px;
+  color: #9d9fa7;
+`;
 export const SItemSlider = styled.div`
   width: 100%;
   padding: 10px;

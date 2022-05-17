@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
@@ -7,12 +8,15 @@ import { bindActionCreators } from 'redux';
 import MainLayout from 'containers/Layout/MainLayout';
 import { Row, Col, Tooltip } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
+import BigNumber from 'bignumber.js';
 import Web3 from 'web3'; // eslint-disable-line import/no-unresolved
+import axiosInstance from '../../../utilities/axios';
 import IconQuestion from '../../../assets/img/question.png';
 import DialogUnStake from './DialogUnStake';
 import DialogStake from './DialogStake';
 import IconDuck from '../../../assets/img/duck.png';
 import IconLink from '../../../assets/img/launch.svg';
+import IconNoData from '../../../assets/img/no_data.svg';
 import '../../../assets/styles/slick.scss';
 import {
   SDiv,
@@ -44,6 +48,9 @@ import {
   SFlex,
   SFlexEnd,
   SSlider,
+  SSliderNoData,
+  SSliderNoDataImg,
+  SSliderNoDataText,
   SItemSlider,
   SImgSlider,
   SBoxSlider,
@@ -67,83 +74,10 @@ import {
 
 import DashboardStaking from './Dashboard';
 import CountDownClaim from './countDownClaim';
-// eslint-disable-next-line import/order
-import BigNumber from 'bignumber.js';
+import DialogSuccess from './DialogSuccess';
 
-const DATA_SLIDER = [
-  {
-    id: 1,
-    name: 'B.Duck',
-    description: 'B.Duck #3116',
-    img: IconDuck,
-    active: false
-  },
-  {
-    id: 2,
-    name: 'B.Duck',
-    description: 'B.Duck #3117',
-    img: IconDuck,
-    active: false
-  },
-  {
-    id: 3,
-    name: 'B.Duck',
-    description: 'B.Duck #3118',
-    img: IconDuck,
-    active: false
-  },
-  {
-    id: 4,
-    name: 'B.Duck',
-    description: 'B.Duck #3119',
-    img: IconDuck,
-    active: false
-  },
-  {
-    id: 5,
-    name: 'B.Duck',
-    description: 'B.Duck #3120',
-    img: IconDuck,
-    active: false
-  }
-];
-const DATA_NFT = [
-  {
-    id: 1,
-    name: 'B.Duck',
-    description: 'B.Duck #3116',
-    img: IconDuck,
-    active: false
-  },
-  {
-    id: 2,
-    name: 'B.Duck',
-    description: 'B.Duck #3117',
-    img: IconDuck,
-    active: false
-  },
-  {
-    id: 3,
-    name: 'B.Duck',
-    description: 'B.Duck #3118',
-    img: IconDuck,
-    active: false
-  },
-  {
-    id: 4,
-    name: 'B.Duck',
-    description: 'B.Duck #3119',
-    img: IconDuck,
-    active: false
-  },
-  {
-    id: 5,
-    name: 'B.Duck',
-    description: 'B.Duck #3120',
-    img: IconDuck,
-    active: false
-  }
-];
+// eslint-disable-next-line import/order
+
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
   const { onClick } = props;
@@ -234,20 +168,26 @@ function Staking({ settings }) {
     show: false,
     noLP: false
   });
+  const [txhash] = useState(
+    '0xa0afb0543264006dd824bfe24388e2980aa8618654f1572c7824c0a7277ff004'
+  );
+  const [dataNFT, setDataNFT] = useState([]);
   const [textErr, setTextErr] = useState('');
   const [isStakeNFT, setIsStakeNFT] = useState(false);
   const [isUnStakeNFT, setIsUnStakeNFT] = useState(false);
   const [isConfirm, setiIsConfirm] = useState(false);
   const [isShowCancel, setIsShowCancel] = useState(false);
-  const [data] = useState(DATA_SLIDER);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [itemStaking, setItemStaking] = useState([]);
   const [itemStaked, setItemStaked] = useState([]);
   const [userInfo, setUserInfo] = useState({});
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
+
   const [expiryTime] = useState(tomorrow);
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
+
   // change amount
   const handleChangeValue = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -263,10 +203,23 @@ function Staking({ settings }) {
     } else {
       const valueFormat = event?.target.value.replace(/,/g, '.');
       setVal(valueFormat);
+      if (valueFormat > userInfo?.available) {
+        setMessErr({
+          mess: 'The amount has exceeded your balance. Try again',
+          show: true
+        });
+      }
     }
   };
   // stake
   const handleStake = async () => {
+    if (val > userInfo?.available) {
+      setMessErr({
+        mess: 'The amount has exceeded your balance. Try again',
+        show: true
+      });
+      return;
+    }
     if (!val || val === 0) {
       setMessErr({
         mess: 'Invalid amount',
@@ -395,14 +348,15 @@ function Staking({ settings }) {
   // handle item slider
   const handleSelectItem = (e, item) => {
     if (e.isTrusted) {
-      const index = DATA_SLIDER.findIndex(res => {
+      const dataNFTStake = [...dataNFT];
+      const index = dataNFTStake.findIndex(res => {
         return res.id === item.id;
       });
       // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < DATA_SLIDER.length; i++) {
-        DATA_SLIDER[index].active = !DATA_SLIDER[index].active;
+      for (let i = 0; i < dataNFTStake.length; i++) {
+        dataNFTStake[index].active = !dataNFTStake[index].active;
       }
-      const dataStaking = DATA_SLIDER.filter(it => {
+      const dataStaking = dataNFTStake.filter(it => {
         return it.active === true;
       });
       setItemStaking(dataStaking);
@@ -410,14 +364,15 @@ function Staking({ settings }) {
   };
   const handleSelectItemNFT = (e, item) => {
     if (e.isTrusted) {
-      const index = DATA_NFT.findIndex(res => {
+      const dataNFTUnStake = [...dataNFT];
+      const index = dataNFTUnStake.findIndex(res => {
         return res.id === item.id;
       });
       // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < DATA_NFT.length; i++) {
-        DATA_NFT[index].active = !DATA_NFT[index].active;
+      for (let i = 0; i < dataNFTUnStake.length; i++) {
+        dataNFTUnStake[index].active = !dataNFTUnStake[index].active;
       }
-      const dataStaked = DATA_NFT.filter(it => {
+      const dataStaked = dataNFTUnStake.filter(it => {
         return it.active === true;
       });
       setItemStaked(dataStaked);
@@ -479,6 +434,9 @@ function Staking({ settings }) {
   const handleCloseConfirm = () => {
     setiIsConfirm(false);
   };
+  const handleCloseSuccess = () => {
+    setIsSuccess(false);
+  };
   const handleCloseErr = () => {
     setIsShowCancel(false);
   };
@@ -527,9 +485,36 @@ function Staking({ settings }) {
         throw err;
       });
   };
+
   useEffect(() => {
     getDataUserInfor();
   }, []);
+  const fetchNFTs = async () => {
+    // get polygon NFTs for address
+    await axiosInstance
+      .get(
+        `/${settings.selectedAddress}/nft?chain=rinkeby&format=decimal&limit=20`
+      )
+      .then(res => {
+        const data = res.data.result;
+        if (data.length > 0) {
+          // eslint-disable-next-line no-shadow
+          const dataConvert = [...data];
+          // eslint-disable-next-line array-callback-return
+          dataConvert.map(item => {
+            // eslint-disable-next-line no-param-reassign
+            item.active = false;
+            // eslint-disable-next-line no-param-reassign
+            item.img = IconDuck;
+          });
+          setDataNFT(dataConvert);
+        }
+      });
+  };
+  useEffect(() => {
+    fetchNFTs();
+  }, []);
+
   return (
     <>
       <React.Fragment>
@@ -699,7 +684,7 @@ function Staking({ settings }) {
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 9 }}>
                 <SFlex>
-                  <SDetails>NFT selected: 0/4</SDetails>
+                  <SDetails>NFT selected: 0/{dataNFT.length}</SDetails>
                 </SFlex>
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
@@ -709,8 +694,15 @@ function Staking({ settings }) {
               </Col>
             </Row>
             <SSlider>
+              {dataNFT.length === 0 && (
+                <SSliderNoData>
+                  <SSliderNoDataImg src={IconNoData} />
+                  <SSliderNoDataText>You don’t own any NFTs</SSliderNoDataText>
+                </SSliderNoData>
+              )}
+
               <Slider {...AUDITOR_SETTING}>
-                {data?.map(item => {
+                {dataNFT?.map(item => {
                   return (
                     <SItemSlider
                       key={item.id}
@@ -751,7 +743,7 @@ function Staking({ settings }) {
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 9 }}>
                 <SFlex>
-                  <SDetails>NFT staked 0/10</SDetails>
+                  <SDetails>NFT staked 0/{dataNFT.length}</SDetails>
                 </SFlex>
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
@@ -761,8 +753,14 @@ function Staking({ settings }) {
               </Col>
             </Row>
             <SSlider>
+              {dataNFT.length === 0 && (
+                <SSliderNoData>
+                  <SSliderNoDataImg src={IconNoData} />
+                  <SSliderNoDataText>You don’t own any NFTs</SSliderNoDataText>
+                </SSliderNoData>
+              )}
               <Slider {...AUDITOR_SETTING}>
-                {DATA_NFT?.map(item => {
+                {dataNFT?.map(item => {
                   return (
                     <SItemSlider
                       key={item.id}
@@ -812,6 +810,12 @@ function Staking({ settings }) {
         />
         {/* Confirm */}
         <DialogConfirm isConfirm={isConfirm} close={handleCloseConfirm} />
+        <DialogSuccess
+          isSuccess={isSuccess}
+          close={handleCloseSuccess}
+          address={settings?.selectedAddress}
+          txh={txhash}
+        />
       </React.Fragment>
     </>
   );
