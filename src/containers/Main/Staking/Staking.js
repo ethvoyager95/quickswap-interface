@@ -12,17 +12,13 @@ import IconQuestion from '../../../assets/img/question.png';
 import DialogUnStake from './DialogUnStake';
 import DialogStake from './DialogStake';
 import IconDuck from '../../../assets/img/duck.png';
+import IconLink from '../../../assets/img/launch.svg';
 import '../../../assets/styles/slick.scss';
 import {
   SDiv,
-  SRow,
-  SBox,
-  SItems,
-  STitle,
-  SValue,
-  SCoin,
   SInput,
   SMax,
+  SBtnDisabled,
   SBtnClaim,
   SBtnClaimStart,
   SInforText,
@@ -37,13 +33,12 @@ import {
   SBtnUnstake,
   SText,
   SHref,
+  SHrefErr,
+  SLinkErr,
+  SImgErr,
   SBtn,
   SClaim,
-  STimeClaim,
-  STimeNumer,
-  STimeText,
   SUnClaim,
-  SItemTime,
   SDetails,
   SDetailsColor,
   SFlex,
@@ -59,15 +54,19 @@ import {
   SError,
   SSactive,
   SSUnactive,
-  STextSelecT
+  STextSelecT,
+  SHeader
 } from '../../../assets/styles/staking.js';
 import DialogConfirm from './DialogConfirm';
 import DialogErr from './DialogErr';
 import {
   getFarmingContract,
+  getLPContract,
   methods
 } from '../../../utilities/ContractService';
 
+import DashboardStaking from './Dashboard';
+import CountDownClaim from './countDownClaim';
 // eslint-disable-next-line import/order
 import BigNumber from 'bignumber.js';
 
@@ -228,10 +227,13 @@ const AUDITOR_SETTING = {
   ]
 };
 
-function Staking(settings) {
-  const address = settings.selectedAddress;
+function Staking({ settings }) {
   const [val, setVal] = useState(0);
-  const [messErr, setMessErr] = useState({ mess: '', show: false });
+  const [messErr, setMessErr] = useState({
+    mess: '',
+    show: false,
+    noLP: false
+  });
   const [textErr, setTextErr] = useState('');
   const [isStakeNFT, setIsStakeNFT] = useState(false);
   const [isUnStakeNFT, setIsUnStakeNFT] = useState(false);
@@ -241,7 +243,11 @@ function Staking(settings) {
   const [itemStaking, setItemStaking] = useState([]);
   const [itemStaked, setItemStaked] = useState([]);
   const [userInfo, setUserInfo] = useState({});
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const [expiryTime] = useState(tomorrow);
   const farmingContract = getFarmingContract();
+  const lpContract = getLPContract();
   // change amount
   const handleChangeValue = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -269,12 +275,12 @@ function Staking(settings) {
     } else {
       // deposit
       setiIsConfirm(true);
-      const accounts = await window.web3.eth.getAccounts();
+      const accounts = settings.selectedAddress;
       await methods
         .send(
           farmingContract.methods.deposit,
-          [0, new BigNumber(val)],
-          accounts[0]
+          [0, new BigNumber(val).integerValue()],
+          accounts
         )
         .then(() => {
           setiIsConfirm(false);
@@ -306,11 +312,11 @@ function Staking(settings) {
     } else {
       // withdraw test
       setiIsConfirm(true);
-      const accounts = await window.web3.eth.getAccounts();
+      const accounts = settings.selectedAddress;
       await methods
         .send(
           farmingContract.methods.withdraw,
-          [0, new BigNumber(val)],
+          [0, new BigNumber(val).integerValue()],
           accounts[0]
         )
         .then(() => {
@@ -336,11 +342,11 @@ function Staking(settings) {
   };
   // handleClaim
   const handleClainBaseReward = async () => {
-    const accounts = await window.web3.eth.getAccounts();
+    const accounts = settings.selectedAddress;
     await methods
       .send(
         farmingContract.methods.claimBaseRewards,
-        [new BigNumber(0)],
+        [new BigNumber(0).integerValue()],
         accounts[0]
       )
       .then(() => {})
@@ -358,11 +364,11 @@ function Staking(settings) {
       });
   };
   const handleClainBootReward = async () => {
-    const accounts = await window.web3.eth.getAccounts();
+    const accounts = settings.selectedAddress;
     await methods
       .send(
         farmingContract.methods.claimBoostReward,
-        [new BigNumber(0)],
+        [new BigNumber(0).integerValue()],
         accounts[0]
       )
       .then(() => {})
@@ -421,13 +427,13 @@ function Staking(settings) {
   const handleStakeDialog = async () => {
     setIsStakeNFT(false);
     setiIsConfirm(true);
-    const accounts = await window.web3.eth.getAccounts();
+    const accounts = settings.selectedAddress;
 
     await methods
       .send(
         farmingContract.methods.boost,
-        [new BigNumber(0), new BigNumber(0)],
-        accounts[0]
+        [new BigNumber(0).integerValue(), new BigNumber(0).integerValue()],
+        accounts
       )
       .then(() => {})
       .catch(err => {
@@ -447,11 +453,11 @@ function Staking(settings) {
   const handleUnStakeDialog = async () => {
     setIsUnStakeNFT(false);
     setiIsConfirm(true);
-    const accounts = await window.web3.eth.getAccounts();
+    const accounts = settings.selectedAddress;
     await methods
       .send(
         farmingContract.methods.unboost,
-        [new BigNumber(0), new BigNumber(0)],
+        [new BigNumber(0).integerValue(), new BigNumber(0).integerValue()],
         accounts[0]
       )
       .then(() => {})
@@ -482,22 +488,40 @@ function Staking(settings) {
   const handleCloseStake = () => {
     setIsStakeNFT(false);
   };
+  const handleMaxValue = () => {
+    setVal(userInfo?.available);
+    if (userInfo?.available > 0) {
+      setMessErr({
+        mess: '',
+        show: false
+      });
+    }
+  };
   // get userInfor
   const getDataUserInfor = async () => {
     window.web3 = new Web3(window.ethereum);
-    const accounts = await window.web3.eth.getAccounts();
-    const balances = await window.web3.eth.getBalance(accounts[0]);
+    const accounts = settings.selectedAddress;
+    const sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
+      settings.selectedAddress
+    ]);
     await methods
-      .call(farmingContract.methods.userInfo, [0, accounts[0]])
+      .call(farmingContract.methods.userInfo, [0, accounts])
       .then(res => {
-        const balanceBigNumber = new BigNumber(balances).div(
+        const balanceBigNumber = new BigNumber(sTokenBalance).div(
           new BigNumber(10).pow(18)
         );
         const balanceBigFormat = balanceBigNumber
           .toNumber()
           .toFixed(4)
           .toString();
-        setUserInfo({ ...res, available: balanceBigFormat });
+        if (balanceBigNumber.isZero()) {
+          setMessErr({
+            mess: 'No tokens to stake: Get STRK-ETH LP',
+            show: false,
+            noLP: true
+          });
+        }
+        setUserInfo({ ...res, available: parseFloat(balanceBigFormat) });
       })
       .catch(err => {
         throw err;
@@ -506,44 +530,22 @@ function Staking(settings) {
   useEffect(() => {
     getDataUserInfor();
   }, []);
-  console.log(userInfo, 'userInfo');
-
   return (
     <>
       <React.Fragment>
         <MainLayout title="Dashboard">
+          <DashboardStaking />
           <SDiv>
-            <SRow>STRK-ETH</SRow>
-          </SDiv>
-          <SDiv>
-            <SBox>
-              <SItems>
-                <STitle>NFTs Staked</STitle>
-                <SValue>1522/2200</SValue>
-                <SCoin>$1000</SCoin>
-              </SItems>
-              <SItems>
-                <STitle>Liquidity</STitle>
-                <SValue>8934</SValue>
-                <SCoin>$30,005</SCoin>
-              </SItems>
-              <SItems>
-                <STitle>Boots APR</STitle>
-                <SValue>Up to 200%</SValue>
-              </SItems>
-              <SItems>
-                <STitle>Base APR</STitle>
-                <SValue>200%</SValue>
-              </SItems>
-            </SBox>
-          </SDiv>
-          <SDiv>
-            <SText>
-              STRK-ETH Staking
-              <SHref target="_blank" href="https://app.strike.org/">
+            <SHeader>
+              <SText>STRK-ETH Staking</SText>
+              <SHref
+                target="_blank"
+                href="https://app.uniswap.org/#/add/0x74232704659ef37c08995e386a2e26cc27a8d7b1/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/10000?chain=mainnet"
+              >
                 Get STRK-ETH LPs
               </SHref>
-            </SText>
+            </SHeader>
+
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <SInput>
@@ -553,10 +555,27 @@ function Staking(settings) {
                     inputMode="decimal"
                     pattern="^[0-9]*[.,]?[0-9]*$"
                     min={0}
+                    placeholder="Enter a number"
                     onChange={event => handleChangeValue(event)}
                   />
-                  <SMax>MAX</SMax>
+                  {settings.selectedAddress ? (
+                    <SMax onClick={handleMaxValue}>MAX</SMax>
+                  ) : (
+                    <SBtnDisabled>MAX</SBtnDisabled>
+                  )}
+
                   {messErr?.show === true && <SError>{messErr.mess}</SError>}
+                  {messErr?.noLP === true && (
+                    <SHrefErr>
+                      {messErr.mess}
+                      <SLinkErr
+                        target="_blank"
+                        href="https://app.uniswap.org/#/add/0x74232704659ef37c08995e386a2e26cc27a8d7b1/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/10000?chain=rinkeby"
+                      >
+                        <SImgErr src={IconLink} />
+                      </SLinkErr>
+                    </SHrefErr>
+                  )}
 
                   <SInfor>
                     <SInforText>Available</SInforText>
@@ -629,22 +648,7 @@ function Staking(settings) {
                     </SBtnClaim>
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    <SBtnClaim>
-                      <STimeClaim>
-                        <STimeNumer>
-                          <SItemTime>0</SItemTime>
-                          <SItemTime>23</SItemTime>
-                          <SItemTime>59</SItemTime>
-                          <SItemTime>59</SItemTime>
-                        </STimeNumer>
-                        <STimeText>
-                          <SItemTime>DAYS</SItemTime>
-                          <SItemTime>HOURS</SItemTime>
-                          <SItemTime>MIN</SItemTime>
-                          <SItemTime>SEC</SItemTime>
-                        </STimeText>
-                      </STimeClaim>
-                    </SBtnClaim>
+                    <CountDownClaim times={expiryTime} />
                   </Col>
                 </Row>
                 <Row>

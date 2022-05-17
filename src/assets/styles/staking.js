@@ -12,52 +12,9 @@ export const SDiv = styled.div`
     text-align: center;
   }
 `;
-export const SRow = styled.div`
-  width: 100%;
-  background: #fff;
-  color: #107def;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-`;
-export const SBox = styled.div`
-  margin-top: 10px;
-  width: 100%;
-  color: #107def;
+export const SHeader = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-export const SItems = styled.div`
-  background: #fff;
-  width: 100%;
-  margin-right: 10px;
-  text-align: center;
-  padding: 20px;
-`;
-export const STitle = styled.div`
-  font-style: normal;
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 23px;
-  color: #107def;
-  margin-top: 5px;
-`;
-export const SValue = styled.div`
-  font-style: normal;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 23px;
-  color: rgba(0, 28, 78, 0.87);
-  margin-top: 5px;
-`;
-export const SCoin = styled.div`
-  color: #8196bb;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  margin-top: 5px;
-  line-height: 19px;
 `;
 export const SText = styled.div`
   color: rgba(0, 28, 78, 0.87);
@@ -66,16 +23,15 @@ export const SText = styled.div`
   font-size: 24px;
   line-height: 35px;
   margin-top: 10px;
+
   img {
     margin-left: 10px;
   }
 `;
 export const SHref = styled.a`
-  margin-left: 10px;
   color: #107def;
-  font-size: 14px;
-  cursoir: pointer;
-  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
 `;
 export const SInput = styled.div`
   position: relative;
@@ -101,13 +57,41 @@ export const SError = styled.div`
   font-size: 14px;
   line-height: 23px;
 `;
+export const SHrefErr = styled.div`
+  color: #e80e0e;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 23px;
+`;
+export const SLinkErr = styled.a``;
+export const SImgErr = styled.img`
+  margin-left: 10px;
+`;
 export const SMax = styled.div`
   position: absolute;
-  top: 8px;
+  top: 5px;
   right: 10px;
   cursor: pointer;
   color: #107def;
   font-weight: 700;
+  background: #107def;
+  border-radius: 5px;
+  color: #fff;
+  padding: 5px;
+`;
+export const SBtnDisabled = styled.div`
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+  color: #107def;
+  font-weight: 700;
+  background: #9d9fa7;
+  border-radius: 5px;
+  color: #fff;
+  padding: 5px;
+  cursor: not-allowed;
 `;
 export const SBtn = styled.div`
   display: flex;

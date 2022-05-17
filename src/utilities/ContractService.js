@@ -89,10 +89,18 @@ export const getInterestModelContract = address => {
     address
   );
 };
+
 export const getFarmingContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.FARMING_ABI),
     constants.CONTRACT_FARMING_ADDRESS
+  );
+};
+
+export const getLPContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.CONTRACT_LP_TOKEN_ABI),
+    constants.CONTRACT_LP_ADDRESS
   );
 };
 export const methods = {
