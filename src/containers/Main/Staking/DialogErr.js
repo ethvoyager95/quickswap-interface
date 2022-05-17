@@ -54,7 +54,7 @@ const useStyles = makeStyles({
   }
 });
 const SMain = styled.div`
-  margin: 50px 0;
+  margin: 30px 0;
 `;
 const STitle = styled.div`
   font-family: 'Roboto';
@@ -92,8 +92,8 @@ function DialogErr({ isShow, text, close }) {
       <React.Fragment>
         <Dialog className={classes.root} open={isShow} onClose={close}>
           <SMain>
-            <STitle>{text}</STitle>
             <SImg src={ErrIcon} />
+            <STitle>{text}</STitle>
             <SText>You have declined the transaction in your wallet</SText>
           </SMain>
         </Dialog>

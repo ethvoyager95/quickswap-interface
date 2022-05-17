@@ -76,9 +76,9 @@ const SLoading = styled.div`
   align-items: center;
 `;
 const SDivLoader = styled.div`
-  border: 8px solid #1efcf1;
+  border: 8px solid #107def;
   border-radius: 50%;
-  border-top: 8px solid #4f4c6d;
+  border-top: 8px solid #d7d7d7;
   width: 100px;
   height: 100px;
   -webkit-animation: spin 2s linear infinite; /* Safari */
@@ -118,10 +118,10 @@ function DialogConfirm({ isConfirm, close }) {
       <React.Fragment>
         <Dialog className={classes.root} open={isConfirm} onClose={close}>
           <SMain>
-            <STitle>Waiting for confirmation</STitle>
             <SLoading>
               <LoaddingCircle />
             </SLoading>
+            <STitle>Waiting for confirmation</STitle>
             <SText>Please confirm your transaction in your wallet</SText>
           </SMain>
         </Dialog>

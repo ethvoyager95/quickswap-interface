@@ -164,7 +164,7 @@ const chains = {
     builder: explorers.etherscan
   }
 };
-function DialogSuccess({ isShow, close, address, txh }) {
+function DialogSuccess({ isSuccess, close, address, txh }) {
   const classes = useStyles();
   const [copySuccess, setCopySuccess] = useState('');
   const [chainId, setChainId] = useState('');
@@ -199,7 +199,7 @@ function DialogSuccess({ isShow, close, address, txh }) {
   return (
     <>
       <React.Fragment>
-        <Dialog className={classes.root} open={isShow} onClose={close}>
+        <Dialog className={classes.root} open={isSuccess} onClose={close}>
           <SMain>
             <SIcon>
               <SIconClose src={IconClose} onClick={close} />
@@ -236,14 +236,14 @@ function DialogSuccess({ isShow, close, address, txh }) {
 }
 DialogSuccess.propTypes = {
   close: PropTypes.func,
-  isShow: PropTypes.bool,
+  isSuccess: PropTypes.bool,
   address: PropTypes.string,
   txh: PropTypes.string
 };
 
 DialogSuccess.defaultProps = {
   close: func,
-  isShow: false,
+  isSuccess: false,
   address: '',
   txh: ''
 };

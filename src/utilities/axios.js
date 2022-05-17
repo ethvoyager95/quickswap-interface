@@ -1,35 +1,20 @@
 import axios from 'axios';
+import * as constants from 'utilities/constants';
 
-const axiosInstance = axios.create({
+export const axiosInstanceMoralis = axios.create({
   baseURL: `https://deep-index.moralis.io/api/v2/`,
   timeout: 20000,
   responseType: 'json',
   headers: {
     'Content-Type': 'application/json',
-    'x-api-key':
-      'fFugHvYLbqbaxsUAqtCukvx0Ybn1tIjert6wUyDgS0JYaRjeS6KkKXF6zROGU8sj'
+    'x-api-key': `${constants.MORALIS_KEY}`
   }
 });
-
-axiosInstance.interceptors.request.use(
-  config => {
-    const accessToken =
-      'fFugHvYLbqbaxsUAqtCukvx0Ybn1tIjert6wUyDgS0JYaRjeS6KkKXF6zROGU8sj';
-    if (config.headers)
-      // eslint-disable-next-line no-param-reassign
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    return config;
-  },
-  err => Promise.reject(err)
-);
-
-axiosInstance.interceptors.response.use(
-  response => {
-    return response;
-  },
-  error => {
-    return Promise.reject(error);
+export const axiosInstance = axios.create({
+  baseURL: `${process.env.REACT_APP_MAIN_API}`,
+  timeout: 20000,
+  responseType: 'json',
+  headers: {
+    'Content-Type': 'application/json'
   }
-);
-
-export default axiosInstance;
+});

@@ -1,3 +1,4 @@
+/* eslint-disable no-const-assign */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
@@ -9,8 +10,9 @@ import MainLayout from 'containers/Layout/MainLayout';
 import { Row, Col, Tooltip } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
 import BigNumber from 'bignumber.js';
-import Web3 from 'web3'; // eslint-disable-line import/no-unresolved
-import axiosInstance from '../../../utilities/axios';
+import Web3 from 'web3';
+// eslint-disable-next-line import/named
+import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
 import IconQuestion from '../../../assets/img/question.png';
 import DialogUnStake from './DialogUnStake';
 import DialogStake from './DialogStake';
@@ -168,9 +170,7 @@ function Staking({ settings }) {
     show: false,
     noLP: false
   });
-  const [txhash] = useState(
-    '0xa0afb0543264006dd824bfe24388e2980aa8618654f1572c7824c0a7277ff004'
-  );
+  const [txhash, setTxhash] = useState('');
   const [dataNFT, setDataNFT] = useState([]);
   const [textErr, setTextErr] = useState('');
   const [isStakeNFT, setIsStakeNFT] = useState(false);
@@ -187,7 +187,71 @@ function Staking({ settings }) {
   const [expiryTime] = useState(tomorrow);
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
+  // get userInfor
+  const getDataUserInfor = async () => {
+    window.web3 = new Web3(window.ethereum);
+    const accounts = settings.selectedAddress;
+    const sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
+      settings.selectedAddress
+    ]);
+    const total = {
+      totalBoost: '',
+      totalDeposit: ''
+    };
+    try {
+      // eslint-disable-next-line no-debugger
+      await axiosInstance
+        .get(`/api/total_stake`)
+        .then(res => {
+          if (res) {
+            const result = res.data.data;
+            const totalDepositString = +new BigNumber(result.totalDeposit).div(
+              new BigNumber(10).pow(18)
+            );
 
+            total.totalBoost = result?.totalBoost;
+            total.totalDeposit = totalDepositString.toString();
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+    } catch (err) {
+      throw err;
+    }
+    await methods
+      .call(farmingContract.methods.userInfo, [0, accounts])
+      .then(res => {
+        const balanceBigNumber = new BigNumber(sTokenBalance).div(
+          new BigNumber(10).pow(18)
+        );
+        const pendingAmountString = +new BigNumber(res.pendingAmount).div(
+          new BigNumber(10).pow(18)
+        );
+        const balanceBigFormat = balanceBigNumber
+          .toNumber()
+          .toFixed(4)
+          .toString();
+        if (balanceBigNumber.isZero()) {
+          setMessErr({
+            mess: 'No tokens to stake: Get STRK-ETH LP',
+            show: false,
+            noLP: true
+          });
+        }
+        setUserInfo({
+          ...res,
+          available: parseFloat(balanceBigFormat).toString(),
+          totalBoost: total.totalBoost ?? '',
+          totalDeposit: total.totalDeposit ?? '',
+          pendingAmount: pendingAmountString.toString()
+        });
+        console.log(userInfo, 'us');
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
   // change amount
   const handleChangeValue = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -229,14 +293,23 @@ function Staking({ settings }) {
       // deposit
       setiIsConfirm(true);
       const accounts = settings.selectedAddress;
+      const valueBigNumber = new BigNumber(val).times(
+        new BigNumber(10).pow(18)
+      );
       await methods
         .send(
           farmingContract.methods.deposit,
-          [0, new BigNumber(val).integerValue()],
+          [0, new BigNumber(valueBigNumber).integerValue()],
           accounts
         )
-        .then(() => {
-          setiIsConfirm(false);
+        .then(res => {
+          if (res) {
+            console.log(res, 'res');
+            getDataUserInfor();
+            setTxhash(res.transactionHash);
+            setiIsConfirm(false);
+            setIsSuccess(true);
+          }
         })
         .catch(err => {
           if (err.message.includes('User denied')) {
@@ -270,10 +343,12 @@ function Staking({ settings }) {
         .send(
           farmingContract.methods.withdraw,
           [0, new BigNumber(val).integerValue()],
-          accounts[0]
+          accounts
         )
-        .then(() => {
+        .then(res => {
+          setTxhash(res.transactionHash);
           setiIsConfirm(false);
+          setIsSuccess(true);
         })
         .catch(err => {
           if (err.message.includes('User denied')) {
@@ -300,7 +375,7 @@ function Staking({ settings }) {
       .send(
         farmingContract.methods.claimBaseRewards,
         [new BigNumber(0).integerValue()],
-        accounts[0]
+        accounts
       )
       .then(() => {})
       .catch(err => {
@@ -435,6 +510,7 @@ function Staking({ settings }) {
     setiIsConfirm(false);
   };
   const handleCloseSuccess = () => {
+    console.log('close');
     setIsSuccess(false);
   };
   const handleCloseErr = () => {
@@ -455,43 +531,13 @@ function Staking({ settings }) {
       });
     }
   };
-  // get userInfor
-  const getDataUserInfor = async () => {
-    window.web3 = new Web3(window.ethereum);
-    const accounts = settings.selectedAddress;
-    const sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
-      settings.selectedAddress
-    ]);
-    await methods
-      .call(farmingContract.methods.userInfo, [0, accounts])
-      .then(res => {
-        const balanceBigNumber = new BigNumber(sTokenBalance).div(
-          new BigNumber(10).pow(18)
-        );
-        const balanceBigFormat = balanceBigNumber
-          .toNumber()
-          .toFixed(4)
-          .toString();
-        if (balanceBigNumber.isZero()) {
-          setMessErr({
-            mess: 'No tokens to stake: Get STRK-ETH LP',
-            show: false,
-            noLP: true
-          });
-        }
-        setUserInfo({ ...res, available: parseFloat(balanceBigFormat) });
-      })
-      .catch(err => {
-        throw err;
-      });
-  };
 
   useEffect(() => {
     getDataUserInfor();
-  }, []);
+  }, [txhash]);
   const fetchNFTs = async () => {
     // get polygon NFTs for address
-    await axiosInstance
+    await axiosInstanceMoralis
       .get(
         `/${settings.selectedAddress}/nft?chain=rinkeby&format=decimal&limit=20`
       )
@@ -506,6 +552,8 @@ function Staking({ settings }) {
             item.active = false;
             // eslint-disable-next-line no-param-reassign
             item.img = IconDuck;
+            // eslint-disable-next-line no-param-reassign
+            item.name = `${item.name}${' #'}${item.token_id}`;
           });
           setDataNFT(dataConvert);
         }
@@ -519,7 +567,11 @@ function Staking({ settings }) {
     <>
       <React.Fragment>
         <MainLayout title="Dashboard">
-          <DashboardStaking />
+          <DashboardStaking
+            totalBoost={userInfo?.totalBoost}
+            totalDeposit={userInfo?.totalDeposit}
+            amount={userInfo?.amount}
+          />
           <SDiv>
             <SHeader>
               <SText>STRK-ETH Staking</SText>
@@ -810,6 +862,7 @@ function Staking({ settings }) {
         />
         {/* Confirm */}
         <DialogConfirm isConfirm={isConfirm} close={handleCloseConfirm} />
+
         <DialogSuccess
           isSuccess={isSuccess}
           close={handleCloseSuccess}

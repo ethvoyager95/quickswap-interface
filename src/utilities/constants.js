@@ -31,6 +31,7 @@ export const TIMEOUT = 'Timeout';
 export const MORALIS_URL = process.env.REACT_APP_MAIN_MORALIS_URL;
 export const MORALIS_ID = process.env.REACT_APP_MAIN_MORALIS_ID;
 export const NFT_ADDRESS = process.env.REACT_APP_MAIN_NFT_ADDRESS;
+export const MORALIS_KEY = process.env.REACT_APP_MAIN_MORALIS_KEY;
 
 // Contract ABI
 export const CONTRACT_TOKEN_ADDRESS =

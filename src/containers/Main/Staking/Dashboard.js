@@ -67,7 +67,7 @@ const SUSDBox = styled.div`
   font-size: 14px;
   line-height: 22px;
 `;
-function DashboardStaking({ settings }) {
+function DashboardStaking({ amount, totalBoost, totalDeposit }) {
   return (
     <>
       <React.Fragment>
@@ -87,12 +87,14 @@ function DashboardStaking({ settings }) {
               <SBox>
                 <SItemsBox>
                   <STextBox>NFTs Staked</STextBox>
-                  <SValueBox>1522/2000</SValueBox>
+                  <SValueBox>
+                    {amount}/{totalBoost}
+                  </SValueBox>
                   <SUSDBox>$1000</SUSDBox>
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Liquidity</STextBox>
-                  <SValueBox>8934.55</SValueBox>
+                  <SValueBox>{totalDeposit}</SValueBox>
                   <SUSDBox>$30,005</SUSDBox>
                 </SItemsBox>
                 <SItemsBox>
@@ -112,11 +114,15 @@ function DashboardStaking({ settings }) {
   );
 }
 DashboardStaking.propTypes = {
-  settings: PropTypes.object
+  totalBoost: PropTypes.string,
+  totalDeposit: PropTypes.string,
+  amount: PropTypes.string
 };
 
 DashboardStaking.defaultProps = {
-  settings: {}
+  totalBoost: '',
+  totalDeposit: '',
+  amount: ''
 };
 
 const mapStateToProps = ({ account }) => ({
