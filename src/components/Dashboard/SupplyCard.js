@@ -111,12 +111,14 @@ function SupplyCard({ currentMarket, settings }) {
   }, [settings.selectedAsset]);
 
   useEffect(() => {
-    if (currentAsset.id === 'ust') {
+    if (currentAsset.id === 'ust' && currentMarket === 'supply') {
       setCurrentTab('withdraw');
     } else if (currentAsset.id === 'ust' && currentMarket === 'borrow') {
       setCurrentTab('repay');
+    } else {
+      setCurrentTab(currentMarket);
     }
-  }, [currentAsset]);
+  }, [currentAsset.id, currentMarket]);
 
   return (
     <Card>
