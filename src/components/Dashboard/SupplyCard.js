@@ -106,9 +106,19 @@ function SupplyCard({ currentMarket, settings }) {
         collateralFactor: getBigNumber(asset.collateralFactor),
         tokenPrice: getBigNumber(asset.tokenPrice),
         liquidity: getBigNumber(asset.liquidity)
-      })
+      });
     }
   }, [settings.selectedAsset]);
+
+  useEffect(() => {
+    if (currentAsset.id === 'ust' && currentMarket === 'supply') {
+      setCurrentTab('withdraw');
+    } else if (currentAsset.id === 'ust' && currentMarket === 'borrow') {
+      setCurrentTab('repay');
+    } else {
+      setCurrentTab(currentMarket);
+    }
+  }, [currentAsset.id, currentMarket]);
 
   return (
     <Card>
@@ -121,16 +131,34 @@ function SupplyCard({ currentMarket, settings }) {
                 <img
                   className="add-token pointer"
                   src={metaMaskImg}
-                  onClick={() => addToken(currentAsset.id, settings.decimals[currentAsset.id].token, 'token')}
+                  onClick={() =>
+                    addToken(
+                      currentAsset.id,
+                      settings.decimals[currentAsset.id].token,
+                      'token'
+                    )
+                  }
+                  alt=""
                 />
               </div>
             )}
             <div className="flex align-center stoken-asset">
-              {`s${currentAsset.id === 'wbtc' ? 'BTC' : currentAsset.id.toUpperCase()}`}
+              {`s${
+                currentAsset.id === 'wbtc'
+                  ? 'BTC'
+                  : currentAsset.id.toUpperCase()
+              }`}
               <img
                 className="add-token pointer"
                 src={metaMaskImg}
-                onClick={() => addToken(currentAsset.id, settings.decimals[currentAsset.id].stoken, 'stoken')}
+                onClick={() =>
+                  addToken(
+                    currentAsset.id,
+                    settings.decimals[currentAsset.id].stoken,
+                    'stoken'
+                  )
+                }
+                alt=""
               />
             </div>
           </div>
@@ -138,16 +166,18 @@ function SupplyCard({ currentMarket, settings }) {
         {currentMarket === 'supply' ? (
           <>
             <Tabs>
-              <div
-                className={`tab-item center ${
-                  currentTab === 'supply' ? 'tab-active' : ''
-                }`}
-                onClick={() => {
-                  setCurrentTab('supply');
-                }}
-              >
-                Supply
-              </div>
+              {currentAsset.id !== 'ust' && (
+                <div
+                  className={`tab-item center ${
+                    currentTab === 'supply' ? 'tab-active' : ''
+                  }`}
+                  onClick={() => {
+                    setCurrentTab('supply');
+                  }}
+                >
+                  Supply
+                </div>
+              )}
               <div
                 className={`tab-item center ${
                   currentTab === 'withdraw' ? 'tab-active' : ''
@@ -159,8 +189,7 @@ function SupplyCard({ currentMarket, settings }) {
                 Withdraw
               </div>
             </Tabs>
-            {!currentAsset ||
-            Object.keys(currentAsset).length === 0 ? (
+            {!currentAsset || Object.keys(currentAsset).length === 0 ? (
               <div className="loading-section">
                 <LoadingSpinner />
               </div>
@@ -178,16 +207,18 @@ function SupplyCard({ currentMarket, settings }) {
         ) : (
           <>
             <Tabs>
-              <div
-                className={`tab-item center ${
-                  currentTab === 'borrow' ? 'tab-active' : ''
-                }`}
-                onClick={() => {
-                  setCurrentTab('borrow');
-                }}
-              >
-                Borrow
-              </div>
+              {currentAsset.id !== 'ust' && (
+                <div
+                  className={`tab-item center ${
+                    currentTab === 'borrow' ? 'tab-active' : ''
+                  }`}
+                  onClick={() => {
+                    setCurrentTab('borrow');
+                  }}
+                >
+                  Borrow
+                </div>
+              )}
               <div
                 className={`tab-item center ${
                   currentTab === 'repay' ? 'tab-active' : ''
@@ -199,8 +230,7 @@ function SupplyCard({ currentMarket, settings }) {
                 Repay Borrow
               </div>
             </Tabs>
-            {!currentAsset ||
-            Object.keys(currentAsset).length === 0 ? (
+            {!currentAsset || Object.keys(currentAsset).length === 0 ? (
               <div className="loading-section">
                 <LoadingSpinner />
               </div>
