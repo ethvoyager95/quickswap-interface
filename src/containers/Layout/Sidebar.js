@@ -664,6 +664,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       abortController.abort();
     };
   }, [settings.totalBorrowLimit, settings.selectedAddress]);
+
   const handleDisconnect = () => {
     localStorage.clear();
     setSetting({
@@ -671,6 +672,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       isConnected: false
     });
   };
+
+  useEffect(() => {
+    if (!settings.isConnected) {
+      setIsOpenModal(true);
+    }
+  }, [settings.isConnected]);
+
   return (
     <SidebarWrapper>
       <Logo>
