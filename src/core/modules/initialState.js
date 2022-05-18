@@ -24,7 +24,8 @@ const account = {
       symbol: ''
     },
     withSTRK: true,
-    markets: []
+    markets: [],
+    isConnected: localStorage.getItem('walletConnected') === 'true'
   }
 };
 export const initialState = {

@@ -70,6 +70,14 @@ const ModalContent = styled.div`
       }
     }
   }
+  .disconnect-btn {
+    background-color: #d01f36;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 17px;
+    height: 40px;
+    border-radius: 20px;
+  }
 `;
 
 function ConnectModal({
@@ -106,7 +114,6 @@ function ConnectModal({
           >
             Download Coinbase here.
           </a>
-          
         </p>
       );
     }
@@ -247,7 +254,9 @@ ConnectModal.propTypes = {
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   awaiting: PropTypes.bool,
   onCancel: PropTypes.func,
-  onConnectMetaMask: PropTypes.func.isRequired
+  onConnectMetaMask: PropTypes.func.isRequired,
+  settings: PropTypes.object,
+  setSetting: PropTypes.func.isRequired
 };
 
 ConnectModal.defaultProps = {
@@ -255,6 +264,7 @@ ConnectModal.defaultProps = {
   web3: {},
   error: '',
   awaiting: false,
+  settings: {},
   onCancel: () => {}
 };
 

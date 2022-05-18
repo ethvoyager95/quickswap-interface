@@ -36,6 +36,13 @@ const SpinnerWrapper = styled.div`
   }
 `;
 
+const HomePageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+`;
+
 function Dashboard({ settings }) {
   const [currentMarket, setCurrentMarket] = useState('');
 
@@ -46,31 +53,24 @@ function Dashboard({ settings }) {
   return (
     <MainLayout title="Dashboard">
       <DashboardWrapper className="flex">
-        {(!settings.selectedAddress || settings.accountLoading) && (
-          <SpinnerWrapper>
-            <LoadingSpinner />
-          </SpinnerWrapper>
-        )}
-        {settings.selectedAddress && !settings.accountLoading && (
-          <Row>
-            <Column xs="12" sm="12" md="5" className="overview-column">
-              <Overview currentMarket={currentMarket} />
-            </Column>
-            <Column xs="12" sm="12" md="7">
-              <Row>
-                <Column xs="12">
-                  <Market
-                    currentMarket={currentMarket}
-                    setCurrentMarket={setCurrentMarket}
-                  />
-                </Column>
-                <Column xs="12">
-                  <SupplyCard currentMarket={currentMarket} />
-                </Column>
-              </Row>
-            </Column>
-          </Row>
-        )}
+        <Row>
+          <Column xs="12" sm="12" md="5" className="overview-column">
+            <Overview currentMarket={currentMarket} />
+          </Column>
+          <Column xs="12" sm="12" md="7">
+            <Row>
+              <Column xs="12">
+                <Market
+                  currentMarket={currentMarket}
+                  setCurrentMarket={setCurrentMarket}
+                />
+              </Column>
+              <Column xs="12">
+                <SupplyCard currentMarket={currentMarket} />
+              </Column>
+            </Row>
+          </Column>
+        </Row>
       </DashboardWrapper>
     </MainLayout>
   );
