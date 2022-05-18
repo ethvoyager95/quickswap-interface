@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as constants from 'utilities/constants';
 
 export const axiosInstanceMoralis = axios.create({
-  baseURL: `https://deep-index.moralis.io/api/v2/`,
+  baseURL: `${constants.MORALIS_API}`,
   timeout: 20000,
   responseType: 'json',
   headers: {

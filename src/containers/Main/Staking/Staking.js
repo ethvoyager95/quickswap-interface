@@ -571,6 +571,7 @@ function Staking({ settings }) {
             totalBoost={userInfo?.totalBoost}
             totalDeposit={userInfo?.totalDeposit}
             amount={userInfo?.amount}
+            address={settings?.selectedAddress}
           />
           <SDiv>
             <SHeader>
@@ -616,35 +617,51 @@ function Staking({ settings }) {
 
                   <SInfor>
                     <SInforText>Available</SInforText>
-                    <SInforValue>{userInfo.available ?? '0'}</SInforValue>
+                    {settings.selectedAddress ? (
+                      <SInforValue>{userInfo.available ?? '0'}</SInforValue>
+                    ) : (
+                      <SInforValue>-</SInforValue>
+                    )}
                   </SInfor>
                   <SInfor>
                     <SInforText>Staked</SInforText>
-                    <SInforValue>{userInfo.amount ?? '0'}</SInforValue>
+                    {settings.selectedAddress ? (
+                      <SInforValue>{userInfo.amount ?? '0'}</SInforValue>
+                    ) : (
+                      <SInforValue>-</SInforValue>
+                    )}
                   </SInfor>
                 </SInput>
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                    <SBtn>
-                      <SBtnStake onClick={handleStake}>Stake</SBtnStake>
-                      <Tooltip
-                        placement="right"
-                        title="Countdown will be reset if you stake more without claiming the reward"
-                      >
-                        <SQuestion src={IconQuestion} />
-                      </Tooltip>
-                    </SBtn>
-                    <SBtnUn>
-                      <SBtnUnstake onClick={handleUnStake}>UnStake</SBtnUnstake>
-                      <Tooltip
-                        placement="right"
-                        title="Countdown will be reset if you unstake a part without claiming the reward"
-                      >
-                        <SQuestion src={IconQuestion} />
-                      </Tooltip>
-                    </SBtnUn>
+                    {settings.selectedAddress ? (
+                      <>
+                        <SBtn>
+                          <SBtnStake onClick={handleStake}>Stake</SBtnStake>
+                          <Tooltip
+                            placement="right"
+                            title="Countdown will be reset if you stake more without claiming the reward"
+                          >
+                            <SQuestion src={IconQuestion} />
+                          </Tooltip>
+                        </SBtn>
+                        <SBtnUn>
+                          <SBtnUnstake onClick={handleUnStake}>
+                            UnStake
+                          </SBtnUnstake>
+                          <Tooltip
+                            placement="right"
+                            title="Countdown will be reset if you unstake a part without claiming the reward"
+                          >
+                            <SQuestion src={IconQuestion} />
+                          </Tooltip>
+                        </SBtnUn>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                     {}
@@ -659,15 +676,27 @@ function Staking({ settings }) {
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <SInforClaim>
                   <SInforText>Base Reward</SInforText>
-                  <SInforValue>{userInfo.accBaseReward ?? '0'}</SInforValue>
+                  {settings.selectedAddress ? (
+                    <SInforValue>{userInfo.accBaseReward ?? '0'}</SInforValue>
+                  ) : (
+                    <SInforValue>-</SInforValue>
+                  )}
                 </SInforClaim>
                 <SInforClaim>
                   <SInforText>Boost Reward</SInforText>
-                  <SInforValue>{userInfo.accBoostReward ?? '0'}</SInforValue>
+                  {settings.selectedAddress ? (
+                    <SInforValue>{userInfo.accBoostReward ?? '0'}</SInforValue>
+                  ) : (
+                    <SInforValue>-</SInforValue>
+                  )}
                 </SInforClaim>
                 <SInforClaim>
                   <SInforText>vStrk</SInforText>
-                  <SInforValue>0.00</SInforValue>
+                  {settings.selectedAddress ? (
+                    <SInforValue>0.00</SInforValue>
+                  ) : (
+                    <SInforValue>-</SInforValue>
+                  )}
                 </SInforClaim>
               </Col>
               {/* Claim */}
@@ -675,7 +704,11 @@ function Staking({ settings }) {
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
                     <SBtnClaim>
-                      <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
+                      {settings.selectedAddress ? (
+                        <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
+                      ) : (
+                        <SUnClaim>Claim</SUnClaim>
+                      )}
                       <Tooltip
                         placement="top"
                         title="You can only claim reward once daily"
@@ -685,13 +718,22 @@ function Staking({ settings }) {
                     </SBtnClaim>
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    <CountDownClaim times={expiryTime} />
+                    <CountDownClaim
+                      times={expiryTime}
+                      address={settings?.selectedAddress}
+                    />
                   </Col>
                 </Row>
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
                     <SBtnClaimStart>
-                      <SUnClaim onClick={handleClainBootReward}>Claim</SUnClaim>
+                      {settings.selectedAddress ? (
+                        <SClaim onClick={handleClainBootReward}>Claim</SClaim>
+                      ) : (
+                        <SUnClaim onClick={handleClainBootReward}>
+                          Claim
+                        </SUnClaim>
+                      )}
                       <Tooltip
                         placement="top"
                         title="You can only claim reward once monthly"
@@ -701,13 +743,20 @@ function Staking({ settings }) {
                     </SBtnClaimStart>
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    {}
+                    <CountDownClaim
+                      times={expiryTime}
+                      address={settings?.selectedAddress}
+                    />
                   </Col>
                 </Row>
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
                     <SBtnClaimStart>
-                      <SUnClaim>Claim</SUnClaim>
+                      {settings.selectedAddress ? (
+                        <SClaim>Claim</SClaim>
+                      ) : (
+                        <SUnClaim>Claim</SUnClaim>
+                      )}
                       <Tooltip
                         placement="top"
                         title="You can only claim reward once monthly"
@@ -741,7 +790,11 @@ function Staking({ settings }) {
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                 <SFlexEnd>
-                  <SSTake onClick={handleStakeNFT}>Stake</SSTake>
+                  {settings.selectedAddress && dataNFT.length > 0 ? (
+                    <SSTake onClick={handleStakeNFT}>Stake</SSTake>
+                  ) : (
+                    <></>
+                  )}
                 </SFlexEnd>
               </Col>
             </Row>
@@ -800,7 +853,11 @@ function Staking({ settings }) {
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                 <SFlexEnd>
-                  <SSUnTake onClick={handleUnStakeNFT}>UnStake</SSUnTake>
+                  {settings.selectedAddress && dataNFT.length > 0 ? (
+                    <SSUnTake onClick={handleUnStakeNFT}>UnStake</SSUnTake>
+                  ) : (
+                    <></>
+                  )}
                 </SFlexEnd>
               </Col>
             </Row>

@@ -29,7 +29,7 @@ const STimeText = styled.div`
 `;
 const SItemTime = styled.div``;
 // eslint-disable-next-line react/prop-types
-function CountDownClaim({ times }) {
+function CountDownClaim({ times, address }) {
   const [expiryTime, setExpiryTime] = useState(times);
   const [countdownTime, setCountdownTime] = useState({
     countdownDays: '',
@@ -40,6 +40,7 @@ function CountDownClaim({ times }) {
 
   const countdownTimer = () => {
     // 18 may 2022 15:30:25
+    if (!address) return;
     const timeInterval = setInterval(() => {
       const countdownDateTime = new Date(expiryTime).getTime();
       const currentTime = new Date().getTime();

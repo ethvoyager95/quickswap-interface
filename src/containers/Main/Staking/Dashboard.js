@@ -67,7 +67,7 @@ const SUSDBox = styled.div`
   font-size: 14px;
   line-height: 22px;
 `;
-function DashboardStaking({ amount, totalBoost, totalDeposit }) {
+function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
   return (
     <>
       <React.Fragment>
@@ -87,23 +87,49 @@ function DashboardStaking({ amount, totalBoost, totalDeposit }) {
               <SBox>
                 <SItemsBox>
                   <STextBox>NFTs Staked</STextBox>
-                  <SValueBox>
-                    {amount}/{totalBoost}
-                  </SValueBox>
-                  <SUSDBox>$1000</SUSDBox>
+                  {address ? (
+                    <>
+                      <SValueBox>
+                        {amount}/{totalBoost}
+                      </SValueBox>
+                      <SUSDBox>$1000</SUSDBox>
+                    </>
+                  ) : (
+                    <>
+                      <SValueBox>-</SValueBox>
+                      <SUSDBox>-</SUSDBox>
+                    </>
+                  )}
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Liquidity</STextBox>
-                  <SValueBox>{totalDeposit}</SValueBox>
-                  <SUSDBox>$30,005</SUSDBox>
+                  {address ? (
+                    <>
+                      <SValueBox>{totalDeposit}</SValueBox>
+                      <SUSDBox>$30,005</SUSDBox>
+                    </>
+                  ) : (
+                    <>
+                      <SValueBox>-</SValueBox>
+                      <SUSDBox>-</SUSDBox>
+                    </>
+                  )}
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Boost APR</STextBox>
-                  <SValueBox>Up to 200% </SValueBox>
+                  {address ? (
+                    <SValueBox>Up to 200% </SValueBox>
+                  ) : (
+                    <SValueBox>-</SValueBox>
+                  )}
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Base APR</STextBox>
-                  <SValueBox>15% </SValueBox>
+                  {address ? (
+                    <SValueBox>15% </SValueBox>
+                  ) : (
+                    <SValueBox>- </SValueBox>
+                  )}
                 </SItemsBox>
               </SBox>
             </Col>
@@ -116,13 +142,15 @@ function DashboardStaking({ amount, totalBoost, totalDeposit }) {
 DashboardStaking.propTypes = {
   totalBoost: PropTypes.string,
   totalDeposit: PropTypes.string,
-  amount: PropTypes.string
+  amount: PropTypes.string,
+  address: PropTypes.string
 };
 
 DashboardStaking.defaultProps = {
   totalBoost: '',
   totalDeposit: '',
-  amount: ''
+  amount: '',
+  address: ''
 };
 
 const mapStateToProps = ({ account }) => ({

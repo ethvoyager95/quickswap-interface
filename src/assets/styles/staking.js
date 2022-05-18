@@ -198,9 +198,8 @@ export const SBtnClaimStart = styled.div`
 export const SClaim = styled.div`
   cursor: pointer;
   background: #fff;
+  color: #107def;
   font-weight: 700;
-  color: #444444;
-  opacity: 0.5;
   border-radius: 50px;
   padding: 8px 20px;
   min-width: 220px;
@@ -214,8 +213,9 @@ export const SClaim = styled.div`
 export const SUnClaim = styled.div`
   cursor: pointer;
   background: #fff;
-  color: #107def;
   font-weight: 700;
+  color: #444444;
+  opacity: 0.5;
   border-radius: 50px;
   padding: 8px 20px;
   min-width: 220px;

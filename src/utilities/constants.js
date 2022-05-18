@@ -32,6 +32,7 @@ export const MORALIS_URL = process.env.REACT_APP_MAIN_MORALIS_URL;
 export const MORALIS_ID = process.env.REACT_APP_MAIN_MORALIS_ID;
 export const NFT_ADDRESS = process.env.REACT_APP_MAIN_NFT_ADDRESS;
 export const MORALIS_KEY = process.env.REACT_APP_MAIN_MORALIS_KEY;
+export const MORALIS_API = process.env.REACT_APP_MORALIS_API;
 
 // Contract ABI
 export const CONTRACT_TOKEN_ADDRESS =
