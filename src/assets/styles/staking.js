@@ -17,13 +17,11 @@ export const SHeader = styled.div`
   justify-content: space-between;
 `;
 export const SText = styled.div`
-  color: rgba(0, 28, 78, 0.87);
-  font-style: normal;
-  font-weight: 800;
-  font-size: 24px;
-  line-height: 35px;
+  color: #000000;
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 27px;
   margin-top: 10px;
-
   img {
     margin-left: 10px;
   }
@@ -110,46 +108,59 @@ export const SBtnUn = styled.div`
 `;
 export const SBtnStake = styled.div`
   cursor: pointer;
-  background: #ffffff;
-  color: #107def;
-  border-radius: 50px;
+  background: #107def;
+  color: #fff;
+  border-radius: 5px;
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
   margin-right: 10px;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
-  @media only screen and (max-width: 768px) {
-    min-width: 150px;
-  }
-`;
-export const SSTake = styled.div`
-  cursor: pointer;
-  background: #ffffff;
-  color: #107def;
-  border-radius: 50px;
-  padding: 8px 20px;
-  min-width: 220px;
-  text-align: center;
-  margin-left: 30px;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }
 `;
 export const SBtnUnstake = styled.div`
   cursor: pointer;
-  color: #fff;
-  background: #ff0606;
-  border-radius: 50px;
+  color: #f84960;
+  background: #fff;
+  border-radius: 5px;
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
+  border: 1px solid #f84960;
   margin-right: 10px;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }
 `;
+export const SSTake = styled.div`
+  cursor: pointer;
+  background: #107def;
+  color: #fff;
+  border-radius: 5px;
+  padding: 8px 20px;
+  min-width: 150px;
+  text-align: center;
+  margin-left: 30px;
+  @media only screen and (max-width: 768px) {
+    min-width: 150px;
+  }
+`;
+export const SSUnTake = styled.div`
+  cursor: pointer;
+  background: #fff;
+  color: #f84960;
+  border-radius: 5px;
+  padding: 8px 20px;
+  min-width: 150px;
+  text-align: center;
+  border: 1px solid #f84960;
+  margin-left: 30px;
+  @media only screen and (max-width: 768px) {
+    min-width: 150px;
+  }
+`;
+
 export const SInfor = styled.div`
   width: 100%;
   display: flex;
@@ -164,16 +175,25 @@ export const SInforClaim = styled.div`
   margin-top: 10px;
 `;
 export const SInforText = styled.div`
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 29px;
-  color: rgba(0, 28, 78, 0.87);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #6d6f7b;
 `;
 export const SInforValue = styled.div`
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 29px;
-  color: rgba(0, 28, 78, 0.87);
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 24px;
+  color: #0b0f23;
+  display: flex;
+`;
+export const SIconSmall = styled.div`
+  display: flex;
+  margin-right: 20px;
+`;
+export const SImgFlashSmall = styled.img``;
+export const SImgLpSmall = styled.img`
+  margin-left: -5px;
 `;
 export const SQuestion = styled.img`
   widht: 23px;
@@ -197,31 +217,30 @@ export const SBtnClaimStart = styled.div`
 `;
 export const SClaim = styled.div`
   cursor: pointer;
-  background: #fff;
-  color: #107def;
+  background: #107def;
+  color: #fff;
   font-weight: 700;
-  border-radius: 50px;
+  border-radius: 8px;
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
   margin-right: 10px;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }
 `;
 export const SUnClaim = styled.div`
   cursor: pointer;
-  background: #fff;
+  background: #9d9fa7;
   font-weight: 700;
-  color: #444444;
+  color: #fff;
   opacity: 0.5;
-  border-radius: 50px;
+  border-radius: 8px;
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
   margin-right: 10px;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
+  cursor: not-allowed;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }
@@ -244,22 +263,20 @@ export const SFlash = styled.img`
   margin-right: 10px;
 `;
 export const SDetails = styled.div`
-  font-style: normal;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 28px;
-  color: #343434;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: ##6d6f7b;
   margin-top: 20px;
   @media only screen and (max-width: 768px) {
     font-size: 18px;
   }
 `;
 export const SDetailsColor = styled.div`
-  font-style: normal;
-  font-weight: 600;
-  font-size: 30px;
+  font-size: 16px;
+  line-height: 24px
   line-height: 35px;
-  color: #107def;
+  color: ##6d6f7b;
   @media only screen and (max-width: 768px) {
     font-size: 18px;
   }
@@ -278,20 +295,7 @@ export const SFlexEnd = styled.div`
     justify-content: flex-start;
   }
 `;
-export const SSUnTake = styled.div`
-  cursor: pointer;
-  background: #ff0606;
-  color: #fff;
-  border-radius: 50px;
-  padding: 8px 20px;
-  min-width: 220px;
-  text-align: center;
-  margin-left: 30px;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
-  @media only screen and (max-width: 768px) {
-    min-width: 150px;
-  }
-`;
+
 export const SSlider = styled.div`
   width: 100%;
   .slick-slide img {
@@ -335,40 +339,28 @@ export const SDescriptionSlider = styled.div`
   color: #ff897e;
 `;
 export const SNexSlider = styled.img`
-  background: #f55e55 !important;
   color: #fff !important;
   cursor: pointer;
   border-radius: 50%;
 `;
 export const SPrevSlider = styled.img`
-  background: #f55e55 !important;
   cursor: pointer;
   color: #fff !important;
   border-radius: 50%;
 `;
-export const SSactive = styled.div`
-  background: #ffffff;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
-  border-radius: 50px;
-  width: 220px;
-  margin: auto;
-  margin-top: 20px;
-  text-align: center;
-  padding: 8px 10px;
-  color: #107def;
-  cursor: pointer;
+export const SSactive = styled.img`
+  position: absolute;
+  width: 25px !important;
+  height: 25px !important;
+  top: 25px;
+  right: 25px;
 `;
-export const SSUnactive = styled.div`
-  background: #ff0606;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
-  border-radius: 50px;
-  width: 220px;
-  margin: auto;
-  margin-top: 20px;
-  text-align: center;
-  padding: 8px 10px;
-  color: #fff;
-  cursor: pointer;
+export const SSUnactive = styled.img`
+  position: absolute;
+  width: 25px !important;
+  height: 25px !important;
+  top: 25px;
+  right: 25px;
 `;
 export const SDivBlack = styled.div`
   background: #333;

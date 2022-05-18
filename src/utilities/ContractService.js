@@ -103,6 +103,12 @@ export const getLPContract = () => {
     constants.CONTRACT_LP_ADDRESS
   );
 };
+export const getVSTRKContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.VSTRK_ABI),
+    constants.VSTRK_ADDRESS
+  );
+};
 export const methods = {
   call,
   send

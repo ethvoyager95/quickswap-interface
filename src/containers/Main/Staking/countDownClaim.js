@@ -28,6 +28,8 @@ const STimeText = styled.div`
   justify-content: space-between;
 `;
 const SItemTime = styled.div``;
+const abortController = new AbortController();
+
 // eslint-disable-next-line react/prop-types
 function CountDownClaim({ times, address }) {
   const [expiryTime, setExpiryTime] = useState(times);
@@ -70,7 +72,18 @@ function CountDownClaim({ times, address }) {
     }, 1000);
   };
   useEffect(() => {
-    countdownTimer();
+    let updateTimer;
+    if (address) {
+      updateTimer = setInterval(() => {
+        countdownTimer();
+      }, 1000);
+    }
+    return function cleanup() {
+      abortController.abort();
+      if (updateTimer) {
+        clearInterval(updateTimer);
+      }
+    };
   });
   return (
     <>
