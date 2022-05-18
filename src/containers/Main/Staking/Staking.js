@@ -1,3 +1,4 @@
+/* eslint-disable import/no-duplicates */
 /* eslint-disable no-self-compare */
 /* eslint-disable no-const-assign */
 /* eslint-disable jsx-a11y/alt-text */
@@ -66,6 +67,7 @@ import {
   STextSelecT,
   SHeader
 } from '../../../assets/styles/staking.js';
+// eslint-disable-next-line import/no-duplicates
 import DialogConfirm from './DialogConfirm';
 import DialogErr from './DialogErr';
 import {
@@ -79,6 +81,8 @@ import CountDownClaim from './countDownClaim';
 import DialogSuccess from './DialogSuccess';
 import DialogUnStake from './DialogUnStake';
 import DialogStake from './DialogStake';
+// eslint-disable-next-line import/no-named-as-default
+import Loadding from './Loadding';
 // eslint-disable-next-line import/order
 import IconQuestion from '../../../assets/img/error-outline.svg';
 import IconDuck from '../../../assets/img/default_slider.svg';
@@ -204,6 +208,7 @@ function Staking({ settings }) {
   const [isConfirm, setiIsConfirm] = useState(false);
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // const [isUnStake, setIsUnStake] = useState(false);
   const [isClaimBaseReward, setisClaimBaseReward] = useState(false);
   const [isClaimBootReward, setIsClaimBootReward] = useState(false);
@@ -286,6 +291,7 @@ function Staking({ settings }) {
         setisClaimBaseReward(overTimeBaseReward >= second24h);
         setIsClaimBootReward(overTimeBootReward >= second30days);
         setIsUnStakeLp(overTimeBaseReward >= second2day);
+        console.log(isUnStakeLp, 'ttt');
         objUser = {
           ...res,
           available: parseFloat(balanceBigFormat).toString(),
@@ -612,6 +618,7 @@ function Staking({ settings }) {
   }, [txhash]);
   const fetchNFTs = async () => {
     // get polygon NFTs for address
+    setIsLoading(true);
     try {
       await axiosInstanceMoralis
         .get(
@@ -635,6 +642,7 @@ function Staking({ settings }) {
             const dataCloneUnState = _.cloneDeep(dataConvert);
             setDataNFT(dataStakeClone);
             setDataNFTUnState(dataCloneUnState);
+            setIsLoading(false);
           }
         });
     } catch (err) {
@@ -731,14 +739,14 @@ function Staking({ settings }) {
                         <SBtn>
                           <SBtnStake onClick={handleStake}>Stake</SBtnStake>
                           <Tooltip
-                            placement="right"
+                            placement="top  "
                             title="Countdown will be reset if you stake more without claiming the reward"
                           >
                             <SQuestion src={IconQuestion} />
                           </Tooltip>
                         </SBtn>
                         <SBtnUn>
-                          {!isUnStakeLp ? (
+                          {isUnStakeLp ? (
                             <SBtnUnstake onClick={handleUnStake}>
                               UnStake
                             </SBtnUnstake>
@@ -749,7 +757,7 @@ function Staking({ settings }) {
                           )}
 
                           <Tooltip
-                            placement="right"
+                            placement="top"
                             title="Countdown will be reset if you unstake a part without claiming the reward"
                           >
                             <SQuestion src={IconQuestion} />
@@ -916,38 +924,48 @@ function Staking({ settings }) {
                 </SFlexEnd>
               </Col>
             </Row>
-            <SSlider>
-              {dataNFT.length === 0 && (
-                <SSliderNoData>
-                  <SSliderNoDataImg src={IconNoData} />
-                  <SSliderNoDataText>You don’t own any NFTs</SSliderNoDataText>
-                </SSliderNoData>
-              )}
+            {isLoading ? (
+              <>
+                <Loadding />
+              </>
+            ) : (
+              <>
+                <SSlider>
+                  {dataNFT.length === 0 && (
+                    <SSliderNoData>
+                      <SSliderNoDataImg src={IconNoData} />
+                      <SSliderNoDataText>
+                        You don’t own any NFTs
+                      </SSliderNoDataText>
+                    </SSliderNoData>
+                  )}
 
-              <Slider {...AUDITOR_SETTING}>
-                {dataNFT?.map(item => {
-                  return (
-                    <SItemSlider
-                      key={item.id}
-                      onClick={event => handleSelectItem(event, item)}
-                    >
-                      <SImgSlider src={item.img} />
-                      <SBoxSlider>
-                        <STitleSlider>{item.name}</STitleSlider>
-                        <SDescriptionSlider>
-                          {item.description}
-                        </SDescriptionSlider>
-                      </SBoxSlider>
-                      {item.active === false ? (
-                        <SSactive src={IconNotSelect} />
-                      ) : (
-                        <SSUnactive src={IconSelect} />
-                      )}
-                    </SItemSlider>
-                  );
-                })}
-              </Slider>
-            </SSlider>
+                  <Slider {...AUDITOR_SETTING}>
+                    {dataNFT?.map(item => {
+                      return (
+                        <SItemSlider
+                          key={item.id}
+                          onClick={event => handleSelectItem(event, item)}
+                        >
+                          <SImgSlider src={item.img} />
+                          <SBoxSlider>
+                            <STitleSlider>{item.name}</STitleSlider>
+                            <SDescriptionSlider>
+                              {item.description}
+                            </SDescriptionSlider>
+                          </SBoxSlider>
+                          {item.active === false ? (
+                            <SSactive src={IconNotSelect} />
+                          ) : (
+                            <SSUnactive src={IconSelect} />
+                          )}
+                        </SItemSlider>
+                      );
+                    })}
+                  </Slider>
+                </SSlider>
+              </>
+            )}
             <STextSelecT>Please select NFTs you want to stake</STextSelecT>
           </SDiv>
           <SDiv>
@@ -981,37 +999,48 @@ function Staking({ settings }) {
                 </SFlexEnd>
               </Col>
             </Row>
-            <SSlider>
-              {dataNFTUnState.length === 0 && (
-                <SSliderNoData>
-                  <SSliderNoDataImg src={IconNoData} />
-                  <SSliderNoDataText>You don’t own any NFTs</SSliderNoDataText>
-                </SSliderNoData>
-              )}
-              <Slider {...AUDITOR_SETTING}>
-                {dataNFTUnState?.map(item => {
-                  return (
-                    <SItemSlider
-                      key={item.id}
-                      onClick={event => handleSelectItemNFT(event, item)}
-                    >
-                      <SImgSlider src={item.img} />
-                      <SBoxSlider>
-                        <STitleSlider>{item.name}</STitleSlider>
-                        <SDescriptionSlider>
-                          {item.description}
-                        </SDescriptionSlider>
-                      </SBoxSlider>
-                      {item.active === false ? (
-                        <SSactive src={IconNotSelect} />
-                      ) : (
-                        <SSUnactive src={IconSelect} />
-                      )}
-                    </SItemSlider>
-                  );
-                })}
-              </Slider>
-            </SSlider>
+            {isLoading ? (
+              <>
+                <Loadding />
+              </>
+            ) : (
+              <>
+                <SSlider>
+                  {dataNFTUnState.length === 0 && (
+                    <SSliderNoData>
+                      <SSliderNoDataImg src={IconNoData} />
+                      <SSliderNoDataText>
+                        You don’t own any NFTs
+                      </SSliderNoDataText>
+                    </SSliderNoData>
+                  )}
+                  <Slider {...AUDITOR_SETTING}>
+                    {dataNFTUnState?.map(item => {
+                      return (
+                        <SItemSlider
+                          key={item.id}
+                          onClick={event => handleSelectItemNFT(event, item)}
+                        >
+                          <SImgSlider src={item.img} />
+                          <SBoxSlider>
+                            <STitleSlider>{item.name}</STitleSlider>
+                            <SDescriptionSlider>
+                              {item.description}
+                            </SDescriptionSlider>
+                          </SBoxSlider>
+                          {item.active === false ? (
+                            <SSactive src={IconNotSelect} />
+                          ) : (
+                            <SSUnactive src={IconSelect} />
+                          )}
+                        </SItemSlider>
+                      );
+                    })}
+                  </Slider>
+                </SSlider>
+              </>
+            )}
+
             <STextSelecT>Please select NFTs you want to unstake</STextSelecT>
           </SDiv>
         </MainLayout>

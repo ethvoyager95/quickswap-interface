@@ -6,6 +6,7 @@ import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
+import Loadding from './Loadding';
 
 const useStyles = makeStyles({
   root: {
@@ -75,23 +76,7 @@ const SLoading = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const SDivLoader = styled.div`
-  border: 8px solid #107def;
-  border-radius: 50%;
-  border-top: 8px solid #d7d7d7;
-  width: 100px;
-  height: 100px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
+
 const SText = styled.div`
   font-style: normal;
   font-weight: 400;
@@ -103,13 +88,7 @@ const SText = styled.div`
   display: block;
   margin-top: 20px;
 `;
-const LoaddingCircle = () => {
-  return (
-    <>
-      <SDivLoader />
-    </>
-  );
-};
+
 function DialogConfirm({ isConfirm, close }) {
   const classes = useStyles();
 
@@ -119,7 +98,7 @@ function DialogConfirm({ isConfirm, close }) {
         <Dialog className={classes.root} open={isConfirm} onClose={close}>
           <SMain>
             <SLoading>
-              <LoaddingCircle />
+              <Loadding />
             </SLoading>
             <STitle>Waiting for confirmation</STitle>
             <SText>Please confirm your transaction in your wallet</SText>
