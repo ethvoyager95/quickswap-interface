@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const SBtnClaim = styled.div`
   display: flex;
@@ -32,6 +33,8 @@ const abortController = new AbortController();
 
 // eslint-disable-next-line react/prop-types
 function CountDownClaim({ times, address }) {
+  console.log(times, 'times');
+  console.log(address, 'address');
   const [expiryTime, setExpiryTime] = useState(times);
   const [countdownTime, setCountdownTime] = useState({
     countdownDays: '',
@@ -55,21 +58,20 @@ function CountDownClaim({ times, address }) {
         (remainingDayTime % (1000 * 60 * 60)) / (1000 * 60)
       );
       const totalSeconds = Math.floor((remainingDayTime % (1000 * 60)) / 1000);
-
       const runningCountdownTime = {
-        countdownDays: totalDays,
-        countdownHours: totalHours,
-        countdownMinutes: totalMinutes,
-        countdownSeconds: totalSeconds
+        countdownDays: totalDays ?? '',
+        countdownHours: totalHours ?? '',
+        countdownMinutes: totalMinutes ?? '',
+        countdownSeconds: totalSeconds ?? ''
       };
 
       setCountdownTime(runningCountdownTime);
 
-      if (remainingDayTime < 0) {
+      if (remainingDayTime <= 0) {
         clearInterval(timeInterval);
         setExpiryTime(false);
       }
-    }, 1000);
+    }, 2000);
   };
   useEffect(() => {
     let updateTimer;
@@ -112,6 +114,13 @@ function CountDownClaim({ times, address }) {
     </>
   );
 }
+CountDownClaim.propTypes = {
+  times: PropTypes.number
+};
+
+CountDownClaim.defaultProps = {
+  times: 0
+};
 
 const mapStateToProps = ({ account }) => ({
   settings: account.setting

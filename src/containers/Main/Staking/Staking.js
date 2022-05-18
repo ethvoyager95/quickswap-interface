@@ -2,7 +2,7 @@
 /* eslint-disable no-self-compare */
 /* eslint-disable no-const-assign */
 /* eslint-disable jsx-a11y/alt-text */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -216,12 +216,6 @@ function Staking({ settings }) {
   const [itemStaking, setItemStaking] = useState([]);
   const [itemStaked, setItemStaked] = useState([]);
   const [userInfo, setUserInfo] = useState({});
-  const timeBase = new Date();
-  const timeBoots = new Date();
-  timeBase.setDate(timeBase.getDate() + 1);
-  timeBoots.setDate(timeBoots.getDate() + 30);
-  const [expiryTimeBase, setExpiryTimeBase] = useState(timeBase);
-  const [expiryTimeBoost, setExpiryTimeBoost] = useState(timeBoots);
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
   const vStrkContract = getVSTRKContract();
@@ -278,8 +272,7 @@ function Staking({ settings }) {
             noLP: true
           });
         }
-        setExpiryTimeBase(new Date(res.depositedDate) * 1000);
-        setExpiryTimeBoost(new Date(res.boostedDate) * 1000);
+
         const currentTime = Math.floor(new Date().getTime() / 1000);
         const timeBaseUnstake = res.depositedDate;
         const timeBootsUnstake = res.boostedDate;
@@ -291,13 +284,14 @@ function Staking({ settings }) {
         setisClaimBaseReward(overTimeBaseReward >= second24h);
         setIsClaimBootReward(overTimeBootReward >= second30days);
         setIsUnStakeLp(overTimeBaseReward >= second2day);
-        console.log(isUnStakeLp, 'ttt');
         objUser = {
           ...res,
           available: parseFloat(balanceBigFormat).toString(),
           totalBoost: total.totalBoost ?? '',
           totalDeposit: total.totalDeposit ?? '',
-          pendingAmount: pendingAmountString.toString()
+          pendingAmount: pendingAmountString.toString(),
+          depositedDate: timeBaseUnstake,
+          boostedDate: timeBootsUnstake
         };
       })
       .catch(err => {
@@ -314,6 +308,21 @@ function Staking({ settings }) {
         setUserInfo({ ...objUser, vStrk: vStrkString });
       });
   };
+  const expiryTimeBase = useMemo(() => {
+    if (userInfo) {
+      const overOneDate = new Date(userInfo.depositedDate * 1000);
+      return overOneDate.setDate(overOneDate.getDate() + 1);
+    }
+    return null;
+  }, [userInfo]);
+  const expiryTimeBoost = useMemo(() => {
+    if (userInfo) {
+      const over30days = new Date(userInfo.boostedDate * 1000);
+      return over30days.setDate(over30days.getDate() + 30);
+    }
+    return null;
+  }, [userInfo]);
+
   // change amount
   const handleChangeValue = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -500,7 +509,7 @@ function Staking({ settings }) {
           };
         });
         setDataNFT(dataActiveStakeNFT);
-        const dataStaking = dataNFT.filter(it => {
+        const dataStaking = dataActiveStakeNFT.filter(it => {
           return it.active === true;
         });
         setItemStaking(dataStaking);
@@ -527,7 +536,7 @@ function Staking({ settings }) {
           };
         });
         setDataNFTUnState(dataActiveUnStakeNFT);
-        const dataStaked = dataNFTUnState.filter(it => {
+        const dataStaked = dataActiveUnStakeNFT.filter(it => {
           return it.active === true;
         });
         setItemStaked(dataStaked);
@@ -617,7 +626,9 @@ function Staking({ settings }) {
     getDataUserInfor();
   }, [txhash]);
   const fetchNFTs = async () => {
-    // get polygon NFTs for address
+    if (!settings.selectedAddress) {
+      setIsLoading(false);
+    }
     setIsLoading(true);
     try {
       await axiosInstanceMoralis
@@ -646,12 +657,14 @@ function Staking({ settings }) {
           }
         });
     } catch (err) {
+      setIsLoading(false);
       throw err;
     }
   };
   useEffect(() => {
     fetchNFTs();
   }, []);
+
   return (
     <>
       <React.Fragment>
@@ -692,10 +705,7 @@ function Staking({ settings }) {
                   {messErr?.noLP === true && (
                     <SHrefErr>
                       {messErr.mess}
-                      <SLinkErr
-                        target="_blank"
-                        href="https://app.uniswap.org/#/add/0x74232704659ef37c08995e386a2e26cc27a8d7b1/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/10000?chain=rinkeby"
-                      >
+                      <SLinkErr target="_blank" href={constants.SUPPORT_URL}>
                         <SImgErr src={IconLink} />
                       </SLinkErr>
                     </SHrefErr>
@@ -842,10 +852,12 @@ function Staking({ settings }) {
                     </SBtnClaim>
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    <CountDownClaim
-                      times={expiryTimeBase}
-                      address={settings?.selectedAddress}
-                    />
+                    {expiryTimeBase && (
+                      <CountDownClaim
+                        times={expiryTimeBase}
+                        address={settings?.selectedAddress}
+                      />
+                    )}
                   </Col>
                 </Row>
                 <Row>
@@ -867,10 +879,12 @@ function Staking({ settings }) {
                     </SBtnClaimStart>
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    <CountDownClaim
-                      times={expiryTimeBoost}
-                      address={settings?.selectedAddress}
-                    />
+                    {expiryTimeBoost && (
+                      <CountDownClaim
+                        times={expiryTimeBoost}
+                        address={settings?.selectedAddress}
+                      />
+                    )}
                   </Col>
                 </Row>
                 {/* <Row>
@@ -964,9 +978,9 @@ function Staking({ settings }) {
                     })}
                   </Slider>
                 </SSlider>
+                <STextSelecT>Please select NFTs you want to stake</STextSelecT>
               </>
             )}
-            <STextSelecT>Please select NFTs you want to stake</STextSelecT>
           </SDiv>
           <SDiv>
             <Row>
@@ -1038,10 +1052,11 @@ function Staking({ settings }) {
                     })}
                   </Slider>
                 </SSlider>
+                <STextSelecT>
+                  Please select NFTs you want to unstake
+                </STextSelecT>
               </>
             )}
-
-            <STextSelecT>Please select NFTs you want to unstake</STextSelecT>
           </SDiv>
         </MainLayout>
         {/* Stake */}
