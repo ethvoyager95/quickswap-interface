@@ -197,7 +197,6 @@ const UserInfoButton = styled.div`
       width: 16px;
       height: 16px;
       margin-left: 4px;
-      margin-bottom: 3px;
     }
   }
 `;
@@ -216,6 +215,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [awaiting, setAwaiting] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [available, setAvailable] = useState('0');
+  const [balance, setBalance] = useState('');
 
   const checkNetwork = () => {
     const netId = window.ethereum.networkVersion
@@ -733,6 +733,31 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     }
   }, []);
 
+  const handleLink = () => {
+    window.open(
+      `${process.env.REACT_APP_ETH_EXPLORER}/address/${settings.selectedAddress}`,
+      '_blank'
+    );
+  };
+
+  const updateBalance = async () => {
+    if (window.ethereum && checkIsValidNetwork() && settings.selectedAddress) {
+      const strkTokenContract = getTokenContract('strk');
+      let temp = await methods.call(strkTokenContract.methods.balanceOf, [
+        settings.selectedAddress
+      ]);
+      temp = new BigNumber(temp)
+        .dividedBy(new BigNumber(10).pow(18))
+        .dp(4, 1)
+        .toString(10);
+      setBalance(temp);
+    }
+  };
+
+  useEffect(() => {
+    updateBalance();
+  }, [settings.selectedAddress]);
+
   return (
     <SidebarWrapper>
       <Logo>
@@ -787,28 +812,37 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               className="user-info-btn"
               onClick={() => setIsOpenInfoModal(true)}
             >
-              <div>{available}</div>
+              <div>{balance}</div>
               <img src={`${process.env.PUBLIC_URL}/icon16.png`} alt="" />
             </Button>
           </UserInfoButton>
         )}
         <ConnectButton>
-          <Button
-            className="connect-btn"
-            onClick={() => {
-              setIsOpenModal(true);
-            }}
-          >
-            {settings.selectedAddress
-              ? `${settings.selectedAddress.substr(
-                  0,
-                  4
-                )}...${settings.selectedAddress.substr(
-                  settings.selectedAddress.length - 4,
-                  4
-                )}`
-              : 'Connect'}
-          </Button>
+          {settings.selectedAddress ? (
+            <Button
+              className="connect-btn"
+              onClick={() => {
+                handleLink();
+              }}
+            >
+              {`${settings.selectedAddress.substr(
+                0,
+                4
+              )}...${settings.selectedAddress.substr(
+                settings.selectedAddress.length - 4,
+                4
+              )}`}
+            </Button>
+          ) : (
+            <Button
+              className="connect-btn"
+              onClick={() => {
+                setIsOpenModal(true);
+              }}
+            >
+              Connect
+            </Button>
+          )}
         </ConnectButton>
         {settings.selectedAddress && (
           <UserInfoButton>
