@@ -33,8 +33,6 @@ const abortController = new AbortController();
 
 // eslint-disable-next-line react/prop-types
 function CountDownClaim({ times, address }) {
-  console.log(times, 'times');
-  console.log(address, 'address');
   const [expiryTime, setExpiryTime] = useState(times);
   const [countdownTime, setCountdownTime] = useState({
     countdownDays: '',
@@ -45,7 +43,14 @@ function CountDownClaim({ times, address }) {
 
   const countdownTimer = () => {
     // 18 may 2022 15:30:25
-    if (!address) return;
+    if (!address) {
+      setCountdownTime({
+        countdownDays: '',
+        countdownHours: '',
+        countdownlMinutes: '',
+        countdownSeconds: ''
+      });
+    }
     const timeInterval = setInterval(() => {
       const countdownDateTime = new Date(expiryTime).getTime();
       const currentTime = new Date().getTime();

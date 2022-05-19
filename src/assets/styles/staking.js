@@ -133,7 +133,7 @@ export const SBtnUnstake = styled.div`
     min-width: 150px;
   }
 `;
-export const SSTake = styled.div`
+export const SSTake = styled.button`
   cursor: pointer;
   background: #107def;
   color: #fff;
@@ -142,11 +142,16 @@ export const SSTake = styled.div`
   min-width: 150px;
   text-align: center;
   margin-left: 30px;
+  border: none;
+  outline: none;
+  :disabled {
+    color: #fff !important;
+  }
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }
 `;
-export const SSUnTake = styled.div`
+export const SSUnTake = styled.button`
   cursor: pointer;
   background: #fff;
   color: #f84960;
@@ -155,7 +160,11 @@ export const SSUnTake = styled.div`
   min-width: 150px;
   text-align: center;
   border: 1px solid #f84960;
+  outline: none;
   margin-left: 30px;
+  :disabled {
+    color: #fff !important;
+  }
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }

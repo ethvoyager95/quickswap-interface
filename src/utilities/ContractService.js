@@ -103,6 +103,13 @@ export const getLPContract = () => {
     constants.CONTRACT_LP_ADDRESS
   );
 };
+export const getNFTContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.NFT_ABI),
+    constants.NFT_ADDRESS
+  );
+};
+
 export const getVSTRKContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.VSTRK_ABI),

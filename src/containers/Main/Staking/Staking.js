@@ -1,3 +1,6 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-useless-concat */
+/* eslint-disable no-sequences */
 /* eslint-disable import/no-duplicates */
 /* eslint-disable no-self-compare */
 /* eslint-disable no-const-assign */
@@ -35,7 +38,6 @@ import {
   SQuestion,
   SBtnStake,
   SSTake,
-  SSUnTake,
   SBtnUn,
   SBtnUnstake,
   SText,
@@ -74,6 +76,7 @@ import {
   getFarmingContract,
   getLPContract,
   getVSTRKContract,
+  getNFTContract,
   methods
 } from '../../../utilities/ContractService';
 import DashboardStaking from './Dashboard';
@@ -193,6 +196,7 @@ const AUDITOR_SETTING = {
 };
 
 function Staking({ settings }) {
+  const address = settings.selectedAddress;
   const [val, setVal] = useState(0);
   const [messErr, setMessErr] = useState({
     mess: '',
@@ -209,7 +213,8 @@ function Staking({ settings }) {
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const [isUnStake, setIsUnStake] = useState(false);
+  const [isApproveLP, setIsApproveLP] = useState(true);
+  const [isApproveNFT, setIsApproveNFT] = useState(true);
   const [isClaimBaseReward, setisClaimBaseReward] = useState(false);
   const [isClaimBootReward, setIsClaimBootReward] = useState(false);
   const [isUnStakeLp, setIsUnStakeLp] = useState(false);
@@ -219,13 +224,17 @@ function Staking({ settings }) {
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
   const vStrkContract = getVSTRKContract();
+  const nFtContract = getNFTContract();
   // get userInfor
   const getDataUserInfor = async () => {
     window.web3 = new Web3(window.ethereum);
     const accounts = settings.selectedAddress;
-    const sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
-      settings.selectedAddress
-    ]);
+    let sTokenBalance = null;
+    if (accounts) {
+      sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
+        accounts
+      ]);
+    }
     const total = {
       totalBoost: '',
       totalDeposit: ''
@@ -308,21 +317,74 @@ function Staking({ settings }) {
         setUserInfo({ ...objUser, vStrk: vStrkString });
       });
   };
-  const expiryTimeBase = useMemo(() => {
-    if (userInfo) {
-      const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setDate(overOneDate.getDate() + 1);
+  // get data
+  const getDataLP = async () => {
+    if (!settings.selectedAddress) {
+      setIsLoading(false);
     }
-    return null;
-  }, [userInfo]);
-  const expiryTimeBoost = useMemo(() => {
-    if (userInfo) {
-      const over30days = new Date(userInfo.boostedDate * 1000);
-      return over30days.setDate(over30days.getDate() + 30);
+    setIsLoading(true);
+    try {
+      await axiosInstanceMoralis
+        .get(
+          `/${settings.selectedAddress}/nft?chain=rinkeby&format=decimal&limit=20`
+        )
+        .then(res => {
+          const data = res.data.result;
+          if (data.length > 0) {
+            const dataMyContract = _.filter(data, item => {
+              return item.token_address === constants.NFT_ADDRESS.toLowerCase();
+            });
+            // eslint-disable-next-line no-shadow
+            const dataConvert = _.cloneDeep(dataMyContract);
+            // eslint-disable-next-line array-callback-return
+            dataConvert.map(item => {
+              // eslint-disable-next-line no-param-reassign
+              item.active = false;
+              // eslint-disable-next-line no-param-reassign
+              item.img = IconDuck;
+              // eslint-disable-next-line no-param-reassign
+              item.name = `${item.name}${' #'}${item.token_id}`;
+            });
+            const dataStakeClone = _.cloneDeep(dataConvert);
+            setDataNFT(dataStakeClone);
+            setIsLoading(false);
+          }
+          setIsLoading(false);
+        });
+    } catch (err) {
+      setIsLoading(false);
+      throw err;
     }
-    return null;
-  }, [userInfo]);
-
+  };
+  const getDataNFT = async () => {
+    if (!settings.selectedAddress) {
+      setIsLoading(false);
+    }
+    setIsLoading(true);
+    try {
+      await methods
+        .call(farmingContract.methods.getUserInfo, [0, address])
+        .then(res => {
+          const lstStakedId = res.boostFactors;
+          const dataCovert = [...lstStakedId];
+          // eslint-disable-next-line no-unused-vars
+          const newArray = dataCovert?.map(item => {
+            // eslint-disable-next-line no-return-assign
+            return (item = {
+              name: 'AnnexIronWolf ' + `#${item}`,
+              token_id: item,
+              img: IconDuck,
+              active: false
+            });
+          });
+          setDataNFTUnState(newArray);
+        });
+    } catch (err) {
+      setIsLoading(false);
+      throw err;
+    }
+    setIsLoading(false);
+  };
   // change amount
   const handleChangeValue = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -338,7 +400,7 @@ function Staking({ settings }) {
     } else {
       const valueFormat = event?.target.value.replace(/,/g, '.');
       setVal(valueFormat);
-      if (valueFormat > +userInfo?.available) {
+      if (+valueFormat > +userInfo?.available) {
         setMessErr({
           mess: 'The amount has exceded your balance. Try again',
           show: true
@@ -346,6 +408,132 @@ function Staking({ settings }) {
       }
     }
   };
+  const handleMaxValue = () => {
+    setVal(userInfo?.available);
+    if (userInfo?.available > 0) {
+      setMessErr({
+        mess: '',
+        show: false
+      });
+    }
+  };
+  // check approve lp
+  const checkApproveLP = useCallback(async () => {
+    await methods
+      .call(lpContract.methods.allowance, [
+        address,
+        constants.CONTRACT_FARMING_ADDRESS
+      ])
+      .then(res => {
+        const lpApproved = +new BigNumber(res).div(new BigNumber(10).pow(18));
+        if (messErr.show || messErr.noLP) {
+          setIsApproveLP(true);
+        }
+        if (+val > lpApproved) {
+          setIsApproveLP(false);
+        } else {
+          setIsApproveLP(true);
+        }
+      });
+  }, [val, address, handleMaxValue]);
+
+  const checkApproveNFT = useCallback(async () => {
+    setIsApproveNFT(true);
+    await methods
+      .call(nFtContract.methods.isApprovedForAll, [
+        address,
+        constants.CONTRACT_FARMING_ADDRESS
+      ])
+      .then(res => {
+        if (res) {
+          setIsApproveNFT(res);
+        }
+      });
+  }, [address]);
+
+  // approved Lp
+  const handleApproveLp = useCallback(async () => {
+    setiIsConfirm(true);
+    const MAX_APPROVE = new BigNumber(2)
+      .pow(256)
+      .minus(1)
+      .toString(10);
+    await methods
+      .send(
+        lpContract.methods.approve,
+        [constants.CONTRACT_FARMING_ADDRESS, MAX_APPROVE],
+        address
+      )
+      .then(res => {
+        if (res) {
+          setiIsConfirm(false);
+          setTxhash(res.transactionHash);
+        }
+      })
+      .catch(err => {
+        if (err.message.includes('User denied')) {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr('Decline transaction');
+        } else {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr(err.message);
+        }
+        throw err;
+      });
+  }, [val, handleMaxValue]);
+  // check approve lp
+  useEffect(() => {
+    checkApproveLP();
+    checkApproveNFT();
+  }, [val, handleMaxValue, isApproveLP, txhash]);
+  const handleApproveNFT = useCallback(async () => {
+    setiIsConfirm(true);
+    await methods
+      .send(
+        nFtContract.methods.setApprovalForAll,
+        [constants.CONTRACT_FARMING_ADDRESS, true],
+        address
+      )
+      .then(res => {
+        if (res) {
+          if (res) {
+            setiIsConfirm(false);
+            setTxhash(res.transactionHash);
+          }
+        }
+      })
+      .catch(err => {
+        if (err.message.includes('User denied')) {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr('Decline transaction');
+        } else {
+          setIsShowCancel(true);
+          setiIsConfirm(false);
+          setTextErr(err.message);
+        }
+        throw err;
+      });
+  }, []);
+  // time claim base reward countdown
+  const expiryTimeBase = useMemo(() => {
+    if (userInfo) {
+      const overOneDate = new Date(userInfo.depositedDate * 1000);
+      return overOneDate.setDate(overOneDate.getDate() + 1);
+    }
+    return null;
+  }, [userInfo]);
+  // time claim boost reward count down
+  const expiryTimeBoost = useMemo(() => {
+    if (userInfo) {
+      const over30days = new Date(userInfo.boostedDate * 1000);
+      return over30days.setDate(over30days.getDate() + 30);
+    }
+    return null;
+  }, [userInfo]);
+
   // stake
   const handleStake = async () => {
     if (val > +userInfo?.available) {
@@ -367,6 +555,14 @@ function Staking({ settings }) {
       const valueBigNumber = new BigNumber(val).times(
         new BigNumber(10).pow(18)
       );
+      if (valueBigNumber.isZero()) {
+        setMessErr({
+          mess: 'Invalid amount',
+          show: true
+        });
+        setiIsConfirm(false);
+        return;
+      }
       await methods
         .send(
           farmingContract.methods.deposit,
@@ -548,15 +744,20 @@ function Staking({ settings }) {
   const handleStakeDialog = async () => {
     setIsStakeNFT(false);
     setiIsConfirm(true);
-    const accounts = settings.selectedAddress;
-
+    const id = itemStaking[0].token_id;
     await methods
       .send(
         farmingContract.methods.boost,
-        [new BigNumber(0).integerValue(), new BigNumber(0).integerValue()],
-        accounts
+        [0, new BigNumber(id).integerValue()],
+        address
       )
-      .then(() => {})
+      .then(res => {
+        setTxhash(res.transactionHash);
+        setiIsConfirm(false);
+        setIsSuccess(true);
+        getDataNFT();
+        getDataLP();
+      })
       .catch(err => {
         if (err.message.includes('User denied')) {
           setIsShowCancel(true);
@@ -574,14 +775,20 @@ function Staking({ settings }) {
   const handleUnStakeDialog = async () => {
     setIsUnStakeNFT(false);
     setiIsConfirm(true);
-    const accounts = settings.selectedAddress;
+    const id = itemStaked[0].token_id;
     await methods
       .send(
-        farmingContract.methods.unboost,
-        [new BigNumber(0).integerValue(), new BigNumber(0).integerValue()],
-        accounts[0]
+        farmingContract.methods.unBoost,
+        [0, new BigNumber(id).integerValue()],
+        address
       )
-      .then(() => {})
+      .then(res => {
+        setTxhash(res.transactionHash);
+        setiIsConfirm(false);
+        setIsSuccess(true);
+        getDataNFT();
+        getDataLP();
+      })
       .catch(err => {
         if (err.message.includes('User denied')) {
           setIsShowCancel(true);
@@ -612,57 +819,14 @@ function Staking({ settings }) {
   const handleCloseStake = () => {
     setIsStakeNFT(false);
   };
-  const handleMaxValue = () => {
-    setVal(userInfo?.available);
-    if (userInfo?.available > 0) {
-      setMessErr({
-        mess: '',
-        show: false
-      });
-    }
-  };
 
   useEffect(() => {
     getDataUserInfor();
   }, [txhash]);
-  const fetchNFTs = async () => {
-    if (!settings.selectedAddress) {
-      setIsLoading(false);
-    }
-    setIsLoading(true);
-    try {
-      await axiosInstanceMoralis
-        .get(
-          `/${settings.selectedAddress}/nft?chain=rinkeby&format=decimal&limit=20`
-        )
-        .then(res => {
-          const data = res.data.result;
-          if (data.length > 0) {
-            // eslint-disable-next-line no-shadow
-            const dataConvert = _.cloneDeep(data);
-            // eslint-disable-next-line array-callback-return
-            dataConvert.map(item => {
-              // eslint-disable-next-line no-param-reassign
-              item.active = false;
-              // eslint-disable-next-line no-param-reassign
-              item.img = IconDuck;
-              // eslint-disable-next-line no-param-reassign
-              item.name = `${item.name}${' #'}${item.token_id}`;
-            });
-            const dataStakeClone = _.cloneDeep(dataConvert);
-            const dataCloneUnState = _.cloneDeep(dataConvert);
-            setDataNFT(dataStakeClone);
-            setDataNFTUnState(dataCloneUnState);
-            setIsLoading(false);
-          }
-        });
-    } catch (err) {
-      setIsLoading(false);
-      throw err;
-    }
-  };
+
   useEffect(() => {
-    fetchNFTs();
+    getDataLP();
+    getDataNFT();
   }, []);
 
   return (
@@ -692,6 +856,8 @@ function Staking({ settings }) {
                     inputMode="decimal"
                     pattern="^[0-9]*[.,]?[0-9]*$"
                     min={0}
+                    minLength={1}
+                    maxLength={79}
                     placeholder="Enter a number"
                     onChange={event => handleChangeValue(event)}
                   />
@@ -744,7 +910,7 @@ function Staking({ settings }) {
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                    {settings.selectedAddress ? (
+                    {isApproveLP && settings.selectedAddress ? (
                       <>
                         <SBtn>
                           <SBtnStake onClick={handleStake}>Stake</SBtnStake>
@@ -756,16 +922,12 @@ function Staking({ settings }) {
                           </Tooltip>
                         </SBtn>
                         <SBtnUn>
-                          {isUnStakeLp ? (
-                            <SBtnUnstake onClick={handleUnStake}>
-                              UnStake
-                            </SBtnUnstake>
-                          ) : (
-                            <SBtnUnstake style={{ cursor: 'not-allowed' }}>
-                              UnStake
-                            </SBtnUnstake>
-                          )}
-
+                          <SBtnUnstake
+                            disabled={isUnStakeLp}
+                            onClick={handleUnStake}
+                          >
+                            UnStake
+                          </SBtnUnstake>
                           <Tooltip
                             placement="top"
                             title="Countdown will be reset if you unstake a part without claiming the reward"
@@ -775,7 +937,13 @@ function Staking({ settings }) {
                         </SBtnUn>
                       </>
                     ) : (
-                      <></>
+                      <>
+                        <SBtn>
+                          <SBtnStake onClick={handleApproveLp}>
+                            Approve
+                          </SBtnStake>
+                        </SBtn>
+                      </>
                     )}
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
@@ -852,11 +1020,13 @@ function Staking({ settings }) {
                     </SBtnClaim>
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    {expiryTimeBase && (
+                    {expiryTimeBase && settings.selectedAddress ? (
                       <CountDownClaim
                         times={expiryTimeBase}
                         address={settings?.selectedAddress}
                       />
+                    ) : (
+                      <></>
                     )}
                   </Col>
                 </Row>
@@ -879,11 +1049,13 @@ function Staking({ settings }) {
                     </SBtnClaimStart>
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    {expiryTimeBoost && (
+                    {expiryTimeBoost && settings.selectedAddress ? (
                       <CountDownClaim
                         times={expiryTimeBoost}
                         address={settings?.selectedAddress}
                       />
+                    ) : (
+                      <></>
                     )}
                   </Col>
                 </Row>
@@ -931,7 +1103,22 @@ function Staking({ settings }) {
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                 <SFlexEnd>
                   {settings.selectedAddress && dataNFT.length > 0 ? (
-                    <SSTake onClick={handleStakeNFT}>Stake</SSTake>
+                    <>
+                      {isApproveNFT ? (
+                        <>
+                          <SSTake
+                            disabled={itemStaking.length === 0}
+                            onClick={handleStakeNFT}
+                          >
+                            Stake
+                          </SSTake>
+                        </>
+                      ) : (
+                        <>
+                          <SSTake onClick={handleApproveNFT}>Approve</SSTake>
+                        </>
+                      )}
+                    </>
                   ) : (
                     <></>
                   )}
@@ -1006,7 +1193,22 @@ function Staking({ settings }) {
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                 <SFlexEnd>
                   {settings.selectedAddress && dataNFTUnState.length > 0 ? (
-                    <SSUnTake onClick={handleUnStakeNFT}>UnStake</SSUnTake>
+                    <>
+                      {isApproveNFT ? (
+                        <>
+                          <SSTake
+                            disabled={itemStaked.length === 0}
+                            onClick={handleUnStakeNFT}
+                          >
+                            UnStake
+                          </SSTake>
+                        </>
+                      ) : (
+                        <>
+                          <SSTake onClick={handleApproveNFT}>Approve</SSTake>
+                        </>
+                      )}
+                    </>
                   ) : (
                     <></>
                   )}
@@ -1029,27 +1231,28 @@ function Staking({ settings }) {
                     </SSliderNoData>
                   )}
                   <Slider {...AUDITOR_SETTING}>
-                    {dataNFTUnState?.map(item => {
-                      return (
-                        <SItemSlider
-                          key={item.id}
-                          onClick={event => handleSelectItemNFT(event, item)}
-                        >
-                          <SImgSlider src={item.img} />
-                          <SBoxSlider>
-                            <STitleSlider>{item.name}</STitleSlider>
-                            <SDescriptionSlider>
-                              {item.description}
-                            </SDescriptionSlider>
-                          </SBoxSlider>
-                          {item.active === false ? (
-                            <SSactive src={IconNotSelect} />
-                          ) : (
-                            <SSUnactive src={IconSelect} />
-                          )}
-                        </SItemSlider>
-                      );
-                    })}
+                    {dataNFTUnState &&
+                      dataNFTUnState?.map(item => {
+                        return (
+                          <SItemSlider
+                            key={item.id}
+                            onClick={event => handleSelectItemNFT(event, item)}
+                          >
+                            <SImgSlider src={item.img} />
+                            <SBoxSlider>
+                              <STitleSlider>{item.name}</STitleSlider>
+                              <SDescriptionSlider>
+                                {item.description}
+                              </SDescriptionSlider>
+                            </SBoxSlider>
+                            {item.active === false ? (
+                              <SSactive src={IconNotSelect} />
+                            ) : (
+                              <SSUnactive src={IconSelect} />
+                            )}
+                          </SItemSlider>
+                        );
+                      })}
                   </Slider>
                 </SSlider>
                 <STextSelecT>
