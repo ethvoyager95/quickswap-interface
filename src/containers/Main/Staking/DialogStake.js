@@ -260,7 +260,9 @@ function DialogStake({ isStakeNFT, close, itemStaking, handleStakeDialog }) {
                     </ul>
                   </SRowBox>
                 </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+              </Row>
+              <Row>
+                <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                   <SBtn>
                     <SBtnCancel onClick={close}>Cancel</SBtnCancel>
                     <SBtnStake onClick={handleStakeDialog}>Stake</SBtnStake>

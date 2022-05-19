@@ -90,7 +90,13 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                   {address ? (
                     <>
                       <SValueBox>
-                        {amount}/{totalBoost}
+                        {amount && totalBoost ? (
+                          <>
+                            {amount} / {totalBoost}
+                          </>
+                        ) : (
+                          <>-</>
+                        )}
                       </SValueBox>
                       <SUSDBox>$1000</SUSDBox>
                     </>
@@ -105,7 +111,13 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                   <STextBox>Liquidity</STextBox>
                   {address ? (
                     <>
-                      <SValueBox>{totalDeposit}</SValueBox>
+                      {totalDeposit ? (
+                        <>
+                          <SValueBox>{totalDeposit}</SValueBox>
+                        </>
+                      ) : (
+                        <>-</>
+                      )}
                       <SUSDBox>$30,005</SUSDBox>
                     </>
                   ) : (

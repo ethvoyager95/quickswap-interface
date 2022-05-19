@@ -40,6 +40,7 @@ import {
   SSTake,
   SBtnUn,
   SBtnUnstake,
+  SSUnTake,
   SText,
   SHref,
   SHrefErr,
@@ -217,10 +218,14 @@ function Staking({ settings }) {
   const [isApproveNFT, setIsApproveNFT] = useState(true);
   const [isClaimBaseReward, setisClaimBaseReward] = useState(false);
   const [isClaimBootReward, setIsClaimBootReward] = useState(false);
+  const [countNFT, setCounNFT] = useState(0);
   const [isUnStakeLp, setIsUnStakeLp] = useState(false);
   const [itemStaking, setItemStaking] = useState([]);
   const [itemStaked, setItemStaked] = useState([]);
   const [userInfo, setUserInfo] = useState({});
+  const [expectedBoostAPR, setExpectedBoostAPR] = useState(0);
+  const [yourBoostAPR, setYourBoostAPR] = useState(0);
+  // contract
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
   const vStrkContract = getVSTRKContract();
@@ -228,17 +233,17 @@ function Staking({ settings }) {
   // get userInfor
   const getDataUserInfor = async () => {
     window.web3 = new Web3(window.ethereum);
-    const accounts = settings.selectedAddress;
     let sTokenBalance = null;
-    if (accounts) {
+    if (address) {
       sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
-        accounts
+        address
       ]);
     }
     const total = {
       totalBoost: '',
       totalDeposit: ''
     };
+    setIsLoading(true);
     try {
       // eslint-disable-next-line no-debugger
       await axiosInstance
@@ -246,10 +251,9 @@ function Staking({ settings }) {
         .then(res => {
           if (res) {
             const result = res.data.data;
-            const totalDepositString = +new BigNumber(result.totalDeposit).div(
+            const totalDepositString = +new BigNumber(+result.totalDeposit).div(
               new BigNumber(10).pow(18)
             );
-
             total.totalBoost = result?.totalBoost;
             total.totalDeposit = totalDepositString.toString();
           }
@@ -257,17 +261,21 @@ function Staking({ settings }) {
         .catch(err => {
           throw err;
         });
+      setIsLoading(false);
     } catch (err) {
       throw err;
     }
     let objUser = {};
     await methods
-      .call(farmingContract.methods.userInfo, [0, accounts])
+      .call(farmingContract.methods.userInfo, [0, address])
       .then(res => {
         const balanceBigNumber = new BigNumber(sTokenBalance).div(
           new BigNumber(10).pow(18)
         );
         const pendingAmountString = +new BigNumber(res.pendingAmount).div(
+          new BigNumber(10).pow(18)
+        );
+        const amountNumber = +new BigNumber(res.amount).div(
           new BigNumber(10).pow(18)
         );
         const balanceBigFormat = balanceBigNumber
@@ -281,10 +289,9 @@ function Staking({ settings }) {
             noLP: true
           });
         }
-
         const currentTime = Math.floor(new Date().getTime() / 1000);
-        const timeBaseUnstake = res.depositedDate;
-        const timeBootsUnstake = res.boostedDate;
+        const timeBaseUnstake = +res.depositedDate;
+        const timeBootsUnstake = +res.boostedDate;
         const overTimeBaseReward = currentTime - timeBaseUnstake;
         const overTimeBootReward = currentTime - timeBootsUnstake;
         const second24h = 86400;
@@ -295,6 +302,7 @@ function Staking({ settings }) {
         setIsUnStakeLp(overTimeBaseReward >= second2day);
         objUser = {
           ...res,
+          amount: amountNumber < 0.001 ? '<0.001' : amountNumber.toString(),
           available: parseFloat(balanceBigFormat).toString(),
           totalBoost: total.totalBoost ?? '',
           totalDeposit: total.totalDeposit ?? '',
@@ -306,28 +314,24 @@ function Staking({ settings }) {
       .catch(err => {
         throw err;
       });
-    await methods
-      .call(vStrkContract.methods.balanceOf, [accounts])
-      .then(res => {
-        const vStrkString = +new BigNumber(res).div(new BigNumber(10).pow(18));
-        if (vStrkString < 0.001) {
-          setUserInfo({ ...objUser, vStrk: '< 0.001' });
-          return;
-        }
-        setUserInfo({ ...objUser, vStrk: vStrkString });
-      });
+    await methods.call(vStrkContract.methods.balanceOf, [address]).then(res => {
+      const vStrkString = +new BigNumber(res).div(new BigNumber(10).pow(18));
+      if (vStrkString < 0.001) {
+        setUserInfo({ ...objUser, vStrk: '< 0.001' });
+        return;
+      }
+      setUserInfo({ ...objUser, vStrk: vStrkString });
+    });
   };
   // get data
   const getDataLP = async () => {
-    if (!settings.selectedAddress) {
+    if (!address) {
       setIsLoading(false);
     }
     setIsLoading(true);
     try {
       await axiosInstanceMoralis
-        .get(
-          `/${settings.selectedAddress}/nft?chain=rinkeby&format=decimal&limit=20`
-        )
+        .get(`/${address}/nft?chain=rinkeby&format=decimal&limit=20`)
         .then(res => {
           const data = res.data.result;
           if (data.length > 0) {
@@ -357,7 +361,7 @@ function Staking({ settings }) {
     }
   };
   const getDataNFT = async () => {
-    if (!settings.selectedAddress) {
+    if (!address) {
       setIsLoading(false);
     }
     setIsLoading(true);
@@ -367,6 +371,7 @@ function Staking({ settings }) {
         .then(res => {
           const lstStakedId = res.boostFactors;
           const dataCovert = [...lstStakedId];
+          setCounNFT(dataCovert.length);
           // eslint-disable-next-line no-unused-vars
           const newArray = dataCovert?.map(item => {
             // eslint-disable-next-line no-return-assign
@@ -378,6 +383,7 @@ function Staking({ settings }) {
             });
           });
           setDataNFTUnState(newArray);
+          setIsLoading(false);
         });
     } catch (err) {
       setIsLoading(false);
@@ -524,7 +530,7 @@ function Staking({ settings }) {
       return overOneDate.setDate(overOneDate.getDate() + 1);
     }
     return null;
-  }, [userInfo]);
+  }, [userInfo, address]);
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
@@ -532,7 +538,7 @@ function Staking({ settings }) {
       return over30days.setDate(over30days.getDate() + 30);
     }
     return null;
-  }, [userInfo]);
+  }, [userInfo, address]);
 
   // stake
   const handleStake = async () => {
@@ -551,7 +557,6 @@ function Staking({ settings }) {
     } else {
       // deposit
       setiIsConfirm(true);
-      const accounts = settings.selectedAddress;
       const valueBigNumber = new BigNumber(val).times(
         new BigNumber(10).pow(18)
       );
@@ -567,7 +572,7 @@ function Staking({ settings }) {
         .send(
           farmingContract.methods.deposit,
           [0, new BigNumber(valueBigNumber).integerValue()],
-          accounts
+          address
         )
         .then(res => {
           if (res) {
@@ -604,12 +609,11 @@ function Staking({ settings }) {
     } else {
       // withdraw test
       setiIsConfirm(true);
-      const accounts = settings.selectedAddress;
       await methods
         .send(
           farmingContract.methods.withdraw,
           [0, new BigNumber(val).integerValue()],
-          accounts
+          address
         )
         .then(res => {
           setTxhash(res.transactionHash);
@@ -636,12 +640,11 @@ function Staking({ settings }) {
   };
   // handleClaim
   const handleClainBaseReward = async () => {
-    const accounts = settings.selectedAddress;
     await methods
       .send(
         farmingContract.methods.claimBaseRewards,
         [new BigNumber(0).integerValue()],
-        accounts
+        address
       )
       .then(() => {})
       .catch(err => {
@@ -658,12 +661,11 @@ function Staking({ settings }) {
       });
   };
   const handleClainBootReward = async () => {
-    const accounts = settings.selectedAddress;
     await methods
       .send(
         farmingContract.methods.claimBoostReward,
         [new BigNumber(0).integerValue()],
-        accounts[0]
+        address
       )
       .then(() => {})
       .catch(err => {
@@ -708,6 +710,8 @@ function Staking({ settings }) {
         const dataStaking = dataActiveStakeNFT.filter(it => {
           return it.active === true;
         });
+        const valueExpected = dataStaking.length * 20;
+        setExpectedBoostAPR(valueExpected);
         setItemStaking(dataStaking);
       }
     },
@@ -735,6 +739,8 @@ function Staking({ settings }) {
         const dataStaked = dataActiveUnStakeNFT.filter(it => {
           return it.active === true;
         });
+        const valueBoots = dataStaked.length * 20;
+        setYourBoostAPR(valueBoots);
         setItemStaked(dataStaked);
       }
     },
@@ -757,6 +763,7 @@ function Staking({ settings }) {
         setIsSuccess(true);
         getDataNFT();
         getDataLP();
+        setItemStaking([]);
       })
       .catch(err => {
         if (err.message.includes('User denied')) {
@@ -788,6 +795,7 @@ function Staking({ settings }) {
         setIsSuccess(true);
         getDataNFT();
         getDataLP();
+        setItemStaked([]);
       })
       .catch(err => {
         if (err.message.includes('User denied')) {
@@ -822,12 +830,15 @@ function Staking({ settings }) {
 
   useEffect(() => {
     getDataUserInfor();
-  }, [txhash]);
+  }, [txhash, address]);
 
   useEffect(() => {
-    getDataLP();
-    getDataNFT();
-  }, []);
+    if (address) {
+      getDataLP();
+      getDataNFT();
+    }
+  }, [address]);
+  // console.log(userInfo, 'user');
 
   return (
     <>
@@ -836,8 +847,9 @@ function Staking({ settings }) {
           <DashboardStaking
             totalBoost={userInfo?.totalBoost}
             totalDeposit={userInfo?.totalDeposit}
-            amount={userInfo?.amount}
+            amount={countNFT}
             address={settings?.selectedAddress}
+            loadding={isLoading}
           />
           <SDiv>
             <SHeader>
@@ -922,12 +934,23 @@ function Staking({ settings }) {
                           </Tooltip>
                         </SBtn>
                         <SBtnUn>
-                          <SBtnUnstake
-                            disabled={isUnStakeLp}
-                            onClick={handleUnStake}
-                          >
-                            UnStake
-                          </SBtnUnstake>
+                          {isUnStakeLp ? (
+                            <>
+                              <SBtnUnstake onClick={handleUnStake}>
+                                UnStake
+                              </SBtnUnstake>
+                            </>
+                          ) : (
+                            <>
+                              <SSUnTake
+                                disabled
+                                style={{ cursor: 'pointer !important' }}
+                              >
+                                UnStake
+                              </SSUnTake>
+                            </>
+                          )}
+
                           <Tooltip
                             placement="top"
                             title="Countdown will be reset if you unstake a part without claiming the reward"
@@ -1083,15 +1106,29 @@ function Staking({ settings }) {
             </Row>
           </SDiv>
           <SDiv>
-            <SText>
-              NFT Staking
-              <Tooltip
-                placement="left"
-                title="Only display all NFTs that can be staked into this pool"
-              >
-                <SQuestion src={IconQuestion} />
-              </Tooltip>
-            </SText>
+            <Row>
+              <Col xs={{ span: 24 }} lg={{ span: 9 }}>
+                <SFlex>
+                  <SText>
+                    NFT Staking
+                    <Tooltip
+                      placement="left"
+                      title="Only display all NFTs that can be staked into this pool"
+                    >
+                      <SQuestion src={IconQuestion} />
+                    </Tooltip>
+                  </SText>
+                </SFlex>
+              </Col>
+              <Col xs={{ span: 24 }} lg={{ span: 15 }}>
+                <SFlexEnd>
+                  <SDetailsColor>
+                    {' '}
+                    Expected Boost APR: {expectedBoostAPR}%{' '}
+                  </SDetailsColor>
+                </SFlexEnd>
+              </Col>
+            </Row>
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 9 }}>
                 <SFlex>
@@ -1178,7 +1215,10 @@ function Staking({ settings }) {
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                 <SFlexEnd>
-                  <SDetailsColor> Your Boost APR: 0% </SDetailsColor>
+                  <SDetailsColor>
+                    {' '}
+                    Your Boost APR: {yourBoostAPR}%{' '}
+                  </SDetailsColor>
                 </SFlexEnd>
               </Col>
             </Row>

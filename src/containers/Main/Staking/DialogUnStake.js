@@ -234,7 +234,7 @@ function DialogUnStake({
             </SItem>
             <SBox>
               <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                   <SRowBox>
                     <STextBox>NFT selected</STextBox>
                     <SValueBox>5/15</SValueBox>
@@ -261,7 +261,9 @@ function DialogUnStake({
                     </ul>
                   </SRowBox>
                 </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+              </Row>
+              <Row>
+                <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                   <SBtn>
                     <SBtnStake onClick={close}>Cancel</SBtnStake>
                     <SBtnUnStake onClick={handleUnStakeDialog}>

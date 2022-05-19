@@ -157,11 +157,11 @@ export const SSUnTake = styled.button`
   color: #f84960;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 150px;
+  min-width: 220px;
   text-align: center;
   border: 1px solid #f84960;
   outline: none;
-  margin-left: 30px;
+  margin-right: 10px;
   :disabled {
     color: #fff !important;
   }
