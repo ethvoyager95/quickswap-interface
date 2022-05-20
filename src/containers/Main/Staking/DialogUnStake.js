@@ -215,7 +215,6 @@ function DialogUnStake({
   list,
   handleUnStakeDialog
 }) {
-  console.log(list, 'list');
   const [itemSelect, setItemSelect] = useState(0);
   const [totalSelect, setTotalSelect] = useState(0);
   const [beforeUnStake, setBeforeUnStake] = useState(0);

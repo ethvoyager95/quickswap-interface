@@ -782,7 +782,6 @@ function Staking({ settings }) {
   const handleUnStakeDialog = async () => {
     setIsUnStakeNFT(false);
     setiIsConfirm(true);
-    console.log(itemStaked, 'itemStaked');
     const id = itemStaked[0].token_id;
     await methods
       .send(
@@ -839,7 +838,6 @@ function Staking({ settings }) {
       getDataNFT();
     }
   }, [address]);
-  console.log(userInfo, 'user');
   return (
     <>
       <React.Fragment>
