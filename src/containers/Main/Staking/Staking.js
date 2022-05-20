@@ -1200,7 +1200,9 @@ function Staking({ settings }) {
                         src={address ? IconNoData : IconNotConnect}
                       />
                       <SSliderNoDataText>
-                        You don’t own any NFTs
+                        {address
+                          ? 'You don’t own any NFTs'
+                          : 'Connect wallet to see your NFTs'}
                       </SSliderNoDataText>
                     </SSliderNoData>
                   )}
@@ -1229,7 +1231,7 @@ function Staking({ settings }) {
                     })}
                   </Slider>
                 </SSlider>
-                {address && (
+                {address && dataNFT.length > 0 && (
                   <STextSelecT>
                     Please select NFTs you want to stake
                   </STextSelecT>
@@ -1301,7 +1303,9 @@ function Staking({ settings }) {
                         src={address ? IconNoData : IconNotConnect}
                       />
                       <SSliderNoDataText>
-                        You don’t own any NFTs
+                        {address
+                          ? 'You don’t own any NFTs'
+                          : 'Connect wallet to see your NFTs'}
                       </SSliderNoDataText>
                     </SSliderNoData>
                   )}
@@ -1330,7 +1334,7 @@ function Staking({ settings }) {
                       })}
                   </Slider>
                 </SSlider>
-                {address && (
+                {address && dataNFTUnState.length > 0 && (
                   <STextSelecT>
                     Please select NFTs you want to stake
                   </STextSelecT>
