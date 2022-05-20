@@ -146,6 +146,7 @@ export const SSTake = styled.button`
   outline: none;
   :disabled {
     color: #fff !important;
+    cursor: not-allowed;
   }
   @media only screen and (max-width: 768px) {
     min-width: 150px;
@@ -164,6 +165,7 @@ export const SSUnTake = styled.button`
   margin-right: 10px;
   :disabled {
     color: #fff !important;
+    cursor: not-allowed;
   }
   @media only screen and (max-width: 768px) {
     min-width: 150px;

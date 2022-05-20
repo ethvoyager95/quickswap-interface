@@ -184,7 +184,7 @@ const SBtnCancel = styled.div`
   width: 120px;
   margin-left: 10px;
   cursor: pointer;
-  box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
+  border: 1px solid #107def;
 `;
 const SBtnStake = styled.div`
   font-style: normal;
@@ -203,7 +203,6 @@ const SBtnStake = styled.div`
   width: 120px;
   margin-left: 10px;
   cursor: pointer;
-  box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
 `;
 const PERCENT = 20;
 function DialogStake({

@@ -184,7 +184,7 @@ const SBtnCancel = styled.div`
   width: 120px;
   margin-left: 10px;
   cursor: pointer;
-  box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
+  border: 1px solid #107def;
 `;
 const SBtnUnStake = styled.div`
   font-style: normal;
@@ -197,7 +197,6 @@ const SBtnUnStake = styled.div`
   color: #f84960;
   background: #eceff9;
   border: 1px solid #f84960;
-  box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
   border-radius: 8px;
   padding: 6px 12px;
   display: flex;
