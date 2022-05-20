@@ -251,10 +251,10 @@ function Staking({ settings }) {
         .then(res => {
           if (res) {
             const result = res.data.data;
+            total.totalBoost = result.totalBoost;
             const totalDepositString = +new BigNumber(+result.totalDeposit).div(
               new BigNumber(10).pow(18)
             );
-            total.totalBoost = result?.totalBoost;
             total.totalDeposit = totalDepositString.toString();
           }
         })
@@ -324,7 +324,7 @@ function Staking({ settings }) {
     });
   };
   // get data
-  const getDataLP = async () => {
+  const getDataLP = useCallback(async () => {
     if (!address) {
       setIsLoading(false);
     }
@@ -350,7 +350,8 @@ function Staking({ settings }) {
               item.name = `${item.name}${' #'}${item.token_id}`;
             });
             const dataStakeClone = _.cloneDeep(dataConvert);
-            setDataNFT(dataStakeClone);
+            const dataStakeCloneSort = _.sortBy(dataStakeClone, 'token_id');
+            setDataNFT(dataStakeCloneSort);
             setIsLoading(false);
           }
           setIsLoading(false);
@@ -359,8 +360,8 @@ function Staking({ settings }) {
       setIsLoading(false);
       throw err;
     }
-  };
-  const getDataNFT = async () => {
+  }, [address]);
+  const getDataNFT = useCallback(async () => {
     if (!address) {
       setIsLoading(false);
     }
@@ -382,7 +383,8 @@ function Staking({ settings }) {
               active: false
             });
           });
-          setDataNFTUnState(newArray);
+          const newArraySort = _.sortBy(newArray, 'token_id');
+          setDataNFTUnState(newArraySort);
           setIsLoading(false);
         });
     } catch (err) {
@@ -390,7 +392,7 @@ function Staking({ settings }) {
       throw err;
     }
     setIsLoading(false);
-  };
+  }, [address]);
   // change amount
   const handleChangeValue = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;

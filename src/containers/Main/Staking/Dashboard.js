@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
@@ -68,6 +68,12 @@ const SUSDBox = styled.div`
   line-height: 22px;
 `;
 function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
+  const [countAmount, setCountAmount] = useState(null);
+  const [countTotal, setCountTotal] = useState(null);
+  useEffect(() => {
+    setCountAmount(amount);
+    setCountTotal(totalBoost);
+  }, [address, amount, totalBoost]);
   return (
     <>
       <React.Fragment>
@@ -90,9 +96,11 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                   {address ? (
                     <>
                       <SValueBox>
-                        {amount && totalBoost ? (
+                        {(countAmount !== null ** countAmount) !== 0 &&
+                        countTotal !== null &&
+                        countTotal !== 0 ? (
                           <>
-                            {amount} / {totalBoost}
+                            {countAmount} / {countTotal}
                           </>
                         ) : (
                           <>-</>
@@ -152,16 +160,16 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
   );
 }
 DashboardStaking.propTypes = {
-  totalBoost: PropTypes.string,
+  totalBoost: PropTypes.number,
   totalDeposit: PropTypes.string,
-  amount: PropTypes.string,
+  amount: PropTypes.number,
   address: PropTypes.string
 };
 
 DashboardStaking.defaultProps = {
-  totalBoost: '',
+  totalBoost: 0,
   totalDeposit: '',
-  amount: '',
+  amount: 0,
   address: ''
 };
 
