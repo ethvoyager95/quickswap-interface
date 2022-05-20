@@ -812,7 +812,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               className="user-info-btn"
               onClick={() => setIsOpenInfoModal(true)}
             >
-              <div>{balance}</div>
+              <div>{balance || '0'}</div>
               <img src={`${process.env.PUBLIC_URL}/icon16.png`} alt="" />
             </Button>
           </UserInfoButton>
