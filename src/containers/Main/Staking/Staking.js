@@ -100,7 +100,7 @@ import IconVstrkSmall from '../../../assets/img/flash_vstrk.svg';
 import IconSelect from '../../../assets/img/select.svg';
 import IconNotSelect from '../../../assets/img/not_select.svg';
 // eslint-disable-next-line import/order
-
+const MAX_STAKE_NFT = 10;
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
   const { onClick } = props;
@@ -297,9 +297,19 @@ function Staking({ settings }) {
         const second24h = 86400;
         const second2day = 172800;
         const second30days = 2592000;
-        setisClaimBaseReward(overTimeBaseReward >= second24h);
-        setIsClaimBootReward(overTimeBootReward >= second30days);
-        setIsUnStakeLp(overTimeBaseReward >= second2day);
+
+        if (timeBaseUnstake === 0) {
+          setisClaimBaseReward(false);
+          setIsUnStakeLp(false);
+        } else {
+          setisClaimBaseReward(overTimeBaseReward >= second24h);
+          setIsUnStakeLp(overTimeBaseReward >= second2day);
+        }
+        if (timeBootsUnstake === 0) {
+          setIsClaimBootReward(false);
+        } else {
+          setIsClaimBootReward(overTimeBootReward >= second30days);
+        }
         objUser = {
           ...res,
           amount: amountNumber < 0.001 ? '<0.001' : amountNumber.toString(),
@@ -444,7 +454,6 @@ function Staking({ settings }) {
         }
       });
   }, [val, address, handleMaxValue]);
-
   const checkApproveNFT = useCallback(async () => {
     setIsApproveNFT(true);
     await methods
@@ -752,7 +761,8 @@ function Staking({ settings }) {
   const handleStakeDialog = async () => {
     setIsStakeNFT(false);
     setiIsConfirm(true);
-    const id = itemStaking[0].token_id;
+    const id = itemStaking[itemStaking.length - 1].token_id;
+    console.log('id', id);
     await methods
       .send(
         farmingContract.methods.boost,
@@ -840,6 +850,8 @@ function Staking({ settings }) {
       getDataNFT();
     }
   }, [address]);
+
+  console.log(userInfo, 'userInfo');
   return (
     <>
       <React.Fragment>
@@ -963,7 +975,7 @@ function Staking({ settings }) {
                       <>
                         <SBtn>
                           <SBtnStake onClick={handleApproveLp}>
-                            Approve
+                            Approve Staking
                           </SBtnStake>
                         </SBtn>
                       </>
@@ -1059,9 +1071,7 @@ function Staking({ settings }) {
                       {settings.selectedAddress && !!isClaimBootReward ? (
                         <SClaim onClick={handleClainBootReward}>Claim</SClaim>
                       ) : (
-                        <SUnClaim onClick={handleClainBootReward}>
-                          Claim
-                        </SUnClaim>
+                        <SUnClaim>Claim</SUnClaim>
                       )}
                       <Tooltip
                         placement="top"
@@ -1124,7 +1134,10 @@ function Staking({ settings }) {
                       {isApproveNFT ? (
                         <>
                           <SSTake
-                            disabled={itemStaking.length === 0}
+                            disabled={
+                              itemStaking.length === 0 ||
+                              itemStaking.length > MAX_STAKE_NFT
+                            }
                             onClick={handleStakeNFT}
                           >
                             Stake
@@ -1132,7 +1145,9 @@ function Staking({ settings }) {
                         </>
                       ) : (
                         <>
-                          <SSTake onClick={handleApproveNFT}>Approve</SSTake>
+                          <SSTake onClick={handleApproveNFT}>
+                            Approve Staking
+                          </SSTake>
                         </>
                       )}
                     </>
@@ -1225,7 +1240,9 @@ function Staking({ settings }) {
                         </>
                       ) : (
                         <>
-                          <SSTake onClick={handleApproveNFT}>Approve</SSTake>
+                          <SSTake onClick={handleApproveNFT}>
+                            Approve Staking
+                          </SSTake>
                         </>
                       )}
                     </>
