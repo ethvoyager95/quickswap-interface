@@ -782,6 +782,7 @@ function Staking({ settings }) {
   const handleUnStakeDialog = async () => {
     setIsUnStakeNFT(false);
     setiIsConfirm(true);
+    console.log(itemStaked, 'itemStaked');
     const id = itemStaked[0].token_id;
     await methods
       .send(
@@ -838,8 +839,7 @@ function Staking({ settings }) {
       getDataNFT();
     }
   }, [address]);
-  // console.log(userInfo, 'user');
-
+  console.log(userInfo, 'user');
   return (
     <>
       <React.Fragment>
@@ -1307,6 +1307,8 @@ function Staking({ settings }) {
           isStakeNFT={isStakeNFT}
           close={handleCloseStake}
           itemStaking={itemStaking}
+          listStake={dataNFT}
+          listUnStake={dataNFTUnState}
           handleStakeDialog={handleStakeDialog}
         />
         {/* UnStake */}
@@ -1314,6 +1316,7 @@ function Staking({ settings }) {
           isUnStakeNFT={isUnStakeNFT}
           close={handleCloseUnStake}
           itemStaked={itemStaked}
+          list={dataNFTUnState}
           handleUnStakeDialog={handleUnStakeDialog}
         />
         {/* err */}

@@ -1,5 +1,5 @@
 import { Dialog, makeStyles } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes, { func } from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
@@ -82,7 +82,7 @@ const SRow = styled.div`
   width: 100%;
   justify-content: space-between;
   border-bottom: 1px solid #5a617d;
-  padding: 0 0 20px 0;
+  padding: 20px 0 20px 0;
 `;
 const SLeft = styled.div`
   display: flex;
@@ -116,6 +116,7 @@ const SDetails = styled.div`
 const SBox = styled.div`
   width: 100%;
   margin-top: 30px;
+  display: block;
 `;
 const SRowBox = styled.div`
   font-style: normal;
@@ -155,8 +156,7 @@ const SValueBox = styled.div`
   color: #141414;
 `;
 const SUl = styled.div`
-  display: flex;
-  justify-content: space-between;
+  margin-left: 15px;
 `;
 const SBtn = styled.div`
   width: 100%;
@@ -175,16 +175,16 @@ const SBtnCancel = styled.div`
   display: flex;
   align-items: center;
   text-align: center;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
-  border-radius: 50px;
+  color: #107def;
+  background: #ffffff;
+  border-radius: 8px;
   padding: 6px 12px;
   display: flex;
   justify-content: center;
   width: 120px;
   margin-left: 10px;
   cursor: pointer;
+  box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
 `;
 const SBtnStake = styled.div`
   font-style: normal;
@@ -194,20 +194,39 @@ const SBtnStake = styled.div`
   display: flex;
   align-items: center;
   text-align: center;
-  color: #107def;
-  background: #fff;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
-  border-radius: 50px;
+  color: #fff;
+  background: #107def;
+  border-radius: 8px;
   padding: 6px 12px;
   display: flex;
   justify-content: center;
   width: 120px;
   margin-left: 10px;
   cursor: pointer;
+  box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
 `;
-function DialogStake({ isStakeNFT, close, itemStaking, handleStakeDialog }) {
+const PERCENT = 20;
+function DialogStake({
+  isStakeNFT,
+  close,
+  itemStaking,
+  listStake,
+  listUnStake,
+  handleStakeDialog
+}) {
   const classes = useStyles();
-
+  const [itemSelect, setItemSelect] = useState(itemStaking?.length);
+  const [totalSelect, setTotalSelect] = useState(listStake?.length);
+  const [itemStaked, setItemStaked] = useState(listUnStake?.length);
+  const [beforeStake, setBeforeStaking] = useState(0);
+  const [afterStake, setAfterStake] = useState(0);
+  useEffect(() => {
+    setItemSelect(itemStaking.length);
+    setTotalSelect(listStake.length);
+    setItemStaked(listUnStake.length);
+    setBeforeStaking(PERCENT * itemStaked);
+    setAfterStake(PERCENT * itemSelect + itemStaked * PERCENT);
+  }, [itemStaking, listStake, listUnStake, isStakeNFT]);
   return (
     <>
       <React.Fragment>
@@ -230,37 +249,42 @@ function DialogStake({ isStakeNFT, close, itemStaking, handleStakeDialog }) {
                 );
               })}
             </SItem>
-
             <SBox>
               <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <Col xs={{ span: 24 }} lg={{ span: 10 }}>
                   <SRowBox>
                     <STextBox>NFT selected</STextBox>
-                    <SValueBox>5/15</SValueBox>
+                    <SValueBox>
+                      {itemSelect}/{totalSelect}
+                    </SValueBox>
                   </SRowBox>
                   <SRowBox>
                     <STextBox>Staked NFT</STextBox>
-                    <SValueBox>0/10</SValueBox>
-                  </SRowBox>
-                  <SRowBox>Boost APR</SRowBox>
-                  <SRowBox>
-                    <ul>
-                      <li>
-                        <SUl>
-                          <STextBox>Before staking</STextBox>
-                          <SValueBox>100%</SValueBox>
-                        </SUl>
-                      </li>
-                      <li>
-                        <SUl>
-                          <STextBox>After staking</STextBox>
-                          <SValueBox>0%</SValueBox>
-                        </SUl>
-                      </li>
-                    </ul>
+                    <SValueBox>0/{itemStaked}</SValueBox>
                   </SRowBox>
                 </Col>
+                <Col xs={{ span: 24 }} lg={{ span: 2 }}>
+                  {}
+                </Col>
+
+                <Col xs={{ span: 24 }} lg={{ span: 10 }}>
+                  <SRowBox>
+                    <div style={{ color: '#333' }}>Boost APR</div>
+                  </SRowBox>
+                  <SUl>
+                    <SRowBox>
+                      <STextBox>Before staking</STextBox>
+                      <SValueBox>{beforeStake}%</SValueBox>
+                    </SRowBox>
+                    <SRowBox>
+                      <STextBox>After staking</STextBox>
+                      <SValueBox>{afterStake}%</SValueBox>
+                    </SRowBox>
+                  </SUl>
+                </Col>
               </Row>
+            </SBox>
+            <SBox>
               <Row>
                 <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                   <SBtn>
@@ -280,6 +304,8 @@ DialogStake.propTypes = {
   close: PropTypes.func,
   isStakeNFT: PropTypes.bool,
   itemStaking: PropTypes.array,
+  listStake: PropTypes.array,
+  listUnStake: PropTypes.array,
   handleStakeDialog: PropTypes.func
 };
 
@@ -287,6 +313,8 @@ DialogStake.defaultProps = {
   close: func,
   isStakeNFT: false,
   itemStaking: [],
+  listStake: [],
+  listUnStake: [],
   handleStakeDialog: func
 };
 

@@ -1,5 +1,5 @@
 import { Dialog, makeStyles } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes, { func } from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
@@ -115,6 +115,8 @@ const SDetails = styled.div`
 `;
 const SBox = styled.div`
   width: 100%;
+  margin-top: 30px;
+  display: block;
 `;
 const SRowBox = styled.div`
   font-style: normal;
@@ -154,8 +156,7 @@ const SValueBox = styled.div`
   color: #141414;
 `;
 const SUl = styled.div`
-  display: flex;
-  justify-content: space-between;
+  margin-left: 15px;
 `;
 const SBtn = styled.div`
   width: 100%;
@@ -166,7 +167,7 @@ const SBtn = styled.div`
   align-items: center;
   height: 130px;
 `;
-const SBtnStake = styled.div`
+const SBtnCancel = styled.div`
   font-style: normal;
   font-weight: 700;
   font-size: 17px;
@@ -174,15 +175,16 @@ const SBtnStake = styled.div`
   display: flex;
   align-items: center;
   text-align: center;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
-  border-radius: 50px;
+  color: #107def;
+  background: #ffffff;
+  border-radius: 8px;
   padding: 6px 12px;
   display: flex;
   justify-content: center;
-  cursor: pointer;
   width: 120px;
+  margin-left: 10px;
+  cursor: pointer;
+  box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
 `;
 const SBtnUnStake = styled.div`
   font-style: normal;
@@ -192,10 +194,11 @@ const SBtnUnStake = styled.div`
   display: flex;
   align-items: center;
   text-align: center;
-  color: #ffffff;
-  background: #ff0606;
-  box-shadow: 0px 2px 6px rgba(68, 68, 68, 0.5);
-  border-radius: 50px;
+  color: #f84960;
+  background: #eceff9;
+  border: 1px solid #f84960;
+  box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
+  border-radius: 8px;
   padding: 6px 12px;
   display: flex;
   justify-content: center;
@@ -203,12 +206,26 @@ const SBtnUnStake = styled.div`
   cursor: pointer;
   margin-left: 10px;
 `;
+const PERCENT = 20;
+
 function DialogUnStake({
   isUnStakeNFT,
   close,
   itemStaked,
+  list,
   handleUnStakeDialog
 }) {
+  console.log(list, 'list');
+  const [itemSelect, setItemSelect] = useState(0);
+  const [totalSelect, setTotalSelect] = useState(0);
+  const [beforeUnStake, setBeforeUnStake] = useState(0);
+  const [afterUnStake, setAfterUnStake] = useState(0);
+  useEffect(() => {
+    setItemSelect(itemStaked.length);
+    setTotalSelect(list.length);
+    setBeforeUnStake(totalSelect * PERCENT);
+    setAfterUnStake(PERCENT * totalSelect - itemSelect * PERCENT);
+  }, [itemStaked, list, isUnStakeNFT]);
   const classes = useStyles();
   return (
     <>
@@ -234,40 +251,46 @@ function DialogUnStake({
             </SItem>
             <SBox>
               <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                <Col xs={{ span: 24 }} lg={{ span: 10 }}>
                   <SRowBox>
                     <STextBox>NFT selected</STextBox>
-                    <SValueBox>5/15</SValueBox>
+                    <SValueBox>
+                      {itemSelect}/{totalSelect}
+                    </SValueBox>
                   </SRowBox>
                   <SRowBox>
                     <STextBox>Staked NFT</STextBox>
-                    <SValueBox>0/10</SValueBox>
-                  </SRowBox>
-                  <SRowBox>Boost APR</SRowBox>
-                  <SRowBox>
-                    <ul>
-                      <li>
-                        <SUl>
-                          <STextBox>Before unstaking</STextBox>
-                          <SValueBox>100%</SValueBox>
-                        </SUl>
-                      </li>
-                      <li>
-                        <SUl>
-                          <STextBox>After unstaking</STextBox>
-                          <SValueBox>0%</SValueBox>
-                        </SUl>
-                      </li>
-                    </ul>
+                    <SValueBox>0/{totalSelect}</SValueBox>
                   </SRowBox>
                 </Col>
+                <Col xs={{ span: 24 }} lg={{ span: 2 }}>
+                  {}
+                </Col>
+
+                <Col xs={{ span: 24 }} lg={{ span: 10 }}>
+                  <SRowBox>
+                    <div style={{ color: '#333' }}>Boost APR</div>
+                  </SRowBox>
+                  <SUl>
+                    <SRowBox>
+                      <STextBox>Before unStaking</STextBox>
+                      <SValueBox>{beforeUnStake}%</SValueBox>
+                    </SRowBox>
+                    <SRowBox>
+                      <STextBox>After unStaking</STextBox>
+                      <SValueBox>{afterUnStake}%</SValueBox>
+                    </SRowBox>
+                  </SUl>
+                </Col>
               </Row>
+            </SBox>
+            <SBox>
               <Row>
                 <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                   <SBtn>
-                    <SBtnStake onClick={close}>Cancel</SBtnStake>
+                    <SBtnCancel onClick={close}>Cancel</SBtnCancel>
                     <SBtnUnStake onClick={handleUnStakeDialog}>
-                      SUntake
+                      UnStake
                     </SBtnUnStake>
                   </SBtn>
                 </Col>
@@ -283,6 +306,7 @@ DialogUnStake.propTypes = {
   close: PropTypes.func,
   isUnStakeNFT: PropTypes.bool,
   itemStaked: PropTypes.array,
+  list: PropTypes.array,
   handleUnStakeDialog: PropTypes.func
 };
 
@@ -290,6 +314,7 @@ DialogUnStake.defaultProps = {
   close: func,
   isUnStakeNFT: false,
   itemStaked: [],
+  list: [],
   handleUnStakeDialog: func
 };
 
