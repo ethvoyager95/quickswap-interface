@@ -23,12 +23,14 @@ import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
 import '../../../assets/styles/slick.scss';
 import {
   SDiv,
+  SDivPadding,
   SInput,
   SMax,
   SBtnDisabled,
   SBtnClaim,
   SBtnClaimStart,
   SInforText,
+  SVSTRKTootip,
   SInfor,
   SInforClaim,
   SInforValue,
@@ -91,6 +93,7 @@ import Loadding from './Loadding';
 import IconQuestion from '../../../assets/img/error-outline.svg';
 import IconDuck from '../../../assets/img/default_slider.svg';
 import IconLink from '../../../assets/img/launch.svg';
+import IconLinkBlue from '../../../assets/img/link_blue.svg';
 import IconNoData from '../../../assets/img/no_data.svg';
 import IConNext from '../../../assets/img/arrow-next.svg';
 import IConPrev from '../../../assets/img/arrow-prev.svg';
@@ -99,6 +102,8 @@ import IconLpSmall from '../../../assets/img/lp_small.svg';
 import IconVstrkSmall from '../../../assets/img/flash_vstrk.svg';
 import IconSelect from '../../../assets/img/select.svg';
 import IconNotSelect from '../../../assets/img/not_select.svg';
+import IconNotConnect from '../../../assets/img/not_connect_data.svg';
+
 // eslint-disable-next-line import/order
 const MAX_STAKE_NFT = 10;
 function SampleNextArrow(props) {
@@ -337,6 +342,7 @@ function Staking({ settings }) {
   const getDataLP = useCallback(async () => {
     if (!address) {
       setIsLoading(false);
+      return;
     }
     setIsLoading(true);
     try {
@@ -374,6 +380,7 @@ function Staking({ settings }) {
   const getDataNFT = useCallback(async () => {
     if (!address) {
       setIsLoading(false);
+      return;
     }
     setIsLoading(true);
     try {
@@ -437,6 +444,10 @@ function Staking({ settings }) {
   };
   // check approve lp
   const checkApproveLP = useCallback(async () => {
+    if (!address) {
+      setIsApproveLP(true);
+      return;
+    }
     await methods
       .call(lpContract.methods.allowance, [
         address,
@@ -447,7 +458,7 @@ function Staking({ settings }) {
         if (messErr.show || messErr.noLP) {
           setIsApproveLP(true);
         }
-        if (+val > lpApproved) {
+        if (lpApproved === 0 || +val > lpApproved) {
           setIsApproveLP(false);
         } else {
           setIsApproveLP(true);
@@ -495,7 +506,7 @@ function Staking({ settings }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(err.message);
+          setTextErr('Some thing went wrong!');
         }
         throw err;
       });
@@ -529,7 +540,7 @@ function Staking({ settings }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(err.message);
+          setTextErr('Some thing went wrong!');
         }
         throw err;
       });
@@ -601,7 +612,7 @@ function Staking({ settings }) {
           } else {
             setIsShowCancel(true);
             setiIsConfirm(false);
-            setTextErr(err.message);
+            setTextErr('Some thing went wrong!');
           }
           throw err;
         });
@@ -639,7 +650,7 @@ function Staking({ settings }) {
           } else {
             setIsShowCancel(true);
             setiIsConfirm(false);
-            setTextErr(err.message);
+            setTextErr('Some thing went wrong!');
           }
           throw err;
         });
@@ -666,7 +677,7 @@ function Staking({ settings }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(err.message);
+          setTextErr('Some thing went wrong!');
         }
         throw err;
       });
@@ -687,7 +698,7 @@ function Staking({ settings }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(err.message);
+          setTextErr('Some thing went wrong!');
         }
         throw err;
       });
@@ -762,7 +773,6 @@ function Staking({ settings }) {
     setIsStakeNFT(false);
     setiIsConfirm(true);
     const id = itemStaking[itemStaking.length - 1].token_id;
-    console.log('id', id);
     await methods
       .send(
         farmingContract.methods.boost,
@@ -785,7 +795,7 @@ function Staking({ settings }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(err.message);
+          setTextErr('Some thing went wrong!');
         }
         throw err;
       });
@@ -794,7 +804,7 @@ function Staking({ settings }) {
   const handleUnStakeDialog = async () => {
     setIsUnStakeNFT(false);
     setiIsConfirm(true);
-    const id = itemStaked[0].token_id;
+    const id = itemStaked[itemStaked.length - 1].token_id;
     await methods
       .send(
         farmingContract.methods.unBoost,
@@ -817,7 +827,7 @@ function Staking({ settings }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(err.message);
+          setTextErr('Some thing went wrong!');
         }
         throw err;
       });
@@ -841,7 +851,9 @@ function Staking({ settings }) {
   };
 
   useEffect(() => {
-    getDataUserInfor();
+    if (address) {
+      getDataUserInfor();
+    }
   }, [txhash, address]);
 
   useEffect(() => {
@@ -851,11 +863,10 @@ function Staking({ settings }) {
     }
   }, [address]);
 
-  console.log(userInfo, 'userInfo');
   return (
     <>
       <React.Fragment>
-        <MainLayout title="Dashboard">
+        <MainLayout title="">
           <DashboardStaking
             totalBoost={userInfo?.totalBoost}
             totalDeposit={userInfo?.totalDeposit}
@@ -863,11 +874,12 @@ function Staking({ settings }) {
             address={settings?.selectedAddress}
             loadding={isLoading}
           />
-          <SDiv>
+          <SDivPadding>
             <SHeader>
-              <SText>STRK-ETH Staking</SText>
+              <SText>Interest Rate Model</SText>
               <SHref target="_blank" href={constants.SUPPORT_URL}>
                 Get STRK-ETH LPs
+                <SImgErr src={IconLinkBlue} />
               </SHref>
             </SHeader>
 
@@ -885,7 +897,7 @@ function Staking({ settings }) {
                     placeholder="Enter a number"
                     onChange={event => handleChangeValue(event)}
                   />
-                  {settings.selectedAddress ? (
+                  {address ? (
                     <SMax onClick={handleMaxValue}>MAX</SMax>
                   ) : (
                     <SBtnDisabled>MAX</SBtnDisabled>
@@ -900,41 +912,44 @@ function Staking({ settings }) {
                       </SLinkErr>
                     </SHrefErr>
                   )}
-
-                  <SInfor>
-                    <SInforText>Available</SInforText>
-                    {settings.selectedAddress ? (
-                      <SInforValue>
-                        <SIconSmall>
-                          <SImgFlashSmall src={IconFlashSmall} />
-                          <SImgLpSmall src={IconLpSmall} />
-                        </SIconSmall>
-                        {userInfo.available ?? '0'}
-                      </SInforValue>
-                    ) : (
-                      <SInforValue>-</SInforValue>
-                    )}
-                  </SInfor>
-                  <SInfor>
-                    <SInforText>Staked</SInforText>
-                    {settings.selectedAddress ? (
-                      <SInforValue>
-                        <SIconSmall>
-                          <SImgFlashSmall src={IconFlashSmall} />
-                          <SImgLpSmall src={IconLpSmall} />
-                        </SIconSmall>
-                        {userInfo.amount ?? '0'}
-                      </SInforValue>
-                    ) : (
-                      <SInforValue>-</SInforValue>
-                    )}
-                  </SInfor>
                 </SInput>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <SInfor>
+                  <SInforText>Available</SInforText>
+                  {address ? (
+                    <SInforValue>
+                      <SIconSmall>
+                        <SImgFlashSmall src={IconFlashSmall} />
+                        <SImgLpSmall src={IconLpSmall} />
+                      </SIconSmall>
+                      {userInfo.available ?? '0'}
+                    </SInforValue>
+                  ) : (
+                    <SInforValue>-</SInforValue>
+                  )}
+                </SInfor>
+                <SInfor>
+                  <SInforText>Staked</SInforText>
+                  {address ? (
+                    <SInforValue>
+                      <SIconSmall>
+                        <SImgFlashSmall src={IconFlashSmall} />
+                        <SImgLpSmall src={IconLpSmall} />
+                      </SIconSmall>
+                      {userInfo.amount ?? '0'}
+                    </SInforValue>
+                  ) : (
+                    <SInforValue>-</SInforValue>
+                  )}
+                </SInfor>
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                    {isApproveLP && settings.selectedAddress ? (
+                    {isApproveLP && address ? (
                       <>
                         <SBtn>
                           <SBtnStake onClick={handleStake}>Stake</SBtnStake>
@@ -973,28 +988,27 @@ function Staking({ settings }) {
                       </>
                     ) : (
                       <>
-                        <SBtn>
-                          <SBtnStake onClick={handleApproveLp}>
-                            Approve Staking
-                          </SBtnStake>
-                        </SBtn>
+                        {address && (
+                          <SBtn>
+                            <SBtnStake onClick={handleApproveLp}>
+                              Approve Staking
+                            </SBtnStake>
+                          </SBtn>
+                        )}
                       </>
                     )}
-                  </Col>
-                  <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    {}
                   </Col>
                 </Row>
               </Col>
             </Row>
-          </SDiv>
-          <SDiv>
+          </SDivPadding>
+          <SDivPadding>
             <SText>STRK-ETH Harvest</SText>
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <SInforClaim>
                   <SInforText>Base Reward</SInforText>
-                  {settings.selectedAddress ? (
+                  {address ? (
                     <SInforValue>
                       <SIconSmall>
                         <SImgFlashSmall src={IconFlashSmall} />
@@ -1008,7 +1022,7 @@ function Staking({ settings }) {
                 </SInforClaim>
                 <SInforClaim>
                   <SInforText>Boost Reward</SInforText>
-                  {settings.selectedAddress ? (
+                  {address ? (
                     <SInforValue>
                       <SIconSmall>
                         <SImgFlashSmall src={IconFlashSmall} />
@@ -1023,8 +1037,19 @@ function Staking({ settings }) {
                   )}
                 </SInforClaim>
                 <SInforClaim>
-                  <SInforText>vStrk</SInforText>
-                  {settings.selectedAddress ? (
+                  <SInforText>
+                    vSTRK claimed
+                    <SVSTRKTootip>
+                      <Tooltip
+                        placement="top"
+                        title="vSTRK is auto-claimed to your wallet 
+                      (10 vSTRK is minted for each STRK-ETH to stake)"
+                      >
+                        <SQuestion src={IconQuestion} />
+                      </Tooltip>
+                    </SVSTRKTootip>
+                  </SInforText>
+                  {address ? (
                     <SInforValue>
                       <SIconSmall>
                         <SImgLpSmall src={IconVstrkSmall} />
@@ -1036,56 +1061,61 @@ function Staking({ settings }) {
                   )}
                 </SInforClaim>
               </Col>
-              {/* Claim */}
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                    <SBtnClaim>
-                      {settings.selectedAddress && !!isClaimBaseReward ? (
-                        <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
-                      ) : (
-                        <SUnClaim>Claim</SUnClaim>
-                      )}
-                      <Tooltip
-                        placement="top"
-                        title="You can only claim reward once daily"
-                      >
-                        <SQuestion src={IconQuestion} />
-                      </Tooltip>
-                    </SBtnClaim>
+                    {address && isApproveLP && (
+                      <SBtnClaim>
+                        {isClaimBaseReward ? (
+                          <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
+                        ) : (
+                          <SUnClaim>Claim</SUnClaim>
+                        )}
+                        <Tooltip
+                          placement="top"
+                          title="You can only claim reward once daily"
+                        >
+                          <SQuestion src={IconQuestion} />
+                        </Tooltip>
+                      </SBtnClaim>
+                    )}
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    {expiryTimeBase && settings.selectedAddress ? (
+                    {expiryTimeBase && address && isApproveLP ? (
                       <CountDownClaim
                         times={expiryTimeBase}
-                        address={settings?.selectedAddress}
+                        address={address}
                       />
                     ) : (
                       <></>
                     )}
                   </Col>
                 </Row>
+              </Col>
+              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                    <SBtnClaimStart>
-                      {settings.selectedAddress && !!isClaimBootReward ? (
-                        <SClaim onClick={handleClainBootReward}>Claim</SClaim>
-                      ) : (
-                        <SUnClaim>Claim</SUnClaim>
-                      )}
-                      <Tooltip
-                        placement="top"
-                        title="You can only claim reward once monthly"
-                      >
-                        <SQuestion src={IconQuestion} />
-                      </Tooltip>
-                    </SBtnClaimStart>
+                    {address && isApproveLP && (
+                      <SBtnClaimStart>
+                        {isClaimBootReward ? (
+                          <SClaim onClick={handleClainBootReward}>Claim</SClaim>
+                        ) : (
+                          <SUnClaim>Claim</SUnClaim>
+                        )}
+                        <Tooltip
+                          placement="top"
+                          title="You can only claim reward once monthly"
+                        >
+                          <SQuestion src={IconQuestion} />
+                        </Tooltip>
+                      </SBtnClaimStart>
+                    )}
                   </Col>
                   <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    {expiryTimeBoost && settings.selectedAddress ? (
+                    {expiryTimeBoost && address && isApproveLP ? (
                       <CountDownClaim
                         times={expiryTimeBoost}
-                        address={settings?.selectedAddress}
+                        address={address}
                       />
                     ) : (
                       <></>
@@ -1094,7 +1124,7 @@ function Staking({ settings }) {
                 </Row>
               </Col>
             </Row>
-          </SDiv>
+          </SDivPadding>
           <SDiv>
             <Row>
               <Col xs={{ span: 24 }} lg={{ span: 9 }}>
@@ -1129,7 +1159,7 @@ function Staking({ settings }) {
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                 <SFlexEnd>
-                  {settings.selectedAddress && dataNFT.length > 0 ? (
+                  {address && dataNFT.length > 0 ? (
                     <>
                       {isApproveNFT ? (
                         <>
@@ -1158,15 +1188,17 @@ function Staking({ settings }) {
               </Col>
             </Row>
             {isLoading ? (
-              <>
+              <Row>
                 <Loadding />
-              </>
+              </Row>
             ) : (
               <>
                 <SSlider>
                   {dataNFT.length === 0 && (
                     <SSliderNoData>
-                      <SSliderNoDataImg src={IconNoData} />
+                      <SSliderNoDataImg
+                        src={address ? IconNoData : IconNotConnect}
+                      />
                       <SSliderNoDataText>
                         You don’t own any NFTs
                       </SSliderNoDataText>
@@ -1197,7 +1229,11 @@ function Staking({ settings }) {
                     })}
                   </Slider>
                 </SSlider>
-                <STextSelecT>Please select NFTs you want to stake</STextSelecT>
+                {address && (
+                  <STextSelecT>
+                    Please select NFTs you want to stake
+                  </STextSelecT>
+                )}
               </>
             )}
           </SDiv>
@@ -1227,7 +1263,7 @@ function Staking({ settings }) {
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                 <SFlexEnd>
-                  {settings.selectedAddress && dataNFTUnState.length > 0 ? (
+                  {address && dataNFTUnState.length > 0 ? (
                     <>
                       {isApproveNFT ? (
                         <>
@@ -1253,15 +1289,17 @@ function Staking({ settings }) {
               </Col>
             </Row>
             {isLoading ? (
-              <>
+              <Row>
                 <Loadding />
-              </>
+              </Row>
             ) : (
               <>
                 <SSlider>
                   {dataNFTUnState.length === 0 && (
                     <SSliderNoData>
-                      <SSliderNoDataImg src={IconNoData} />
+                      <SSliderNoDataImg
+                        src={address ? IconNoData : IconNotConnect}
+                      />
                       <SSliderNoDataText>
                         You don’t own any NFTs
                       </SSliderNoDataText>
@@ -1292,9 +1330,11 @@ function Staking({ settings }) {
                       })}
                   </Slider>
                 </SSlider>
-                <STextSelecT>
-                  Please select NFTs you want to unstake
-                </STextSelecT>
+                {address && (
+                  <STextSelecT>
+                    Please select NFTs you want to stake
+                  </STextSelecT>
+                )}
               </>
             )}
           </SDiv>

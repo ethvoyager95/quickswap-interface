@@ -11,12 +11,10 @@ import LogoLP from '../../../assets/img/logo_lp.svg';
 
 const SMain = styled.div`
   width: 100%;
-  background: #fff;
   padding: 15px;
   margin-top: 10px;
   border-radius: 8px;
   box-sizing: content-box;
-  box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
 `;
 const SLogo = styled.div`
   width: 100%;
@@ -61,11 +59,13 @@ const SValueBox = styled.div`
   color: #0b0f23;
   font-size: 20px;
   line-height: 27px;
+  font-weight: 700;
 `;
 const SUSDBox = styled.div`
   color: #107def;
   font-size: 14px;
   line-height: 22px;
+  font-weight: 700;
 `;
 function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
   const [countAmount, setCountAmount] = useState(null);
@@ -124,7 +124,7 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                           <SValueBox>{totalDeposit}</SValueBox>
                         </>
                       ) : (
-                        <>-</>
+                        <SValueBox>-</SValueBox>
                       )}
                       <SUSDBox>$30,005</SUSDBox>
                     </>
@@ -137,11 +137,7 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Boost APR</STextBox>
-                  {address ? (
-                    <SValueBox>Up to 200% </SValueBox>
-                  ) : (
-                    <SValueBox>-</SValueBox>
-                  )}
+                  <SValueBox>Up to 200% </SValueBox>
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Base APR</STextBox>

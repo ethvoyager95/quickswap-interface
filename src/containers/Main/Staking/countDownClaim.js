@@ -69,7 +69,6 @@ function CountDownClaim({ times, address }) {
         countdownMinutes: totalMinutes ?? '',
         countdownSeconds: totalSeconds ?? ''
       };
-
       setCountdownTime(runningCountdownTime);
 
       if (remainingDayTime <= 0) {
@@ -97,20 +96,22 @@ function CountDownClaim({ times, address }) {
       {expiryTime !== false ? (
         <>
           <SBtnClaim>
-            <STimeClaim>
-              <STimeNumer>
-                <SItemTime>{countdownTime.countdownDays} </SItemTime>
-                <SItemTime>{countdownTime.countdownHours}</SItemTime>
-                <SItemTime>{countdownTime.countdownMinutes}</SItemTime>
-                <SItemTime>{countdownTime.countdownSeconds} </SItemTime>
-              </STimeNumer>
-              <STimeText>
-                <SItemTime>DAYS</SItemTime>
-                <SItemTime>HOURS</SItemTime>
-                <SItemTime>MIN</SItemTime>
-                <SItemTime>SEC</SItemTime>
-              </STimeText>
-            </STimeClaim>
+            {countdownTime && (
+              <STimeClaim>
+                <STimeNumer>
+                  <SItemTime>{countdownTime.countdownDays} </SItemTime>
+                  <SItemTime>{countdownTime.countdownHours}</SItemTime>
+                  <SItemTime>{countdownTime.countdownMinutes}</SItemTime>
+                  <SItemTime>{countdownTime.countdownSeconds} </SItemTime>
+                </STimeNumer>
+                <STimeText>
+                  <SItemTime>DAYS</SItemTime>
+                  <SItemTime>HOURS</SItemTime>
+                  <SItemTime>MIN</SItemTime>
+                  <SItemTime>SEC</SItemTime>
+                </STimeText>
+              </STimeClaim>
+            )}
           </SBtnClaim>
         </>
       ) : (

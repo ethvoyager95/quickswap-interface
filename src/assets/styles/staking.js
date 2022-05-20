@@ -1,10 +1,22 @@
 import styled from 'styled-components';
 
+export const SDivPadding = styled.div`
+  width: 100%;
+  background: #fff;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-sizing: content-box;
+  box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
+  .box-staking {
+    text-align: center;
+  }
+`;
 export const SDiv = styled.div`
   width: 100%;
   background: #fff;
   padding: 15px;
-  margin-top: 10px;
+  margin-top: 20px;
   border-radius: 8px;
   box-sizing: content-box;
   box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
@@ -15,10 +27,13 @@ export const SDiv = styled.div`
 export const SHeader = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 10px;
 `;
 export const SText = styled.div`
   color: #000000;
-  font-weight: 900;
+  font-weight: 700;
   font-size: 20px;
   line-height: 27px;
   margin-top: 10px;
@@ -30,9 +45,13 @@ export const SHref = styled.a`
   color: #107def;
   font-size: 16px;
   line-height: 24px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
 `;
 export const SInput = styled.div`
   position: relative;
+  margin-bottom: 10px;
   input {
     border: 1px solid #ccc !important;
     width: 100%;
@@ -65,18 +84,20 @@ export const SHrefErr = styled.div`
 export const SLinkErr = styled.a``;
 export const SImgErr = styled.img`
   margin-left: 10px;
+  width: 18px;
+  height: 18px;
 `;
 export const SMax = styled.div`
   position: absolute;
   top: 5px;
-  right: 10px;
+  right: 5px;
   cursor: pointer;
   color: #107def;
   font-weight: 700;
   background: #107def;
   border-radius: 5px;
   color: #fff;
-  padding: 5px;
+  padding: 4px 10px;
 `;
 export const SBtnDisabled = styled.div`
   position: absolute;
@@ -94,6 +115,7 @@ export const SBtnDisabled = styled.div`
 export const SBtn = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   @media only screen and (max-width: 768px) {
     justify-content: center;
   }
@@ -101,6 +123,7 @@ export const SBtn = styled.div`
 export const SBtnUn = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   margin-top: 20px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
@@ -177,6 +200,11 @@ export const SInfor = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 15px;
+  :last-child {
+    border-bottom: none !important;
+  }
 `;
 export const SInforClaim = styled.div`
   width: 100%;
@@ -184,12 +212,21 @@ export const SInforClaim = styled.div`
   justify-content: space-between;
   margin-bottom: 20px;
   margin-top: 10px;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 15px;
+  :last-child {
+    border-bottom: none !important;
+  }
 `;
 export const SInforText = styled.div`
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
   color: #6d6f7b;
+  display: flex;
+`;
+export const SVSTRKTootip = styled.div`
+  margin-left: 10px;
 `;
 export const SInforValue = styled.div`
   font-weight: 900;
@@ -213,6 +250,7 @@ export const SQuestion = styled.img`
 export const SBtnClaim = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
@@ -221,6 +259,7 @@ export const SBtnClaim = styled.div`
 export const SBtnClaimStart = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
