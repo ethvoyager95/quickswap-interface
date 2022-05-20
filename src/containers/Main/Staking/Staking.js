@@ -1080,26 +1080,6 @@ function Staking({ settings }) {
                     )}
                   </Col>
                 </Row>
-                {/* <Row>
-                  <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                    <SBtnClaimStart>
-                      {settings.selectedAddress ? (
-                        <SClaim>Claim</SClaim>
-                      ) : (
-                        <SUnClaim>Claim</SUnClaim>
-                      )}
-                      <Tooltip
-                        placement="top"
-                        title="You can only claim reward once monthly"
-                      >
-                        <SQuestion src={IconQuestion} />
-                      </Tooltip>
-                    </SBtnClaimStart>
-                  </Col>
-                  <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                    {}
-                  </Col>
-                </Row> */}
               </Col>
             </Row>
           </SDiv>
