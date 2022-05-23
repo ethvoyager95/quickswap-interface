@@ -16,13 +16,15 @@ import {
 import { promisify } from 'utilities';
 import * as constants from 'utilities/constants';
 import ConnectModal from 'components/Basic/ConnectModal';
+import UserInfoModal from 'components/Basic/UserInfoModal';
 import { Label } from 'components/Basic/Label';
 import Button from '@material-ui/core/Button';
 import { connectAccount, accountActionCreators } from 'core';
 import MetaMaskClass from 'utilities/MetaMask';
 import logoImg from 'assets/img/logo.png';
 import commaNumber from 'comma-number';
-import { checkIsValidNetwork } from 'utilities/common';
+import { checkIsValidNetwork, getBigNumber } from 'utilities/common';
+
 import { check } from 'prettier';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
@@ -143,7 +145,7 @@ const ConnectButton = styled.div`
     width: 150px;
     height: 32px;
     box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
-    background-color: #277ee6;
+    background-color: rgba(39, 126, 230, 0.7);
 
     @media only screen and (max-width: 768px) {
       width: 100px;
@@ -158,6 +160,48 @@ const ConnectButton = styled.div`
   }
 `;
 
+const UserInfoButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 40px;
+  padding: 0;
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    margin: 20px 0 0;
+  }
+
+  .user-info-btn {
+    padding: 0 8px;
+    height: 32px;
+    box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
+    background-color: rgba(39, 126, 230, 0.7);
+    display: flex;
+    align-items: center;
+    @media only screen and (max-width: 768px) {
+      padding: 0 8px;
+    }
+
+    .MuiButton-label {
+      font-size: 13.5px;
+      line-height: 1;
+      font-weight: 500;
+      color: var(--color-white);
+      text-transform: capitalize;
+      display: flex;
+      align-items: center;
+    }
+
+    img {
+      width: 16px;
+      height: 16px;
+      margin-left: 4px;
+      margin-bottom: 3px;
+    }
+  }
+`;
+
 let metamask = null;
 let accounts = [];
 let metamaskWatcher = null;
@@ -166,10 +210,12 @@ const abortController = new AbortController();
 
 function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const [error, setError] = useState('');
   const [web3, setWeb3] = useState(null);
   const [awaiting, setAwaiting] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [available, setAvailable] = useState('0');
 
   const checkNetwork = () => {
     const netId = window.ethereum.networkVersion
@@ -277,15 +323,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     setWeb3(tempWeb3);
     setError(tempError);
     setAwaiting(false);
-    if (!tempError) {
-      metamaskWatcher = setTimeout(() => {
-        clearTimeout(metamaskWatcher);
-        handleWatch();
-      }, 3000);
-    }
   }, [error, web3]);
 
   const handleMetaMask = () => {
+    localStorage.setItem('walletConnected', JSON.stringify(true));
+    setSetting({
+      isConnected: true
+    });
     setError(MetaMaskClass.hasWeb3() ? '' : new Error(constants.NOT_INSTALLED));
     handleWatch();
   };
@@ -341,11 +385,21 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   }, [handleWatch, settings.accounts]);
 
   useEffect(() => {
-    handleWatch();
+    if (settings.isConnected) {
+      handleWatch();
+    }
     return function cleanup() {
       abortController.abort();
     };
   }, [history]);
+
+  useEffect(() => {
+    if (settings.isConnected) {
+      setSetting({
+        accountLoading: false
+      });
+    }
+  }, [settings.isConnected]);
 
   const getMarkets = async () => {
     const res = await promisify(getGovernanceStrike, {});
@@ -389,14 +443,12 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   }, [window.ethereum, settings.selectedAddress]);
 
   useEffect(() => {
-    let updateTimer;
-    if (settings.selectedAddress) {
-      updateTimer = setInterval(() => {
-        if (checkIsValidNetwork()) {
-          getMarkets();
-        }
-      }, 3000);
-    }
+    const updateTimer = setInterval(() => {
+      if (checkIsValidNetwork()) {
+        getMarkets();
+      }
+    }, 3000);
+
     return function cleanup() {
       abortController.abort();
       if (updateTimer) {
@@ -408,177 +460,233 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const updateMarketInfo = async (
     accountAddress = settings.selectedAddress
   ) => {
-    if (!accountAddress || !settings.decimals || !settings.markets) {
-      return;
-    }
-    lockFlag = true;
-    const appContract = getComptrollerContract();
-    let totalSupplyBalance = new BigNumber(0);
-    let totalBorrowBalance = new BigNumber(0);
-    let totalBorrowLimit = new BigNumber(0);
-    let totalLiquidity = new BigNumber(0);
+    try {
+      if (!settings.decimals || !settings.markets) {
+        return;
+      }
+      lockFlag = true;
+      const appContract = getComptrollerContract();
+      let totalSupplyBalance = new BigNumber(0);
+      let totalBorrowBalance = new BigNumber(0);
+      let totalBorrowLimit = new BigNumber(0);
+      let totalLiquidity = new BigNumber(0);
 
-    const assetsIn = await methods.call(appContract.methods.getAssetsIn, [
-      accountAddress
-    ]);
-    const assetList = await Promise.all(
-      Object.values(constants.CONTRACT_TOKEN_ADDRESS).map(
-        async (item, index) => {
-          if (!settings.decimals[item.id]) {
-            return;
-          }
+      const assetsIn = await methods.call(appContract.methods.getAssetsIn, [
+        accountAddress
+      ]);
+      const assetList = await Promise.all(
+        Object.values(constants.CONTRACT_TOKEN_ADDRESS).map(
+          async (item, index) => {
+            if (!settings.decimals[item.id]) {
+              return;
+            }
 
-          let market = settings.markets.find(
-            ele =>
-              ele.address ===
-              constants.CONTRACT_SBEP_ADDRESS[item.id].address
-                .toString()
-                .toLowerCase()
-          );
-          if (!market) market = {};
-          const asset = {
-            key: index,
-            id: item.id,
-            img: item.asset,
-            vimg: item.sasset,
-            name: item.symbol,
-            symbol: item.symbol,
-            tokenAddress: item.address,
-            vsymbol: market.symbol,
-            stokenAddress: constants.CONTRACT_SBEP_ADDRESS[item.id].address,
-            supplyApy: new BigNumber(market.supplyApy || 0),
-            borrowApy: new BigNumber(market.borrowApy || 0),
-            strkSupplyApy: new BigNumber(market.supplyStrikeApy || 0),
-            strkBorrowApy: new BigNumber(market.borrowStrikeApy || 0),
-            collateralFactor: new BigNumber(market.collateralFactor || 0).div(
-              1e18
-            ),
-            tokenPrice: new BigNumber(market.tokenPrice || 0),
-            liquidity: new BigNumber(market.liquidity || 0),
-            walletBalance: new BigNumber(0),
-            supplyBalance: new BigNumber(0),
-            borrowBalance: new BigNumber(0),
-            isEnabled: false,
-            collateral: false,
-            percentOfLimit: '0'
-          };
+            let market = settings.markets.find(
+              ele =>
+                ele.address ===
+                constants.CONTRACT_SBEP_ADDRESS[item.id].address
+                  .toString()
+                  .toLowerCase()
+            );
+            if (!market) market = {};
+            const asset = {
+              key: index,
+              id: item.id,
+              img: item.asset,
+              vimg: item.sasset,
+              name: item.symbol,
+              symbol: item.symbol,
+              tokenAddress: item.address,
+              vsymbol: market.symbol,
+              stokenAddress: constants.CONTRACT_SBEP_ADDRESS[item.id].address,
+              supplyApy: new BigNumber(market.supplyApy || 0),
+              borrowApy: new BigNumber(market.borrowApy || 0),
+              strkSupplyApy: new BigNumber(market.supplyStrikeApy || 0),
+              strkBorrowApy: new BigNumber(market.borrowStrikeApy || 0),
+              collateralFactor: new BigNumber(market.collateralFactor || 0).div(
+                1e18
+              ),
+              tokenPrice: new BigNumber(market.tokenPrice || 0),
+              liquidity: new BigNumber(market.liquidity || 0),
+              walletBalance: new BigNumber(0),
+              supplyBalance: new BigNumber(0),
+              borrowBalance: new BigNumber(0),
+              isEnabled: false,
+              collateral: false,
+              percentOfLimit: '0'
+            };
 
-          const tokenDecimal = settings.decimals[item.id].token || 18;
-          const sBepContract = getSbepContract(item.id);
-          asset.collateral = assetsIn.includes(asset.stokenAddress);
+            const tokenDecimal = settings.decimals[item.id].token || 18;
+            const sBepContract = getSbepContract(item.id);
+            asset.collateral = assetsIn.includes(asset.stokenAddress);
 
-          const promises = [];
+            const promises = [];
 
-          // wallet balance
-          if (item.id !== 'eth') {
-            const tokenContract = getTokenContract(item.id);
+            // wallet balance
+            if (item.id !== 'eth') {
+              const tokenContract = getTokenContract(item.id);
+              promises.push(
+                methods.call(tokenContract.methods.balanceOf, [accountAddress]),
+                // allowance
+                methods.call(tokenContract.methods.allowance, [
+                  accountAddress,
+                  asset.stokenAddress
+                ])
+              );
+            } else if (window.ethereum) {
+              promises.push(window.web3.eth.getBalance(accountAddress), null);
+            }
+
+            // supply balance
             promises.push(
-              methods.call(tokenContract.methods.balanceOf, [accountAddress]),
-              // allowance
-              methods.call(tokenContract.methods.allowance, [
-                accountAddress,
-                asset.stokenAddress
+              methods.call(sBepContract.methods.balanceOfUnderlying, [
+                accountAddress
               ])
             );
-          } else if (window.ethereum) {
-            promises.push(window.web3.eth.getBalance(accountAddress), null);
-          }
 
-          // supply balance
-          promises.push(
-            methods.call(sBepContract.methods.balanceOfUnderlying, [
-              accountAddress
-            ])
-          );
-
-          // borrow balance
-          promises.push(
-            methods.call(sBepContract.methods.borrowBalanceCurrent, [
-              accountAddress
-            ])
-          );
-
-          // hypotheticalLiquidity
-          const totalBalance = await methods.call(
-            sBepContract.methods.balanceOf,
-            [accountAddress]
-          );
-          promises.push(
-            methods.call(appContract.methods.getHypotheticalAccountLiquidity, [
-              accountAddress,
-              asset.stokenAddress,
-              totalBalance,
-              0
-            ])
-          );
-
-          const [
-            walletBalance,
-            allowBalance,
-            supplyBalance,
-            borrowBalance,
-            hypotheticalLiquidity
-          ] = await Promise.all(promises);
-          asset.walletBalance = new BigNumber(walletBalance).div(
-            new BigNumber(10).pow(tokenDecimal)
-          );
-          if (item.id !== 'eth') {
-            asset.isEnabled = new BigNumber(allowBalance)
-              .div(new BigNumber(10).pow(tokenDecimal))
-              .isGreaterThan(asset.walletBalance);
-          } else if (window.ethereum) {
-            asset.isEnabled = true;
-          }
-          asset.supplyBalance = new BigNumber(supplyBalance).div(
-            new BigNumber(10).pow(tokenDecimal)
-          );
-          asset.borrowBalance = new BigNumber(borrowBalance).div(
-            new BigNumber(10).pow(tokenDecimal)
-          );
-
-          // percent of limit
-          asset.percentOfLimit = new BigNumber(
-            settings.totalBorrowLimit
-          ).isZero()
-            ? '0'
-            : asset.borrowBalance
-                .times(asset.tokenPrice)
-                .div(settings.totalBorrowLimit)
-                .times(100)
-                .dp(0, 1)
-                .toString(10);
-
-          asset.hypotheticalLiquidity = hypotheticalLiquidity;
-
-          const supplyBalanceUSD = asset.supplyBalance.times(asset.tokenPrice);
-          const borrowBalanceUSD = asset.borrowBalance.times(asset.tokenPrice);
-
-          totalSupplyBalance = totalSupplyBalance.plus(supplyBalanceUSD);
-          totalBorrowBalance = totalBorrowBalance.plus(borrowBalanceUSD);
-
-          if (asset.collateral) {
-            totalBorrowLimit = totalBorrowLimit.plus(
-              supplyBalanceUSD.times(asset.collateralFactor)
+            // borrow balance
+            promises.push(
+              methods.call(sBepContract.methods.borrowBalanceCurrent, [
+                accountAddress
+              ])
             );
+
+            // hypotheticalLiquidity
+            const totalBalance = await methods.call(
+              sBepContract.methods.balanceOf,
+              [accountAddress]
+            );
+            promises.push(
+              methods.call(
+                appContract.methods.getHypotheticalAccountLiquidity,
+                [accountAddress, asset.stokenAddress, totalBalance, 0]
+              )
+            );
+
+            const [
+              walletBalance,
+              allowBalance,
+              supplyBalance,
+              borrowBalance,
+              hypotheticalLiquidity
+            ] = await Promise.all(promises);
+            asset.walletBalance = new BigNumber(walletBalance).div(
+              new BigNumber(10).pow(tokenDecimal)
+            );
+            if (item.id !== 'eth') {
+              asset.isEnabled = new BigNumber(allowBalance)
+                .div(new BigNumber(10).pow(tokenDecimal))
+                .isGreaterThan(asset.walletBalance);
+            } else if (window.ethereum) {
+              asset.isEnabled = true;
+            }
+            asset.supplyBalance = new BigNumber(supplyBalance).div(
+              new BigNumber(10).pow(tokenDecimal)
+            );
+            asset.borrowBalance = new BigNumber(borrowBalance).div(
+              new BigNumber(10).pow(tokenDecimal)
+            );
+
+            // percent of limit
+            asset.percentOfLimit = new BigNumber(
+              settings.totalBorrowLimit
+            ).isZero()
+              ? '0'
+              : asset.borrowBalance
+                  .times(asset.tokenPrice)
+                  .div(settings.totalBorrowLimit)
+                  .times(100)
+                  .dp(0, 1)
+                  .toString(10);
+
+            asset.hypotheticalLiquidity = hypotheticalLiquidity;
+
+            const supplyBalanceUSD = asset.supplyBalance.times(
+              asset.tokenPrice
+            );
+            const borrowBalanceUSD = asset.borrowBalance.times(
+              asset.tokenPrice
+            );
+
+            totalSupplyBalance = totalSupplyBalance.plus(supplyBalanceUSD);
+            totalBorrowBalance = totalBorrowBalance.plus(borrowBalanceUSD);
+
+            if (asset.collateral) {
+              totalBorrowLimit = totalBorrowLimit.plus(
+                supplyBalanceUSD.times(asset.collateralFactor)
+              );
+            }
+
+            totalLiquidity = totalLiquidity.plus(
+              new BigNumber(market.totalSupplyUsd || 0)
+            );
+
+            return asset;
           }
+        )
+      );
 
-          totalLiquidity = totalLiquidity.plus(
-            new BigNumber(market.totalSupplyUsd || 0)
-          );
+      setSetting({
+        assetList,
+        totalLiquidity: totalLiquidity.toString(10),
+        totalSupplyBalance: totalSupplyBalance.toString(10),
+        totalBorrowBalance: totalBorrowBalance.toString(10),
+        totalBorrowLimit: totalBorrowLimit.toString(10)
+      });
+      lockFlag = false;
+    } catch {
+      const assetList = await Promise.all(
+        Object.values(constants.CONTRACT_TOKEN_ADDRESS).map(
+          async (item, index) => {
+            if (!settings.decimals[item.id]) {
+              return;
+            }
 
-          return asset;
-        }
-      )
-    );
+            let market = settings.markets.find(
+              ele =>
+                ele.address ===
+                constants.CONTRACT_SBEP_ADDRESS[item.id].address
+                  .toString()
+                  .toLowerCase()
+            );
+            if (!market) market = {};
+            const asset = {
+              key: index,
+              id: item.id,
+              img: item.asset,
+              vimg: item.sasset,
+              name: item.symbol,
+              symbol: item.symbol,
+              tokenAddress: item.address,
+              vsymbol: market.symbol,
+              stokenAddress: constants.CONTRACT_SBEP_ADDRESS[item.id].address,
+              supplyApy: new BigNumber(market.supplyApy || 0),
+              borrowApy: new BigNumber(market.borrowApy || 0),
+              strkSupplyApy: new BigNumber(market.supplyStrikeApy || 0),
+              strkBorrowApy: new BigNumber(market.borrowStrikeApy || 0),
+              collateralFactor: new BigNumber(market.collateralFactor || 0).div(
+                1e18
+              ),
+              tokenPrice: new BigNumber(market.tokenPrice || 0),
+              liquidity: new BigNumber(market.liquidity || 0),
+              walletBalance: new BigNumber(0),
+              supplyBalance: new BigNumber(0),
+              borrowBalance: new BigNumber(0),
+              isEnabled: false,
+              collateral: false,
+              percentOfLimit: '0'
+            };
 
-    setSetting({
-      assetList,
-      totalLiquidity: totalLiquidity.toString(10),
-      totalSupplyBalance: totalSupplyBalance.toString(10),
-      totalBorrowBalance: totalBorrowBalance.toString(10),
-      totalBorrowLimit: totalBorrowLimit.toString(10)
-    });
-    lockFlag = false;
+            return asset;
+          }
+        )
+      );
+
+      setSetting({
+        assetList
+      });
+      lockFlag = false;
+    }
   };
 
   const handleAccountChange = async () => {
@@ -599,6 +707,31 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       handleAccountChange();
     }
   }, [settings.accountLoading]);
+
+  useEffect(() => {
+    if (settings.selectedAddress) {
+      const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
+      const total = BigNumber.maximum(totalBorrowLimit, 0);
+      setAvailable(total.dp(2, 1).toString(10));
+    }
+    return function cleanup() {
+      abortController.abort();
+    };
+  }, [settings.totalBorrowLimit, settings.selectedAddress]);
+
+  const handleDisconnect = () => {
+    localStorage.clear();
+    setSetting({
+      selectedAddress: null,
+      isConnected: false
+    });
+  };
+
+  useEffect(() => {
+    if (!settings.isConnected) {
+      setIsOpenModal(true);
+    }
+  }, []);
 
   return (
     <SidebarWrapper>
@@ -655,15 +788,41 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         >
           <Label>Staking</Label>
         </NavLink>
-        {!settings.selectedAddress && (
-          <ConnectButton>
+        {settings.selectedAddress && (
+          <UserInfoButton>
             <Button
-              className="connect-btn"
-              onClick={() => setIsOpenModal(true)}
+              className="user-info-btn"
+              onClick={() => setIsOpenInfoModal(true)}
             >
-              Connect
+              <div>{available}</div>
+              <img src={`${process.env.PUBLIC_URL}/icon16.png`} alt="" />
             </Button>
-          </ConnectButton>
+          </UserInfoButton>
+        )}
+        <ConnectButton>
+          <Button
+            className="connect-btn"
+            onClick={() => {
+              setIsOpenModal(true);
+            }}
+          >
+            {settings.selectedAddress
+              ? `${settings.selectedAddress.substr(
+                  0,
+                  4
+                )}...${settings.selectedAddress.substr(
+                  settings.selectedAddress.length - 4,
+                  4
+                )}`
+              : 'Connect'}
+          </Button>
+        </ConnectButton>
+        {settings.selectedAddress && (
+          <UserInfoButton>
+            <Button className="user-info-btn" onClick={handleDisconnect}>
+              Disconnect
+            </Button>
+          </UserInfoButton>
         )}
       </MainMenu>
       {/* {settings.selectedAddress && (
@@ -687,6 +846,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         onCancel={() => setIsOpenModal(false)}
         onConnectMetaMask={handleMetaMask}
         checkNetwork={checkNetwork}
+      />
+      <UserInfoModal
+        visible={isOpenInfoModal}
+        onCancel={() => setIsOpenInfoModal(false)}
+        available={available}
       />
     </SidebarWrapper>
   );
