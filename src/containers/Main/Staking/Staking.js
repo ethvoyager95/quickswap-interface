@@ -317,7 +317,10 @@ function Staking({ settings }) {
         }
         objUser = {
           ...res,
-          amount: amountNumber < 0.001 ? '<0.001' : amountNumber.toString(),
+          amount:
+            amountNumber.toNumber() < 0.001
+              ? '<0.001'
+              : amountNumber.toNumber().toString(),
           available: parseFloat(balanceBigFormat).toString(),
           totalBoost: total.totalBoost ?? '',
           totalDeposit: total.totalDeposit ?? '',
@@ -333,7 +336,6 @@ function Staking({ settings }) {
       const vStrkString = +new BigNumber(res).div(new BigNumber(10).pow(18));
       if (vStrkString < 0.001) {
         setUserInfo({ ...objUser, vStrk: '< 0.001' });
-        return;
       }
       setUserInfo({ ...objUser, vStrk: vStrkString });
     });
@@ -547,7 +549,7 @@ function Staking({ settings }) {
   }, []);
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
-    // console.log(new Date().addHours(4), 'addHours 4');
+    // const expiryDate = new Date(new Date().setHours(new Date().getHours() + 4));
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
       return overOneDate.setDate(overOneDate.getDate() + 1);
@@ -562,8 +564,6 @@ function Staking({ settings }) {
     }
     return null;
   }, [userInfo, address]);
-  // console.log(expiryTimeBase, 'expiryTimeBase');
-  // console.log(expiryTimeBoost, 'expiryTimeBoost');
 
   // stake
   const handleStake = async () => {
