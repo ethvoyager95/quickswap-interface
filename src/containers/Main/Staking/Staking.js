@@ -283,9 +283,10 @@ function Staking({ settings }) {
         const pendingAmountString = +new BigNumber(res.pendingAmount).div(
           new BigNumber(10).pow(18)
         );
-        const amountNumber = +new BigNumber(res.amount).div(
+        const amountNumber = new BigNumber(res.amount).div(
           new BigNumber(10).pow(18)
         );
+        const amountString = amountNumber?.toNumber();
         const balanceBigFormat = balanceBigNumber
           .toNumber()
           .toFixed(4)
@@ -318,9 +319,9 @@ function Staking({ settings }) {
         objUser = {
           ...res,
           amount:
-            amountNumber.toNumber() < 0.001
+            amountString !== 0 && amountString < 0.001
               ? '<0.001'
-              : amountNumber?.toNumber().toString(),
+              : amountNumber.toString(),
           available: parseFloat(balanceBigFormat).toString(),
           totalBoost: total.totalBoost ?? '',
           totalDeposit: total.totalDeposit ?? '',
@@ -1191,6 +1192,7 @@ function Staking({ settings }) {
                 </SFlexEnd>
               </Col>
             </Row>
+
             {isLoading ? (
               <Row>
                 <Loadding />
