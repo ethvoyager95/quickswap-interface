@@ -34,6 +34,7 @@ const abortController = new AbortController();
 // eslint-disable-next-line react/prop-types
 function CountDownClaim({ times, address }) {
   const [expiryTime, setExpiryTime] = useState(times);
+  const [loadding, setIsLoading] = useState(true);
   const [countdownTime, setCountdownTime] = useState({
     countdownDays: '',
     countdownHours: '',
@@ -42,7 +43,6 @@ function CountDownClaim({ times, address }) {
   });
 
   const countdownTimer = () => {
-    // 18 may 2022 15:30:25
     if (!address) {
       setCountdownTime({
         countdownDays: '',
@@ -52,6 +52,7 @@ function CountDownClaim({ times, address }) {
       });
     }
     const timeInterval = setInterval(() => {
+      setIsLoading(true);
       const countdownDateTime = new Date(expiryTime).getTime();
       const currentTime = new Date().getTime();
       const remainingDayTime = countdownDateTime - currentTime;
@@ -70,7 +71,7 @@ function CountDownClaim({ times, address }) {
         countdownSeconds: totalSeconds ?? ''
       };
       setCountdownTime(runningCountdownTime);
-
+      setIsLoading(false);
       if (remainingDayTime <= 0) {
         clearInterval(timeInterval);
         setExpiryTime(false);
@@ -104,12 +105,22 @@ function CountDownClaim({ times, address }) {
                   <SItemTime>{countdownTime.countdownMinutes}</SItemTime>
                   <SItemTime>{countdownTime.countdownSeconds} </SItemTime>
                 </STimeNumer>
-                <STimeText>
-                  <SItemTime>DAYS</SItemTime>
-                  <SItemTime>HOURS</SItemTime>
-                  <SItemTime>MIN</SItemTime>
-                  <SItemTime>SEC</SItemTime>
-                </STimeText>
+                {!loadding && (
+                  <STimeText>
+                    {countdownTime.countdownDays != null && (
+                      <SItemTime>DAYS</SItemTime>
+                    )}
+                    {countdownTime.countdownHours != null && (
+                      <SItemTime>HOURS</SItemTime>
+                    )}
+                    {countdownTime.countdownMinutes != null && (
+                      <SItemTime>MIN</SItemTime>
+                    )}
+                    {countdownTime.countdownSeconds != null && (
+                      <SItemTime>SEC</SItemTime>
+                    )}
+                  </STimeText>
+                )}
               </STimeClaim>
             )}
           </SBtnClaim>

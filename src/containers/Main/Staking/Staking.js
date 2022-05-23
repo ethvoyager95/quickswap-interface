@@ -18,6 +18,7 @@ import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
 import _ from 'lodash';
 import * as constants from 'utilities/constants';
+import { divDecimals } from './helper';
 // eslint-disable-next-line import/named
 import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
 import '../../../assets/styles/slick.scss';
@@ -69,7 +70,7 @@ import {
   SError,
   SSactive,
   SSUnactive,
-  STextSelecT,
+  // STextSelecT,
   SHeader
 } from '../../../assets/styles/staking.js';
 // eslint-disable-next-line import/no-duplicates
@@ -223,7 +224,7 @@ function Staking({ settings }) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isApproveLP, setIsApproveLP] = useState(true);
-  const [isApproveNFT, setIsApproveNFT] = useState(true);
+  const [isApproveNFT, setIsApproveNFT] = useState(false);
   const [isClaimBaseReward, setisClaimBaseReward] = useState(false);
   const [isClaimBootReward, setIsClaimBootReward] = useState(false);
   const [countNFT, setCounNFT] = useState(0);
@@ -277,16 +278,14 @@ function Staking({ settings }) {
     await methods
       .call(farmingContract.methods.userInfo, [0, address])
       .then(res => {
-        const balanceBigNumber = new BigNumber(sTokenBalance).div(
-          new BigNumber(10).pow(18)
-        );
-        const pendingAmountString = +new BigNumber(res.pendingAmount).div(
-          new BigNumber(10).pow(18)
-        );
+        const balanceBigNumber = divDecimals(sTokenBalance, 18);
+        const pendingAmountString = divDecimals(res.pendingAmount, 18);
         const amountNumber = new BigNumber(res.amount).div(
           new BigNumber(10).pow(18)
         );
         const amountString = amountNumber?.toNumber();
+        const accBaseRewardBigNumber = divDecimals(res.accBaseReward, 18);
+        const accBoostRewardBigNumber = divDecimals(res.accBoostReward, 18);
         const balanceBigFormat = balanceBigNumber
           .toNumber()
           .toFixed(4)
@@ -325,6 +324,14 @@ function Staking({ settings }) {
           available: parseFloat(balanceBigFormat).toString(),
           totalBoost: total.totalBoost ?? '',
           totalDeposit: total.totalDeposit ?? '',
+          accBaseReward:
+            accBaseRewardBigNumber !== 0 && accBaseRewardBigNumber < 0.001
+              ? '<0.001'
+              : accBaseRewardBigNumber.toString(),
+          accBoostReward:
+            accBoostRewardBigNumber !== 0 && accBoostRewardBigNumber < 0.001
+              ? '<0.001'
+              : accBoostRewardBigNumber.toString(),
           pendingAmount: pendingAmountString.toString(),
           depositedDate: timeBaseUnstake,
           boostedDate: timeBootsUnstake
@@ -469,7 +476,6 @@ function Staking({ settings }) {
       });
   }, [val, address, handleMaxValue]);
   const checkApproveNFT = useCallback(async () => {
-    setIsApproveNFT(true);
     await methods
       .call(nFtContract.methods.isApprovedForAll, [
         address,
@@ -518,7 +524,7 @@ function Staking({ settings }) {
   useEffect(() => {
     checkApproveLP();
     checkApproveNFT();
-  }, [val, handleMaxValue, isApproveLP, txhash]);
+  }, [val, handleMaxValue, isApproveLP, txhash, dataNFTUnState]);
   const handleApproveNFT = useCallback(async () => {
     setiIsConfirm(true);
     await methods
@@ -550,10 +556,10 @@ function Staking({ settings }) {
   }, []);
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
-    // const expiryDate = new Date(new Date().setHours(new Date().getHours() + 4));
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setDate(overOneDate.getDate() + 1);
+      return overOneDate.setHours(overOneDate.getHours() + 1); // 1 hourr
+      // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
     }
     return null;
   }, [userInfo, address]);
@@ -561,7 +567,8 @@ function Staking({ settings }) {
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
       const over30days = new Date(userInfo.boostedDate * 1000);
-      return over30days.setDate(over30days.getDate() + 30);
+      return over30days.setHours(over30days.getHours() + 3); // 3 hour
+      // return over30days.setDate(over30days.getDate() + 30); // 30 days
     }
     return null;
   }, [userInfo, address]);
@@ -725,11 +732,12 @@ function Staking({ settings }) {
           if (_index === index) {
             return {
               ...i,
-              active: !i.active
+              active: true // !i.active
             };
           }
           return {
-            ...i
+            ...i,
+            active: false //
           };
         });
         setDataNFT(dataActiveStakeNFT);
@@ -754,11 +762,12 @@ function Staking({ settings }) {
           if (_index === index) {
             return {
               ...i,
-              active: !i.active
+              active: true // !i.active
             };
           }
           return {
-            ...i
+            ...i,
+            active: false //
           };
         });
         setDataNFTUnState(dataActiveUnStakeNFT);
@@ -870,7 +879,7 @@ function Staking({ settings }) {
   return (
     <>
       <React.Fragment>
-        <MainLayout title="">
+        <MainLayout>
           <DashboardStaking
             totalBoost={userInfo?.totalBoost}
             totalDeposit={userInfo?.totalDeposit}
@@ -1031,10 +1040,7 @@ function Staking({ settings }) {
                       <SIconSmall>
                         <SImgFlashSmall src={IconFlashSmall} />
                       </SIconSmall>
-                      {!userInfo.accBoostReward ||
-                      userInfo.accBaseReward !== '0'
-                        ? '0'
-                        : userInfo.accBaseReward}
+                      {userInfo.accBoostReward ?? '0'}
                     </SInforValue>
                   ) : (
                     <SInforValue>-</SInforValue>
@@ -1237,11 +1243,11 @@ function Staking({ settings }) {
                     })}
                   </Slider>
                 </SSlider>
-                {address && dataNFT.length > 0 && (
+                {/* {address && dataNFT.length > 0 && (
                   <STextSelecT>
                     Please select NFTs you want to stake
                   </STextSelecT>
-                )}
+                )} */}
               </>
             )}
           </SDiv>
@@ -1343,11 +1349,11 @@ function Staking({ settings }) {
                       })}
                   </Slider>
                 </SSlider>
-                {address && dataNFTUnState.length > 0 && (
+                {/* {address && dataNFTUnState.length > 0 && (
                   <STextSelecT>
-                    Please select NFTs you want to stake
+                    Please select NFTs you want to unstake
                   </STextSelecT>
-                )}
+                )} */}
               </>
             )}
           </SDiv>
@@ -1377,7 +1383,6 @@ function Staking({ settings }) {
         />
         {/* Confirm */}
         <DialogConfirm isConfirm={isConfirm} close={handleCloseConfirm} />
-
         <DialogSuccess
           isSuccess={isSuccess}
           close={handleCloseSuccess}

@@ -12,7 +12,6 @@ import LogoLP from '../../../assets/img/logo_lp.svg';
 const SMain = styled.div`
   width: 100%;
   padding: 15px;
-  margin-top: 10px;
   border-radius: 8px;
   box-sizing: content-box;
 `;
