@@ -280,89 +280,99 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     let objUser = {};
-    await methods
-      .call(farmingContract.methods.userInfo, [0, address])
-      .then(res => {
-        const balanceBigNumber = divDecimals(sTokenBalance, 18);
-        const pendingAmountString = divDecimals(res.pendingAmount, 18);
-        const amountNumber = divDecimals(res.amount, 18);
-        const accBaseRewardBigNumber = divDecimals(res.accBaseReward, 18);
-        const accBoostRewardBigNumber = divDecimals(res.accBoostReward, 18);
-        const amountString = amountNumber?.toNumber();
-        const accBaseRewardString = accBaseRewardBigNumber.toNumber();
-        const accBoostRewardString = accBoostRewardBigNumber.toNumber();
-        const balanceBigFormat = balanceBigNumber
-          .toNumber()
-          .toFixed(4)
-          .toString();
-        if (balanceBigNumber.isZero()) {
-          setMessErr({
-            mess: 'No tokens to stake: Get STRK-ETH LP',
-            show: false,
-            noLP: true
-          });
-        } else {
-          setMessErr({
-            mess: '',
-            show: false,
-            noLP: false
-          });
-        }
-        const currentTime = Math.floor(new Date().getTime() / 1000);
-        const timeBaseUnstake = +res.depositedDate;
-        const timeBootsUnstake = +res.boostedDate;
-        const overTimeBaseReward = currentTime - timeBaseUnstake;
-        const overTimeBootReward = currentTime - timeBootsUnstake;
+    if (address) {
+      await methods
+        .call(farmingContract.methods.userInfo, [0, address])
+        .then(res => {
+          const balanceBigNumber = divDecimals(sTokenBalance, 18);
+          const pendingAmountString = divDecimals(res.pendingAmount, 18);
+          const amountNumber = divDecimals(res.amount, 18);
+          const accBaseRewardBigNumber = divDecimals(res.accBaseReward, 18);
+          const accBoostRewardBigNumber = divDecimals(res.accBoostReward, 18);
+          const amountString = amountNumber?.toNumber();
+          const accBaseRewardString = accBaseRewardBigNumber.toNumber();
+          const accBoostRewardString = accBoostRewardBigNumber.toNumber();
+          const balanceBigFormat = balanceBigNumber
+            .toNumber()
+            .toFixed(4)
+            .toString();
+          if (balanceBigNumber.isZero()) {
+            setMessErr({
+              mess: 'No tokens to stake: Get STRK-ETH LP',
+              show: false,
+              noLP: true
+            });
+          } else {
+            setMessErr({
+              mess: '',
+              show: false,
+              noLP: false
+            });
+          }
+          const currentTime = Math.floor(new Date().getTime() / 1000);
+          const timeBaseUnstake = +res.depositedDate;
+          const timeBootsUnstake = +res.boostedDate;
+          const overTimeBaseReward = currentTime - timeBaseUnstake;
+          const overTimeBootReward = currentTime - timeBootsUnstake;
 
-        if (timeBaseUnstake === 0) {
-          setisClaimBaseReward(false);
-          setIsUnStakeLp(false);
-        } else {
-          setisClaimBaseReward(overTimeBaseReward >= SECOND24H);
-          setIsUnStakeLp(overTimeBaseReward >= SECOND2DAY);
-        }
-        if (timeBootsUnstake === 0) {
-          setIsClaimBootReward(false);
-        } else {
-          setIsClaimBootReward(overTimeBootReward >= SECOND30DAY);
-        }
-        objUser = {
-          ...res,
-          amount:
-            amountString !== 0 && amountString < 0.001
-              ? '<0.001'
-              : renderValueFixed(amountNumber).toString(),
-          available: renderValueFixed(balanceBigFormat).toString(),
-          totalBoost: total.totalBoost ?? '',
-          totalDeposit: total.totalDeposit ?? '',
-          accBaseReward:
-            accBaseRewardString !== 0 && accBaseRewardString < 0.001
-              ? '<0.001'
-              : renderValueFixed(accBaseRewardString),
-          accBoostReward:
-            accBoostRewardString !== 0 && accBoostRewardString < 0.001
-              ? '<0.001'
-              : renderValueFixed(accBoostRewardString),
-          pendingAmount: pendingAmountString.toString(),
-          depositedDate: timeBaseUnstake,
-          boostedDate: timeBootsUnstake
-        };
-      })
-      .catch(err => {
-        throw err;
-      });
-    await methods.call(vStrkContract.methods.balanceOf, [address]).then(res => {
-      const vStrkString = +new BigNumber(res).div(new BigNumber(10).pow(18));
-      if (vStrkString < 0.001) {
-        setUserInfo({ ...objUser, vStrk: '< 0.001' });
-      }
-      setUserInfo({ ...objUser, vStrk: renderValueFixed(vStrkString) });
-    });
+          if (timeBaseUnstake === 0) {
+            setisClaimBaseReward(false);
+            setIsUnStakeLp(false);
+          } else {
+            setisClaimBaseReward(overTimeBaseReward >= SECOND24H);
+            setIsUnStakeLp(overTimeBaseReward >= SECOND2DAY);
+          }
+          if (timeBootsUnstake === 0) {
+            setIsClaimBootReward(false);
+          } else {
+            setIsClaimBootReward(overTimeBootReward >= SECOND30DAY);
+          }
+          objUser = {
+            ...res,
+            amount:
+              amountString !== 0 && amountString < 0.001
+                ? '<0.001'
+                : renderValueFixed(amountNumber).toString(),
+            available: renderValueFixed(balanceBigFormat).toString(),
+            totalBoost: total.totalBoost ?? '',
+            totalDeposit: total.totalDeposit ?? '',
+            accBaseReward:
+              accBaseRewardString !== 0 && accBaseRewardString < 0.001
+                ? '<0.001'
+                : renderValueFixed(accBaseRewardString),
+            accBoostReward:
+              accBoostRewardString !== 0 && accBoostRewardString < 0.001
+                ? '<0.001'
+                : renderValueFixed(accBoostRewardString),
+            pendingAmount: pendingAmountString.toString(),
+            depositedDate: timeBaseUnstake,
+            boostedDate: timeBootsUnstake
+          };
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
+        .call(vStrkContract.methods.balanceOf, [address])
+        .then(res => {
+          const vStrkString = +new BigNumber(res).div(
+            new BigNumber(10).pow(18)
+          );
+          if (vStrkString < 0.001) {
+            setUserInfo({ ...objUser, vStrk: '< 0.001' });
+          }
+          setUserInfo({ ...objUser, vStrk: renderValueFixed(vStrkString) });
+        })
+        .catch(err => {
+          throw err;
+        });
+    }
   }, [address]);
   // get data
   const getDataLP = useCallback(async () => {
     if (!address) {
       setIsLoading(false);
+      setDataNFT([]);
       return;
     }
     setIsLoading(true);
@@ -401,6 +411,7 @@ function Staking({ settings, setSetting }) {
   const getDataNFT = useCallback(async () => {
     if (!address) {
       setIsLoading(false);
+      setDataNFTUnState([]);
       return;
     }
     setIsLoading(true);
@@ -885,10 +896,8 @@ function Staking({ settings, setSetting }) {
   }, [txhash, address]);
 
   useEffect(() => {
-    if (address) {
-      getDataLP();
-      getDataNFT();
-    }
+    getDataLP();
+    getDataNFT();
   }, [address]);
   // change accounts
   useEffect(() => {
@@ -1396,11 +1405,6 @@ function Staking({ settings, setSetting }) {
                       })}
                   </Slider>
                 </SSlider>
-                {/* {address && dataNFTUnState.length > 0 && (
-                  <STextSelecT>
-                    Please select NFTs you want to unstake
-                  </STextSelecT>
-                )} */}
               </>
             )}
           </SDiv>
