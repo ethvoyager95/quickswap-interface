@@ -320,7 +320,7 @@ function Staking({ settings }) {
           amount:
             amountNumber.toNumber() < 0.001
               ? '<0.001'
-              : amountNumber.toNumber().toString(),
+              : amountNumber?.toNumber().toString(),
           available: parseFloat(balanceBigFormat).toString(),
           totalBoost: total.totalBoost ?? '',
           totalDeposit: total.totalDeposit ?? '',
