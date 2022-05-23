@@ -106,6 +106,9 @@ import IconNotConnect from '../../../assets/img/not_connect_data.svg';
 
 // eslint-disable-next-line import/order
 const MAX_STAKE_NFT = 10;
+const second24h = 86400;
+const second2day = 172800;
+const second30days = 2592000;
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
   const { onClick } = props;
@@ -299,9 +302,6 @@ function Staking({ settings }) {
         const timeBootsUnstake = +res.boostedDate;
         const overTimeBaseReward = currentTime - timeBaseUnstake;
         const overTimeBootReward = currentTime - timeBootsUnstake;
-        const second24h = 86400;
-        const second2day = 172800;
-        const second30days = 2592000;
 
         if (timeBaseUnstake === 0) {
           setisClaimBaseReward(false);
@@ -547,6 +547,7 @@ function Staking({ settings }) {
   }, []);
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
+    // console.log(new Date().addHours(4), 'addHours 4');
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
       return overOneDate.setDate(overOneDate.getDate() + 1);
@@ -561,6 +562,8 @@ function Staking({ settings }) {
     }
     return null;
   }, [userInfo, address]);
+  // console.log(expiryTimeBase, 'expiryTimeBase');
+  // console.log(expiryTimeBoost, 'expiryTimeBoost');
 
   // stake
   const handleStake = async () => {
@@ -1166,7 +1169,8 @@ function Staking({ settings }) {
                           <SSTake
                             disabled={
                               itemStaking.length === 0 ||
-                              itemStaking.length > MAX_STAKE_NFT
+                              itemStaking.length + itemStaked.length >
+                                MAX_STAKE_NFT
                             }
                             onClick={handleStakeNFT}
                           >
@@ -1270,7 +1274,10 @@ function Staking({ settings }) {
                       {isApproveNFT ? (
                         <>
                           <SSTake
-                            disabled={itemStaked.length === 0}
+                            disabled={
+                              itemStaked.length === 0 ||
+                              itemStaked.length > MAX_STAKE_NFT
+                            }
                             onClick={handleUnStakeNFT}
                           >
                             UnStake
