@@ -8,6 +8,7 @@ import { Row, Col } from 'antd';
 import styled from 'styled-components';
 import LogoFlash from '../../../assets/img/logo_flash.svg';
 import LogoLP from '../../../assets/img/logo_lp.svg';
+import IconFlashSmall from '../../../assets/img/flash_small.svg';
 
 const SMain = styled.div`
   width: 100%;
@@ -39,6 +40,7 @@ const SText = styled.p`
   color: #107def;
   font-size: 18px;
   line-height: 28px;
+  font-weight: 900;
 `;
 const SBox = styled.div`
   width: 100%;
@@ -53,18 +55,22 @@ const STextBox = styled.div`
   font-size: 14px;
   line-height: 22px;
   color: #9d9fa7;
+  text-align: right;
 `;
 const SValueBox = styled.div`
   color: #0b0f23;
   font-size: 20px;
   line-height: 27px;
-  font-weight: 700;
+  font-weight: 900;
 `;
 const SUSDBox = styled.div`
   color: #107def;
   font-size: 14px;
   line-height: 22px;
-  font-weight: 700;
+  font-weight: 900;
+`;
+const SIconFlash = styled.img`
+  margin-right: 10px;
 `;
 function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
   const [countAmount, setCountAmount] = useState(null);
@@ -120,7 +126,10 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                     <>
                       {totalDeposit ? (
                         <>
-                          <SValueBox>{totalDeposit}</SValueBox>
+                          <SValueBox>
+                            <SIconFlash src={IconFlashSmall} />
+                            {totalDeposit}
+                          </SValueBox>
                         </>
                       ) : (
                         <SValueBox>-</SValueBox>

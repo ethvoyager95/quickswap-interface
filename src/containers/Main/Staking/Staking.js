@@ -18,7 +18,15 @@ import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
 import _ from 'lodash';
 import * as constants from 'utilities/constants';
-import { divDecimals } from './helper';
+// import { checkIsValidNetwork } from 'utilities/common';
+import {
+  divDecimals,
+  renderValueFixed,
+  MAX_STAKE_NFT,
+  SECOND24H,
+  SECOND2DAY,
+  SECOND30DAY
+} from './helper';
 // eslint-disable-next-line import/named
 import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
 import '../../../assets/styles/slick.scss';
@@ -106,10 +114,7 @@ import IconNotSelect from '../../../assets/img/not_select.svg';
 import IconNotConnect from '../../../assets/img/not_connect_data.svg';
 
 // eslint-disable-next-line import/order
-const MAX_STAKE_NFT = 10;
-const second24h = 86400;
-const second2day = 172800;
-const second30days = 2592000;
+
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
   const { onClick } = props;
@@ -205,9 +210,9 @@ const AUDITOR_SETTING = {
   ]
 };
 
-function Staking({ settings }) {
+function Staking({ settings, setSetting }) {
   const address = settings.selectedAddress;
-  const [val, setVal] = useState(0);
+  const [val, setVal] = useState('');
   const [messErr, setMessErr] = useState({
     mess: '',
     show: false,
@@ -240,7 +245,7 @@ function Staking({ settings }) {
   const vStrkContract = getVSTRKContract();
   const nFtContract = getNFTContract();
   // get userInfor
-  const getDataUserInfor = async () => {
+  const getDataUserInfor = useCallback(async () => {
     window.web3 = new Web3(window.ethereum);
     let sTokenBalance = null;
     if (address) {
@@ -280,12 +285,12 @@ function Staking({ settings }) {
       .then(res => {
         const balanceBigNumber = divDecimals(sTokenBalance, 18);
         const pendingAmountString = divDecimals(res.pendingAmount, 18);
-        const amountNumber = new BigNumber(res.amount).div(
-          new BigNumber(10).pow(18)
-        );
-        const amountString = amountNumber?.toNumber();
+        const amountNumber = divDecimals(res.amount, 18);
         const accBaseRewardBigNumber = divDecimals(res.accBaseReward, 18);
         const accBoostRewardBigNumber = divDecimals(res.accBoostReward, 18);
+        const amountString = amountNumber?.toNumber();
+        const accBaseRewardString = accBaseRewardBigNumber.toNumber();
+        const accBoostRewardString = accBoostRewardBigNumber.toNumber();
         const balanceBigFormat = balanceBigNumber
           .toNumber()
           .toFixed(4)
@@ -295,6 +300,12 @@ function Staking({ settings }) {
             mess: 'No tokens to stake: Get STRK-ETH LP',
             show: false,
             noLP: true
+          });
+        } else {
+          setMessErr({
+            mess: '',
+            show: false,
+            noLP: false
           });
         }
         const currentTime = Math.floor(new Date().getTime() / 1000);
@@ -307,31 +318,31 @@ function Staking({ settings }) {
           setisClaimBaseReward(false);
           setIsUnStakeLp(false);
         } else {
-          setisClaimBaseReward(overTimeBaseReward >= second24h);
-          setIsUnStakeLp(overTimeBaseReward >= second2day);
+          setisClaimBaseReward(overTimeBaseReward >= SECOND24H);
+          setIsUnStakeLp(overTimeBaseReward >= SECOND2DAY);
         }
         if (timeBootsUnstake === 0) {
           setIsClaimBootReward(false);
         } else {
-          setIsClaimBootReward(overTimeBootReward >= second30days);
+          setIsClaimBootReward(overTimeBootReward >= SECOND30DAY);
         }
         objUser = {
           ...res,
           amount:
             amountString !== 0 && amountString < 0.001
               ? '<0.001'
-              : amountNumber.toString(),
-          available: parseFloat(balanceBigFormat).toString(),
+              : renderValueFixed(amountNumber).toString(),
+          available: renderValueFixed(balanceBigFormat).toString(),
           totalBoost: total.totalBoost ?? '',
           totalDeposit: total.totalDeposit ?? '',
           accBaseReward:
-            accBaseRewardBigNumber !== 0 && accBaseRewardBigNumber < 0.001
+            accBaseRewardString !== 0 && accBaseRewardString < 0.001
               ? '<0.001'
-              : accBaseRewardBigNumber.toString(),
+              : renderValueFixed(accBaseRewardString),
           accBoostReward:
-            accBoostRewardBigNumber !== 0 && accBoostRewardBigNumber < 0.001
+            accBoostRewardString !== 0 && accBoostRewardString < 0.001
               ? '<0.001'
-              : accBoostRewardBigNumber.toString(),
+              : renderValueFixed(accBoostRewardString),
           pendingAmount: pendingAmountString.toString(),
           depositedDate: timeBaseUnstake,
           boostedDate: timeBootsUnstake
@@ -345,9 +356,9 @@ function Staking({ settings }) {
       if (vStrkString < 0.001) {
         setUserInfo({ ...objUser, vStrk: '< 0.001' });
       }
-      setUserInfo({ ...objUser, vStrk: vStrkString });
+      setUserInfo({ ...objUser, vStrk: renderValueFixed(vStrkString) });
     });
-  };
+  }, [address]);
   // get data
   const getDataLP = useCallback(async () => {
     if (!address) {
@@ -455,7 +466,11 @@ function Staking({ settings }) {
   // check approve lp
   const checkApproveLP = useCallback(async () => {
     if (!address) {
-      setIsApproveLP(true);
+      setIsApproveLP(false);
+      return;
+    }
+    if (Number(userInfo.available) === 0) {
+      setIsApproveLP(false);
       return;
     }
     await methods
@@ -474,7 +489,7 @@ function Staking({ settings }) {
           setIsApproveLP(true);
         }
       });
-  }, [val, address, handleMaxValue]);
+  }, [val, address, handleMaxValue, userInfo]);
   const checkApproveNFT = useCallback(async () => {
     await methods
       .call(nFtContract.methods.isApprovedForAll, [
@@ -875,7 +890,24 @@ function Staking({ settings }) {
       getDataNFT();
     }
   }, [address]);
-
+  // change accounts
+  useEffect(() => {
+    if (!address) {
+      return;
+    }
+    if (window.ethereum) {
+      // && checkIsValidNetwork()
+      window.ethereum.on('accountsChanged', acc => {
+        setSetting({
+          selectedAddress: acc[0],
+          accountLoading: true
+        });
+        getDataUserInfor();
+        getDataLP();
+        getDataNFT();
+      });
+    }
+  }, [window.ethereum, address]);
   return (
     <>
       <React.Fragment>
@@ -938,7 +970,7 @@ function Staking({ settings }) {
                         <SImgFlashSmall src={IconFlashSmall} />
                         <SImgLpSmall src={IconLpSmall} />
                       </SIconSmall>
-                      {userInfo.available ?? '0'}
+                      {userInfo.available ?? '0.0'}
                     </SInforValue>
                   ) : (
                     <SInforValue>-</SInforValue>
@@ -952,7 +984,7 @@ function Staking({ settings }) {
                         <SImgFlashSmall src={IconFlashSmall} />
                         <SImgLpSmall src={IconLpSmall} />
                       </SIconSmall>
-                      {userInfo.amount ?? '0'}
+                      {userInfo.amount ?? '0.0'}
                     </SInforValue>
                   ) : (
                     <SInforValue>-</SInforValue>
@@ -962,12 +994,21 @@ function Staking({ settings }) {
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <Row>
                   <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                    {isApproveLP && address ? (
+                    {address ? (
                       <>
                         <SBtn>
-                          <SBtnStake onClick={handleStake}>Stake</SBtnStake>
+                          {!userInfo.available ||
+                          Number(userInfo.available) === 0 ? (
+                            <>
+                              <SBtnStake disabled>Stake</SBtnStake>
+                            </>
+                          ) : (
+                            <>
+                              <SBtnStake onClick={handleStake}>Stake</SBtnStake>
+                            </>
+                          )}
                           <Tooltip
-                            placement="top  "
+                            placement="top"
                             title="Countdown will be reset if you stake more without claiming the reward"
                           >
                             <SQuestion src={IconQuestion} />
@@ -982,12 +1023,7 @@ function Staking({ settings }) {
                             </>
                           ) : (
                             <>
-                              <SSUnTake
-                                disabled
-                                style={{ cursor: 'pointer !important' }}
-                              >
-                                UnStake
-                              </SSUnTake>
+                              <SSUnTake disabled>UnStake</SSUnTake>
                             </>
                           )}
 
@@ -1003,9 +1039,16 @@ function Staking({ settings }) {
                       <>
                         {address && (
                           <SBtn>
-                            <SBtnStake onClick={handleApproveLp}>
-                              Approve Staking
-                            </SBtnStake>
+                            {isApproveLP ? (
+                              <>
+                                {' '}
+                                <SBtnStake onClick={handleApproveLp}>
+                                  Approve Staking
+                                </SBtnStake>
+                              </>
+                            ) : (
+                              <>1111</>
+                            )}
                           </SBtn>
                         )}
                       </>
@@ -1027,7 +1070,7 @@ function Staking({ settings }) {
                         <SImgFlashSmall src={IconFlashSmall} />
                       </SIconSmall>
 
-                      {userInfo.accBaseReward ?? '0'}
+                      {userInfo.accBaseReward ?? '0.0'}
                     </SInforValue>
                   ) : (
                     <SInforValue>-</SInforValue>
@@ -1040,7 +1083,7 @@ function Staking({ settings }) {
                       <SIconSmall>
                         <SImgFlashSmall src={IconFlashSmall} />
                       </SIconSmall>
-                      {userInfo.accBoostReward ?? '0'}
+                      {userInfo.accBoostReward ?? '0.0'}
                     </SInforValue>
                   ) : (
                     <SInforValue>-</SInforValue>
@@ -1064,7 +1107,7 @@ function Staking({ settings }) {
                       <SIconSmall>
                         <SImgLpSmall src={IconVstrkSmall} />
                       </SIconSmall>
-                      {userInfo.vStrk ?? '0'}
+                      {userInfo.vStrk ?? '0.0'}
                     </SInforValue>
                   ) : (
                     <SInforValue>-</SInforValue>
@@ -1193,7 +1236,9 @@ function Staking({ settings }) {
                       )}
                     </>
                   ) : (
-                    <></>
+                    <>
+                      <SSTake disabled>Stake</SSTake>
+                    </>
                   )}
                 </SFlexEnd>
               </Col>
@@ -1300,7 +1345,9 @@ function Staking({ settings }) {
                       )}
                     </>
                   ) : (
-                    <></>
+                    <>
+                      <SSTake disabled>UnStake</SSTake>
+                    </>
                   )}
                 </SFlexEnd>
               </Col>
@@ -1394,7 +1441,8 @@ function Staking({ settings }) {
   );
 }
 Staking.propTypes = {
-  settings: PropTypes.object
+  settings: PropTypes.object,
+  setSetting: PropTypes.func.isRequired
 };
 
 Staking.defaultProps = {
@@ -1406,10 +1454,11 @@ const mapStateToProps = ({ account }) => ({
 });
 
 const mapDispatchToProps = dispatch => {
-  const { getVoterAccounts } = accountActionCreators;
+  const { setSetting, getVoterAccounts } = accountActionCreators;
 
   return bindActionCreators(
     {
+      setSetting,
       getVoterAccounts
     },
     dispatch

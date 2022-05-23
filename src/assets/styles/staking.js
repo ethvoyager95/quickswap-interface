@@ -23,6 +23,9 @@ export const SDiv = styled.div`
   .box-staking {
     text-align: center;
   }
+  :last-child {
+    margin-bottom: 50px;
+  }
 `;
 export const SHeader = styled.div`
   display: flex;
@@ -129,7 +132,7 @@ export const SBtnUn = styled.div`
     justify-content: center;
   }
 `;
-export const SBtnStake = styled.div`
+export const SBtnStake = styled.button`
   cursor: pointer;
   background: #107def;
   color: #fff;
@@ -138,8 +141,14 @@ export const SBtnStake = styled.div`
   min-width: 220px;
   text-align: center;
   margin-right: 10px;
+  border: none;
+  outline: none;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
+  }
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
   }
 `;
 export const SBtnUnstake = styled.div`
@@ -370,6 +379,7 @@ export const SSliderNoDataText = styled.div`
   font-size: 20px;
   line-height: 27px;
   color: #9d9fa7;
+  margin-bottom: 20px;
 `;
 export const SItemSlider = styled.div`
   width: 100%;

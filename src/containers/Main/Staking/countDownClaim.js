@@ -28,7 +28,9 @@ const STimeText = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-const SItemTime = styled.div``;
+const SItemTime = styled.div`
+  color: #0b0f23;
+`;
 const abortController = new AbortController();
 
 // eslint-disable-next-line react/prop-types
