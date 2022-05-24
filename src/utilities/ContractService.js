@@ -90,6 +90,32 @@ export const getInterestModelContract = address => {
   );
 };
 
+export const getFarmingContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.FARMING_ABI),
+    constants.CONTRACT_FARMING_ADDRESS
+  );
+};
+
+export const getLPContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.CONTRACT_LP_TOKEN_ABI),
+    constants.CONTRACT_LP_ADDRESS
+  );
+};
+export const getNFTContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.NFT_ABI),
+    constants.NFT_ADDRESS
+  );
+};
+
+export const getVSTRKContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.VSTRK_ABI),
+    constants.VSTRK_ADDRESS
+  );
+};
 export const methods = {
   call,
   send

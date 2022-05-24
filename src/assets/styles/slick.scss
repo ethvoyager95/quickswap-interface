@@ -1,0 +1,26 @@
+/* override */
+.slick-arrow.slick-prev,
+.slick-arrow.slick-next {
+  &::after {
+    content: none !important;
+  }
+  &::before {
+    content: none !important;
+  }
+}
+.slick-track {
+  margin: auto !important;
+
+  img {
+    margin: auto !important;
+    width: 100%;
+  }
+}
+button:focus {
+  outline: none !important;
+}
+
+.slick-next,
+.slick-prev {
+  opacity: 1 !important;
+}
