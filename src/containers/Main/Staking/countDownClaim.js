@@ -30,6 +30,15 @@ const STimeText = styled.div`
 `;
 const SItemTime = styled.div`
   color: #0b0f23;
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 24px;
+`;
+const SItemText = styled.div`
+  color: #6d6f7b;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 19px;
 `;
 const abortController = new AbortController();
 
@@ -110,16 +119,16 @@ function CountDownClaim({ times, address }) {
                 {!loadding && (
                   <STimeText>
                     {countdownTime.countdownDays != null && (
-                      <SItemTime>DAYS</SItemTime>
+                      <SItemText>DAYS</SItemText>
                     )}
                     {countdownTime.countdownHours != null && (
-                      <SItemTime>HOURS</SItemTime>
+                      <SItemText>HOURS</SItemText>
                     )}
                     {countdownTime.countdownMinutes != null && (
-                      <SItemTime>MIN</SItemTime>
+                      <SItemText>MIN</SItemText>
                     )}
                     {countdownTime.countdownSeconds != null && (
-                      <SItemTime>SEC</SItemTime>
+                      <SItemText>SEC</SItemText>
                     )}
                   </STimeText>
                 )}

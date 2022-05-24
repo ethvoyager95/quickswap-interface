@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import BigNumber from 'bignumber.js';
 
 export const TIME_UNSTAKE_LP = 2;
@@ -34,10 +35,81 @@ export const getBaseApr = liquidity => {
   console.log(BASE_APR, 'BASE_APR');
   return BASE_APR;
 };
+
+const sliceDecimal = (number, decimal, locale, trailDoubleZero) => {
+  function join(wholeNumber, decimals) {
+    if (!decimals) return wholeNumber;
+    return [wholeNumber, decimals].join('.');
+  }
+
+  // avoid exponential notation, 18 is max decimal that user can type to input
+  // if trailDoubleZero is provided, that mean number < 10000, have no exponential notation
+  // parseFloat in case 99.980000 --> 99.98
+  // eslint-disable-next-line prefer-const
+  let [wholeNumber, decimals] = parseFloat(number.toFixed(18))
+    .toString()
+    .split('.');
+
+  if (locale === 'US') {
+    wholeNumber = Intl.NumberFormat('en-US').format(Number(wholeNumber));
+  }
+
+  // eslint-disable-next-line radix
+  if (decimals && parseInt(decimals) !== 0) {
+    if (decimals.length > decimal) {
+      decimals = decimals.substr(0, decimal);
+    }
+    return join(wholeNumber, decimals);
+  }
+
+  if (trailDoubleZero) return join(wholeNumber, '00');
+
+  return wholeNumber;
+};
+
+export const shortValue = (value, decimal) => {
+  // eslint-disable-next-line no-bitwise
+  const parsedVal = ~~value;
+  // eslint-disable-next-line no-restricted-globals
+  if (isNaN(parsedVal)) return '';
+  const grand = 10000;
+  const milion = 1000000;
+  const bilion = 1000000000;
+  if (parsedVal >= bilion) {
+    return `${sliceDecimal(parsedVal / bilion, decimal, 'US', false)}B`;
+  }
+  if (parsedVal >= milion) {
+    return `${sliceDecimal(parsedVal / milion, decimal, 'US', false)}M`;
+  }
+  if (parsedVal >= grand) {
+    return `${sliceDecimal(parsedVal / k, decimal, 'US', false)}K`;
+  }
+  if (!value || value === 0) {
+    return 0;
+  }
+  if (value < 0.0001 && value > 0) {
+    return '< 0.0001';
+  }
+  if (value > -0.01 && value < 0) {
+    return '< -0.01';
+  }
+  if (value > -0.001 && value < 0) {
+    return '< -0.001';
+  }
+  const lstValueFormat = value?.toString().split('.');
+  if (lstValueFormat.length > 1) {
+    const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(
+      0,
+      decimal
+    )}`;
+    return result;
+  }
+  return parseFloat(value);
+};
 export const renderValueFixed = value => {
   const valueNumber = +value;
   if (!valueNumber || valueNumber === 0) {
     return '0.0';
   }
-  return parseFloat(value);
+  return shortValue(value, 2);
 };

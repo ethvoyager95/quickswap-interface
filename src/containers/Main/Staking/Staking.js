@@ -361,9 +361,7 @@ function Staking({ settings, setSetting }) {
       await methods
         .call(vStrkContract.methods.balanceOf, [address])
         .then(res => {
-          const vStrkString = +new BigNumber(res).div(
-            new BigNumber(10).pow(18)
-          );
+          const vStrkString = new BigNumber(res).div(new BigNumber(10).pow(18));
           if (vStrkString < 0.001) {
             setUserInfo({ ...objUser, vStrk: '< 0.001' });
           }
@@ -1055,74 +1053,80 @@ function Staking({ settings, setSetting }) {
                         <SRowColumn>
                           {address ? (
                             <>
-                              <SBtn>
-                                {!userInfo.available ||
-                                Number(userInfo.available) === 0 ? (
-                                  <>
-                                    <SBtnStake disabled>Stake</SBtnStake>
-                                  </>
-                                ) : (
-                                  <>
-                                    <SBtnStake onClick={handleStake}>
-                                      Stake
-                                    </SBtnStake>
-                                  </>
-                                )}
-                                <Tooltip
-                                  placement="top"
-                                  title="Countdown will be reset if you stake more without claiming the reward"
-                                >
-                                  <SQuestion src={IconQuestion} />
-                                </Tooltip>
-                              </SBtn>
-                              <SBtnUn>
-                                {isUnStakeLp ? (
-                                  <>
-                                    {isAprroveVstrk ? (
-                                      <>
-                                        <SBtnUnstake onClick={handleUnStake}>
-                                          UnStake
-                                        </SBtnUnstake>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <SBtnUnstake
-                                          onClick={handleApproveVstrk}
-                                        >
-                                          Approve Staking
-                                        </SBtnUnstake>
-                                      </>
-                                    )}
-                                  </>
-                                ) : (
-                                  <>
-                                    <SSUnTake disabled>UnStake</SSUnTake>
-                                  </>
-                                )}
+                              <Col xs={{ span: 24 }} lg={{ span: 16 }}>
+                                <SBtn>
+                                  {!userInfo.available ||
+                                  Number(userInfo.available) === 0 ? (
+                                    <>
+                                      <SBtnStake disabled>Stake</SBtnStake>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <SBtnStake onClick={handleStake}>
+                                        Stake
+                                      </SBtnStake>
+                                    </>
+                                  )}
+                                  <Tooltip
+                                    placement="top"
+                                    title="Countdown will be reset if you stake more without claiming the reward"
+                                  >
+                                    <SQuestion src={IconQuestion} />
+                                  </Tooltip>
+                                </SBtn>
+                              </Col>
+                              <Col xs={{ span: 24 }} lg={{ span: 8 }}>
+                                <SBtnUn>
+                                  {isUnStakeLp ? (
+                                    <>
+                                      {isAprroveVstrk ? (
+                                        <>
+                                          <SBtnUnstake onClick={handleUnStake}>
+                                            UnStake
+                                          </SBtnUnstake>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <SBtnStake
+                                            onClick={handleApproveVstrk}
+                                          >
+                                            Approve Staking
+                                          </SBtnStake>
+                                        </>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <SSUnTake disabled>UnStake</SSUnTake>
+                                    </>
+                                  )}
 
-                                <Tooltip
-                                  placement="top"
-                                  title="Countdown will be reset if you unstake a part without claiming the reward"
-                                >
-                                  <SQuestion src={IconQuestion} />
-                                </Tooltip>
-                              </SBtnUn>
+                                  <Tooltip
+                                    placement="top"
+                                    title="Countdown will be reset if you unstake a part without claiming the reward"
+                                  >
+                                    <SQuestion src={IconQuestion} />
+                                  </Tooltip>
+                                </SBtnUn>
+                              </Col>
                             </>
                           ) : (
                             <>
                               {address && (
-                                <SBtn>
-                                  {isApproveLP ? (
-                                    <>
-                                      {' '}
-                                      <SBtnStake onClick={handleApproveLp}>
-                                        Approve Staking
-                                      </SBtnStake>
-                                    </>
-                                  ) : (
-                                    <>1111</>
-                                  )}
-                                </SBtn>
+                                <Col xs={{ span: 24 }} lg={{ span: 16 }}>
+                                  <SBtn>
+                                    {isApproveLP ? (
+                                      <>
+                                        {' '}
+                                        <SBtnStake onClick={handleApproveLp}>
+                                          Approve Staking
+                                        </SBtnStake>
+                                      </>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </SBtn>
+                                </Col>
                               )}
                             </>
                           )}

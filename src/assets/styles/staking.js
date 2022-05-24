@@ -140,20 +140,26 @@ export const SBtnDisabled = styled.div`
 `;
 export const SBtn = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 1919px) {
     justify-content: center;
     margin-left: 10px;
+  }
+  @media only screen and (max-width: 768px) {
+    justify-content: flex-start;
+    margin-top: 0;
+    margin-left: 5px;
+    margin-right: 10px;
   }
 `;
 export const SBtnUn = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   margin-top: 20px;
   @media only screen and (max-width: 768px) {
-    justify-content: center;
+    justify-content: flex-start;
     margin-top: 0;
     margin-left: 5px;
     margin-right: 10px;
