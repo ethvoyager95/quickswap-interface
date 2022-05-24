@@ -152,6 +152,7 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                     <>
                       {totalDeposit ? (
                         <>
+                          <SValueBox>{totalDeposit}</SValueBox>
                           <SValueBox>
                             <SIconFlash src={IconFlashSmall} />
                             {totalDeposit}
