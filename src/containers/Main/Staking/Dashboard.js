@@ -133,35 +133,35 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
     setBaseAPR(baseAprPer);
   }, [address, amount, totalBoost, totalDeposit]);
   const getRate = async () => {
-    // try {
-    //   await axiosInstance
-    //     .get(
-    //       `https://api.coingecko.com/api/v3/simple/price?ids=strike&vs_currencies=usd`
-    //     )
-    //     .then(res => {
-    //       if (res) {
-    //         console.log(res.data.strike.usd, 'res strike');
-    //       }
-    //     })
-    //     .catch(err => {
-    //       throw err;
-    //     });
-    //   await axiosInstance
-    //     .get(
-    //       `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
-    //     )
-    //     .then(res => {
-    //       if (res) {
-    //         console.log(res.data.ethereum.usd, 'res ethereum');
-    //       }
-    //     })
-    //     .catch(err => {
-    //       throw err;
-    //     });
-    // } catch (err) {
-    //   console.log(err);
-    //   throw err;
-    // }
+    try {
+      await axiosInstance
+        .get(
+          `https://api.coingecko.com/api/v3/simple/price?ids=strike&vs_currencies=usd`
+        )
+        .then(res => {
+          if (res) {
+            console.log(res.data.strike.usd, 'res strike');
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+      await axiosInstance
+        .get(
+          `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
+        )
+        .then(res => {
+          if (res) {
+            console.log(res.data.ethereum.usd, 'res ethereum');
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   };
   useEffect(() => {
     let updateTimer;
