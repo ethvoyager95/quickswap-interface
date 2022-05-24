@@ -6,7 +6,9 @@ import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
-import { Row, Col } from 'antd';
+import { Row, Col, Switch } from 'antd';
+import _ from 'lodash';
+import { MAX_STAKE_NFT } from './helper';
 
 const useStyles = makeStyles({
   root: {
@@ -56,9 +58,9 @@ const useStyles = makeStyles({
 const SMain = styled.div`
   margin: 0 20px;
 `;
-const SItem = styled.div`
-  widht: 100%;
-`;
+// const SItem = styled.div`
+//   widht: 100%;
+// `;
 const STitle = styled.div`
   color: #333;
   text-align: center;
@@ -71,51 +73,51 @@ const STitle = styled.div`
     font-size: 22px;
   }
 `;
-const SCount = styled.div`
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 32px;
-  display: flex;
-  align-items: center;
-  color: #141414;
-`;
-const SRow = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  border-bottom: 1px solid #5a617d;
-  padding: 0 0 20px 0;
-`;
-const SLeft = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const SRight = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 20px;
-  text-align: right;
-  letter-spacing: 0.1px;
-  color: rgba(0, 28, 78, 0.87);
-`;
-const SImg = styled.img`
-  width: 72px;
-  height: 72px;
-`;
-const SDetails = styled.div`
-  color: #001c4e;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 32px;
-  margin-left: 15px;
-`;
+// const SCount = styled.div`
+//   font-style: normal;
+//   font-weight: 700;
+//   font-size: 18px;
+//   line-height: 32px;
+//   display: flex;
+//   align-items: center;
+//   color: #141414;
+// `;
+// const SRow = styled.div`
+//   display: flex;
+//   width: 100%;
+//   justify-content: space-between;
+//   border-bottom: 1px solid #5a617d;
+//   padding: 0 0 20px 0;
+// `;
+// const SLeft = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+// const SRight = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-style: normal;
+//   font-weight: 700;
+//   font-size: 18px;
+//   line-height: 20px;
+//   text-align: right;
+//   letter-spacing: 0.1px;
+//   color: rgba(0, 28, 78, 0.87);
+// `;
+// const SImg = styled.img`
+//   width: 72px;
+//   height: 72px;
+// `;
+// const SDetails = styled.div`
+//   color: #001c4e;
+//   font-style: normal;
+//   font-weight: 700;
+//   font-size: 14px;
+//   line-height: 32px;
+//   margin-left: 15px;
+// `;
 const SBox = styled.div`
   width: 100%;
   margin-top: 30px;
@@ -208,6 +210,42 @@ const SBtnUnStake = styled.div`
   cursor: pointer;
   margin-left: 10px;
 `;
+const SInput = styled.div`
+  position: relative;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  input {
+    color: #6d6f7b;
+    border: 1px solid #ccc !important;
+    width: 450px;
+    padding: 8px;
+    border-radius: 8px;
+    outline: none;
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus-visible {
+      border: 1px solid #ccc !important;
+      outline: none;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    input {
+      width: 300px;
+      margin-right: 20px;
+    }
+  }
+`;
+const SError = styled.div`
+  color: #e80e0e;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 23px;
+`;
 const PERCENT = 20;
 
 function DialogUnStake({
@@ -215,18 +253,61 @@ function DialogUnStake({
   close,
   itemStaked,
   list,
+  valueNFTUnStake,
   handleUnStakeDialog
 }) {
+  const [val, setValue] = useState(valueNFTUnStake);
+  const [messErr, setMessErr] = useState();
   const [itemSelect, setItemSelect] = useState(0);
   const [totalSelect, setTotalSelect] = useState(0);
   const [beforeUnStake, setBeforeUnStake] = useState(0);
   const [afterUnStake, setAfterUnStake] = useState(0);
+  const [checked, setChecked] = useState(false);
+  const handleChangeValueUnStakeNft = event => {
+    const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
+    if (!numberDigitsRegex.test(event.target.value)) {
+      return;
+    }
+    if (event.target.value < 0) {
+      setValue(0);
+    } else {
+      const valueFormat = event?.target.value.replace(/,/g, '.');
+      setValue(valueFormat);
+    }
+  };
+  const onChangeSwitch = check => {
+    setChecked(check);
+    setValue('');
+  };
   useEffect(() => {
     setItemSelect(itemStaked.length);
     setTotalSelect(list.length);
     setBeforeUnStake(totalSelect * PERCENT);
     setAfterUnStake(PERCENT * totalSelect - itemSelect * PERCENT);
   }, [itemStaked, list, isUnStakeNFT]);
+
+  useEffect(() => {
+    if (val === '') {
+      setMessErr('');
+    }
+    if (checked) {
+      const MAX_STAKE = MAX_STAKE_NFT - list.length;
+      if (val && val > MAX_STAKE_NFT - MAX_STAKE) {
+        setMessErr('Invalid amount');
+      }
+      if (val === '') {
+        setMessErr('');
+      }
+    } else {
+      const listIds = _.map(list, 'token_id');
+      if (val && !_.includes(listIds, val)) {
+        setMessErr('Invalid id');
+      } else {
+        setMessErr('');
+      }
+    }
+  }, [val, isUnStakeNFT, list, checked]);
+
   const classes = useStyles();
   return (
     <>
@@ -234,7 +315,22 @@ function DialogUnStake({
         <Dialog className={classes.root} open={isUnStakeNFT} onClose={close}>
           <SMain>
             <STitle>Unstake NFT</STitle>
-            <SCount>{itemStaked.length} items</SCount>
+            <SInput>
+              <input
+                type="text"
+                value={val}
+                inputMode="decimal"
+                pattern="^[0-9]*[.,]?[0-9]*$"
+                min={0}
+                minLength={1}
+                maxLength={79}
+                placeholder="Enter a number"
+                onChange={event => handleChangeValueUnStakeNft(event)}
+              />
+              <Switch checked={checked} onChange={onChangeSwitch} />;
+            </SInput>
+            {messErr && <SError>{messErr}</SError>}
+            {/* <SCount>{itemStaked.length} items</SCount>
             <SItem>
               {itemStaked?.map(item => {
                 return (
@@ -249,16 +345,16 @@ function DialogUnStake({
                   </>
                 );
               })}
-            </SItem>
+            </SItem> */}
             <SBox>
               <Row>
                 <Col xs={{ span: 24 }} lg={{ span: 10 }}>
-                  <SRowBox>
+                  {/* <SRowBox>
                     <STextBox>NFT selected</STextBox>
                     <SValueBox>
                       {itemSelect}/{totalSelect}
                     </SValueBox>
-                  </SRowBox>
+                  </SRowBox> */}
                   <SRowBox>
                     <STextBox>Staked NFT</STextBox>
                     <SValueBox>0/{totalSelect}</SValueBox>
@@ -290,7 +386,11 @@ function DialogUnStake({
                 <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                   <SBtn>
                     <SBtnCancel onClick={close}>Cancel</SBtnCancel>
-                    <SBtnUnStake onClick={handleUnStakeDialog}>
+                    <SBtnUnStake
+                      onClick={event =>
+                        handleUnStakeDialog(val, event, checked)
+                      }
+                    >
                       UnStake
                     </SBtnUnStake>
                   </SBtn>
@@ -308,6 +408,7 @@ DialogUnStake.propTypes = {
   isUnStakeNFT: PropTypes.bool,
   itemStaked: PropTypes.array,
   list: PropTypes.array,
+  valueNFTUnStake: PropTypes.number,
   handleUnStakeDialog: PropTypes.func
 };
 
@@ -316,6 +417,7 @@ DialogUnStake.defaultProps = {
   isUnStakeNFT: false,
   itemStaked: [],
   list: [],
+  valueNFTUnStake: 0,
   handleUnStakeDialog: func
 };
 

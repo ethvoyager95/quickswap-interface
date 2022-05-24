@@ -19,21 +19,19 @@ export const divDecimals = (value, decimal) => {
   }
   return new BigNumber(0);
 };
-export const getBaseApr = liquidity => {
-  const STRK_PERBLOCK = 10000;
-  const ETHEREUM_PER_BLOCK = 6289;
-  const DAY_OF_YEAR = 365;
-  const VAL = 31536000;
-  const STRK_REWARD_ONE_YEAR = new BigNumber(STRK_PERBLOCK)
-    .times(new BigNumber(ETHEREUM_PER_BLOCK))
-    .times(new BigNumber(DAY_OF_YEAR));
-  const numerator = new BigNumber(STRK_REWARD_ONE_YEAR).times(
-    new BigNumber(VAL)
-  );
-  const demerator = new BigNumber(liquidity);
-  const BASE_APR = new BigNumber(numerator).div(new BigNumber(demerator));
-  console.log(BASE_APR, 'BASE_APR');
-  return BASE_APR;
+export const getBaseApr = (liquidity, block) => {
+  if (liquidity && block) {
+    const ETHEREUM_PER_BLOCK = 6289;
+    const DAY_OF_YEAR = 365;
+    const STRK_REWARD_ONE_YEAR = new BigNumber(block)
+      .times(new BigNumber(ETHEREUM_PER_BLOCK))
+      .times(new BigNumber(DAY_OF_YEAR));
+    const numerator = new BigNumber(STRK_REWARD_ONE_YEAR);
+    const demerator = new BigNumber(liquidity);
+    const BASE_APR = new BigNumber(numerator).div(new BigNumber(demerator));
+    return BASE_APR;
+  }
+  return new BigNumber(0);
 };
 
 const sliceDecimal = (number, decimal, locale, trailDoubleZero) => {

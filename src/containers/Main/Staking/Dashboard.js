@@ -9,6 +9,12 @@ import styled from 'styled-components';
 import LogoFlash from '../../../assets/img/logo_flash.svg';
 import LogoLP from '../../../assets/img/logo_lp.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
+import { axiosInstance } from '../../../utilities/axios';
+import { divDecimals, getBaseApr, renderValueFixed } from './helper';
+import {
+  getFarmingContract,
+  methods
+} from '../../../utilities/ContractService';
 
 const SMain = styled.div`
   width: 100%;
@@ -98,13 +104,80 @@ const SUSDBox = styled.div`
 const SIconFlash = styled.img`
   margin-right: 10px;
 `;
+const abortController = new AbortController();
+
 function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
   const [countAmount, setCountAmount] = useState(null);
   const [countTotal, setCountTotal] = useState(null);
+  const [baseAPR, setBaseAPR] = useState(0);
+  const [perblock, setPerblock] = useState(0);
+  const farmingContract = getFarmingContract();
+
+  const getPerBlock = async () => {
+    await methods
+      .call(farmingContract.methods.rewardPerBlock, [])
+      .then(res => {
+        setPerblock(res);
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
   useEffect(() => {
+    getPerBlock();
     setCountAmount(amount);
     setCountTotal(totalBoost);
-  }, [address, amount, totalBoost]);
+    const baseAprCaculator = getBaseApr(amount, perblock);
+    const baseAprBigNumber = divDecimals(baseAprCaculator, 18);
+    const baseAprPer = renderValueFixed(baseAprBigNumber);
+    setBaseAPR(baseAprPer);
+  }, [address, amount, totalBoost, totalDeposit]);
+  const getRate = async () => {
+    try {
+      await axiosInstance
+        .get(
+          `https://api.coingecko.com/api/v3/simple/price?ids=strike&vs_currencies=usd`
+        )
+        .then(res => {
+          if (res) {
+            console.log(res.data.strike.usd, 'res strike');
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+      await axiosInstance
+        .get(
+          `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
+        )
+        .then(res => {
+          if (res) {
+            console.log(res.data.ethereum.usd, 'res ethereum');
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  };
+  useEffect(() => {
+    let updateTimer;
+    if (address) {
+      updateTimer = setInterval(() => {
+        getRate();
+      }, 15000);
+    }
+    return function cleanup() {
+      abortController.abort();
+      if (updateTimer) {
+        clearInterval(updateTimer);
+      }
+    };
+  }, []);
+
   return (
     <>
       <React.Fragment>
@@ -137,7 +210,7 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                           <>-</>
                         )}
                       </SValueBox>
-                      <SUSDBox>$1000</SUSDBox>
+                      {/* <SUSDBox>$1000</SUSDBox> */}
                     </>
                   ) : (
                     <>
@@ -176,7 +249,7 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                 <SItemsBox>
                   <STextBox>Base APR</STextBox>
                   {address ? (
-                    <SValueBox>15% </SValueBox>
+                    <SValueBox>{baseAPR}% </SValueBox>
                   ) : (
                     <SValueBox>- </SValueBox>
                   )}

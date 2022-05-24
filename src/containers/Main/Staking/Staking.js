@@ -81,8 +81,8 @@ import {
   SNexSlider,
   SPrevSlider,
   SError,
-  SSactive,
-  SSUnactive,
+  // SSactive,
+  // SSUnactive,
   // STextSelecT,
   SHeader
 } from '../../../assets/styles/staking.js';
@@ -114,8 +114,8 @@ import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
 import IconVstrkSmall from '../../../assets/img/flash_vstrk.svg';
-import IconSelect from '../../../assets/img/select.svg';
-import IconNotSelect from '../../../assets/img/not_select.svg';
+// import IconSelect from '../../../assets/img/select.svg';
+// import IconNotSelect from '../../../assets/img/not_select.svg';
 import IconNotConnect from '../../../assets/img/not_connect_data.svg';
 
 // eslint-disable-next-line import/order
@@ -215,6 +215,7 @@ const AUDITOR_SETTING = {
   ]
 };
 
+// eslint-disable-next-line react/prop-types
 function Staking({ settings, setSetting }) {
   const address = settings.selectedAddress;
   const [val, setVal] = useState('');
@@ -245,6 +246,9 @@ function Staking({ settings, setSetting }) {
   const [userInfo, setUserInfo] = useState({});
   const [expectedBoostAPR, setExpectedBoostAPR] = useState(0);
   const [yourBoostAPR, setYourBoostAPR] = useState(0);
+  const [valueNFTStake, setValueNFTStake] = useState('');
+  const [valueNFTUnStake, setValueNFTUnStake] = useState('');
+
   // contract
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
@@ -263,6 +267,10 @@ function Staking({ settings, setSetting }) {
       totalBoost: '',
       totalDeposit: ''
     };
+    const objClaim = {
+      accBaseReward: '',
+      accBoostReward: ''
+    };
     setIsLoading(true);
     try {
       // eslint-disable-next-line no-debugger
@@ -272,9 +280,7 @@ function Staking({ settings, setSetting }) {
           if (res) {
             const result = res.data.data;
             total.totalBoost = result.totalBoost;
-            const totalDepositString = +new BigNumber(+result.totalDeposit).div(
-              new BigNumber(10).pow(18)
-            );
+            const totalDepositString = divDecimals(result.totalDeposit, 18);
             total.totalDeposit = totalDepositString.toString();
           }
         })
@@ -288,13 +294,35 @@ function Staking({ settings, setSetting }) {
     let objUser = {};
     if (address) {
       await methods
+        .call(farmingContract.methods.pendingBaseReward, [0, address])
+        .then(res => {
+          objClaim.accBaseReward = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
+        .call(farmingContract.methods.pendingBoostReward, [0, address])
+        .then(res => {
+          objClaim.accBoostReward = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
         .call(farmingContract.methods.userInfo, [0, address])
         .then(res => {
           const balanceBigNumber = divDecimals(sTokenBalance, 18);
           const pendingAmountString = divDecimals(res.pendingAmount, 18);
           const amountNumber = divDecimals(res.amount, 18);
-          const accBaseRewardBigNumber = divDecimals(res.accBaseReward, 18);
-          const accBoostRewardBigNumber = divDecimals(res.accBoostReward, 18);
+          const accBaseRewardBigNumber = divDecimals(
+            objClaim.accBaseReward,
+            18
+          );
+          const accBoostRewardBigNumber = divDecimals(
+            objClaim.accBoostReward,
+            18
+          );
           const amountString = amountNumber?.toNumber();
           const accBaseRewardString = accBaseRewardBigNumber.toNumber();
           const accBoostRewardString = accBoostRewardBigNumber.toNumber();
@@ -340,8 +368,9 @@ function Staking({ settings, setSetting }) {
                 ? '<0.001'
                 : renderValueFixed(amountNumber).toString(),
             available: renderValueFixed(balanceBigFormat).toString(),
-            totalBoost: total.totalBoost ?? '',
-            totalDeposit: total.totalDeposit ?? '',
+            availableNumber: balanceBigNumber.toNumber(),
+            totalBoost: renderValueFixed(total.totalBoost) ?? '',
+            totalDeposit: renderValueFixed(total.totalDeposit) ?? '',
             accBaseReward:
               accBaseRewardString !== 0 && accBaseRewardString < 0.001
                 ? '<0.001'
@@ -361,7 +390,7 @@ function Staking({ settings, setSetting }) {
       await methods
         .call(vStrkContract.methods.balanceOf, [address])
         .then(res => {
-          const vStrkString = new BigNumber(res).div(new BigNumber(10).pow(18));
+          const vStrkString = divDecimals(res, 18);
           if (vStrkString < 0.001) {
             setUserInfo({ ...objUser, vStrk: '< 0.001' });
           }
@@ -466,8 +495,8 @@ function Staking({ settings, setSetting }) {
     }
   };
   const handleMaxValue = () => {
-    setVal(userInfo?.available);
-    if (userInfo?.available > 0) {
+    setVal(userInfo?.availableNumber);
+    if (userInfo?.availableNumber > 0) {
       setMessErr({
         mess: '',
         show: false
@@ -656,9 +685,7 @@ function Staking({ settings, setSetting }) {
     } else {
       // deposit
       setiIsConfirm(true);
-      const valueBigNumber = new BigNumber(val).times(
-        new BigNumber(10).pow(18)
-      );
+      const valueBigNumber = divDecimals(val, 18);
       if (valueBigNumber.isZero()) {
         setMessErr({
           mess: 'Invalid amount',
@@ -739,13 +766,18 @@ function Staking({ settings, setSetting }) {
   };
   // handleClaim
   const handleClainBaseReward = async () => {
+    setiIsConfirm(true);
     await methods
       .send(
         farmingContract.methods.claimBaseRewards,
         [new BigNumber(0).integerValue()],
         address
       )
-      .then(() => {})
+      .then(res => {
+        if (res) {
+          setiIsConfirm(false);
+        }
+      })
       .catch(err => {
         if (err.message.includes('User denied')) {
           setIsShowCancel(true);
@@ -760,6 +792,7 @@ function Staking({ settings, setSetting }) {
       });
   };
   const handleClainBootReward = async () => {
+    setiIsConfirm(true);
     await methods
       .send(
         farmingContract.methods.claimBoostReward,
@@ -848,70 +881,87 @@ function Staking({ settings, setSetting }) {
     [dataNFTUnState]
   );
   // Stake NFT
-  const handleStakeDialog = async () => {
-    setIsStakeNFT(false);
-    setiIsConfirm(true);
-    const id = itemStaking[itemStaking.length - 1].token_id;
-    await methods
-      .send(
-        farmingContract.methods.boost,
-        [0, new BigNumber(id).integerValue()],
-        address
-      )
-      .then(res => {
-        setTxhash(res.transactionHash);
-        setiIsConfirm(false);
-        setIsSuccess(true);
-        getDataNFT();
-        getDataLP();
-        setItemStaking([]);
-      })
-      .catch(err => {
-        if (err.message.includes('User denied')) {
-          setIsShowCancel(true);
-          setiIsConfirm(false);
-          setTextErr('Decline transaction');
-        } else {
-          setIsShowCancel(true);
-          setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
-        }
-        throw err;
-      });
-  };
+  const handleStakeDialog = useCallback(
+    async (value, event, checked) => {
+      if (!value) {
+        return;
+      }
+      if (value && event.isTrusted) {
+        setiIsConfirm(true);
+        setIsStakeNFT(false);
+        await methods
+          .send(
+            checked
+              ? farmingContract.methods.boostPartially
+              : farmingContract.methods.boost,
+            [0, new BigNumber(value).integerValue()],
+            address
+          )
+          .then(res => {
+            setTxhash(res.transactionHash);
+            setiIsConfirm(false);
+            setIsSuccess(true);
+            setValueNFTStake(0);
+            getDataNFT();
+            getDataLP();
+            setItemStaking([]);
+          })
+          .catch(err => {
+            if (err.message.includes('User denied')) {
+              setIsShowCancel(true);
+              setiIsConfirm(false);
+              setTextErr('Decline transaction');
+            } else {
+              setIsShowCancel(true);
+              setiIsConfirm(false);
+              setTextErr('Some thing went wrong!');
+            }
+            throw err;
+          });
+      }
+    },
+    [dataNFT]
+  );
+
   // unStake NFT
-  const handleUnStakeDialog = async () => {
-    setIsUnStakeNFT(false);
-    setiIsConfirm(true);
-    const id = itemStaked[itemStaked.length - 1].token_id;
-    await methods
-      .send(
-        farmingContract.methods.unBoost,
-        [0, new BigNumber(id).integerValue()],
-        address
-      )
-      .then(res => {
-        setTxhash(res.transactionHash);
-        setiIsConfirm(false);
-        setIsSuccess(true);
-        getDataNFT();
-        getDataLP();
-        setItemStaked([]);
-      })
-      .catch(err => {
-        if (err.message.includes('User denied')) {
-          setIsShowCancel(true);
+  const handleUnStakeDialog = useCallback(async (value, event, checked) => {
+    if (!value) {
+      return;
+    }
+    if (value && event.isTrusted) {
+      setiIsConfirm(true);
+      setIsUnStakeNFT(false);
+      await methods
+        .send(
+          checked
+            ? farmingContract.methods.unBoostPartially
+            : farmingContract.methods.unBoost,
+          [0, new BigNumber(value).integerValue()],
+          address
+        )
+        .then(res => {
+          setTxhash(res.transactionHash);
           setiIsConfirm(false);
-          setTextErr('Decline transaction');
-        } else {
-          setIsShowCancel(true);
-          setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
-        }
-        throw err;
-      });
-  };
-  // handleClose
+          setIsSuccess(true);
+          setValueNFTUnStake(0);
+          getDataNFT();
+          getDataLP();
+          setItemStaked([]);
+        })
+        .catch(err => {
+          if (err.message.includes('User denied')) {
+            setIsShowCancel(true);
+            setiIsConfirm(false);
+            setTextErr('Decline transaction');
+          } else {
+            setIsShowCancel(true);
+            setiIsConfirm(false);
+            setTextErr('Some thing went wrong!');
+          }
+          throw err;
+        });
+    }
+  }, []);
 
   const handleCloseConfirm = () => {
     setiIsConfirm(false);
@@ -957,6 +1007,7 @@ function Staking({ settings, setSetting }) {
       });
     }
   }, [window.ethereum, address]);
+
   return (
     <>
       <React.Fragment>
@@ -1294,11 +1345,11 @@ function Staking({ settings, setSetting }) {
                             {isApproveNFT ? (
                               <>
                                 <SSTake
-                                  disabled={
-                                    itemStaking.length === 0 ||
-                                    itemStaking.length + itemStaked.length >
-                                      MAX_STAKE_NFT
-                                  }
+                                  // disabled={
+                                  //   itemStaking.length === 0 ||
+                                  //   itemStaking.length + itemStaked.length >
+                                  //     MAX_STAKE_NFT
+                                  // }
                                   onClick={handleStakeNFT}
                                 >
                                   Stake
@@ -1355,11 +1406,11 @@ function Staking({ settings, setSetting }) {
                                     {item.description}
                                   </SDescriptionSlider>
                                 </SBoxSlider>
-                                {item.active === false ? (
+                                {/* {item.active === false ? (
                                   <SSactive src={IconNotSelect} />
                                 ) : (
                                   <SSUnactive src={IconSelect} />
-                                )}
+                                )} */}
                               </SItemSlider>
                             );
                           })}
@@ -1456,11 +1507,11 @@ function Staking({ settings, setSetting }) {
                                       {item.description}
                                     </SDescriptionSlider>
                                   </SBoxSlider>
-                                  {item.active === false ? (
+                                  {/* {item.active === false ? (
                                     <SSactive src={IconNotSelect} />
                                   ) : (
                                     <SSUnactive src={IconSelect} />
-                                  )}
+                                  )} */}
                                 </SItemSlider>
                               );
                             })}
@@ -1480,14 +1531,17 @@ function Staking({ settings, setSetting }) {
           itemStaking={itemStaking}
           listStake={dataNFT}
           listUnStake={dataNFTUnState}
+          valueNFTStake={valueNFTStake}
           handleStakeDialog={handleStakeDialog}
         />
+
         {/* UnStake */}
         <DialogUnStake
           isUnStakeNFT={isUnStakeNFT}
           close={handleCloseUnStake}
           itemStaked={itemStaked}
           list={dataNFTUnState}
+          valueNFTUnStake={valueNFTUnStake}
           handleUnStakeDialog={handleUnStakeDialog}
         />
         {/* err */}
