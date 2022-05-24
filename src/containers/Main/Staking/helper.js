@@ -8,7 +8,10 @@ export const MAX_STAKE_NFT = 10;
 export const SECOND24H = 3600; // 86400
 export const SECOND2DAY = 7200; // 172800
 export const SECOND30DAY = 10800; // 2592000
-
+export const MAX_APPROVE = new BigNumber(2)
+  .pow(256)
+  .minus(1)
+  .toString(10);
 export const divDecimals = (value, decimal) => {
   if (value) {
     return new BigNumber(value).div(new BigNumber(10).pow(decimal));

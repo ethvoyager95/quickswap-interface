@@ -23,6 +23,7 @@ import {
   divDecimals,
   renderValueFixed,
   MAX_STAKE_NFT,
+  MAX_APPROVE,
   SECOND24H,
   SECOND2DAY,
   SECOND30DAY
@@ -48,6 +49,7 @@ import {
   SImgFlashSmall,
   SImgLpSmall,
   SQuestion,
+  SQuestionClaim,
   SBtnStake,
   SSTake,
   SBtnUn,
@@ -61,10 +63,12 @@ import {
   SBtn,
   SClaim,
   SUnClaim,
-  SDetails,
   SDetailsColor,
+  SRowFlex,
+  SRowColumn,
   SFlex,
   SFlexEnd,
+  SSelected,
   SSlider,
   SSliderNoData,
   SSliderNoDataImg,
@@ -391,11 +395,8 @@ function Staking({ settings, setSetting }) {
             const dataConvert = _.cloneDeep(dataMyContract);
             // eslint-disable-next-line array-callback-return
             dataConvert.map(item => {
-              // eslint-disable-next-line no-param-reassign
               item.active = false;
-              // eslint-disable-next-line no-param-reassign
               item.img = IconDuck;
-              // eslint-disable-next-line no-param-reassign
               item.name = `${item.name}${' #'}${item.token_id}`;
             });
             const dataStakeClone = _.cloneDeep(dataConvert);
@@ -424,7 +425,6 @@ function Staking({ settings, setSetting }) {
           const lstStakedId = res.boostFactors;
           const dataCovert = [...lstStakedId];
           setCounNFT(dataCovert.length);
-          // eslint-disable-next-line no-unused-vars
           const newArray = dataCovert?.map(item => {
             // eslint-disable-next-line no-return-assign
             return (item = {
@@ -532,14 +532,9 @@ function Staking({ settings, setSetting }) {
         }
       });
   }, [val, handleMaxValue, address, userInfo]);
-  console.log(isAprroveVstrk, 'isAprrove Vstrk');
   // approved Lp
   const handleApproveLp = useCallback(async () => {
     setiIsConfirm(true);
-    const MAX_APPROVE = new BigNumber(2)
-      .pow(256)
-      .minus(1)
-      .toString(10);
     await methods
       .send(
         lpContract.methods.approve,
@@ -567,10 +562,6 @@ function Staking({ settings, setSetting }) {
   }, [val, handleMaxValue]);
   const handleApproveVstrk = useCallback(async () => {
     setiIsConfirm(true);
-    const MAX_APPROVE = new BigNumber(2)
-      .pow(256)
-      .minus(1)
-      .toString(10);
     await methods
       .send(
         vStrkContract.methods.approve,
@@ -973,511 +964,509 @@ function Staking({ settings, setSetting }) {
       <React.Fragment>
         <MainLayout>
           <SMain>
-            <DashboardStaking
-              totalBoost={userInfo?.totalBoost}
-              totalDeposit={userInfo?.totalDeposit}
-              amount={countNFT}
-              address={settings?.selectedAddress}
-              loadding={isLoading}
-            />
-            <SDivPadding>
-              <SHeader>
-                <SText>Interest Rate Model</SText>
-                <SHref target="_blank" href={constants.SUPPORT_URL}>
-                  Get STRK-ETH LPs
-                  <SImgErr src={IconLinkBlue} />
-                </SHref>
-              </SHeader>
+            <Row className="all-section">
+              <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                <DashboardStaking
+                  totalBoost={userInfo?.totalBoost}
+                  totalDeposit={userInfo?.totalDeposit}
+                  amount={countNFT}
+                  address={settings?.selectedAddress}
+                  loadding={isLoading}
+                />
+                <SDivPadding>
+                  <SHeader>
+                    <SText>Interest Rate Model</SText>
+                    <SHref target="_blank" href={constants.SUPPORT_URL}>
+                      Get STRK-ETH LPs
+                      <SImgErr src={IconLinkBlue} />
+                    </SHref>
+                  </SHeader>
 
-              <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                  <SInput>
-                    <input
-                      type="text"
-                      value={val}
-                      inputMode="decimal"
-                      pattern="^[0-9]*[.,]?[0-9]*$"
-                      min={0}
-                      minLength={1}
-                      maxLength={79}
-                      placeholder="Enter a number"
-                      onChange={event => handleChangeValue(event)}
-                    />
-                    {address ? (
-                      <SMax onClick={handleMaxValue}>MAX</SMax>
-                    ) : (
-                      <SBtnDisabled>MAX</SBtnDisabled>
-                    )}
-
-                    {messErr?.show === true && <SError>{messErr.mess}</SError>}
-                    {messErr?.noLP === true && (
-                      <SHrefErr>
-                        {messErr.mess}
-                        <SLinkErr target="_blank" href={constants.SUPPORT_URL}>
-                          <SImgErr src={IconLink} />
-                        </SLinkErr>
-                      </SHrefErr>
-                    )}
-                  </SInput>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                  <SInfor>
-                    <SInforText>Available</SInforText>
-                    {address ? (
-                      <SInforValue>
-                        <SIconSmall>
-                          <SImgFlashSmall src={IconFlashSmall} />
-                          <SImgLpSmall src={IconLpSmall} />
-                        </SIconSmall>
-                        {userInfo.available ?? '0.0'}
-                      </SInforValue>
-                    ) : (
-                      <SInforValue>-</SInforValue>
-                    )}
-                  </SInfor>
-                  <SInfor>
-                    <SInforText>Staked</SInforText>
-                    {address ? (
-                      <SInforValue>
-                        <SIconSmall>
-                          <SImgFlashSmall src={IconFlashSmall} />
-                          <SImgLpSmall src={IconLpSmall} />
-                        </SIconSmall>
-                        {userInfo.amount ?? '0.0'}
-                      </SInforValue>
-                    ) : (
-                      <SInforValue>-</SInforValue>
-                    )}
-                  </SInfor>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                   <Row>
-                    <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                      {address ? (
-                        <>
-                          <SBtn>
-                            {!userInfo.available ||
-                            Number(userInfo.available) === 0 ? (
-                              <>
-                                <SBtnStake disabled>Stake</SBtnStake>
-                              </>
-                            ) : (
-                              <>
-                                <SBtnStake onClick={handleStake}>
-                                  Stake
-                                </SBtnStake>
-                              </>
-                            )}
-                            <Tooltip
-                              placement="top"
-                              title="Countdown will be reset if you stake more without claiming the reward"
+                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                      <SInput>
+                        <input
+                          type="text"
+                          value={val}
+                          inputMode="decimal"
+                          pattern="^[0-9]*[.,]?[0-9]*$"
+                          min={0}
+                          minLength={1}
+                          maxLength={79}
+                          placeholder="Enter a number"
+                          onChange={event => handleChangeValue(event)}
+                        />
+                        {address ? (
+                          <SMax onClick={handleMaxValue}>MAX</SMax>
+                        ) : (
+                          <SBtnDisabled>MAX</SBtnDisabled>
+                        )}
+
+                        {messErr?.show === true && (
+                          <SError>{messErr.mess}</SError>
+                        )}
+                        {messErr?.noLP === true && (
+                          <SHrefErr>
+                            {messErr.mess}
+                            <SLinkErr
+                              target="_blank"
+                              href={constants.SUPPORT_URL}
                             >
-                              <SQuestion src={IconQuestion} />
-                            </Tooltip>
-                          </SBtn>
-                          <SBtnUn>
-                            {isUnStakeLp ? (
-                              <>
-                                {isAprroveVstrk ? (
+                              <SImgErr src={IconLink} />
+                            </SLinkErr>
+                          </SHrefErr>
+                        )}
+                      </SInput>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                      <SInfor>
+                        <SInforText>Available</SInforText>
+                        {address ? (
+                          <SInforValue>
+                            <SIconSmall>
+                              <SImgFlashSmall src={IconFlashSmall} />
+                              <SImgLpSmall src={IconLpSmall} />
+                            </SIconSmall>
+                            {userInfo.available ?? '0.0'}
+                          </SInforValue>
+                        ) : (
+                          <SInforValue>-</SInforValue>
+                        )}
+                      </SInfor>
+                      <SInfor>
+                        <SInforText>Staked</SInforText>
+                        {address ? (
+                          <SInforValue>
+                            <SIconSmall>
+                              <SImgFlashSmall src={IconFlashSmall} />
+                              <SImgLpSmall src={IconLpSmall} />
+                            </SIconSmall>
+                            {userInfo.amount ?? '0.0'}
+                          </SInforValue>
+                        ) : (
+                          <SInforValue>-</SInforValue>
+                        )}
+                      </SInfor>
+                    </Col>
+                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                      <Row>
+                        <SRowColumn>
+                          {address ? (
+                            <>
+                              <SBtn>
+                                {!userInfo.available ||
+                                Number(userInfo.available) === 0 ? (
                                   <>
-                                    <SBtnUnstake onClick={handleUnStake}>
-                                      UnStake
-                                    </SBtnUnstake>
+                                    <SBtnStake disabled>Stake</SBtnStake>
                                   </>
                                 ) : (
                                   <>
-                                    <SBtnUnstake onClick={handleApproveVstrk}>
-                                      Approve Staking
-                                    </SBtnUnstake>
+                                    <SBtnStake onClick={handleStake}>
+                                      Stake
+                                    </SBtnStake>
                                   </>
                                 )}
-                              </>
-                            ) : (
-                              <>
-                                <SSUnTake disabled>UnStake</SSUnTake>
-                              </>
-                            )}
+                                <Tooltip
+                                  placement="top"
+                                  title="Countdown will be reset if you stake more without claiming the reward"
+                                >
+                                  <SQuestion src={IconQuestion} />
+                                </Tooltip>
+                              </SBtn>
+                              <SBtnUn>
+                                {isUnStakeLp ? (
+                                  <>
+                                    {isAprroveVstrk ? (
+                                      <>
+                                        <SBtnUnstake onClick={handleUnStake}>
+                                          UnStake
+                                        </SBtnUnstake>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <SBtnUnstake
+                                          onClick={handleApproveVstrk}
+                                        >
+                                          Approve Staking
+                                        </SBtnUnstake>
+                                      </>
+                                    )}
+                                  </>
+                                ) : (
+                                  <>
+                                    <SSUnTake disabled>UnStake</SSUnTake>
+                                  </>
+                                )}
 
+                                <Tooltip
+                                  placement="top"
+                                  title="Countdown will be reset if you unstake a part without claiming the reward"
+                                >
+                                  <SQuestion src={IconQuestion} />
+                                </Tooltip>
+                              </SBtnUn>
+                            </>
+                          ) : (
+                            <>
+                              {address && (
+                                <SBtn>
+                                  {isApproveLP ? (
+                                    <>
+                                      {' '}
+                                      <SBtnStake onClick={handleApproveLp}>
+                                        Approve Staking
+                                      </SBtnStake>
+                                    </>
+                                  ) : (
+                                    <>1111</>
+                                  )}
+                                </SBtn>
+                              )}
+                            </>
+                          )}
+                        </SRowColumn>
+                      </Row>
+                    </Col>
+                  </Row>
+                </SDivPadding>
+                <SDivPadding>
+                  <SText>STRK-ETH Harvest</SText>
+                  <Row>
+                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                      <SInforClaim>
+                        <SInforText>Base Reward</SInforText>
+                        {address ? (
+                          <SInforValue>
+                            <SIconSmall>
+                              <SImgFlashSmall src={IconFlashSmall} />
+                            </SIconSmall>
+
+                            {userInfo.accBaseReward ?? '0.0'}
+                          </SInforValue>
+                        ) : (
+                          <SInforValue>-</SInforValue>
+                        )}
+                      </SInforClaim>
+                      <SInforClaim>
+                        <SInforText>Boost Reward</SInforText>
+                        {address ? (
+                          <SInforValue>
+                            <SIconSmall>
+                              <SImgFlashSmall src={IconFlashSmall} />
+                            </SIconSmall>
+                            {userInfo.accBoostReward ?? '0.0'}
+                          </SInforValue>
+                        ) : (
+                          <SInforValue>-</SInforValue>
+                        )}
+                      </SInforClaim>
+                      <SInforClaim>
+                        <SInforText>
+                          vSTRK claimed
+                          <SVSTRKTootip>
                             <Tooltip
                               placement="top"
-                              title="Countdown will be reset if you unstake a part without claiming the reward"
+                              title="vSTRK is auto-claimed to your wallet 
+                      (10 vSTRK is minted for each STRK-ETH to stake)"
                             >
                               <SQuestion src={IconQuestion} />
                             </Tooltip>
-                          </SBtnUn>
-                        </>
-                      ) : (
-                        <>
-                          {address && (
-                            <SBtn>
-                              {isApproveLP ? (
-                                <>
-                                  {' '}
-                                  <SBtnStake onClick={handleApproveLp}>
-                                    Approve Staking
-                                  </SBtnStake>
-                                </>
-                              ) : (
-                                <>1111</>
-                              )}
-                            </SBtn>
-                          )}
-                        </>
-                      )}
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </SDivPadding>
-            <SDivPadding>
-              <SText>STRK-ETH Harvest</SText>
-              <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                  <SInforClaim>
-                    <SInforText>Base Reward</SInforText>
-                    {address ? (
-                      <SInforValue>
-                        <SIconSmall>
-                          <SImgFlashSmall src={IconFlashSmall} />
-                        </SIconSmall>
-
-                        {userInfo.accBaseReward ?? '0.0'}
-                      </SInforValue>
-                    ) : (
-                      <SInforValue>-</SInforValue>
-                    )}
-                  </SInforClaim>
-                  <SInforClaim>
-                    <SInforText>Boost Reward</SInforText>
-                    {address ? (
-                      <SInforValue>
-                        <SIconSmall>
-                          <SImgFlashSmall src={IconFlashSmall} />
-                        </SIconSmall>
-                        {userInfo.accBoostReward ?? '0.0'}
-                      </SInforValue>
-                    ) : (
-                      <SInforValue>-</SInforValue>
-                    )}
-                  </SInforClaim>
-                  <SInforClaim>
-                    <SInforText>
-                      vSTRK claimed
-                      <SVSTRKTootip>
-                        <Tooltip
-                          placement="top"
-                          title="vSTRK is auto-claimed to your wallet 
-                      (10 vSTRK is minted for each STRK-ETH to stake)"
-                        >
-                          <SQuestion src={IconQuestion} />
-                        </Tooltip>
-                      </SVSTRKTootip>
-                    </SInforText>
-                    {address ? (
-                      <SInforValue>
-                        <SIconSmall>
-                          <SImgLpSmall src={IconVstrkSmall} />
-                        </SIconSmall>
-                        {userInfo.vStrk ?? '0.0'}
-                      </SInforValue>
-                    ) : (
-                      <SInforValue>-</SInforValue>
-                    )}
-                  </SInforClaim>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                  <Row>
-                    <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                      {address && isApproveLP && (
-                        <SBtnClaim>
-                          {isClaimBaseReward ? (
-                            <SClaim onClick={handleClainBaseReward}>
-                              Claim
-                            </SClaim>
-                          ) : (
-                            <SUnClaim>Claim</SUnClaim>
-                          )}
-                          <Tooltip
-                            placement="top"
-                            title="You can only claim reward once daily"
-                          >
-                            <SQuestion src={IconQuestion} />
-                          </Tooltip>
-                        </SBtnClaim>
-                      )}
-                    </Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                      {expiryTimeBase && address && isApproveLP ? (
-                        <CountDownClaim
-                          times={expiryTimeBase}
-                          address={address}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                    </Col>
-                  </Row>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                  <Row>
-                    <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                      {address && isApproveLP && (
-                        <SBtnClaimStart>
-                          {isClaimBootReward ? (
-                            <SClaim onClick={handleClainBootReward}>
-                              Claim
-                            </SClaim>
-                          ) : (
-                            <SUnClaim>Claim</SUnClaim>
-                          )}
-                          <Tooltip
-                            placement="top"
-                            title="You can only claim reward once monthly"
-                          >
-                            <SQuestion src={IconQuestion} />
-                          </Tooltip>
-                        </SBtnClaimStart>
-                      )}
-                    </Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                      {expiryTimeBoost && address && isApproveLP ? (
-                        <CountDownClaim
-                          times={expiryTimeBoost}
-                          address={address}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </SDivPadding>
-            <SDiv>
-              <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 9 }}>
-                  <SFlex>
-                    <SText>
-                      NFT Staking
-                      <Tooltip
-                        placement="left"
-                        title="Only display all NFTs that can be staked into this pool"
-                      >
-                        <SQuestion src={IconQuestion} />
-                      </Tooltip>
-                    </SText>
-                  </SFlex>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 15 }}>
-                  <SFlexEnd>
-                    <SDetailsColor>
-                      {' '}
-                      Expected Boost APR: {expectedBoostAPR}%{' '}
-                    </SDetailsColor>
-                  </SFlexEnd>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 9 }}>
-                  <SFlex>
-                    <SDetails>
-                      NFT selected: {itemStaking.length}/{dataNFT.length}
-                    </SDetails>
-                  </SFlex>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 15 }}>
-                  <SFlexEnd>
-                    {address && dataNFT.length > 0 ? (
-                      <>
-                        {isApproveNFT ? (
-                          <>
-                            <SSTake
-                              disabled={
-                                itemStaking.length === 0 ||
-                                itemStaking.length + itemStaked.length >
-                                  MAX_STAKE_NFT
-                              }
-                              onClick={handleStakeNFT}
-                            >
-                              Stake
-                            </SSTake>
-                          </>
+                          </SVSTRKTootip>
+                        </SInforText>
+                        {address ? (
+                          <SInforValue>
+                            <SIconSmall>
+                              <SImgLpSmall src={IconVstrkSmall} />
+                            </SIconSmall>
+                            {userInfo.vStrk ?? '0.0'}
+                          </SInforValue>
                         ) : (
-                          <>
-                            <SSTake onClick={handleApproveNFT}>
-                              Approve Staking
-                            </SSTake>
-                          </>
+                          <SInforValue>-</SInforValue>
                         )}
-                      </>
-                    ) : (
-                      <>
-                        <SSTake disabled>Stake</SSTake>
-                      </>
-                    )}
-                  </SFlexEnd>
-                </Col>
-              </Row>
-
-              {isLoading ? (
-                <Row>
-                  <Loadding />
-                </Row>
-              ) : (
-                <>
-                  <SSlider>
-                    {dataNFT.length === 0 && (
-                      <SSliderNoData>
-                        <SSliderNoDataImg
-                          src={address ? IconNoData : IconNotConnect}
-                        />
-                        <SSliderNoDataText>
-                          {address
-                            ? 'You don’t own any NFTs'
-                            : 'Connect wallet to see your NFTs'}
-                        </SSliderNoDataText>
-                      </SSliderNoData>
-                    )}
-
-                    <Slider {...AUDITOR_SETTING}>
-                      {dataNFT?.map(item => {
-                        return (
-                          <SItemSlider
-                            key={item.id}
-                            onClick={event => handleSelectItem(event, item)}
+                      </SInforClaim>
+                    </Col>
+                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                      <Row>
+                        <Col xs={{ span: 24 }} lg={{ span: 16 }}>
+                          {address && isApproveLP && (
+                            <SBtnClaim>
+                              {isClaimBaseReward ? (
+                                <SClaim onClick={handleClainBaseReward}>
+                                  Claim
+                                </SClaim>
+                              ) : (
+                                <SUnClaim>Claim</SUnClaim>
+                              )}
+                              <Tooltip
+                                placement="top"
+                                title="You can only claim reward once daily"
+                              >
+                                <SQuestionClaim src={IconQuestion} />
+                              </Tooltip>
+                            </SBtnClaim>
+                          )}
+                        </Col>
+                        <Col xs={{ span: 24 }} lg={{ span: 8 }}>
+                          {expiryTimeBase && address && isApproveLP ? (
+                            <CountDownClaim
+                              times={expiryTimeBase}
+                              address={address}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                      <Row>
+                        <Col xs={{ span: 24 }} lg={{ span: 16 }}>
+                          {address && isApproveLP && (
+                            <SBtnClaimStart>
+                              {isClaimBootReward ? (
+                                <SClaim onClick={handleClainBootReward}>
+                                  Claim
+                                </SClaim>
+                              ) : (
+                                <SUnClaim>Claim</SUnClaim>
+                              )}
+                              <Tooltip
+                                placement="top"
+                                title="You can only claim reward once monthly"
+                              >
+                                <SQuestionClaim src={IconQuestion} />
+                              </Tooltip>
+                            </SBtnClaimStart>
+                          )}
+                        </Col>
+                        <Col xs={{ span: 24 }} lg={{ span: 8 }}>
+                          {expiryTimeBoost && address && isApproveLP ? (
+                            <CountDownClaim
+                              times={expiryTimeBoost}
+                              address={address}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </SDivPadding>
+                <SDiv>
+                  <Row>
+                    <SRowFlex>
+                      <SFlex>
+                        <SText>
+                          NFT Staking
+                          <Tooltip
+                            placement="left"
+                            title="Only display all NFTs that can be staked into this pool"
                           >
-                            <SImgSlider src={item.img} />
-                            <SBoxSlider>
-                              <STitleSlider>{item.name}</STitleSlider>
-                              <SDescriptionSlider>
-                                {item.description}
-                              </SDescriptionSlider>
-                            </SBoxSlider>
-                            {item.active === false ? (
-                              <SSactive src={IconNotSelect} />
+                            <SQuestion src={IconQuestion} />
+                          </Tooltip>
+                        </SText>
+                      </SFlex>
+                      <SFlexEnd>
+                        <SDetailsColor>
+                          {' '}
+                          Expected Boost APR: {expectedBoostAPR}%{' '}
+                        </SDetailsColor>
+                      </SFlexEnd>
+                    </SRowFlex>
+                  </Row>
+                  <Row>
+                    <SRowFlex>
+                      <SFlex>
+                        <SSelected>
+                          NFT selected: {itemStaking.length}/{dataNFT.length}
+                        </SSelected>
+                      </SFlex>
+                      <SFlexEnd>
+                        {address && dataNFT.length > 0 ? (
+                          <>
+                            {isApproveNFT ? (
+                              <>
+                                <SSTake
+                                  disabled={
+                                    itemStaking.length === 0 ||
+                                    itemStaking.length + itemStaked.length >
+                                      MAX_STAKE_NFT
+                                  }
+                                  onClick={handleStakeNFT}
+                                >
+                                  Stake
+                                </SSTake>
+                              </>
                             ) : (
-                              <SSUnactive src={IconSelect} />
+                              <>
+                                <SSTake onClick={handleApproveNFT}>
+                                  Approve Staking
+                                </SSTake>
+                              </>
                             )}
-                          </SItemSlider>
-                        );
-                      })}
-                    </Slider>
-                  </SSlider>
-                  {/* {address && dataNFT.length > 0 && (
-                  <STextSelecT>
-                    Please select NFTs you want to stake
-                  </STextSelecT>
-                )} */}
-                </>
-              )}
-            </SDiv>
-            <SDiv>
-              <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 9 }}>
-                  <SFlex>
-                    <SText>NFT staked</SText>
-                  </SFlex>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 15 }}>
-                  <SFlexEnd>
-                    <SDetailsColor>
-                      {' '}
-                      Your Boost APR: {yourBoostAPR}%{' '}
-                    </SDetailsColor>
-                  </SFlexEnd>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 9 }}>
-                  <SFlex>
-                    <SDetails>
-                      NFT staked {itemStaked.length}/{dataNFTUnState.length}
-                    </SDetails>
-                  </SFlex>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 15 }}>
-                  <SFlexEnd>
-                    {address && dataNFTUnState.length > 0 ? (
-                      <>
-                        {isApproveNFT ? (
-                          <>
-                            <SSTake
-                              disabled={
-                                itemStaked.length === 0 ||
-                                itemStaked.length > MAX_STAKE_NFT
-                              }
-                              onClick={handleUnStakeNFT}
-                            >
-                              UnStake
-                            </SSTake>
                           </>
                         ) : (
                           <>
-                            <SSTake onClick={handleApproveNFT}>
-                              Approve Staking
-                            </SSTake>
+                            <SSTake disabled>Stake</SSTake>
                           </>
                         )}
-                      </>
-                    ) : (
-                      <>
-                        <SSTake disabled>UnStake</SSTake>
-                      </>
-                    )}
-                  </SFlexEnd>
-                </Col>
-              </Row>
-              {isLoading ? (
-                <Row>
-                  <Loadding />
-                </Row>
-              ) : (
-                <>
-                  <SSlider>
-                    {dataNFTUnState.length === 0 && (
-                      <SSliderNoData>
-                        <SSliderNoDataImg
-                          src={address ? IconNoData : IconNotConnect}
-                        />
-                        <SSliderNoDataText>
-                          {address
-                            ? 'You don’t own any NFTs'
-                            : 'Connect wallet to see your NFTs'}
-                        </SSliderNoDataText>
-                      </SSliderNoData>
-                    )}
-                    <Slider {...AUDITOR_SETTING}>
-                      {dataNFTUnState &&
-                        dataNFTUnState?.map(item => {
-                          return (
-                            <SItemSlider
-                              key={item.id}
-                              onClick={event =>
-                                handleSelectItemNFT(event, item)
-                              }
-                            >
-                              <SImgSlider src={item.img} />
-                              <SBoxSlider>
-                                <STitleSlider>{item.name}</STitleSlider>
-                                <SDescriptionSlider>
-                                  {item.description}
-                                </SDescriptionSlider>
-                              </SBoxSlider>
-                              {item.active === false ? (
-                                <SSactive src={IconNotSelect} />
-                              ) : (
-                                <SSUnactive src={IconSelect} />
-                              )}
-                            </SItemSlider>
-                          );
-                        })}
-                    </Slider>
-                  </SSlider>
-                </>
-              )}
-            </SDiv>
+                      </SFlexEnd>
+                    </SRowFlex>
+                  </Row>
+
+                  {isLoading ? (
+                    <Row>
+                      <Loadding />
+                    </Row>
+                  ) : (
+                    <>
+                      <SSlider>
+                        {dataNFT.length === 0 && (
+                          <SSliderNoData>
+                            <SSliderNoDataImg
+                              src={address ? IconNoData : IconNotConnect}
+                            />
+                            <SSliderNoDataText>
+                              {address
+                                ? 'You don’t own any NFTs'
+                                : 'Connect wallet to see your NFTs'}
+                            </SSliderNoDataText>
+                          </SSliderNoData>
+                        )}
+
+                        <Slider {...AUDITOR_SETTING}>
+                          {dataNFT?.map(item => {
+                            return (
+                              <SItemSlider
+                                key={item.id}
+                                onClick={event => handleSelectItem(event, item)}
+                              >
+                                <SImgSlider src={item.img} />
+                                <SBoxSlider>
+                                  <STitleSlider>{item.name}</STitleSlider>
+                                  <SDescriptionSlider>
+                                    {item.description}
+                                  </SDescriptionSlider>
+                                </SBoxSlider>
+                                {item.active === false ? (
+                                  <SSactive src={IconNotSelect} />
+                                ) : (
+                                  <SSUnactive src={IconSelect} />
+                                )}
+                              </SItemSlider>
+                            );
+                          })}
+                        </Slider>
+                      </SSlider>
+                    </>
+                  )}
+                </SDiv>
+                <SDiv>
+                  <Row>
+                    <SRowFlex>
+                      <SFlex>
+                        <SText>NFT staked</SText>
+                      </SFlex>
+                      <SFlexEnd>
+                        <SDetailsColor>
+                          {' '}
+                          Your Boost APR: {yourBoostAPR}%{' '}
+                        </SDetailsColor>
+                      </SFlexEnd>
+                    </SRowFlex>
+                  </Row>
+                  <Row>
+                    <SRowFlex>
+                      <SFlex>
+                        <SSelected>
+                          NFT staked {itemStaked.length}/{dataNFTUnState.length}
+                        </SSelected>
+                      </SFlex>
+                      <SFlexEnd>
+                        {address && dataNFTUnState.length > 0 ? (
+                          <>
+                            {isApproveNFT ? (
+                              <>
+                                <SSTake
+                                  disabled={
+                                    itemStaked.length === 0 ||
+                                    itemStaked.length > MAX_STAKE_NFT
+                                  }
+                                  onClick={handleUnStakeNFT}
+                                >
+                                  UnStake
+                                </SSTake>
+                              </>
+                            ) : (
+                              <>
+                                <SSTake onClick={handleApproveNFT}>
+                                  Approve Staking
+                                </SSTake>
+                              </>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <SSTake disabled>UnStake</SSTake>
+                          </>
+                        )}
+                      </SFlexEnd>
+                    </SRowFlex>
+                  </Row>
+                  {isLoading ? (
+                    <Row>
+                      <Loadding />
+                    </Row>
+                  ) : (
+                    <>
+                      <SSlider>
+                        {dataNFTUnState.length === 0 && (
+                          <SSliderNoData>
+                            <SSliderNoDataImg
+                              src={address ? IconNoData : IconNotConnect}
+                            />
+                            <SSliderNoDataText>
+                              {address
+                                ? 'You don’t own any NFTs'
+                                : 'Connect wallet to see your NFTs'}
+                            </SSliderNoDataText>
+                          </SSliderNoData>
+                        )}
+                        <Slider {...AUDITOR_SETTING}>
+                          {dataNFTUnState &&
+                            dataNFTUnState?.map(item => {
+                              return (
+                                <SItemSlider
+                                  key={item.id}
+                                  onClick={event =>
+                                    handleSelectItemNFT(event, item)
+                                  }
+                                >
+                                  <SImgSlider src={item.img} />
+                                  <SBoxSlider>
+                                    <STitleSlider>{item.name}</STitleSlider>
+                                    <SDescriptionSlider>
+                                      {item.description}
+                                    </SDescriptionSlider>
+                                  </SBoxSlider>
+                                  {item.active === false ? (
+                                    <SSactive src={IconNotSelect} />
+                                  ) : (
+                                    <SSUnactive src={IconSelect} />
+                                  )}
+                                </SItemSlider>
+                              );
+                            })}
+                        </Slider>
+                      </SSlider>
+                    </>
+                  )}
+                </SDiv>
+              </Col>
+            </Row>
           </SMain>
         </MainLayout>
         {/* Stake */}

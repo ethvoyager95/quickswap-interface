@@ -2,7 +2,10 @@ import styled from 'styled-components';
 
 export const SMain = styled.div`
   width: 100%;
-  margin: 0 15px;
+  .all-section {
+    width: 100%;
+    padding: 15px;
+  }
 `;
 export const SDivPadding = styled.div`
   width: 100%;
@@ -14,6 +17,10 @@ export const SDivPadding = styled.div`
   box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
   .box-staking {
     text-align: center;
+  }
+  @media only screen and (max-width: 768px) {
+    margin-top: 0;
+    padding: 20px 5px;
   }
 `;
 export const SDiv = styled.div`
@@ -30,6 +37,9 @@ export const SDiv = styled.div`
   :last-child {
     margin-bottom: 50px;
   }
+  @media only screen and (max-width: 768px) {
+    padding: 20px 5px;
+  }
 `;
 export const SHeader = styled.div`
   display: flex;
@@ -44,8 +54,13 @@ export const SText = styled.div`
   font-size: 20px;
   line-height: 27px;
   margin-top: 10px;
+  min-width: 200px;
   img {
     margin-left: 10px;
+  }
+  @media only screen and (max-width: 768px) {
+    font-size: 17px;
+    margin: 0;
   }
 `;
 export const SHref = styled.a`
@@ -55,6 +70,10 @@ export const SHref = styled.a`
   font-weight: 700;
   display: flex;
   align-items: center;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    margin-right: 10px;
+  }
 `;
 export const SInput = styled.div`
   position: relative;
@@ -125,6 +144,7 @@ export const SBtn = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     justify-content: center;
+    margin-left: 10px;
   }
 `;
 export const SBtnUn = styled.div`
@@ -134,6 +154,9 @@ export const SBtnUn = styled.div`
   margin-top: 20px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
+    margin-top: 0;
+    margin-left: 5px;
+    margin-right: 10px;
   }
 `;
 export const SBtnStake = styled.button`
@@ -186,6 +209,7 @@ export const SSTake = styled.button`
   }
   @media only screen and (max-width: 768px) {
     min-width: 150px;
+    margin-left: 0;
   }
 `;
 export const SSUnTake = styled.button`
@@ -257,8 +281,21 @@ export const SImgLpSmall = styled.img`
   margin-left: -5px;
 `;
 export const SQuestion = styled.img`
-  widht: 23px;
+  width: 23px;
   height: 23px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
+  }
+`;
+export const SQuestionClaim = styled.img`
+  width: 23px;
+  height: 23px;
+  margin-right: 10px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
+  }
 `;
 export const SBtnClaim = styled.div`
   display: flex;
@@ -287,7 +324,7 @@ export const SClaim = styled.div`
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
-  margin-right: 10px;
+  margin-right: 15px;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }
@@ -302,7 +339,7 @@ export const SUnClaim = styled.div`
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
-  margin-right: 10px;
+  margin-right: 15px;
   cursor: not-allowed;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
@@ -329,10 +366,22 @@ export const SDetails = styled.div`
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
-  color: ##6d6f7b;
+  color: #6d6f7b;
   margin-top: 20px;
   @media only screen and (max-width: 768px) {
     font-size: 18px;
+  }
+`;
+export const SSelected = styled.div`
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  color: ##6d6f7b;
+  margin-top: 20px;
+  min-width: 200px;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    margin-top: 0;
   }
 `;
 export const SDetailsColor = styled.div`
@@ -341,7 +390,36 @@ export const SDetailsColor = styled.div`
   line-height: 35px;
   color: ##6d6f7b;
   @media only screen and (max-width: 768px) {
-    font-size: 18px;
+    font-size: 13px;
+  }
+`;
+export const SRowFlex = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+export const SRowColumn = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+export const SRowRow = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
 `;
 export const SFlex = styled.div`
@@ -355,7 +433,7 @@ export const SFlexEnd = styled.div`
   align-items: center;
   width: 100%;
   @media only screen and (max-width: 768px) {
-    justify-content: flex-start;
+    justify-content: flex-end;
   }
 `;
 
