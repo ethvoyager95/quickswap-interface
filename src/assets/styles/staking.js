@@ -215,10 +215,7 @@ export const SSTake = styled.button`
   }
   @media only screen and (max-width: 768px) {
     min-width: 150px;
-<<<<<<< HEAD
-=======
     margin-left: 0;
->>>>>>> feature/staking
   }
 `;
 export const SSUnTake = styled.button`
@@ -290,10 +287,6 @@ export const SImgLpSmall = styled.img`
   margin-left: -5px;
 `;
 export const SQuestion = styled.img`
-<<<<<<< HEAD
-  widht: 23px;
-  height: 23px;
-=======
   width: 23px;
   height: 23px;
   @media only screen and (max-width: 768px) {
@@ -309,7 +302,6 @@ export const SQuestionClaim = styled.img`
     width: 15px;
     height: 15px;
   }
->>>>>>> feature/staking
 `;
 export const SBtnClaim = styled.div`
   display: flex;
@@ -338,11 +330,7 @@ export const SClaim = styled.div`
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
-<<<<<<< HEAD
-  margin-right: 10px;
-=======
   margin-right: 15px;
->>>>>>> feature/staking
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }
@@ -357,11 +345,7 @@ export const SUnClaim = styled.div`
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
-<<<<<<< HEAD
-  margin-right: 10px;
-=======
   margin-right: 15px;
->>>>>>> feature/staking
   cursor: not-allowed;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
@@ -388,18 +372,12 @@ export const SDetails = styled.div`
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
-<<<<<<< HEAD
-  color: ##6d6f7b;
-=======
   color: #6d6f7b;
->>>>>>> feature/staking
   margin-top: 20px;
   @media only screen and (max-width: 768px) {
     font-size: 18px;
   }
 `;
-<<<<<<< HEAD
-=======
 export const SSelected = styled.div`
   font-weight: 500;
   font-size: 18px;
@@ -412,16 +390,12 @@ export const SSelected = styled.div`
     margin-top: 0;
   }
 `;
->>>>>>> feature/staking
 export const SDetailsColor = styled.div`
   font-size: 16px;
   line-height: 24px
   line-height: 35px;
   color: ##6d6f7b;
   @media only screen and (max-width: 768px) {
-<<<<<<< HEAD
-    font-size: 18px;
-=======
     font-size: 13px;
   }
 `;
@@ -452,7 +426,6 @@ export const SRowRow = styled.div`
     flex-direction: row;
     justify-content: center;
     align-items: center;
->>>>>>> feature/staking
   }
 `;
 export const SFlex = styled.div`
@@ -466,11 +439,7 @@ export const SFlexEnd = styled.div`
   align-items: center;
   width: 100%;
   @media only screen and (max-width: 768px) {
-<<<<<<< HEAD
-    justify-content: flex-start;
-=======
     justify-content: flex-end;
->>>>>>> feature/staking
   }
 `;
 
@@ -498,10 +467,7 @@ export const SSliderNoDataText = styled.div`
   font-size: 20px;
   line-height: 27px;
   color: #9d9fa7;
-<<<<<<< HEAD
-=======
   margin-bottom: 20px;
->>>>>>> feature/staking
 `;
 export const SItemSlider = styled.div`
   width: 100%;
