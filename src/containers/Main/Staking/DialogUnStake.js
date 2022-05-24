@@ -65,6 +65,7 @@ const STitle = styled.div`
   color: #333;
   text-align: center;
   margin-top: 30px;
+  margin-bottom: 30px;
   font-style: normal;
   font-weight: 700;
   font-size: 28px;
@@ -258,7 +259,7 @@ function DialogUnStake({
 }) {
   const [val, setValue] = useState(valueNFTUnStake);
   const [messErr, setMessErr] = useState();
-  const [itemSelect, setItemSelect] = useState(0);
+  const [, setItemSelect] = useState(0);
   const [totalSelect, setTotalSelect] = useState(0);
   const [beforeUnStake, setBeforeUnStake] = useState(0);
   const [afterUnStake, setAfterUnStake] = useState(0);
@@ -282,9 +283,28 @@ function DialogUnStake({
   useEffect(() => {
     setItemSelect(itemStaked.length);
     setTotalSelect(list.length);
-    setBeforeUnStake(totalSelect * PERCENT);
-    setAfterUnStake(PERCENT * totalSelect - itemSelect * PERCENT);
-  }, [itemStaked, list, isUnStakeNFT]);
+    const ITEM_STAKE = list.length;
+
+    const listIds = _.map(list, 'token_id');
+    if (checked) {
+      if (val === '') {
+        setBeforeUnStake(ITEM_STAKE * PERCENT);
+        setAfterUnStake(ITEM_STAKE * PERCENT);
+      } else {
+        setBeforeUnStake(PERCENT * ITEM_STAKE);
+        setAfterUnStake(PERCENT * ITEM_STAKE - val * PERCENT);
+      }
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (val === '' || (val && !_.includes(listIds, val))) {
+        setBeforeUnStake(ITEM_STAKE * PERCENT);
+        setAfterUnStake(ITEM_STAKE * PERCENT);
+      } else {
+        setBeforeUnStake(PERCENT * ITEM_STAKE);
+        setAfterUnStake(PERCENT * ITEM_STAKE - PERCENT);
+      }
+    }
+  }, [itemStaked, list, isUnStakeNFT, checked, val]);
 
   useEffect(() => {
     if (val === '') {
@@ -297,6 +317,9 @@ function DialogUnStake({
       }
       if (val === '') {
         setMessErr('');
+      }
+      if (val === 0) {
+        setMessErr('Invalid amount');
       }
     } else {
       const listIds = _.map(list, 'token_id');
@@ -388,7 +411,7 @@ function DialogUnStake({
                     <SBtnCancel onClick={close}>Cancel</SBtnCancel>
                     <SBtnUnStake
                       onClick={event =>
-                        handleUnStakeDialog(val, event, checked)
+                        handleUnStakeDialog(val, event, checked, messErr)
                       }
                     >
                       UnStake

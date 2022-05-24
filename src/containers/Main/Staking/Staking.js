@@ -22,7 +22,6 @@ import * as constants from 'utilities/constants';
 import {
   divDecimals,
   renderValueFixed,
-  MAX_STAKE_NFT,
   MAX_APPROVE,
   SECOND24H,
   SECOND2DAY,
@@ -882,8 +881,11 @@ function Staking({ settings, setSetting }) {
   );
   // Stake NFT
   const handleStakeDialog = useCallback(
-    async (value, event, checked) => {
+    async (value, event, checked, mess) => {
       if (!value) {
+        return;
+      }
+      if (mess) {
         return;
       }
       if (value && event.isTrusted) {
@@ -924,44 +926,50 @@ function Staking({ settings, setSetting }) {
   );
 
   // unStake NFT
-  const handleUnStakeDialog = useCallback(async (value, event, checked) => {
-    if (!value) {
-      return;
-    }
-    if (value && event.isTrusted) {
-      setiIsConfirm(true);
-      setIsUnStakeNFT(false);
-      await methods
-        .send(
-          checked
-            ? farmingContract.methods.unBoostPartially
-            : farmingContract.methods.unBoost,
-          [0, new BigNumber(value).integerValue()],
-          address
-        )
-        .then(res => {
-          setTxhash(res.transactionHash);
-          setiIsConfirm(false);
-          setIsSuccess(true);
-          setValueNFTUnStake(0);
-          getDataNFT();
-          getDataLP();
-          setItemStaked([]);
-        })
-        .catch(err => {
-          if (err.message.includes('User denied')) {
-            setIsShowCancel(true);
+  const handleUnStakeDialog = useCallback(
+    async (value, event, checked, mess) => {
+      if (!value) {
+        return;
+      }
+      if (mess) {
+        return;
+      }
+      if (value && event.isTrusted) {
+        setiIsConfirm(true);
+        setIsUnStakeNFT(false);
+        await methods
+          .send(
+            checked
+              ? farmingContract.methods.unBoostPartially
+              : farmingContract.methods.unBoost,
+            [0, new BigNumber(value).integerValue()],
+            address
+          )
+          .then(res => {
+            setTxhash(res.transactionHash);
             setiIsConfirm(false);
-            setTextErr('Decline transaction');
-          } else {
-            setIsShowCancel(true);
-            setiIsConfirm(false);
-            setTextErr('Some thing went wrong!');
-          }
-          throw err;
-        });
-    }
-  }, []);
+            setIsSuccess(true);
+            setValueNFTUnStake(0);
+            getDataNFT();
+            getDataLP();
+            setItemStaked([]);
+          })
+          .catch(err => {
+            if (err.message.includes('User denied')) {
+              setIsShowCancel(true);
+              setiIsConfirm(false);
+              setTextErr('Decline transaction');
+            } else {
+              setIsShowCancel(true);
+              setiIsConfirm(false);
+              setTextErr('Some thing went wrong!');
+            }
+            throw err;
+          });
+      }
+    },
+    []
+  );
 
   const handleCloseConfirm = () => {
     setiIsConfirm(false);
@@ -1001,9 +1009,11 @@ function Staking({ settings, setSetting }) {
           selectedAddress: acc[0],
           accountLoading: true
         });
-        getDataUserInfor();
-        getDataLP();
-        getDataNFT();
+        if (acc[0]) {
+          getDataUserInfor();
+          getDataLP();
+          getDataNFT();
+        }
       });
     }
   }, [window.ethereum, address]);
@@ -1336,7 +1346,7 @@ function Staking({ settings, setSetting }) {
                     <SRowFlex>
                       <SFlex>
                         <SSelected>
-                          NFT selected: {itemStaking.length}/{dataNFT.length}
+                          {/* NFT selected: {itemStaking.length}/{dataNFT.length} */}
                         </SSelected>
                       </SFlex>
                       <SFlexEnd>
@@ -1437,7 +1447,7 @@ function Staking({ settings, setSetting }) {
                     <SRowFlex>
                       <SFlex>
                         <SSelected>
-                          NFT staked {itemStaked.length}/{dataNFTUnState.length}
+                          {/* NFT staked {itemStaked.length}/{dataNFTUnState.length} */}
                         </SSelected>
                       </SFlex>
                       <SFlexEnd>
@@ -1446,10 +1456,10 @@ function Staking({ settings, setSetting }) {
                             {isApproveNFT ? (
                               <>
                                 <SSTake
-                                  disabled={
-                                    itemStaked.length === 0 ||
-                                    itemStaked.length > MAX_STAKE_NFT
-                                  }
+                                  // disabled={
+                                  //   itemStaked.length === 0 ||
+                                  //   itemStaked.length > MAX_STAKE_NFT
+                                  // }
                                   onClick={handleUnStakeNFT}
                                 >
                                   UnStake

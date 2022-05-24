@@ -65,6 +65,7 @@ const STitle = styled.div`
   color: #333;
   text-align: center;
   margin-top: 30px;
+  margin-bottom: 30px;
   font-style: normal;
   font-weight: 700;
   font-size: 28px;
@@ -266,7 +267,7 @@ function DialogStake({
   const classes = useStyles();
   const [val, setValue] = useState(valueNFTStake);
   const [messErr, setMessErr] = useState();
-  const [itemSelect, setItemSelect] = useState(itemStaking?.length);
+  const [, setItemSelect] = useState(itemStaking?.length);
   // const [totalSelect, setTotalSelect] = useState(listStake?.length);
   const [itemStaked, setItemStaked] = useState(listUnStake?.length);
   const [beforeStake, setBeforeStaking] = useState(0);
@@ -298,16 +299,35 @@ function DialogStake({
     setItemSelect(itemStaking.length);
     // setTotalSelect(listStake.length);
     setItemStaked(listUnStake.length);
-    setBeforeStaking(PERCENT * itemStaked);
-    setAfterStake(PERCENT * itemSelect + itemStaked * PERCENT);
-  }, [itemStaking, listStake, listUnStake, isStakeNFT]);
+    const listIds = _.map(listStake, 'token_id');
+
+    if (checked) {
+      const ITEM_UNSTAKE = listUnStake.length;
+      if (val === '') {
+        setBeforeStaking(itemStaked * PERCENT);
+        setAfterStake(itemStaked * PERCENT);
+      } else {
+        setBeforeStaking(PERCENT * ITEM_UNSTAKE);
+        setAfterStake(PERCENT * val + itemStaked * PERCENT);
+      }
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (val === '' || (val && !_.includes(listIds, val))) {
+        setBeforeStaking(itemStaked * PERCENT);
+        setAfterStake(itemStaked * PERCENT);
+      } else {
+        setBeforeStaking(itemStaked * PERCENT);
+        setAfterStake(PERCENT + itemStaked * PERCENT);
+      }
+    }
+  }, [itemStaking, listStake, listUnStake, isStakeNFT, checked, val]);
   useEffect(() => {
     if (val === '') {
       setMessErr('');
     }
     if (checked) {
       const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
-      if (val && val > MAX_STAKE_NFT - MAX_STAKE) {
+      if (val && val > MAX_STAKE) {
         setMessErr('Invalid amount');
       }
       if (val === '') {
@@ -407,7 +427,9 @@ function DialogStake({
                   <SBtn>
                     <SBtnCancel onClick={close}>Cancel</SBtnCancel>
                     <SBtnStake
-                      onClick={event => handleStakeDialog(val, event, checked)}
+                      onClick={event =>
+                        handleStakeDialog(val, event, checked, messErr)
+                      }
                     >
                       Stake
                     </SBtnStake>
