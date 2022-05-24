@@ -1,9 +1,32 @@
 import styled from 'styled-components';
 
+export const SMain = styled.div`
+  width: 100%;
+  .all-section {
+    width: 100%;
+    padding: 15px;
+  }
+`;
 export const SDivPadding = styled.div`
   width: 100%;
   background: #fff;
-  padding: 20px;
+  margin-top: 20px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-sizing: content-box;
+  box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
+  .box-staking {
+    text-align: center;
+  }
+  @media only screen and (max-width: 768px) {
+    margin-top: 0;
+    padding: 20px 5px;
+  }
+`;
+export const SDiv = styled.div`
+  width: 100%;
+  background: #fff;
+  padding: 10px 15px;
   margin-top: 20px;
   border-radius: 8px;
   box-sizing: content-box;
@@ -11,17 +34,11 @@ export const SDivPadding = styled.div`
   .box-staking {
     text-align: center;
   }
-`;
-export const SDiv = styled.div`
-  width: 100%;
-  background: #fff;
-  padding: 15px;
-  margin-top: 20px;
-  border-radius: 8px;
-  box-sizing: content-box;
-  box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
-  .box-staking {
-    text-align: center;
+  :last-child {
+    margin-bottom: 50px;
+  }
+  @media only screen and (max-width: 768px) {
+    padding: 20px 5px;
   }
 `;
 export const SHeader = styled.div`
@@ -37,8 +54,13 @@ export const SText = styled.div`
   font-size: 20px;
   line-height: 27px;
   margin-top: 10px;
+  min-width: 200px;
   img {
     margin-left: 10px;
+  }
+  @media only screen and (max-width: 768px) {
+    font-size: 17px;
+    margin: 0;
   }
 `;
 export const SHref = styled.a`
@@ -48,6 +70,10 @@ export const SHref = styled.a`
   font-weight: 700;
   display: flex;
   align-items: center;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    margin-right: 10px;
+  }
 `;
 export const SInput = styled.div`
   position: relative;
@@ -114,22 +140,32 @@ export const SBtnDisabled = styled.div`
 `;
 export const SBtn = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 1919px) {
     justify-content: center;
+    margin-left: 10px;
+  }
+  @media only screen and (max-width: 768px) {
+    justify-content: flex-start;
+    margin-top: 0;
+    margin-left: 5px;
+    margin-right: 10px;
   }
 `;
 export const SBtnUn = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   margin-top: 20px;
   @media only screen and (max-width: 768px) {
-    justify-content: center;
+    justify-content: flex-start;
+    margin-top: 0;
+    margin-left: 5px;
+    margin-right: 10px;
   }
 `;
-export const SBtnStake = styled.div`
+export const SBtnStake = styled.button`
   cursor: pointer;
   background: #107def;
   color: #fff;
@@ -138,8 +174,14 @@ export const SBtnStake = styled.div`
   min-width: 220px;
   text-align: center;
   margin-right: 10px;
+  border: none;
+  outline: none;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
+  }
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
   }
 `;
 export const SBtnUnstake = styled.div`
@@ -173,6 +215,10 @@ export const SSTake = styled.button`
   }
   @media only screen and (max-width: 768px) {
     min-width: 150px;
+<<<<<<< HEAD
+=======
+    margin-left: 0;
+>>>>>>> feature/staking
   }
 `;
 export const SSUnTake = styled.button`
@@ -244,8 +290,26 @@ export const SImgLpSmall = styled.img`
   margin-left: -5px;
 `;
 export const SQuestion = styled.img`
+<<<<<<< HEAD
   widht: 23px;
   height: 23px;
+=======
+  width: 23px;
+  height: 23px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
+  }
+`;
+export const SQuestionClaim = styled.img`
+  width: 23px;
+  height: 23px;
+  margin-right: 10px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
+  }
+>>>>>>> feature/staking
 `;
 export const SBtnClaim = styled.div`
   display: flex;
@@ -274,7 +338,11 @@ export const SClaim = styled.div`
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
+<<<<<<< HEAD
   margin-right: 10px;
+=======
+  margin-right: 15px;
+>>>>>>> feature/staking
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }
@@ -289,7 +357,11 @@ export const SUnClaim = styled.div`
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
+<<<<<<< HEAD
   margin-right: 10px;
+=======
+  margin-right: 15px;
+>>>>>>> feature/staking
   cursor: not-allowed;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
@@ -316,19 +388,71 @@ export const SDetails = styled.div`
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
+<<<<<<< HEAD
   color: ##6d6f7b;
+=======
+  color: #6d6f7b;
+>>>>>>> feature/staking
   margin-top: 20px;
   @media only screen and (max-width: 768px) {
     font-size: 18px;
   }
 `;
+<<<<<<< HEAD
+=======
+export const SSelected = styled.div`
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  color: ##6d6f7b;
+  margin-top: 20px;
+  min-width: 200px;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    margin-top: 0;
+  }
+`;
+>>>>>>> feature/staking
 export const SDetailsColor = styled.div`
   font-size: 16px;
   line-height: 24px
   line-height: 35px;
   color: ##6d6f7b;
   @media only screen and (max-width: 768px) {
+<<<<<<< HEAD
     font-size: 18px;
+=======
+    font-size: 13px;
+  }
+`;
+export const SRowFlex = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+export const SRowColumn = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+export const SRowRow = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+>>>>>>> feature/staking
   }
 `;
 export const SFlex = styled.div`
@@ -342,7 +466,11 @@ export const SFlexEnd = styled.div`
   align-items: center;
   width: 100%;
   @media only screen and (max-width: 768px) {
+<<<<<<< HEAD
     justify-content: flex-start;
+=======
+    justify-content: flex-end;
+>>>>>>> feature/staking
   }
 `;
 
@@ -370,6 +498,10 @@ export const SSliderNoDataText = styled.div`
   font-size: 20px;
   line-height: 27px;
   color: #9d9fa7;
+<<<<<<< HEAD
+=======
+  margin-bottom: 20px;
+>>>>>>> feature/staking
 `;
 export const SItemSlider = styled.div`
   width: 100%;

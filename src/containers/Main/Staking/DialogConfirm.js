@@ -69,6 +69,9 @@ const STitle = styled.div`
   margin: 20px 0;
   width: 100%;
   text-align: center;
+  @media only screen and (max-width: 768px) {
+    font-size: 22px;
+  }
 `;
 const SLoading = styled.div`
   width: 100%;

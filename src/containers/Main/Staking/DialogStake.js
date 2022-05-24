@@ -67,6 +67,9 @@ const STitle = styled.div`
   font-weight: 700;
   font-size: 28px;
   line-height: 33px;
+  @media only screen and (max-width: 768px) {
+    font-size: 22px;
+  }
 `;
 const SCount = styled.div`
   font-style: normal;

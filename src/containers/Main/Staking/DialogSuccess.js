@@ -69,6 +69,9 @@ const STitle = styled.div`
   color: rgba(0, 28, 78, 0.87);
   text-align: center;
   margin-top: 20px;
+  @media only screen and (max-width: 768px) {
+    font-size: 22px;
+  }
 `;
 const SText = styled.div`
   font-style: normal;

@@ -24,3 +24,16 @@ button:focus {
 .slick-prev {
   opacity: 1 !important;
 }
+iframe {
+  display: none !important;
+}
+@media only screen and (max-width: 768px) {
+  .slick-prev {
+    left: 0px;
+    z-index: 999;
+  }
+  .slick-next {
+    right: 0px;
+    z-index: 999;
+  }
+}
