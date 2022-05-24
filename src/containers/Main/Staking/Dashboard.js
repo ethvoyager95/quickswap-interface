@@ -15,37 +15,60 @@ const SMain = styled.div`
   padding: 15px;
   border-radius: 8px;
   box-sizing: content-box;
+  @media only screen and (max-width: 768px) {
+    padding: 0;
+  }
 `;
 const SLogo = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  @media only screen and (max-width: 768px) {
+    margin-bottom: 20px;
+  }
 `;
 const SLogoFlash = styled.img`
   width: 60px;
   height: 60px;
+  @media only screen and (max-width: 768px) {
+    width: 45px;
+    height: 45px;
+  }
 `;
 const SLogoLP = styled.img`
   width: 60px;
   height: 60px;
   margin-left: -10px;
+  @media only screen and (max-width: 768px) {
+    width: 45px;
+    height: 45px;
+  }
 `;
 const STitle = styled.div`
   color: #0b0f23;
   font-weight: 500;
   font-size: 31px;
   margin-left: 30px;
+  @media only screen and (max-width: 768px) {
+    font-size: 20px;
+  }
 `;
 const SText = styled.p`
   color: #107def;
   font-size: 18px;
   line-height: 28px;
   font-weight: 900;
+  @media only screen and (max-width: 768px) {
+    font-size: 17px;
+  }
 `;
 const SBox = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  @media only screen and (max-width: 768px) {
+    padding: 20px;
+  }
 `;
 const SItemsBox = styled.div`
   display: block;
@@ -62,6 +85,9 @@ const SValueBox = styled.div`
   font-size: 20px;
   line-height: 27px;
   font-weight: 900;
+  @media only screen and (max-width: 768px) {
+    font-size: 17px;
+  }
 `;
 const SUSDBox = styled.div`
   color: #107def;

@@ -1,10 +1,14 @@
 import styled from 'styled-components';
 
+export const SMain = styled.div`
+  width: 100%;
+  margin: 0 15px;
+`;
 export const SDivPadding = styled.div`
   width: 100%;
   background: #fff;
-  padding: 20px;
   margin-top: 20px;
+  padding: 10px 15px;
   border-radius: 8px;
   box-sizing: content-box;
   box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
@@ -15,7 +19,7 @@ export const SDivPadding = styled.div`
 export const SDiv = styled.div`
   width: 100%;
   background: #fff;
-  padding: 15px;
+  padding: 10px 15px;
   margin-top: 20px;
   border-radius: 8px;
   box-sizing: content-box;
