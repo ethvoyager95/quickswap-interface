@@ -192,10 +192,10 @@ export const SBtnLoadding = styled.button`
   padding: 8px 20px;
   min-width: 220px;
   text-align: center;
-  margin-right: 10px;
   border: none;
   outline: none;
   margin-top: 10px;
+  margin-right: 15px;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0px !important;
@@ -214,7 +214,7 @@ export const SBtnUnstake = styled.div`
   min-width: 220px;
   text-align: center;
   border: 1px solid #f84960;
-  margin-right: 10px;
+  margin-right: 15px;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
   }

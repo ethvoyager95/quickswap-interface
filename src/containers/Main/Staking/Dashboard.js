@@ -145,7 +145,12 @@ function DashboardStaking({ address, amount }) {
       await axiosInstance
         .get('/api/price')
         .then(res => {
-          console.log(res);
+          console.log(res, 'result');
+
+          if (res) {
+            const result = res.data.data.rows;
+            console.log(result, 'result');
+          }
         })
         .catch(err => {
           throw err;
@@ -174,6 +179,7 @@ function DashboardStaking({ address, amount }) {
     }
   };
   useEffect(() => {
+    getRate();
     let updateTimer;
     if (address) {
       updateTimer = setInterval(() => {
@@ -186,7 +192,7 @@ function DashboardStaking({ address, amount }) {
         clearInterval(updateTimer);
       }
     };
-  }, []);
+  }, [address]);
   useEffect(() => {
     getDataDashBoard();
   }, [address]);

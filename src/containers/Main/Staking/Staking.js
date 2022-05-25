@@ -234,7 +234,6 @@ function Staking({ settings, setSetting }) {
       await methods
         .call(farmingContract.methods.userInfo, [0, address])
         .then(res => {
-          console.log(res, 'res');
           const balanceBigNumber = divDecimals(sTokenBalance, 18);
           const pendingAmountNumber = divDecimals(res.pendingAmount, 18);
           const amountNumber = divDecimals(res.amount, 18);
@@ -335,8 +334,6 @@ function Staking({ settings, setSetting }) {
         .get(`/${address}/nft?chain=rinkeby&format=decimal&limit=20`)
         .then(res => {
           const data = res.data.result;
-          console.log(data, 'data');
-
           if (data.length > 0) {
             const dataMyContract = _.filter(data, item => {
               return item.token_address === constants.NFT_ADDRESS.toLowerCase();
@@ -352,7 +349,6 @@ function Staking({ settings, setSetting }) {
             });
             const dataStakeClone = _.cloneDeep(dataConvert);
             const dataStakeCloneSort = _.sortBy(dataStakeClone, 'id');
-            console.log(dataStakeCloneSort, 'v');
             setDataNFT(dataStakeCloneSort);
             setIsLoading(false);
           }
@@ -734,12 +730,7 @@ function Staking({ settings, setSetting }) {
     await methods
       .send(
         farmingContract.methods.claimBaseRewards,
-        [
-          zero
-            .times(new BigNumber(10).pow(18))
-            .integerValue()
-            .toString(10)
-        ],
+        [zero.toString(10)],
         address
       )
       .then(res => {
@@ -766,12 +757,7 @@ function Staking({ settings, setSetting }) {
     await methods
       .send(
         farmingContract.methods.claimBoostReward,
-        [
-          zero
-            .times(new BigNumber(10).pow(18))
-            .integerValue()
-            .toString(10)
-        ],
+        [zero.toString(10)],
         address
       )
       .then(() => {})
@@ -915,7 +901,6 @@ function Staking({ settings, setSetting }) {
   useEffect(() => {
     getDataLP();
     getDataNFT();
-    console.log('getDataLP');
   }, [address, txhash]);
   // change accounts
   useEffect(() => {
@@ -1066,9 +1051,31 @@ function Staking({ settings, setSetting }) {
                                       <>
                                         {isLoadingBtn ? (
                                           <>
-                                            <ST.SBtnLoadding disabled>
-                                              Loading...
-                                            </ST.SBtnLoadding>
+                                            <Col
+                                              xs={{ span: 24 }}
+                                              lg={{ span: 16 }}
+                                            >
+                                              <ST.SBtnUnStakeStart>
+                                                <ST.SBtnLoadding disabled>
+                                                  Loading...
+                                                </ST.SBtnLoadding>
+                                                <Tooltip
+                                                  placement="right"
+                                                  title="Countdown will be reset if you stake 
+                                        more without claiming the reward"
+                                                >
+                                                  <ST.SQuestion
+                                                    src={IconQuestion}
+                                                  />
+                                                </Tooltip>
+                                              </ST.SBtnUnStakeStart>
+                                            </Col>
+                                            <Col
+                                              xs={{ span: 24 }}
+                                              lg={{ span: 8 }}
+                                            >
+                                              {}
+                                            </Col>
                                           </>
                                         ) : (
                                           <>
@@ -1116,9 +1123,31 @@ function Staking({ settings, setSetting }) {
                                           <>
                                             {isLoadingUnStake ? (
                                               <>
-                                                <ST.SBtnLoadding disabled>
-                                                  Loading...
-                                                </ST.SBtnLoadding>
+                                                <Col
+                                                  xs={{ span: 24 }}
+                                                  lg={{ span: 16 }}
+                                                >
+                                                  <ST.SBtnUnStakeStart>
+                                                    <ST.SBtnLoadding disabled>
+                                                      Loading...
+                                                    </ST.SBtnLoadding>
+                                                    <Tooltip
+                                                      placement="right"
+                                                      title="Countdown will be reset if you unstake 
+                                              more without claiming the reward"
+                                                    >
+                                                      <ST.SQuestion
+                                                        src={IconQuestion}
+                                                      />
+                                                    </Tooltip>
+                                                  </ST.SBtnUnStakeStart>
+                                                </Col>
+                                                <Col
+                                                  xs={{ span: 24 }}
+                                                  lg={{ span: 8 }}
+                                                >
+                                                  {}
+                                                </Col>
                                               </>
                                             ) : (
                                               <>
@@ -1132,6 +1161,15 @@ function Staking({ settings, setSetting }) {
                                                     >
                                                       UnStake
                                                     </ST.SBtnUnstake>
+                                                    <Tooltip
+                                                      placement="right"
+                                                      title="Countdown will be reset if you unstake 
+                                              more without claiming the reward"
+                                                    >
+                                                      <ST.SQuestion
+                                                        src={IconQuestion}
+                                                      />
+                                                    </Tooltip>
                                                   </ST.SBtnUnStakeStart>
                                                 </Col>
                                                 <Col
@@ -1142,24 +1180,36 @@ function Staking({ settings, setSetting }) {
                                                 </Col>
                                               </>
                                             )}
-
-                                            <Tooltip
-                                              placement="right"
-                                              title="Countdown will be reset if you unstake 
-                                              more without claiming the reward"
-                                            >
-                                              <ST.SQuestion
-                                                src={IconQuestion}
-                                              />
-                                            </Tooltip>
                                           </>
                                         ) : (
                                           <>
-                                            <ST.SBtnStake
-                                              onClick={handleApproveVstrk}
+                                            <Col
+                                              xs={{ span: 24 }}
+                                              lg={{ span: 16 }}
                                             >
-                                              Approve Staking
-                                            </ST.SBtnStake>
+                                              <ST.SBtnUnStakeStart>
+                                                <ST.SBtnStake
+                                                  onClick={handleApproveVstrk}
+                                                >
+                                                  Approve Staking
+                                                </ST.SBtnStake>
+                                                <Tooltip
+                                                  placement="right"
+                                                  title="Countdown will be reset if you unstake 
+                                              more without claiming the reward"
+                                                >
+                                                  <ST.SQuestion
+                                                    src={IconQuestion}
+                                                  />
+                                                </Tooltip>
+                                              </ST.SBtnUnStakeStart>
+                                            </Col>
+                                            <Col
+                                              xs={{ span: 24 }}
+                                              lg={{ span: 8 }}
+                                            >
+                                              {}
+                                            </Col>
                                           </>
                                         )}
                                       </>
