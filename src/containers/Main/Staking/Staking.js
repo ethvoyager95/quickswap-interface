@@ -25,7 +25,8 @@ import {
   MAX_APPROVE,
   SECOND24H,
   SECOND2DAY,
-  SECOND30DAY
+  SECOND30DAY,
+  PERCENT_APR
 } from './helper';
 // eslint-disable-next-line import/named
 import { axiosInstanceMoralis } from '../../../utilities/axios';
@@ -242,7 +243,6 @@ function Staking({ settings, setSetting }) {
   const [itemStaking, setItemStaking] = useState([]);
   const [itemStaked, setItemStaked] = useState([]);
   const [userInfo, setUserInfo] = useState({});
-  const [expectedBoostAPR, setExpectedBoostAPR] = useState(0);
   const [yourBoostAPR, setYourBoostAPR] = useState(0);
   const [valueNFTStake, setValueNFTStake] = useState('');
   const [valueNFTUnStake, setValueNFTUnStake] = useState('');
@@ -261,10 +261,6 @@ function Staking({ settings, setSetting }) {
         address
       ]);
     }
-    const total = {
-      totalBoost: '',
-      totalDeposit: ''
-    };
     const objClaim = {
       accBaseReward: '',
       accBoostReward: ''
@@ -347,8 +343,6 @@ function Staking({ settings, setSetting }) {
                 : renderValueFixed(amountNumber).toString(),
             available: renderValueFixed(balanceBigFormat).toString(),
             availableNumber: balanceBigNumber.toNumber(),
-            totalBoost: renderValueFixed(total.totalBoost) ?? '',
-            totalDeposit: renderValueFixed(total.totalDeposit) ?? '',
             accBaseReward:
               accBaseRewardString !== 0 && accBaseRewardString < 0.001
                 ? '<0.001'
@@ -439,6 +433,14 @@ function Staking({ settings, setSetting }) {
               active: false
             });
           });
+          const lengthArr = newArray.length;
+
+          if (lengthArr === 0 || lengthArr === 1) {
+            setYourBoostAPR(0);
+          } else {
+            const yourBoostAPRPer = PERCENT_APR * lengthArr;
+            setYourBoostAPR(yourBoostAPRPer);
+          }
           const newArraySort = _.sortBy(newArray, 'token_id');
           setDataNFTUnState(newArraySort);
           setIsLoading(false);
@@ -508,6 +510,7 @@ function Staking({ settings, setSetting }) {
         }
       });
   }, [val, address, handleMaxValue, userInfo]);
+  console.log(isApproveLP, 'isapprove');
   const checkApproveNFT = useCallback(async () => {
     await methods
       .call(nFtContract.methods.isApprovedForAll, [
@@ -845,8 +848,6 @@ function Staking({ settings, setSetting }) {
         const dataStaking = dataActiveStakeNFT.filter(it => {
           return it.active === true;
         });
-        const valueExpected = dataStaking.length * 20;
-        setExpectedBoostAPR(valueExpected);
         setItemStaking(dataStaking);
       }
     },
@@ -875,8 +876,6 @@ function Staking({ settings, setSetting }) {
         const dataStaked = dataActiveUnStakeNFT.filter(it => {
           return it.active === true;
         });
-        const valueBoots = dataStaked.length * 20;
-        setYourBoostAPR(valueBoots);
         setItemStaked(dataStaked);
       }
     },
@@ -1105,7 +1104,7 @@ function Staking({ settings, setSetting }) {
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                       <Row>
                         <SRowColumn>
-                          {address ? (
+                          {address && isApproveLP && (
                             <>
                               <Col xs={{ span: 24 }} lg={{ span: 16 }}>
                                 <SBtn>
@@ -1164,24 +1163,27 @@ function Staking({ settings, setSetting }) {
                                 </SBtnUn>
                               </Col>
                             </>
+                          )}
+                          {address && !isApproveLP ? (
+                            <>
+                              <Col xs={{ span: 24 }} lg={{ span: 16 }}>
+                                <SBtn>
+                                  {!isApproveLP ? (
+                                    <>
+                                      {' '}
+                                      <SBtnStake onClick={handleApproveLp}>
+                                        Approve Staking
+                                      </SBtnStake>
+                                    </>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </SBtn>
+                              </Col>
+                            </>
                           ) : (
                             <>
-                              {address && (
-                                <Col xs={{ span: 24 }} lg={{ span: 16 }}>
-                                  <SBtn>
-                                    {isApproveLP ? (
-                                      <>
-                                        {' '}
-                                        <SBtnStake onClick={handleApproveLp}>
-                                          Approve Staking
-                                        </SBtnStake>
-                                      </>
-                                    ) : (
-                                      <></>
-                                    )}
-                                  </SBtn>
-                                </Col>
-                              )}
+                              <></>
                             </>
                           )}
                         </SRowColumn>
@@ -1328,10 +1330,7 @@ function Staking({ settings, setSetting }) {
                         </SText>
                       </SFlex>
                       <SFlexEnd>
-                        <SDetailsColor>
-                          {' '}
-                          Expected Boost APR: {expectedBoostAPR}%{' '}
-                        </SDetailsColor>
+                        <SDetailsColor> </SDetailsColor>
                       </SFlexEnd>
                     </SRowFlex>
                   </Row>

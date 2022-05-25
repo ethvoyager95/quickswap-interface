@@ -6,6 +6,7 @@ export const TIME_CLAIM_LP = 1;
 export const TIME_CLAIM_NFT = 30;
 
 export const MAX_STAKE_NFT = 10;
+export const PERCENT_APR = 20;
 export const SECOND24H = 3600; // 86400
 export const SECOND2DAY = 7200; // 172800
 export const SECOND30DAY = 10800; // 2592000
