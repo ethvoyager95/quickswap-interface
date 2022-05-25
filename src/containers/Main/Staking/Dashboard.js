@@ -6,11 +6,21 @@ import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import { Row, Col } from 'antd';
 import styled from 'styled-components';
+import _ from 'lodash';
 import LogoFlash from '../../../assets/img/logo_flash.svg';
 import LogoLP from '../../../assets/img/logo_lp.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import { axiosInstance } from '../../../utilities/axios';
-import { divDecimals, getBaseApr, renderValueFixed } from './helper';
+import {
+  divDecimals,
+  getBaseApr,
+  getLiquidity,
+  renderValueFixed,
+  MAX_STAKE_NFT,
+  FAKE_ETH,
+  FAKE_STRK,
+  FAKE_TOTAL_SUPPLY
+} from './helper';
 import {
   getFarmingContract,
   methods
@@ -57,6 +67,9 @@ const STitle = styled.div`
   margin-left: 30px;
   @media only screen and (max-width: 768px) {
     font-size: 20px;
+    width: 100%;
+    display: block;
+    text-align: right;
   }
 `;
 const SText = styled.p`
@@ -92,7 +105,7 @@ const SValueBox = styled.div`
   line-height: 27px;
   font-weight: 900;
   @media only screen and (max-width: 768px) {
-    font-size: 17px;
+    font-size: 12px;
   }
 `;
 const SUSDBox = styled.div`
@@ -100,6 +113,9 @@ const SUSDBox = styled.div`
   font-size: 14px;
   line-height: 22px;
   font-weight: 900;
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 const SIconFlash = styled.img`
   margin-right: 10px;
@@ -110,10 +126,10 @@ function DashboardStaking({ address, amount }) {
   const [countAmount, setCountAmount] = useState(null);
   const [baseAPR, setBaseAPR] = useState(0);
   const [perblock, setPerblock] = useState(0);
-  const [amountBoost, setAmountBoost] = useState(0);
+  const [amountBoost] = useState(MAX_STAKE_NFT);
+  const [totalLiquidity, setTotalLiqudity] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
   const farmingContract = getFarmingContract();
-
   const getPerBlock = async () => {
     await methods
       .call(farmingContract.methods.rewardPerBlock, [])
@@ -136,35 +152,41 @@ function DashboardStaking({ address, amount }) {
     }
   }, [address, amount]);
   const getRate = async () => {
-    // try {
-    //   await axiosInstance
-    //     .get(
-    //       `https://api.coingecko.com/api/v3/simple/price?ids=strike&vs_currencies=usd`
-    //     )
-    //     .then(res => {
-    //       if (res) {
-    //         console.log(res.data.strike.usd, 'res strike');
-    //       }
-    //     })
-    //     .catch(err => {
-    //       throw err;
-    //     });
-    //   await axiosInstance
-    //     .get(
-    //       `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
-    //     )
-    //     .then(res => {
-    //       if (res) {
-    //         console.log(res.data.ethereum.usd, 'res ethereum');
-    //       }
-    //     })
-    //     .catch(err => {
-    //       throw err;
-    //     });
-    // } catch (err) {
-    //   console.log(err);
-    //   throw err;
-    // }
+    let rateStrkVsUSD = null;
+    let rateStrkVsETH = null;
+    let totalSupply = null;
+    try {
+      await axiosInstance
+        .get('/api/price')
+        .then(res => {
+          if (res) {
+            const result = res.data.data.rows;
+            const objPriceStrkToUSD = _.find(result, item => {
+              return item.symbol === 'strk';
+            });
+            const objPriceStrkToEthereum = _.find(result, item => {
+              return item.symbol === 'eth';
+            });
+            rateStrkVsUSD = renderValueFixed(objPriceStrkToUSD.amount);
+            rateStrkVsETH = renderValueFixed(objPriceStrkToEthereum.amount);
+            totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
+            const totalLiquidityBigNumber = getLiquidity(
+              rateStrkVsUSD,
+              FAKE_STRK,
+              rateStrkVsETH,
+              FAKE_ETH,
+              totalSupply
+            );
+            const total = renderValueFixed(totalLiquidityBigNumber.toNumber());
+            setTotalLiqudity(total);
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+    } catch (err) {
+      throw err;
+    }
   };
   const getDataDashBoard = async () => {
     try {
@@ -175,7 +197,6 @@ function DashboardStaking({ address, amount }) {
           if (res) {
             const result = res.data.data;
             const totalDepositString = divDecimals(result.totalDeposit, 18);
-            setAmountBoost(result.totalBoost);
             setAmountDeposit(renderValueFixed(totalDepositString.toString()));
           }
         })
@@ -187,6 +208,7 @@ function DashboardStaking({ address, amount }) {
     }
   };
   useEffect(() => {
+    getRate();
     let updateTimer;
     if (address) {
       updateTimer = setInterval(() => {
@@ -199,7 +221,7 @@ function DashboardStaking({ address, amount }) {
         clearInterval(updateTimer);
       }
     };
-  }, []);
+  }, [address]);
   useEffect(() => {
     getDataDashBoard();
   }, [address]);
@@ -233,7 +255,7 @@ function DashboardStaking({ address, amount }) {
                       <SIconFlash src={IconFlashSmall} />
                       {amountDeposit}
                     </SValueBox>
-                    <SUSDBox>$30,005</SUSDBox>
+                    <SUSDBox>${totalLiquidity}</SUSDBox>
                   </>
                 </SItemsBox>
                 <SItemsBox>
