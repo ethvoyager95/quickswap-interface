@@ -43,10 +43,14 @@ function Header({ title, history }) {
         className="flex align-center pointer title-wrapper"
         onClick={handleRoute}
       >
-        {(title === 'Overview' || title === 'Details' || title === 'Market') && (
-          <img src={arrowRightImg} alt="arrow-left" />
-        )}
-        <p className={`${(title === 'Overview' || title === 'Details') ? 'highlight' : ''}`}>
+        {(title === 'Overview' ||
+          title === 'Details' ||
+          title === 'Market') && <img src={arrowRightImg} alt="arrow-left" />}
+        <p
+          className={`${
+            title === 'Overview' || title === 'Details' ? 'highlight' : ''
+          }`}
+        >
           {title}
         </p>
       </div>
