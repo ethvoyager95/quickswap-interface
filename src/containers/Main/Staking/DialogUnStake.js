@@ -8,7 +8,6 @@ import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
 import { Row, Col, Switch } from 'antd';
 import _ from 'lodash';
-import { MAX_STAKE_NFT } from './helper';
 
 const useStyles = makeStyles({
   root: {
@@ -311,20 +310,21 @@ function DialogUnStake({
       setMessErr('');
     }
     if (checked) {
-      const MAX_STAKE = MAX_STAKE_NFT - list.length;
-      if (val && val > MAX_STAKE_NFT - MAX_STAKE) {
-        setMessErr('Invalid amount');
+      const MAX_UNSTAKE = list.length;
+      if (val && val > MAX_UNSTAKE) {
+        setMessErr(
+          `Invalid number. You can only unstake upto ${MAX_UNSTAKE} NFTs`
+        );
+      } else {
+        setMessErr('');
       }
       if (val === '') {
         setMessErr('');
       }
-      if (val === 0) {
-        setMessErr('Invalid amount');
-      }
     } else {
       const listIds = _.map(list, 'token_id');
       if (val && !_.includes(listIds, val)) {
-        setMessErr('Invalid id');
+        setMessErr('Invalid tokenID');
       } else {
         setMessErr('');
       }

@@ -136,35 +136,18 @@ function DashboardStaking({ address, amount }) {
     }
   }, [address, amount]);
   const getRate = async () => {
-    // try {
-    //   await axiosInstance
-    //     .get(
-    //       `https://api.coingecko.com/api/v3/simple/price?ids=strike&vs_currencies=usd`
-    //     )
-    //     .then(res => {
-    //       if (res) {
-    //         console.log(res.data.strike.usd, 'res strike');
-    //       }
-    //     })
-    //     .catch(err => {
-    //       throw err;
-    //     });
-    //   await axiosInstance
-    //     .get(
-    //       `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
-    //     )
-    //     .then(res => {
-    //       if (res) {
-    //         console.log(res.data.ethereum.usd, 'res ethereum');
-    //       }
-    //     })
-    //     .catch(err => {
-    //       throw err;
-    //     });
-    // } catch (err) {
-    //   console.log(err);
-    //   throw err;
-    // }
+    try {
+      await axiosInstance
+        .get('/api/price')
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
   const getDataDashBoard = async () => {
     try {
@@ -174,12 +157,15 @@ function DashboardStaking({ address, amount }) {
         .then(res => {
           if (res) {
             const result = res.data.data;
+            console.log(result, 'result');
             const totalDepositString = divDecimals(result.totalDeposit, 18);
             setAmountBoost(result.totalBoost);
             setAmountDeposit(renderValueFixed(totalDepositString.toString()));
           }
         })
         .catch(err => {
+          console.log(err, 'err');
+
           throw err;
         });
     } catch (err) {
@@ -190,7 +176,7 @@ function DashboardStaking({ address, amount }) {
     let updateTimer;
     if (address) {
       updateTimer = setInterval(() => {
-        getRate();
+        // getRate();
       }, 15000);
     }
     return function cleanup() {

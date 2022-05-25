@@ -327,16 +327,26 @@ function DialogStake({
     }
     if (checked) {
       const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
+      if (val && val > MAX_STAKE_NFT) {
+        setMessErr('Invalid number. You can not stake more than 10 NFTs');
+      } else {
+        setMessErr('');
+      }
       if (val && val > MAX_STAKE) {
-        setMessErr('Invalid amount');
+        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
+      } else {
+        setMessErr('');
       }
       if (val === '') {
         setMessErr('');
       }
+      if (val === 0) {
+        setMessErr('Invalid amount');
+      }
     } else {
       const listIds = _.map(listStake, 'token_id');
       if (val && !_.includes(listIds, val)) {
-        setMessErr('Invalid id');
+        setMessErr('Invalid tokenID');
       } else {
         setMessErr('');
       }

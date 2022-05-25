@@ -37,3 +37,16 @@ iframe {
     z-index: 999;
   }
 }
+.ant-tooltip-inner {
+  background-color: #fff !important;
+  border-radius: 2px;
+  color: #0b0f23 !important;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19px;
+  padding: 10px 15px !important;
+}
+.ant-tooltip-arrow::before {
+  background-color: #fff !important;
+}
