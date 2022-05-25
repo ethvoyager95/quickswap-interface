@@ -10,7 +10,12 @@ import LogoFlash from '../../../assets/img/logo_flash.svg';
 import LogoLP from '../../../assets/img/logo_lp.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import { axiosInstance } from '../../../utilities/axios';
-import { divDecimals, getBaseApr, renderValueFixed } from './helper';
+import {
+  divDecimals,
+  getBaseApr,
+  renderValueFixed,
+  MAX_STAKE_NFT
+} from './helper';
 import {
   getFarmingContract,
   methods
@@ -110,7 +115,7 @@ function DashboardStaking({ address, amount }) {
   const [countAmount, setCountAmount] = useState(null);
   const [baseAPR, setBaseAPR] = useState(0);
   const [perblock, setPerblock] = useState(0);
-  const [amountBoost, setAmountBoost] = useState(0);
+  const [amountBoost] = useState(MAX_STAKE_NFT);
   const [amountDeposit, setAmountDeposit] = useState(0);
   const farmingContract = getFarmingContract();
 
@@ -143,10 +148,10 @@ function DashboardStaking({ address, amount }) {
           console.log(res);
         })
         .catch(err => {
-          console.log(err);
+          throw err;
         });
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   };
   const getDataDashBoard = async () => {
@@ -157,15 +162,11 @@ function DashboardStaking({ address, amount }) {
         .then(res => {
           if (res) {
             const result = res.data.data;
-            console.log(result, 'result');
             const totalDepositString = divDecimals(result.totalDeposit, 18);
-            setAmountBoost(result.totalBoost);
             setAmountDeposit(renderValueFixed(totalDepositString.toString()));
           }
         })
         .catch(err => {
-          console.log(err, 'err');
-
           throw err;
         });
     } catch (err) {
@@ -176,7 +177,7 @@ function DashboardStaking({ address, amount }) {
     let updateTimer;
     if (address) {
       updateTimer = setInterval(() => {
-        // getRate();
+        getRate();
       }, 15000);
     }
     return function cleanup() {

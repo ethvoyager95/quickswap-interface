@@ -330,7 +330,9 @@ function DialogUnStake({
       }
     }
   }, [val, isUnStakeNFT, list, checked]);
-
+  useEffect(() => {
+    setValue(valueNFTUnStake);
+  }, [valueNFTUnStake, isUnStakeNFT]);
   const classes = useStyles();
   return (
     <>

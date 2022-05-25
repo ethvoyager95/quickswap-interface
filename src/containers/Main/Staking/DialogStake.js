@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { Row, Col, Switch } from 'antd';
 import _ from 'lodash';
 import { MAX_STAKE_NFT } from './helper';
+import IconClose from '../../../assets/img/close.svg';
 
 const useStyles = makeStyles({
   root: {
@@ -16,8 +17,7 @@ const useStyles = makeStyles({
       borderRadius: '20px',
       position: 'relative',
       width: '700px',
-      color: '#ffffff',
-      height: '450px'
+      color: '#ffffff'
     }
   },
   closeBtn: {
@@ -56,7 +56,12 @@ const useStyles = makeStyles({
   }
 });
 const SMain = styled.div`
-  margin: 0 20px;
+  padding: 0 20px;
+`;
+const SMainColor = styled.div`
+  padding: 0 20px 50px 20px;
+  background: #eceff9;
+  margin-top: 20px;
 `;
 // const SItem = styled.div`
 //   widht: 100%;
@@ -64,8 +69,6 @@ const SMain = styled.div`
 const STitle = styled.div`
   color: #333;
   text-align: center;
-  margin-top: 30px;
-  margin-bottom: 30px;
   font-style: normal;
   font-weight: 700;
   font-size: 28px;
@@ -80,6 +83,7 @@ const STitleInput = styled.div`
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
+  margin: 20px 0 10px 0;
 `;
 // const SCount = styled.div`
 //   font-style: normal;
@@ -178,7 +182,6 @@ const SBtn = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: 130px;
 `;
 const SBtnCancel = styled.div`
   font-style: normal;
@@ -252,6 +255,14 @@ const SError = styled.div`
   font-weight: 400;
   font-size: 14px;
   line-height: 23px;
+`;
+const SIcon = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+`;
+const SIconClose = styled.img`
+  cursor: pointer;
 `;
 const PERCENT = 20;
 
@@ -352,11 +363,17 @@ function DialogStake({
       }
     }
   }, [val, isStakeNFT, listStake, checked]);
+  useEffect(() => {
+    setValue(valueNFTStake);
+  }, [valueNFTStake, isStakeNFT]);
   return (
     <>
       <React.Fragment>
         <Dialog className={classes.root} open={isStakeNFT} onClose={close}>
           <SMain>
+            <SIcon>
+              <SIconClose src={IconClose} onClick={close} />
+            </SIcon>
             <STitle>Stake NFT</STitle>
             {checked ? (
               <STitleInput>
@@ -380,6 +397,8 @@ function DialogStake({
               <Switch checked={checked} onChange={onChangeSwitch} />;
             </SInput>
             {messErr && <SError>{messErr}</SError>}
+          </SMain>
+          <SMainColor>
             {/* <SCount>{itemStaking.length} items</SCount> */}
             {/* <SItem>
               {itemStaking?.map(item => {
@@ -447,7 +466,7 @@ function DialogStake({
                 </Col>
               </Row>
             </SBox>
-          </SMain>
+          </SMainColor>
         </Dialog>
       </React.Fragment>
     </>
