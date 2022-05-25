@@ -116,6 +116,9 @@ export const getVSTRKContract = () => {
     constants.VSTRK_ADDRESS
   );
 };
+export const getSTRKContract = () => {
+  return new instance.eth.Contract(constants.STRK_ABI, constants.STRK_ADDRESS);
+};
 export const methods = {
   call,
   send

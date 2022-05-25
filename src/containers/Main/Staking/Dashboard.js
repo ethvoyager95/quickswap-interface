@@ -14,8 +14,12 @@ import { axiosInstance } from '../../../utilities/axios';
 import {
   divDecimals,
   getBaseApr,
+  getLiquidity,
   renderValueFixed,
-  MAX_STAKE_NFT
+  MAX_STAKE_NFT,
+  FAKE_ETH,
+  FAKE_STRK,
+  FAKE_TOTAL_SUPPLY
 } from './helper';
 import {
   getFarmingContract,
@@ -123,9 +127,9 @@ function DashboardStaking({ address, amount }) {
   const [baseAPR, setBaseAPR] = useState(0);
   const [perblock, setPerblock] = useState(0);
   const [amountBoost] = useState(MAX_STAKE_NFT);
+  const [totalLiquidity, setTotalLiqudity] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
   const farmingContract = getFarmingContract();
-
   const getPerBlock = async () => {
     await methods
       .call(farmingContract.methods.rewardPerBlock, [])
@@ -148,6 +152,9 @@ function DashboardStaking({ address, amount }) {
     }
   }, [address, amount]);
   const getRate = async () => {
+    let rateStrkVsUSD = null;
+    let rateStrkVsETH = null;
+    let totalSupply = null;
     try {
       await axiosInstance
         .get('/api/price')
@@ -160,10 +167,18 @@ function DashboardStaking({ address, amount }) {
             const objPriceStrkToEthereum = _.find(result, item => {
               return item.symbol === 'eth';
             });
-            const rateStrkVsUSD = renderValueFixed(objPriceStrkToUSD.amount);
-            const rateStrkVsETH = renderValueFixed(
-              objPriceStrkToEthereum.amount
+            rateStrkVsUSD = renderValueFixed(objPriceStrkToUSD.amount);
+            rateStrkVsETH = renderValueFixed(objPriceStrkToEthereum.amount);
+            totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
+            const totalLiquidityBigNumber = getLiquidity(
+              rateStrkVsUSD,
+              FAKE_STRK,
+              rateStrkVsETH,
+              FAKE_ETH,
+              totalSupply
             );
+            const total = renderValueFixed(totalLiquidityBigNumber.toNumber());
+            setTotalLiqudity(total);
           }
         })
         .catch(err => {
@@ -240,7 +255,7 @@ function DashboardStaking({ address, amount }) {
                       <SIconFlash src={IconFlashSmall} />
                       {amountDeposit}
                     </SValueBox>
-                    <SUSDBox>$30,005</SUSDBox>
+                    <SUSDBox>${totalLiquidity}</SUSDBox>
                   </>
                 </SItemsBox>
                 <SItemsBox>
