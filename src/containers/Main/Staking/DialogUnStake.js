@@ -433,7 +433,7 @@ DialogUnStake.propTypes = {
   isUnStakeNFT: PropTypes.bool,
   itemStaked: PropTypes.array,
   list: PropTypes.array,
-  valueNFTUnStake: PropTypes.number,
+  valueNFTUnStake: PropTypes.string,
   handleUnStakeDialog: PropTypes.func
 };
 
@@ -442,7 +442,7 @@ DialogUnStake.defaultProps = {
   isUnStakeNFT: false,
   itemStaked: [],
   list: [],
-  valueNFTUnStake: 0,
+  valueNFTUnStake: '',
   handleUnStakeDialog: func
 };
 

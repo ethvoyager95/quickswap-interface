@@ -478,7 +478,7 @@ DialogStake.propTypes = {
   itemStaking: PropTypes.array,
   listStake: PropTypes.array,
   listUnStake: PropTypes.array,
-  valueNFTStake: PropTypes.number,
+  valueNFTStake: PropTypes.string,
   handleStakeDialog: PropTypes.func
 };
 
@@ -488,7 +488,7 @@ DialogStake.defaultProps = {
   itemStaking: [],
   listStake: [],
   listUnStake: [],
-  valueNFTStake: 0,
+  valueNFTStake: '',
   handleStakeDialog: func
 };
 

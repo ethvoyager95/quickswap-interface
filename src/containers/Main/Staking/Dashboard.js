@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import { Row, Col } from 'antd';
 import styled from 'styled-components';
+import _ from 'lodash';
 import LogoFlash from '../../../assets/img/logo_flash.svg';
 import LogoLP from '../../../assets/img/logo_lp.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
@@ -62,6 +63,9 @@ const STitle = styled.div`
   margin-left: 30px;
   @media only screen and (max-width: 768px) {
     font-size: 20px;
+    width: 100%;
+    display: block;
+    text-align: right;
   }
 `;
 const SText = styled.p`
@@ -97,7 +101,7 @@ const SValueBox = styled.div`
   line-height: 27px;
   font-weight: 900;
   @media only screen and (max-width: 768px) {
-    font-size: 17px;
+    font-size: 12px;
   }
 `;
 const SUSDBox = styled.div`
@@ -105,6 +109,9 @@ const SUSDBox = styled.div`
   font-size: 14px;
   line-height: 22px;
   font-weight: 900;
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 const SIconFlash = styled.img`
   margin-right: 10px;
@@ -145,11 +152,18 @@ function DashboardStaking({ address, amount }) {
       await axiosInstance
         .get('/api/price')
         .then(res => {
-          console.log(res, 'result');
-
           if (res) {
             const result = res.data.data.rows;
-            console.log(result, 'result');
+            const objPriceStrkToUSD = _.find(result, item => {
+              return item.symbol === 'strk';
+            });
+            const objPriceStrkToEthereum = _.find(result, item => {
+              return item.symbol === 'eth';
+            });
+            const rateStrkVsUSD = renderValueFixed(objPriceStrkToUSD.amount);
+            const rateStrkVsETH = renderValueFixed(
+              objPriceStrkToEthereum.amount
+            );
           }
         })
         .catch(err => {
