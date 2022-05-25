@@ -17,11 +17,11 @@ import ProposerDetail from 'containers/Main/ProposerDetail';
 import VoterLeaderboard from 'containers/Main/VoterLeaderboard';
 import Forbidden from 'containers/Main/Forbidden';
 import History from 'containers/Main/History';
-import Theme from './Theme';
 import { ApolloProvider } from 'react-apollo';
 import { MoralisProvider } from 'react-moralis';
 import * as constants from 'utilities/constants';
 import { client } from '../apollo/client';
+import Theme from './Theme';
 
 import 'assets/styles/App.scss';
 import Staking from './Main/Staking/Staking';
@@ -48,45 +48,6 @@ class App extends React.Component {
       <Theme>
         <ApolloProvider client={client}>
           <IntlProvider locale={lang} messages={message}>
-<<<<<<< HEAD
-            <Provider store={store}>
-              <BrowserRouter>
-                <Switch
-                  atEnter={{ opacity: 0 }}
-                  atLeave={{ opacity: 0.5 }}
-                  atActive={{ opacity: 1 }}
-                  className="switch-wrapper"
-                >
-                  <Route exact path="/dashboard" component={Dashboard} />
-                  <Route exact path="/vote" component={Vote} />
-                  <Route exact path="/strk" component={STRK} />
-                  <Route exact path="/market" component={Market} />
-                  <Route exact path="/market/:asset" component={MarketDetail} />
-                  <Route exact path="/forbidden" component={Forbidden} />
-                  <Route exact path="/history" component={History} />
-                  <Route
-                    exact
-                    path="/vote/leaderboard"
-                    component={VoterLeaderboard}
-                  />
-                  <Route
-                    exact
-                    path="/vote/proposal/:id"
-                    component={VoteOverview}
-                  />
-                  <Route
-                    exact
-                    path="/vote/address/:address"
-                    component={ProposerDetail}
-                  />
-                  {process.env.REACT_APP_ENV === 'dev' && (
-                    <Route exact path="/faucet" component={Faucet} />
-                  )}
-                  <Redirect from="/" to="/dashboard" />
-                </Switch>
-              </BrowserRouter>
-            </Provider>
-=======
             <MoralisProvider
               serverUrl={constants.MORALIS_URL}
               appId={constants.MORALIS_ID}
@@ -110,6 +71,7 @@ class App extends React.Component {
                     />
                     <Route exact path="/forbidden" component={Forbidden} />
                     <Route exact path="/staking" component={Staking} />
+                    <Route exact path="/history" component={History} />
                     <Route
                       exact
                       path="/vote/leaderboard"
@@ -133,7 +95,6 @@ class App extends React.Component {
                 </BrowserRouter>
               </Provider>
             </MoralisProvider>
->>>>>>> 1512f7ee315c5a90c3ff1ba0580e8353541c88ef
           </IntlProvider>
         </ApolloProvider>
       </Theme>
