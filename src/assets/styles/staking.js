@@ -147,10 +147,10 @@ export const SBtn = styled.div`
     margin-left: 10px;
   }
   @media only screen and (max-width: 768px) {
-    justify-content: flex-start;
+    justify-content: flex-end;
     margin-top: 0;
     margin-left: 5px;
-    margin-right: 10px;
+    margin-left: 10px;
   }
 `;
 export const SBtnUn = styled.div`

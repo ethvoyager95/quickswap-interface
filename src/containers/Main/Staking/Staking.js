@@ -696,7 +696,7 @@ function Staking({ settings, setSetting }) {
       await methods
         .send(
           farmingContract.methods.deposit,
-          [0, new BigNumber(valueBigNumber).integerValue()],
+          [0, new BigNumber(valueBigNumber).integerValue().toString(10)],
           address
         )
         .then(res => {
@@ -708,6 +708,7 @@ function Staking({ settings, setSetting }) {
           }
         })
         .catch(err => {
+          console.log(err, 'stake');
           if (err.message.includes('User denied')) {
             setIsShowCancel(true);
             setiIsConfirm(false);
@@ -737,7 +738,7 @@ function Staking({ settings, setSetting }) {
       await methods
         .send(
           farmingContract.methods.withdraw,
-          [0, new BigNumber(val).integerValue()],
+          [0, new BigNumber(val).integerValue().toString(10)],
           address
         )
         .then(res => {
@@ -769,7 +770,7 @@ function Staking({ settings, setSetting }) {
     await methods
       .send(
         farmingContract.methods.claimBaseRewards,
-        [new BigNumber(0).integerValue()],
+        [new BigNumber(0).integerValue().toString(10)],
         address
       )
       .then(res => {
@@ -795,7 +796,7 @@ function Staking({ settings, setSetting }) {
     await methods
       .send(
         farmingContract.methods.claimBoostReward,
-        [new BigNumber(0).integerValue()],
+        [new BigNumber(0).integerValue().toString(10)],
         address
       )
       .then(() => {})
@@ -896,7 +897,7 @@ function Staking({ settings, setSetting }) {
             checked
               ? farmingContract.methods.boostPartially
               : farmingContract.methods.boost,
-            [0, new BigNumber(value).integerValue()],
+            [0, new BigNumber(value).integerValue().toString(10)],
             address
           )
           .then(res => {
@@ -942,7 +943,7 @@ function Staking({ settings, setSetting }) {
             checked
               ? farmingContract.methods.unBoostPartially
               : farmingContract.methods.unBoost,
-            [0, new BigNumber(value).integerValue()],
+            [0, new BigNumber(value).integerValue().toString(10)],
             address
           )
           .then(res => {
