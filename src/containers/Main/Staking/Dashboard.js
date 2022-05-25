@@ -106,7 +106,7 @@ const SIconFlash = styled.img`
 `;
 const abortController = new AbortController();
 
-function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
+function DashboardStaking({ address, amount }) {
   const [countAmount, setCountAmount] = useState(null);
   const [baseAPR, setBaseAPR] = useState(0);
   const [perblock, setPerblock] = useState(0);
@@ -131,7 +131,10 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
     const baseAprBigNumber = divDecimals(baseAprCaculator, 18);
     const baseAprPer = renderValueFixed(baseAprBigNumber);
     setBaseAPR(baseAprPer);
-  }, [address, amount, totalBoost, totalDeposit]);
+    if (!address) {
+      setCountAmount(0);
+    }
+  }, [address, amount]);
   const getRate = async () => {
     // try {
     //   await axiosInstance
@@ -254,15 +257,11 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
   );
 }
 DashboardStaking.propTypes = {
-  totalBoost: PropTypes.number,
-  totalDeposit: PropTypes.string,
   amount: PropTypes.number,
   address: PropTypes.string
 };
 
 DashboardStaking.defaultProps = {
-  totalBoost: 0,
-  totalDeposit: '',
   amount: 0,
   address: ''
 };

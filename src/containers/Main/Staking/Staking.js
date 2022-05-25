@@ -28,7 +28,7 @@ import {
   SECOND30DAY
 } from './helper';
 // eslint-disable-next-line import/named
-import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
+import { axiosInstanceMoralis } from '../../../utilities/axios';
 import '../../../assets/styles/slick.scss';
 import {
   SMain,
@@ -270,26 +270,6 @@ function Staking({ settings, setSetting }) {
       accBaseReward: '',
       accBoostReward: ''
     };
-    setIsLoading(true);
-    try {
-      // eslint-disable-next-line no-debugger
-      await axiosInstance
-        .get(`/api/user/total_stake`)
-        .then(res => {
-          if (res) {
-            const result = res.data.data;
-            total.totalBoost = result.totalBoost;
-            const totalDepositString = divDecimals(result.totalDeposit, 18);
-            total.totalDeposit = totalDepositString.toString();
-          }
-        })
-        .catch(err => {
-          throw err;
-        });
-      setIsLoading(false);
-    } catch (err) {
-      throw err;
-    }
     let objUser = {};
     if (address) {
       await methods
@@ -713,7 +693,6 @@ function Staking({ settings, setSetting }) {
           }
         })
         .catch(err => {
-          console.log(err, 'stake');
           if (err.message.includes('User denied')) {
             setIsShowCancel(true);
             setiIsConfirm(false);
@@ -1046,13 +1025,7 @@ function Staking({ settings, setSetting }) {
           <SMain>
             <Row className="all-section">
               <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                <DashboardStaking
-                  totalBoost={userInfo?.totalBoost}
-                  totalDeposit={userInfo?.totalDeposit}
-                  amount={countNFT}
-                  address={settings?.selectedAddress}
-                  loadding={isLoading}
-                />
+                <DashboardStaking amount={countNFT} address={address} />
                 <SDivPadding>
                   <SHeader>
                     <SText>Interest Rate Model</SText>
