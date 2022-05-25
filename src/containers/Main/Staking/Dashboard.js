@@ -108,9 +108,10 @@ const abortController = new AbortController();
 
 function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
   const [countAmount, setCountAmount] = useState(null);
-  const [countTotal, setCountTotal] = useState(null);
   const [baseAPR, setBaseAPR] = useState(0);
   const [perblock, setPerblock] = useState(0);
+  const [amountBoost, setAmountBoost] = useState(0);
+  const [amountDeposit, setAmountDeposit] = useState(0);
   const farmingContract = getFarmingContract();
 
   const getPerBlock = async () => {
@@ -126,7 +127,6 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
   useEffect(() => {
     getPerBlock();
     setCountAmount(amount);
-    setCountTotal(totalBoost);
     const baseAprCaculator = getBaseApr(amount, perblock);
     const baseAprBigNumber = divDecimals(baseAprCaculator, 18);
     const baseAprPer = renderValueFixed(baseAprBigNumber);
@@ -163,6 +163,26 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
     //   throw err;
     // }
   };
+  const getDataDashBoard = async () => {
+    try {
+      // eslint-disable-next-line no-debugger
+      await axiosInstance
+        .get(`/api/user/total_stake`)
+        .then(res => {
+          if (res) {
+            const result = res.data.data;
+            const totalDepositString = divDecimals(result.totalDeposit, 18);
+            setAmountBoost(result.totalBoost);
+            setAmountDeposit(renderValueFixed(totalDepositString.toString()));
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+    } catch (err) {
+      throw err;
+    }
+  };
   useEffect(() => {
     let updateTimer;
     if (address) {
@@ -177,7 +197,9 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
       }
     };
   }, []);
-
+  useEffect(() => {
+    getDataDashBoard();
+  }, [address]);
   return (
     <>
       <React.Fragment>
@@ -198,30 +220,16 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                 <SItemsBox>
                   <STextBox>NFTs Staked</STextBox>
                   <SValueBox>
-                    {(countAmount !== null ** countAmount) !== 0 &&
-                    countTotal !== null &&
-                    countTotal !== 0 ? (
-                      <>
-                        {countAmount} / {countTotal}
-                      </>
-                    ) : (
-                      <>-</>
-                    )}
+                    {countAmount} / {amountBoost}
                   </SValueBox>
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Liquidity</STextBox>
                   <>
-                    {totalDeposit ? (
-                      <>
-                        <SValueBox>
-                          <SIconFlash src={IconFlashSmall} />
-                          {totalDeposit}
-                        </SValueBox>
-                      </>
-                    ) : (
-                      <SValueBox>-</SValueBox>
-                    )}
+                    <SValueBox>
+                      <SIconFlash src={IconFlashSmall} />
+                      {amountDeposit}
+                    </SValueBox>
                     <SUSDBox>$30,005</SUSDBox>
                   </>
                 </SItemsBox>
@@ -234,7 +242,7 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
                   {address ? (
                     <SValueBox>{baseAPR}% </SValueBox>
                   ) : (
-                    <SValueBox>- </SValueBox>
+                    <SValueBox>0% </SValueBox>
                   )}
                 </SItemsBox>
               </SBox>
