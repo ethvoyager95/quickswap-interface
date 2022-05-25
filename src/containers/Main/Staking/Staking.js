@@ -28,7 +28,7 @@ import {
   SECOND30DAY
 } from './helper';
 // eslint-disable-next-line import/named
-import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
+import { axiosInstanceMoralis } from '../../../utilities/axios';
 import '../../../assets/styles/slick.scss';
 import {
   SMain,
@@ -269,26 +269,6 @@ function Staking({ settings, setSetting }) {
       accBaseReward: '',
       accBoostReward: ''
     };
-    setIsLoading(true);
-    try {
-      // eslint-disable-next-line no-debugger
-      await axiosInstance
-        .get(`/api/user/total_stake`)
-        .then(res => {
-          if (res) {
-            const result = res.data.data;
-            total.totalBoost = result.totalBoost;
-            const totalDepositString = divDecimals(result.totalDeposit, 18);
-            total.totalDeposit = totalDepositString.toString();
-          }
-        })
-        .catch(err => {
-          throw err;
-        });
-      setIsLoading(false);
-    } catch (err) {
-      throw err;
-    }
     let objUser = {};
     if (address) {
       await methods
@@ -683,7 +663,7 @@ function Staking({ settings, setSetting }) {
     } else {
       // deposit
       setiIsConfirm(true);
-      const valueBigNumber = divDecimals(val, 18);
+      const valueBigNumber = new BigNumber(val);
       if (valueBigNumber.isZero()) {
         setMessErr({
           mess: 'Invalid amount',
@@ -695,19 +675,23 @@ function Staking({ settings, setSetting }) {
       await methods
         .send(
           farmingContract.methods.deposit,
-          [0, new BigNumber(valueBigNumber).integerValue().toString(10)],
+          [
+            0,
+            valueBigNumber
+              .times(new BigNumber(10).pow(18))
+              .integerValue()
+              .toString(10)
+          ],
           address
         )
         .then(res => {
           if (res) {
-            getDataUserInfor();
             setTxhash(res.transactionHash);
             setiIsConfirm(false);
             setIsSuccess(true);
           }
         })
         .catch(err => {
-          console.log(err, 'stake');
           if (err.message.includes('User denied')) {
             setIsShowCancel(true);
             setiIsConfirm(false);
@@ -734,10 +718,17 @@ function Staking({ settings, setSetting }) {
     } else {
       // withdraw test
       setiIsConfirm(true);
+      const valueBigNumber = new BigNumber(val);
       await methods
         .send(
           farmingContract.methods.withdraw,
-          [0, new BigNumber(val).integerValue().toString(10)],
+          [
+            0,
+            valueBigNumber
+              .times(new BigNumber(10).pow(18))
+              .integerValue()
+              .toString(10)
+          ],
           address
         )
         .then(res => {
@@ -766,10 +757,16 @@ function Staking({ settings, setSetting }) {
   // handleClaim
   const handleClainBaseReward = async () => {
     setiIsConfirm(true);
+    const zero = 0;
     await methods
       .send(
         farmingContract.methods.claimBaseRewards,
-        [new BigNumber(0).integerValue().toString(10)],
+        [
+          zero
+            .times(new BigNumber(10).pow(18))
+            .integerValue()
+            .toString(10)
+        ],
         address
       )
       .then(res => {
@@ -792,10 +789,16 @@ function Staking({ settings, setSetting }) {
   };
   const handleClainBootReward = async () => {
     setiIsConfirm(true);
+    const zero = 0;
     await methods
       .send(
         farmingContract.methods.claimBoostReward,
-        [new BigNumber(0).integerValue().toString(10)],
+        [
+          zero
+            .times(new BigNumber(10).pow(18))
+            .integerValue()
+            .toString(10)
+        ],
         address
       )
       .then(() => {})
@@ -896,7 +899,7 @@ function Staking({ settings, setSetting }) {
             checked
               ? farmingContract.methods.boostPartially
               : farmingContract.methods.boost,
-            [0, new BigNumber(value).integerValue().toString(10)],
+            [0, value.toString(10)],
             address
           )
           .then(res => {
@@ -904,8 +907,6 @@ function Staking({ settings, setSetting }) {
             setiIsConfirm(false);
             setIsSuccess(true);
             setValueNFTStake(0);
-            getDataNFT();
-            getDataLP();
             setItemStaking([]);
           })
           .catch(err => {
@@ -942,7 +943,7 @@ function Staking({ settings, setSetting }) {
             checked
               ? farmingContract.methods.unBoostPartially
               : farmingContract.methods.unBoost,
-            [0, new BigNumber(value).integerValue().toString(10)],
+            [0, value.toString(10)],
             address
           )
           .then(res => {
@@ -950,8 +951,6 @@ function Staking({ settings, setSetting }) {
             setiIsConfirm(false);
             setIsSuccess(true);
             setValueNFTUnStake(0);
-            getDataNFT();
-            getDataLP();
             setItemStaked([]);
           })
           .catch(err => {
@@ -996,7 +995,7 @@ function Staking({ settings, setSetting }) {
   useEffect(() => {
     getDataLP();
     getDataNFT();
-  }, [address]);
+  }, [address, txhash]);
   // change accounts
   useEffect(() => {
     if (!address) {
@@ -1025,13 +1024,7 @@ function Staking({ settings, setSetting }) {
           <SMain>
             <Row className="all-section">
               <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                <DashboardStaking
-                  totalBoost={userInfo?.totalBoost}
-                  totalDeposit={userInfo?.totalDeposit}
-                  amount={countNFT}
-                  address={settings?.selectedAddress}
-                  loadding={isLoading}
-                />
+                <DashboardStaking amount={countNFT} address={address} />
                 <SDivPadding>
                   <SHeader>
                     <SText>Interest Rate Model</SText>
