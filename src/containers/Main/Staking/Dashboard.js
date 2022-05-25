@@ -197,50 +197,33 @@ function DashboardStaking({ address, amount, totalBoost, totalDeposit }) {
               <SBox>
                 <SItemsBox>
                   <STextBox>NFTs Staked</STextBox>
-                  {address ? (
-                    <>
-                      <SValueBox>
-                        {(countAmount !== null ** countAmount) !== 0 &&
-                        countTotal !== null &&
-                        countTotal !== 0 ? (
-                          <>
-                            {countAmount} / {countTotal}
-                          </>
-                        ) : (
-                          <>-</>
-                        )}
-                      </SValueBox>
-                      {/* <SUSDBox>$1000</SUSDBox> */}
-                    </>
-                  ) : (
-                    <>
-                      <SValueBox>-</SValueBox>
-                      <SUSDBox>-</SUSDBox>
-                    </>
-                  )}
+                  <SValueBox>
+                    {(countAmount !== null ** countAmount) !== 0 &&
+                    countTotal !== null &&
+                    countTotal !== 0 ? (
+                      <>
+                        {countAmount} / {countTotal}
+                      </>
+                    ) : (
+                      <>-</>
+                    )}
+                  </SValueBox>
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Liquidity</STextBox>
-                  {address ? (
-                    <>
-                      {totalDeposit ? (
-                        <>
-                          <SValueBox>
-                            <SIconFlash src={IconFlashSmall} />
-                            {totalDeposit}
-                          </SValueBox>
-                        </>
-                      ) : (
-                        <SValueBox>-</SValueBox>
-                      )}
-                      <SUSDBox>$30,005</SUSDBox>
-                    </>
-                  ) : (
-                    <>
+                  <>
+                    {totalDeposit ? (
+                      <>
+                        <SValueBox>
+                          <SIconFlash src={IconFlashSmall} />
+                          {totalDeposit}
+                        </SValueBox>
+                      </>
+                    ) : (
                       <SValueBox>-</SValueBox>
-                      <SUSDBox>-</SUSDBox>
-                    </>
-                  )}
+                    )}
+                    <SUSDBox>$30,005</SUSDBox>
+                  </>
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Boost APR</STextBox>
