@@ -118,7 +118,6 @@ import IconVstrkSmall from '../../../assets/img/flash_vstrk.svg';
 import IconNotConnect from '../../../assets/img/not_connect_data.svg';
 
 // eslint-disable-next-line import/order
-
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
   const { onClick } = props;
