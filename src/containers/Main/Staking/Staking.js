@@ -63,7 +63,7 @@ import IconLpSmall from '../../../assets/img/lp_small.svg';
 import IconVstrkSmall from '../../../assets/img/flash_vstrk.svg';
 // import IconSelect from '../../../assets/img/select.svg';
 // import IconNotSelect from '../../../assets/img/not_select.svg';
-import IconNotConnect from '../../../assets/img/not_connect_data.svg';
+// import IconNotConnect from '../../../assets/img/not_connect_data.svg';
 
 // eslint-disable-next-line import/order
 function SampleNextArrow(props) {
@@ -1054,8 +1054,7 @@ function Staking({ settings, setSetting }) {
                                               </ST.SBtnStake>
                                               <Tooltip
                                                 placement="right"
-                                                title="Countdown will be reset if you stake 
-                                        more without claiming the reward"
+                                                title="Countdown time will be reset if you stake more without claiming the rewards"
                                               >
                                                 <ST.SQuestion
                                                   src={IconQuestion}
@@ -1084,8 +1083,7 @@ function Staking({ settings, setSetting }) {
                                                   </ST.SBtnLoadding>
                                                   <Tooltip
                                                     placement="right"
-                                                    title="Countdown will be reset if you stake 
-                                        more without claiming the reward"
+                                                    title="Countdown time will be reset if you stake more without claiming the rewards"
                                                   >
                                                     <ST.SQuestion
                                                       src={IconQuestion}
@@ -1114,8 +1112,7 @@ function Staking({ settings, setSetting }) {
                                                   </ST.SBtnStake>
                                                   <Tooltip
                                                     placement="right"
-                                                    title="Countdown will be reset if you stake 
-                                        more without claiming the reward"
+                                                    title="Countdown time will be reset if you stake more without claiming the rewards"
                                                   >
                                                     <ST.SQuestion
                                                       src={IconQuestion}
@@ -1220,8 +1217,7 @@ function Staking({ settings, setSetting }) {
                                                 </ST.SBtnLoadding>
                                                 <Tooltip
                                                   placement="right"
-                                                  title="Countdown will be reset if you unstake 
-                                            more without claiming the reward"
+                                                  title="Countdown time will be reset if you unstake a part without claiming the rewards"
                                                 >
                                                   <ST.SQuestion
                                                     src={IconQuestion}
@@ -1250,8 +1246,7 @@ function Staking({ settings, setSetting }) {
                                                 </ST.SBtnUnstake>
                                                 <Tooltip
                                                   placement="right"
-                                                  title="Countdown will be reset if you unstake 
-                                            more without claiming the reward"
+                                                  title="Countdown time will be reset if you unstake a part without claiming the rewards"
                                                 >
                                                   <ST.SQuestion
                                                     src={IconQuestion}
@@ -1282,8 +1277,7 @@ function Staking({ settings, setSetting }) {
                                             </ST.SBtnStake>
                                             <Tooltip
                                               placement="right"
-                                              title="Countdown will be reset if you unstake 
-                                            more without claiming the reward"
+                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
                                             >
                                               <ST.SQuestion
                                                 src={IconQuestion}
@@ -1306,8 +1300,7 @@ function Staking({ settings, setSetting }) {
                                         </ST.SSUnTake>
                                         <Tooltip
                                           placement="right"
-                                          title="Countdown will be reset if you unstake 
-                                            more without claiming the reward"
+                                          title="Countdown time will be reset if you unstake a part without claiming the rewards"
                                         >
                                           <ST.SQuestion src={IconQuestion} />
                                         </Tooltip>
@@ -1562,9 +1555,7 @@ function Staking({ settings, setSetting }) {
                       <ST.SSlider>
                         {dataNFT.length === 0 && (
                           <ST.SSliderNoData>
-                            <ST.SSliderNoDataImg
-                              src={address ? IconNoData : IconNotConnect}
-                            />
+                            <ST.SSliderNoDataImg src={IconNoData} />
                             <ST.SSliderNoDataText>
                               {address
                                 ? 'You don’t own any NFTs'
@@ -1638,9 +1629,7 @@ function Staking({ settings, setSetting }) {
                       <ST.SSlider>
                         {dataNFTUnState.length === 0 && (
                           <ST.SSliderNoData>
-                            <ST.SSliderNoDataImg
-                              src={address ? IconNoData : IconNotConnect}
-                            />
+                            <ST.SSliderNoDataImg src={IconNoData} />
                             <ST.SSliderNoDataText>
                               {address
                                 ? 'You don’t own any NFTs'
