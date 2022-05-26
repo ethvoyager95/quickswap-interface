@@ -47,6 +47,31 @@ iframe {
   line-height: 19px;
   padding: 10px 15px !important;
 }
+// overide switch antd
 .ant-tooltip-arrow::before {
   background-color: #fff !important;
+}
+button.ant-switch {
+  background: #dfdfdf;
+}
+.ant-switch::after {
+  background: #b8b8b8;
+}
+
+.ant-switch::after {
+  background: #b8b8b8 !important;
+}
+.ant-switch-checked::after {
+  background: #06c270 !important;
+}
+button.ant-switch.ant-switch-checked:hover {
+  background: #dfdfdf !important;
+}
+button.ant-switch:hover {
+  background: #dfdfdf !important;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

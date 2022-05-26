@@ -167,7 +167,7 @@ const chains = {
     builder: explorers.etherscan
   }
 };
-function DialogSuccess({ isSuccess, close, address, txh }) {
+function DialogSuccess({ isSuccess, close, address, txh, text }) {
   const classes = useStyles();
   const [copySuccess, setCopySuccess] = useState('');
   const [chainId, setChainId] = useState('');
@@ -208,7 +208,7 @@ function DialogSuccess({ isSuccess, close, address, txh }) {
               <SIconClose src={IconClose} onClick={close} />
             </SIcon>
             <SIconSucsess src={IconSuccess} />
-            <STitle>Stake STRK successfully</STitle>
+            <STitle>{text}</STitle>
             <SImg />
             <SLink>
               <SView>View on explorer</SView>
@@ -241,14 +241,16 @@ DialogSuccess.propTypes = {
   close: PropTypes.func,
   isSuccess: PropTypes.bool,
   address: PropTypes.string,
-  txh: PropTypes.string
+  txh: PropTypes.string,
+  text: PropTypes.string
 };
 
 DialogSuccess.defaultProps = {
   close: func,
   isSuccess: false,
   address: '',
-  txh: ''
+  txh: '',
+  text: ''
 };
 
 const mapStateToProps = ({ account }) => ({

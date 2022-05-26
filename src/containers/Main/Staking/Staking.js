@@ -173,6 +173,7 @@ function Staking({ settings, setSetting }) {
   const [dataNFT, setDataNFT] = useState([]);
   const [dataNFTUnState, setDataNFTUnState] = useState([]);
   const [textErr, setTextErr] = useState('');
+  const [textSuccess, setTextSuccess] = useState('');
   const [isStakeNFT, setIsStakeNFT] = useState(false);
   const [isUnStakeNFT, setIsUnStakeNFT] = useState(false);
   const [isConfirm, setiIsConfirm] = useState(false);
@@ -415,12 +416,27 @@ function Staking({ settings, setSetting }) {
       setVal(0);
     } else {
       const valueFormat = event?.target.value.replace(/,/g, '.');
+      const lstValueFormat = valueFormat?.toString().split('.');
+      if (lstValueFormat.length > 1) {
+        const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(0, 5)}`;
+        setVal(result);
+        return;
+      }
       setVal(valueFormat);
     }
   };
   const handleMaxValue = () => {
     setVal(userInfo?.availableNumber);
     if (userInfo?.availableNumber > 0) {
+      setMessErr({
+        mess: '',
+        show: false
+      });
+    }
+  };
+  const handleMaxValueStaked = () => {
+    setVal(userInfo?.amount);
+    if (userInfo?.amount > 0) {
       setMessErr({
         mess: '',
         show: false
@@ -453,7 +469,7 @@ function Staking({ settings, setSetting }) {
           setIsApproveLP(true);
         }
       });
-  }, [val, address, handleMaxValue, userInfo]);
+  }, [val, address, handleMaxValue, userInfo, handleMaxValueStaked]);
   const checkApproveNFT = useCallback(async () => {
     await methods
       .call(nFtContract.methods.isApprovedForAll, [
@@ -482,7 +498,7 @@ function Staking({ settings, setSetting }) {
           }
         }
       });
-  }, [val, handleMaxValue, address, userInfo]);
+  }, [val, handleMaxValue, handleMaxValueStaked, address, userInfo]);
   // approved Lp
   const handleApproveLp = useCallback(async () => {
     setiIsConfirm(true);
@@ -510,7 +526,7 @@ function Staking({ settings, setSetting }) {
         }
         throw err;
       });
-  }, [val, handleMaxValue]);
+  }, [val, handleMaxValue, handleMaxValueStaked]);
   const handleApproveVstrk = useCallback(async () => {
     setiIsConfirm(true);
     await methods
@@ -537,13 +553,20 @@ function Staking({ settings, setSetting }) {
         }
         throw err;
       });
-  }, [val, handleMaxValue]);
+  }, [val, handleMaxValue, handleMaxValueStaked]);
   // check approve lp
   useEffect(() => {
     checkApproveLP();
     checkApproveNFT();
     checkApproveVstrk();
-  }, [val, handleMaxValue, isApproveLP, txhash, dataNFTUnState]);
+  }, [
+    val,
+    handleMaxValue,
+    handleMaxValueStaked,
+    isApproveLP,
+    txhash,
+    dataNFTUnState
+  ]);
   const handleApproveNFT = useCallback(async () => {
     setiIsConfirm(true);
     await methods
@@ -642,6 +665,7 @@ function Staking({ settings, setSetting }) {
         .then(res => {
           if (res) {
             setTxhash(res.transactionHash);
+            setTextSuccess('Stake STRK-ETH successfully');
             setiIsConfirm(false);
             setIsSuccess(true);
             setIsLoadingBtn(false);
@@ -700,6 +724,7 @@ function Staking({ settings, setSetting }) {
         )
         .then(res => {
           setTxhash(res.transactionHash);
+          setTextSuccess('Unstake STRK-ETH successfully');
           setiIsConfirm(false);
           setIsSuccess(true);
           setIsLoadingUnStake(false);
@@ -736,7 +761,10 @@ function Staking({ settings, setSetting }) {
       )
       .then(res => {
         if (res) {
+          setTxhash(res.transactionHash);
           setiIsConfirm(false);
+          setIsSuccess(true);
+          setTextSuccess('Claim Base Reward successfully');
         }
       })
       .catch(err => {
@@ -761,7 +789,12 @@ function Staking({ settings, setSetting }) {
         [zero.toString(10)],
         address
       )
-      .then(() => {})
+      .then(res => {
+        setTxhash(res.transactionHash);
+        setiIsConfirm(false);
+        setIsSuccess(true);
+        setTextSuccess('Claim Boost Reward successfully');
+      })
       .catch(err => {
         if (err.message.includes('User denied')) {
           setIsShowCancel(true);
@@ -774,13 +807,6 @@ function Staking({ settings, setSetting }) {
         }
         throw err;
       });
-  };
-  // handleOpen
-  const handleStakeNFT = () => {
-    setIsStakeNFT(true);
-  };
-  const handleUnStakeNFT = () => {
-    setIsUnStakeNFT(true);
   };
 
   // Stake NFT
@@ -805,6 +831,7 @@ function Staking({ settings, setSetting }) {
           )
           .then(res => {
             setTxhash(res.transactionHash);
+            setTextSuccess('Stake NFT successfully');
             setiIsConfirm(false);
             setIsSuccess(true);
             setValueNFTStake('');
@@ -851,6 +878,7 @@ function Staking({ settings, setSetting }) {
           )
           .then(res => {
             setTxhash(res.transactionHash);
+            setTextSuccess('Unstake NFT successfully');
             setiIsConfirm(false);
             setIsSuccess(true);
             setValueNFTUnStake('');
@@ -874,7 +902,14 @@ function Staking({ settings, setSetting }) {
     },
     []
   );
-
+  // handleOpen
+  const handleStakeNFT = () => {
+    setIsStakeNFT(true);
+  };
+  const handleUnStakeNFT = () => {
+    setIsUnStakeNFT(true);
+  };
+  // handle Close
   const handleCloseConfirm = () => {
     setiIsConfirm(false);
   };
@@ -1002,7 +1037,9 @@ function Staking({ settings, setSetting }) {
                             </ST.SIconSmall>
                             {userInfo.amount ?? '0.0'}
                             {address ? (
-                              <ST.SMax onClick={handleMaxValue}>MAX</ST.SMax>
+                              <ST.SMax onClick={handleMaxValueStaked}>
+                                MAX
+                              </ST.SMax>
                             ) : (
                               <ST.SBtnDisabled>MAX</ST.SBtnDisabled>
                             )}
@@ -1254,7 +1291,9 @@ function Staking({ settings, setSetting }) {
                               </ST.SBoxUnState>
                             </>
                           )}
-                          {address && !isApproveLP ? (
+                          {address &&
+                          userInfo.availableNumber &&
+                          !isApproveLP ? (
                             <>
                               <Col xs={{ span: 24 }} lg={{ span: 16 }}>
                                 <ST.SBtn>
@@ -1617,6 +1656,7 @@ function Staking({ settings, setSetting }) {
           isSuccess={isSuccess}
           close={handleCloseSuccess}
           address={settings?.selectedAddress}
+          text={textSuccess}
           txh={txhash}
         />
       </React.Fragment>

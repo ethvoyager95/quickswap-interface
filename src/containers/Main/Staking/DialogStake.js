@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-return */
 import { Dialog, makeStyles } from '@material-ui/core';
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes, { func } from 'prop-types';
@@ -67,7 +68,7 @@ const SMainColor = styled.div`
 //   widht: 100%;
 // `;
 const STitle = styled.div`
-  color: #333;
+  color: #0b0f23;
   text-align: center;
   font-style: normal;
   font-weight: 700;
@@ -77,13 +78,28 @@ const STitle = styled.div`
     font-size: 22px;
   }
 `;
+const SRowText = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0 20px 0;
+`;
+const STack = styled.div`
+  color: #6d6f7b;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  button {
+    margin-right: 10px;
+  }
+`;
 const STitleInput = styled.div`
   color: #6d6f7b;
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
-  margin: 20px 0 10px 0;
 `;
 // const SCount = styled.div`
 //   font-style: normal;
@@ -151,6 +167,12 @@ const SRowBox = styled.div`
     width: 100%;
   }
 `;
+const SRowBoxText = styled.div`
+  color: #0b0f23;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+`;
 const STextBox = styled.div`
   font-style: normal;
   font-weight: 400;
@@ -160,6 +182,13 @@ const STextBox = styled.div`
   align-items: center;
   letter-spacing: 0.1px;
   color: #141414;
+`;
+const SCircle = styled.div`
+  width: 5px;
+  height: 5px;
+  background: #0b0f23;
+  border-radius: 50%;
+  margin-right: 10px;
 `;
 const SValueBox = styled.div`
   font-style: normal;
@@ -200,9 +229,9 @@ const SBtnCancel = styled.div`
   width: 120px;
   margin-left: 10px;
   cursor: pointer;
-  border: 1px solid #107def;
+  border: 1px solid #fff;
 `;
-const SBtnStake = styled.div`
+const SBtnStake = styled.button`
   font-style: normal;
   font-weight: 700;
   font-size: 17px;
@@ -219,6 +248,10 @@ const SBtnStake = styled.div`
   width: 120px;
   margin-left: 10px;
   cursor: pointer;
+  outline: none;
+  border: none;
+  box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
+  border-radius: 8px;
 `;
 const SInput = styled.div`
   position: relative;
@@ -229,7 +262,7 @@ const SInput = styled.div`
   input {
     color: #6d6f7b;
     border: 1px solid #ccc !important;
-    width: 450px;
+    width: 100%;
     padding: 8px;
     border-radius: 8px;
     outline: none;
@@ -244,7 +277,6 @@ const SInput = styled.div`
 
   @media only screen and (max-width: 768px) {
     input {
-      width: 300px;
       margin-right: 20px;
     }
   }
@@ -280,24 +312,24 @@ function DialogStake({
   const [val, setValue] = useState(valueNFTStake);
   const [messErr, setMessErr] = useState();
   const [, setItemSelect] = useState(itemStaking?.length);
+  const [disabledBtn, setDisabledBtn] = useState(false);
   const [totalSelect] = useState(MAX_STAKE_NFT);
   const [currentNFTAmount, setCurrentNFTAmount] = useState(0);
   const [itemStaked, setItemStaked] = useState(listUnStake?.length);
   const [beforeStake, setBeforeStaking] = useState(0);
   const [afterStake, setAfterStake] = useState(0);
   const [checked, setChecked] = useState(false);
+
   const handleChangeValueStakeNft = useCallback(
     event => {
       if (event.isTrusted) {
-        const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
-        if (!numberDigitsRegex.test(event.target.value)) {
-          return;
-        }
-        if (event.target.value < 0) {
-          setValue(0);
-        } else {
-          const valueFormat = event?.target.value.replace(/,/g, '.');
+        // eslint-disable-next-line no-useless-escape
+        const re = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+        if (!re.test(event.target.value)) {
+          const valueFormat = event.target.value;
           setValue(valueFormat);
+        } else {
+          setValue('');
         }
       }
     },
@@ -316,6 +348,7 @@ function DialogStake({
 
     if (checked) {
       const ITEM_UNSTAKE = listUnStake.length;
+
       if (val === '') {
         setBeforeStaking(itemStaked * PERCENT);
         setAfterStake(itemStaked * PERCENT);
@@ -338,31 +371,39 @@ function DialogStake({
   useEffect(() => {
     if (val === '') {
       setMessErr('');
+      setDisabledBtn(false);
     }
     if (checked) {
-      const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
-      if (val && val > MAX_STAKE_NFT) {
-        setMessErr('Invalid number. You can not stake more than 10 NFTs');
-      } else {
-        setMessErr('');
-      }
-      if (val && val > MAX_STAKE) {
-        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
-      } else {
-        setMessErr('');
-      }
       if (val === '') {
         setMessErr('');
+        setDisabledBtn(false);
       }
-      if (val === 0) {
-        setMessErr('Invalid amount');
+      // NFT AMOUNT CAN STAKE
+      const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
+      // NFT CURREN AMOUNT
+      const AMOUNT_STAKE = listStake.length;
+      const NUMBER_VAL = Number(val);
+      if (NUMBER_VAL > AMOUNT_STAKE && NUMBER_VAL < MAX_STAKE_NFT) {
+        setMessErr(`Invalid number. You can stake only ${AMOUNT_STAKE} NFTs`);
+        setDisabledBtn(true);
+      } else if (NUMBER_VAL > MAX_STAKE_NFT) {
+        setMessErr(`Invalid number. You can not stake more than 10 NFTs`);
+        setDisabledBtn(true);
+      } else if (AMOUNT_STAKE > 10 && NUMBER_VAL > MAX_STAKE) {
+        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
+        setDisabledBtn(true);
+      } else {
+        setMessErr('');
+        setDisabledBtn(false);
       }
     } else {
       const listIds = _.map(listStake, 'token_id');
       if (val && !_.includes(listIds, val)) {
         setMessErr('Invalid tokenID');
+        setDisabledBtn(true);
       } else {
         setMessErr('');
+        setDisabledBtn(false);
       }
     }
   }, [val, isStakeNFT, listStake, checked]);
@@ -379,26 +420,32 @@ function DialogStake({
               <SIconClose src={IconClose} onClick={close} />
             </SIcon>
             <STitle>Stake NFT</STitle>
-            {checked ? (
-              <STitleInput>
-                Please input total number NFTs you want to stake
-              </STitleInput>
-            ) : (
-              <STitleInput>Please input your NFT ID</STitleInput>
-            )}
+            <SRowText>
+              {checked ? (
+                <STitleInput>
+                  Please input total number NFTs you want to stake
+                </STitleInput>
+              ) : (
+                <STitleInput>Please input your NFT ID</STitleInput>
+              )}
+              <STack>
+                <Switch checked={checked} onChange={onChangeSwitch} />
+                Stack
+              </STack>
+            </SRowText>
+
             <SInput>
               <input
-                type="text"
+                type="number"
                 value={val}
                 inputMode="decimal"
-                pattern="^[0-9]*[.,]?[0-9]*$"
+                // pattern="^[0-9]*[.,]?[0-9]*$"
                 min={0}
                 minLength={1}
                 maxLength={79}
                 placeholder="Enter a number"
                 onChange={event => handleChangeValueStakeNft(event)}
               />
-              <Switch checked={checked} onChange={onChangeSwitch} />;
             </SInput>
             {messErr && <SError>{messErr}</SError>}
           </SMain>
@@ -429,7 +476,7 @@ function DialogStake({
                     </SValueBox>
                   </SRowBox> */}
                   <SRowBox>
-                    <STextBox>Staked NFT</STextBox>
+                    <SRowBoxText>Staked NFT</SRowBoxText>
                     <SValueBox>
                       {currentNFTAmount}/{totalSelect}
                     </SValueBox>
@@ -441,15 +488,22 @@ function DialogStake({
 
                 <Col xs={{ span: 24 }} lg={{ span: 10 }}>
                   <SRowBox>
-                    <div style={{ color: '#333' }}>Boost APR</div>
+                    <SRowBoxText>Boost APR</SRowBoxText>
                   </SRowBox>
                   <SUl>
                     <SRowBox>
-                      <STextBox>Before staking</STextBox>
+                      <STextBox>
+                        <SCircle />
+                        Before staking
+                      </STextBox>
                       <SValueBox>{beforeStake}%</SValueBox>
                     </SRowBox>
+
                     <SRowBox>
-                      <STextBox>After staking</STextBox>
+                      <STextBox>
+                        <SCircle />
+                        After staking
+                      </STextBox>
                       <SValueBox>{afterStake}%</SValueBox>
                     </SRowBox>
                   </SUl>
@@ -462,6 +516,7 @@ function DialogStake({
                   <SBtn>
                     <SBtnCancel onClick={close}>Cancel</SBtnCancel>
                     <SBtnStake
+                      disabled={disabledBtn}
                       onClick={event =>
                         handleStakeDialog(val, event, checked, messErr)
                       }
