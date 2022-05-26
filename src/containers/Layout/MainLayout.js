@@ -59,7 +59,7 @@ function MainLayout({ title, isHeader, children }) {
         </Column>
         <Column xs="12" sm="12" className="main">
           <Row>
-            {isHeader && (
+            {isHeader && title && (
               <Column xs="12">
                 <Header title={title} />
               </Column>
