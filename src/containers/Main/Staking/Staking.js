@@ -416,12 +416,6 @@ function Staking({ settings, setSetting }) {
     } else {
       const valueFormat = event?.target.value.replace(/,/g, '.');
       setVal(valueFormat);
-      if (+valueFormat > +userInfo?.available) {
-        setMessErr({
-          mess: 'The amount has exceded your balance. Try again',
-          show: true
-        });
-      }
     }
   };
   const handleMaxValue = () => {
@@ -675,6 +669,13 @@ function Staking({ settings, setSetting }) {
     }
   };
   const handleUnStake = async () => {
+    if (val > +userInfo?.amount) {
+      setMessErr({
+        mess: 'The amount has exceded your balance. Try again',
+        show: true
+      });
+      return;
+    }
     if (!val || val === 0) {
       setMessErr({
         mess: 'Invalid amount',
@@ -922,7 +923,6 @@ function Staking({ settings, setSetting }) {
       });
     }
   }, [window.ethereum, address]);
-
   return (
     <>
       <React.Fragment>
@@ -1591,6 +1591,7 @@ function Staking({ settings, setSetting }) {
           listStake={dataNFT}
           listUnStake={dataNFTUnState}
           valueNFTStake={valueNFTStake}
+          currentNFT={countNFT}
           handleStakeDialog={handleStakeDialog}
         />
 
@@ -1601,6 +1602,7 @@ function Staking({ settings, setSetting }) {
           itemStaked={itemStaked}
           list={dataNFTUnState}
           valueNFTUnStake={valueNFTUnStake}
+          currentNFT={countNFT}
           handleUnStakeDialog={handleUnStakeDialog}
         />
         {/* err */}

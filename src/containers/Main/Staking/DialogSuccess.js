@@ -179,7 +179,7 @@ function DialogSuccess({ isSuccess, close, address, txh }) {
         setCopySuccess('');
       }, 1500);
     } catch (err) {
-      setCopySuccess('Failed to copy!');
+      setCopySuccess('Copied!');
     }
   };
   const getEthScanLink = (id, data, type) => {

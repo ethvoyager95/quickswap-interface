@@ -273,13 +273,15 @@ function DialogStake({
   listStake,
   listUnStake,
   valueNFTStake,
+  currentNFT,
   handleStakeDialog
 }) {
   const classes = useStyles();
   const [val, setValue] = useState(valueNFTStake);
   const [messErr, setMessErr] = useState();
   const [, setItemSelect] = useState(itemStaking?.length);
-  // const [totalSelect, setTotalSelect] = useState(listStake?.length);
+  const [totalSelect] = useState(MAX_STAKE_NFT);
+  const [currentNFTAmount, setCurrentNFTAmount] = useState(0);
   const [itemStaked, setItemStaked] = useState(listUnStake?.length);
   const [beforeStake, setBeforeStaking] = useState(0);
   const [afterStake, setAfterStake] = useState(0);
@@ -332,6 +334,7 @@ function DialogStake({
       }
     }
   }, [itemStaking, listStake, listUnStake, isStakeNFT, checked, val]);
+
   useEffect(() => {
     if (val === '') {
       setMessErr('');
@@ -365,7 +368,8 @@ function DialogStake({
   }, [val, isStakeNFT, listStake, checked]);
   useEffect(() => {
     setValue(valueNFTStake);
-  }, [valueNFTStake, isStakeNFT]);
+    setCurrentNFTAmount(currentNFT);
+  }, [valueNFTStake, isStakeNFT, currentNFT]);
   return (
     <>
       <React.Fragment>
@@ -426,7 +430,9 @@ function DialogStake({
                   </SRowBox> */}
                   <SRowBox>
                     <STextBox>Staked NFT</STextBox>
-                    <SValueBox>0/{itemStaked}</SValueBox>
+                    <SValueBox>
+                      {currentNFTAmount}/{totalSelect}
+                    </SValueBox>
                   </SRowBox>
                 </Col>
                 <Col xs={{ span: 24 }} lg={{ span: 2 }}>
@@ -479,6 +485,7 @@ DialogStake.propTypes = {
   listStake: PropTypes.array,
   listUnStake: PropTypes.array,
   valueNFTStake: PropTypes.string,
+  currentNFT: PropTypes.number,
   handleStakeDialog: PropTypes.func
 };
 
@@ -489,6 +496,7 @@ DialogStake.defaultProps = {
   listStake: [],
   listUnStake: [],
   valueNFTStake: '',
+  currentNFT: 0,
   handleStakeDialog: func
 };
 

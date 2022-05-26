@@ -254,6 +254,7 @@ function DialogUnStake({
   itemStaked,
   list,
   valueNFTUnStake,
+  currentNFT,
   handleUnStakeDialog
 }) {
   const [val, setValue] = useState(valueNFTUnStake);
@@ -262,6 +263,7 @@ function DialogUnStake({
   const [totalSelect, setTotalSelect] = useState(0);
   const [beforeUnStake, setBeforeUnStake] = useState(0);
   const [afterUnStake, setAfterUnStake] = useState(0);
+  const [currentNFTAmount, setCurrentNFTAmount] = useState(0);
   const [checked, setChecked] = useState(false);
   const handleChangeValueUnStakeNft = event => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -332,7 +334,8 @@ function DialogUnStake({
   }, [val, isUnStakeNFT, list, checked]);
   useEffect(() => {
     setValue(valueNFTUnStake);
-  }, [valueNFTUnStake, isUnStakeNFT]);
+    setCurrentNFTAmount(currentNFT);
+  }, [valueNFTUnStake, isUnStakeNFT, currentNFT]);
   const classes = useStyles();
   return (
     <>
@@ -382,7 +385,9 @@ function DialogUnStake({
                   </SRowBox> */}
                   <SRowBox>
                     <STextBox>Staked NFT</STextBox>
-                    <SValueBox>0/{totalSelect}</SValueBox>
+                    <SValueBox>
+                      {currentNFTAmount}/{totalSelect}
+                    </SValueBox>
                   </SRowBox>
                 </Col>
                 <Col xs={{ span: 24 }} lg={{ span: 2 }}>
@@ -434,6 +439,7 @@ DialogUnStake.propTypes = {
   itemStaked: PropTypes.array,
   list: PropTypes.array,
   valueNFTUnStake: PropTypes.string,
+  currentNFT: PropTypes.number,
   handleUnStakeDialog: PropTypes.func
 };
 
@@ -443,6 +449,7 @@ DialogUnStake.defaultProps = {
   itemStaked: [],
   list: [],
   valueNFTUnStake: '',
+  currentNFT: 0,
   handleUnStakeDialog: func
 };
 
