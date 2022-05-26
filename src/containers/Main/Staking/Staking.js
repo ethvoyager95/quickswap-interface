@@ -346,9 +346,15 @@ function Staking({ settings, setSetting }) {
             // eslint-disable-next-line array-callback-return
             dataConvert.map(item => {
               item.active = false;
-              item.img = IconDuck;
+              //
               item.name = `${item.name}${' #'}${item.token_id}`;
               item.id = +item.token_id;
+              item.metadata = JSON.parse(item.metadata);
+              if (item?.metadata?.image) {
+                item.img = item?.metadata?.image;
+              } else {
+                item.img = IconDuck;
+              }
             });
             const dataStakeClone = _.cloneDeep(dataConvert);
             const dataStakeCloneSort = _.sortBy(dataStakeClone, 'id');
