@@ -208,7 +208,7 @@ export const SBtn = styled.div`
   align-items: center;
 
   @media only screen and (max-width: 768px) {
-    margin-top: 0;
+    margin-top: 10px;
     margin-left: 5px;
     margin-left: 10px;
   }
