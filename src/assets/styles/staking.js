@@ -122,7 +122,20 @@ export const SMax = styled.div`
   border-radius: 5px;
   color: #fff;
   font-size: 12px;
-  padding: 4px 20px;
+  padding: 0px 15px;
+`;
+export const SBoxOne = styled.div`
+  width: 100%;
+  :last-child {
+    margin-top: 10px;
+  }
+  @media only screen and (max-width: 768px) {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+    :last-child {
+      margin-top: 20px;
+    }
+  }
 `;
 export const SBtnDisabled = styled.div`
   position: absolute;
@@ -152,7 +165,6 @@ export const SBtnUn = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: flex-start;
     margin-top: 10px;
@@ -172,7 +184,6 @@ export const SBtnStake = styled.button`
   margin-right: 10px;
   border: none;
   outline: none;
-  margin-top: 10px;
   margin-right: 15px;
   @media only screen and (max-width: 768px) {
     min-width: 150px;
@@ -303,13 +314,19 @@ export const SInfor = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 15px;
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 15px;
   align-items: center;
-  :last-child {
-    border-bottom: none !important;
+  @media only screen and (max-width: 768px) {
+    border-bottom: none;
   }
+`;
+export const SInforNotBorder = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 15px;
+  align-items: center;
 `;
 export const SInforClaim = styled.div`
   width: 100%;
