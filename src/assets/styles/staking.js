@@ -23,6 +23,22 @@ export const SDivPadding = styled.div`
     padding: 20px 5px;
   }
 `;
+export const SDivPaddingMT = styled.div`
+  width: 100%;
+  background: #fff;
+  margin-top: 20px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-sizing: content-box;
+  box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
+  .box-staking {
+    text-align: center;
+  }
+  @media only screen and (max-width: 768px) {
+    margin-top: 20px;
+    padding: 20px 5px;
+  }
+`;
 export const SDiv = styled.div`
   width: 100%;
   background: #fff;
@@ -47,8 +63,28 @@ export const SHeader = styled.div`
   margin-bottom: 20px;
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 10px;
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+    padding: 0 10px 10px 10px;
+  }
 `;
 export const SText = styled.div`
+  color: #000000;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 27px;
+  margin-top: 10px;
+  min-width: 200px;
+  img {
+    margin-left: 10px;
+  }
+  @media only screen and (max-width: 768px) {
+    font-size: 17px;
+    margin: 0;
+    padding: 0 10px;
+  }
+`;
+export const STextModel = styled.div`
   color: #000000;
   font-weight: 700;
   font-size: 20px;
@@ -92,6 +128,9 @@ export const SInput = styled.div`
       outline: none;
     }
   }
+  @media only screen and (max-width: 768px) {
+    padding: 0 10px;
+  }
 `;
 export const SError = styled.div`
   color: #e80e0e;
@@ -130,10 +169,23 @@ export const SBoxOne = styled.div`
     margin-top: 10px;
   }
   @media only screen and (max-width: 768px) {
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #e5e5e5;
     :last-child {
       margin-top: 20px;
+    }
+  }
+`;
+export const SBoxHarvest = styled.div`
+  width: 100%;
+  @media only screen and (max-width: 768px) {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    :last-child {
+      margin-top: 20px;
+    }
+    :last-child {
+      border-bottom: none;
     }
   }
 `;
@@ -186,7 +238,7 @@ export const SBtnStake = styled.button`
   outline: none;
   margin-right: 15px;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
     margin-left: 0px !important;
   }
   :disabled {
@@ -208,7 +260,7 @@ export const SBtnLoadding = styled.button`
   margin-top: 10px;
   margin-right: 15px;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
     margin-left: 0px !important;
   }
   :disabled {
@@ -227,7 +279,7 @@ export const SBtnUnstake = styled.div`
   border: 1px solid #f84960;
   margin-right: 15px;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
   }
 `;
 export const SSTake = styled.button`
@@ -248,6 +300,28 @@ export const SSTake = styled.button`
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0;
+    margin-right: 10%;
+  }
+`;
+export const SSTaked = styled.button`
+  cursor: pointer;
+  background: #107def;
+  color: #fff;
+  border-radius: 5px;
+  padding: 8px 20px;
+  min-width: 150px;
+  text-align: center;
+  margin-left: 30px;
+  border: none;
+  outline: none;
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
+  }
+  @media only screen and (max-width: 768px) {
+    min-width: 150px;
+    margin-left: 0;
+    margin-right: 5%;
   }
 `;
 export const SSUnTake = styled.button`
@@ -266,7 +340,7 @@ export const SSUnTake = styled.button`
     cursor: not-allowed;
   }
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
   }
 `;
 export const SBtnUnStakeStart = styled.div`
@@ -291,6 +365,7 @@ export const SBoxUnState = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
+    padding: 0 10px;
   }
 `;
 export const SBoxUnStateDetails = styled.div`
@@ -319,6 +394,7 @@ export const SInfor = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     border-bottom: none;
+    padding: 0 10px;
   }
 `;
 export const SInforNotBorder = styled.div`
@@ -327,17 +403,31 @@ export const SInforNotBorder = styled.div`
   justify-content: space-between;
   padding-bottom: 15px;
   align-items: center;
+  @media only screen and (max-width: 768px) {
+    padding: 0 10px;
+  }
 `;
 export const SInforClaim = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
   margin-top: 10px;
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 15px;
-  :last-child {
+  @media only screen and (max-width: 768px) {
+    border-bottom: none;
+    padding: 0 10px;
+  }
+`;
+export const SInforClaimNoBorder = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-bottom: 15px;
+  @media only screen and (max-width: 768px) {
     border-bottom: none !important;
+    padding: 0 10px;
   }
 `;
 export const SInforText = styled.div`
@@ -390,6 +480,7 @@ export const SBtnClaim = styled.div`
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
+    padding: 0 10px;
   }
 `;
 export const SBtnClaimStart = styled.div`
@@ -399,6 +490,7 @@ export const SBtnClaimStart = styled.div`
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
+    padding: 0 10px;
   }
 `;
 export const SClaim = styled.button`
@@ -414,7 +506,7 @@ export const SClaim = styled.button`
   outline: none;
   border: none;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
   }
 `;
 export const SUnClaim = styled.div`
@@ -430,7 +522,7 @@ export const SUnClaim = styled.div`
   margin-right: 15px;
   cursor: not-allowed;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
   }
 `;
 export const STimeClaim = styled.div`

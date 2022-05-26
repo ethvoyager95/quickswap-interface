@@ -968,7 +968,7 @@ function Staking({ settings, setSetting }) {
                 <DashboardStaking amount={countNFT} address={address} />
                 <ST.SDivPadding>
                   <ST.SHeader>
-                    <ST.SText>Interest Rate Model</ST.SText>
+                    <ST.STextModel>Interest Rate Model</ST.STextModel>
                     <ST.SHref target="_blank" href={constants.SUPPORT_URL}>
                       Get STRK-ETH LPs
                       <ST.SImgErr src={IconLinkBlue} />
@@ -1328,130 +1328,149 @@ function Staking({ settings, setSetting }) {
                     </Row>
                   </ST.SBoxOne>
                 </ST.SDivPadding>
-                <ST.SDivPadding>
+                <ST.SDivPaddingMT>
                   <ST.SText>STRK-ETH Harvest</ST.SText>
-                  <Row>
-                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                      <ST.SInforClaim>
-                        <ST.SInforText>Base Reward</ST.SInforText>
-                        {address ? (
-                          <ST.SInforValue>
-                            <ST.SIconSmall>
-                              <ST.SImgFlashSmall src={IconFlashSmall} />
-                            </ST.SIconSmall>
+                  {/* Claim base */}
+                  <ST.SBoxHarvest>
+                    <Row>
+                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                        <ST.SInforClaim>
+                          <ST.SInforText>Base Reward</ST.SInforText>
+                          {address ? (
+                            <ST.SInforValue>
+                              <ST.SIconSmall>
+                                <ST.SImgFlashSmall src={IconFlashSmall} />
+                              </ST.SIconSmall>
 
-                            {userInfo.accBaseReward ?? '0.0'}
-                          </ST.SInforValue>
-                        ) : (
-                          <ST.SInforValue>-</ST.SInforValue>
-                        )}
-                      </ST.SInforClaim>
-                      <ST.SInforClaim>
-                        <ST.SInforText>Boost Reward</ST.SInforText>
-                        {address ? (
-                          <ST.SInforValue>
-                            <ST.SIconSmall>
-                              <ST.SImgFlashSmall src={IconFlashSmall} />
-                            </ST.SIconSmall>
-                            {userInfo.accBoostReward ?? '0.0'}
-                          </ST.SInforValue>
-                        ) : (
-                          <ST.SInforValue>-</ST.SInforValue>
-                        )}
-                      </ST.SInforClaim>
-                      <ST.SInforClaim>
-                        <ST.SInforText>
-                          vSTRK claimed
-                          <ST.SVSTRKTootip>
-                            <Tooltip
-                              placement="right"
-                              title="vSTRK is auto-claimed to your wallet 
+                              {userInfo.accBaseReward ?? '0.0'}
+                            </ST.SInforValue>
+                          ) : (
+                            <ST.SInforValue>-</ST.SInforValue>
+                          )}
+                        </ST.SInforClaim>
+                      </Col>
+                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                        <Row>
+                          <Col xs={{ span: 24 }} lg={{ span: 16 }}>
+                            {address && isApproveLP && (
+                              <ST.SBtnClaim>
+                                {isClaimBaseReward ? (
+                                  <ST.SClaim onClick={handleClainBaseReward}>
+                                    Claim
+                                  </ST.SClaim>
+                                ) : (
+                                  <ST.SUnClaim>Claim</ST.SUnClaim>
+                                )}
+                                <Tooltip
+                                  placement="right"
+                                  title="You can only claim reward once daily"
+                                >
+                                  <ST.SQuestionClaim src={IconQuestion} />
+                                </Tooltip>
+                              </ST.SBtnClaim>
+                            )}
+                          </Col>
+                          <Col xs={{ span: 24 }} lg={{ span: 8 }}>
+                            {expiryTimeBase && address && isApproveLP ? (
+                              <CountDownClaim
+                                times={expiryTimeBase}
+                                address={address}
+                              />
+                            ) : (
+                              <></>
+                            )}
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </ST.SBoxHarvest>
+
+                  {/* Claim boost */}
+                  <ST.SBoxHarvest>
+                    <Row>
+                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                        <ST.SInforClaim>
+                          <ST.SInforText>Boost Reward</ST.SInforText>
+                          {address ? (
+                            <ST.SInforValue>
+                              <ST.SIconSmall>
+                                <ST.SImgFlashSmall src={IconFlashSmall} />
+                              </ST.SIconSmall>
+                              {userInfo.accBoostReward ?? '0.0'}
+                            </ST.SInforValue>
+                          ) : (
+                            <ST.SInforValue>-</ST.SInforValue>
+                          )}
+                        </ST.SInforClaim>
+                      </Col>
+                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                        <Row>
+                          <Col xs={{ span: 24 }} lg={{ span: 16 }}>
+                            {address && isApproveLP && (
+                              <ST.SBtnClaimStart>
+                                {isClaimBootReward ? (
+                                  <ST.SClaim onClick={handleClainBootReward}>
+                                    Claim
+                                  </ST.SClaim>
+                                ) : (
+                                  <ST.SUnClaim>Claim</ST.SUnClaim>
+                                )}
+                                <Tooltip
+                                  placement="right"
+                                  title="You can only claim reward once monthly"
+                                >
+                                  <ST.SQuestionClaim src={IconQuestion} />
+                                </Tooltip>
+                              </ST.SBtnClaimStart>
+                            )}
+                          </Col>
+                          <Col xs={{ span: 24 }} lg={{ span: 8 }}>
+                            {expiryTimeBoost && address && isApproveLP ? (
+                              <CountDownClaim
+                                times={expiryTimeBoost}
+                                address={address}
+                              />
+                            ) : (
+                              <></>
+                            )}
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </ST.SBoxHarvest>
+
+                  {/* vstrk */}
+                  <ST.SBoxHarvest>
+                    <Row>
+                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                        <ST.SInforClaimNoBorder>
+                          <ST.SInforText>
+                            vSTRK claimed
+                            <ST.SVSTRKTootip>
+                              <Tooltip
+                                placement="right"
+                                title="vSTRK is auto-claimed to your wallet 
                               (10 vSTRK is minted for each STRK-ETH to stake)"
-                            >
-                              <ST.SQuestion src={IconQuestion} />
-                            </Tooltip>
-                          </ST.SVSTRKTootip>
-                        </ST.SInforText>
-                        {address ? (
-                          <ST.SInforValue>
-                            <ST.SIconSmall>
-                              <ST.SImgLpSmall src={IconVstrkSmall} />
-                            </ST.SIconSmall>
-                            {userInfo.vStrk ?? '0.0'}
-                          </ST.SInforValue>
-                        ) : (
-                          <ST.SInforValue>-</ST.SInforValue>
-                        )}
-                      </ST.SInforClaim>
-                    </Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                      <Row>
-                        <Col xs={{ span: 24 }} lg={{ span: 16 }}>
-                          {address && isApproveLP && (
-                            <ST.SBtnClaim>
-                              {isClaimBaseReward ? (
-                                <ST.SClaim onClick={handleClainBaseReward}>
-                                  Claim
-                                </ST.SClaim>
-                              ) : (
-                                <ST.SUnClaim>Claim</ST.SUnClaim>
-                              )}
-                              <Tooltip
-                                placement="right"
-                                title="You can only claim reward once daily"
                               >
-                                <ST.SQuestionClaim src={IconQuestion} />
+                                <ST.SQuestion src={IconQuestion} />
                               </Tooltip>
-                            </ST.SBtnClaim>
-                          )}
-                        </Col>
-                        <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                          {expiryTimeBase && address && isApproveLP ? (
-                            <CountDownClaim
-                              times={expiryTimeBase}
-                              address={address}
-                            />
+                            </ST.SVSTRKTootip>
+                          </ST.SInforText>
+                          {address ? (
+                            <ST.SInforValue>
+                              <ST.SIconSmall>
+                                <ST.SImgLpSmall src={IconVstrkSmall} />
+                              </ST.SIconSmall>
+                              {userInfo.vStrk ?? '0.0'}
+                            </ST.SInforValue>
                           ) : (
-                            <></>
+                            <ST.SInforValue>-</ST.SInforValue>
                           )}
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                      <Row>
-                        <Col xs={{ span: 24 }} lg={{ span: 16 }}>
-                          {address && isApproveLP && (
-                            <ST.SBtnClaimStart>
-                              {isClaimBootReward ? (
-                                <ST.SClaim onClick={handleClainBootReward}>
-                                  Claim
-                                </ST.SClaim>
-                              ) : (
-                                <ST.SUnClaim>Claim</ST.SUnClaim>
-                              )}
-                              <Tooltip
-                                placement="right"
-                                title="You can only claim reward once monthly"
-                              >
-                                <ST.SQuestionClaim src={IconQuestion} />
-                              </Tooltip>
-                            </ST.SBtnClaimStart>
-                          )}
-                        </Col>
-                        <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                          {expiryTimeBoost && address && isApproveLP ? (
-                            <CountDownClaim
-                              times={expiryTimeBoost}
-                              address={address}
-                            />
-                          ) : (
-                            <></>
-                          )}
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                </ST.SDivPadding>
+                        </ST.SInforClaimNoBorder>
+                      </Col>
+                    </Row>
+                  </ST.SBoxHarvest>
+                </ST.SDivPaddingMT>
                 <ST.SDiv>
                   <Row>
                     <ST.SRowFlex>
@@ -1566,21 +1585,21 @@ function Staking({ settings, setSetting }) {
                         <>
                           {isApproveNFT ? (
                             <>
-                              <ST.SSTake onClick={handleUnStakeNFT}>
+                              <ST.SSTaked onClick={handleUnStakeNFT}>
                                 UnStake
-                              </ST.SSTake>
+                              </ST.SSTaked>
                             </>
                           ) : (
                             <>
-                              <ST.SSTake onClick={handleApproveNFT}>
+                              <ST.SSTaked onClick={handleApproveNFT}>
                                 Approve Staking
-                              </ST.SSTake>
+                              </ST.SSTaked>
                             </>
                           )}
                         </>
                       ) : (
                         <>
-                          <ST.SSTake disabled>UnStake</ST.SSTake>
+                          <ST.SSTaked disabled>UnStake</ST.SSTaked>
                         </>
                       )}
                     </ST.SFlexEnd>

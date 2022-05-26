@@ -19,6 +19,9 @@ const STimeClaim = styled.div`
   margin-left: 10px;
   display: block;
   width: 100%;
+  @media only screen and (max-width: 768px) {
+    width: 200px;
+  }
 `;
 const STimeNumer = styled.div`
   display: flex;

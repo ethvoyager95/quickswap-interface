@@ -41,6 +41,7 @@ const SLogo = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     margin-bottom: 20px;
+    padding: 0 10px;
   }
 `;
 const SLogoFlash = styled.img`
@@ -69,7 +70,6 @@ const STitle = styled.div`
     font-size: 20px;
     width: 100%;
     display: block;
-    text-align: right;
   }
 `;
 const SText = styled.p`
@@ -87,6 +87,7 @@ const SBox = styled.div`
   justify-content: space-between;
   @media only screen and (max-width: 768px) {
     margin-bottom: 20px;
+    padding: 0 10px;
   }
 `;
 const SItemsBox = styled.div`
