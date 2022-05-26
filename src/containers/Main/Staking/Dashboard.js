@@ -41,6 +41,7 @@ const SLogo = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     margin-bottom: 20px;
+    padding: 0 10px;
   }
 `;
 const SLogoFlash = styled.img`
@@ -62,14 +63,13 @@ const SLogoLP = styled.img`
 `;
 const STitle = styled.div`
   color: #0b0f23;
-  font-weight: 500;
+  font-weight: 900;
   font-size: 31px;
   margin-left: 30px;
   @media only screen and (max-width: 768px) {
     font-size: 20px;
     width: 100%;
     display: block;
-    text-align: right;
   }
 `;
 const SText = styled.p`
@@ -87,6 +87,7 @@ const SBox = styled.div`
   justify-content: space-between;
   @media only screen and (max-width: 768px) {
     margin-bottom: 20px;
+    padding: 0 10px;
   }
 `;
 const SItemsBox = styled.div`
@@ -113,6 +114,7 @@ const SUSDBox = styled.div`
   font-size: 14px;
   line-height: 22px;
   font-weight: 900;
+  text-align: right;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -236,7 +238,7 @@ function DashboardStaking({ address, amount }) {
                 <SLogoLP src={LogoLP} />
                 <STitle>
                   DeFi Vault 3.0
-                  <SText>STRK-ETH</SText>
+                  <SText>STRK-ETH Staking</SText>
                 </STitle>
               </SLogo>
             </Col>

@@ -811,7 +811,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           to="/staking"
           activeClassName="active"
         >
-          <Label>Staking</Label>
+          <Label>DeFi Vault 3</Label>
         </NavLink>
         {settings.selectedAddress && (
           <UserInfoButton>

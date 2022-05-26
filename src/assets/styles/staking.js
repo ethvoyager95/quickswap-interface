@@ -1,5 +1,10 @@
 import styled from 'styled-components';
 
+export const SHr = styled.div`
+  width: 100%;
+  height: 1px;
+  background: #e5e5e5;
+`;
 export const SMain = styled.div`
   width: 100%;
   .all-section {
@@ -20,6 +25,22 @@ export const SDivPadding = styled.div`
   }
   @media only screen and (max-width: 768px) {
     margin-top: 0;
+    padding: 20px 5px;
+  }
+`;
+export const SDivPaddingMT = styled.div`
+  width: 100%;
+  background: #fff;
+  margin-top: 20px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-sizing: content-box;
+  box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
+  .box-staking {
+    text-align: center;
+  }
+  @media only screen and (max-width: 768px) {
+    margin-top: 20px;
     padding: 20px 5px;
   }
 `;
@@ -47,8 +68,34 @@ export const SHeader = styled.div`
   margin-bottom: 20px;
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 10px;
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+    padding: 0 10px 10px 10px;
+  }
 `;
 export const SText = styled.div`
+  color: #000000;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 27px;
+  margin-top: 10px;
+  min-width: 200px;
+
+  img {
+    margin-left: 10px;
+  }
+  @media only screen and (max-width: 768px) {
+    font-size: 17px;
+    margin: 0;
+    padding: 0 10px;
+  }
+`;
+export const SDivHarvest = styled.div`
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 10px;
+  width: 100%;
+`;
+export const STextModel = styled.div`
   color: #000000;
   font-weight: 700;
   font-size: 20px;
@@ -92,6 +139,9 @@ export const SInput = styled.div`
       outline: none;
     }
   }
+  @media only screen and (max-width: 768px) {
+    padding: 0 10px;
+  }
 `;
 export const SError = styled.div`
   color: #e80e0e;
@@ -107,11 +157,18 @@ export const SHrefErr = styled.div`
   font-size: 14px;
   line-height: 23px;
 `;
-export const SLinkErr = styled.a``;
+export const SLinkErr = styled.a`
+  color: #f84960;
+  display: flex;
+  margin-top: 5px;
+  :hover {
+    color: #f84960;
+  }
+`;
 export const SImgErr = styled.img`
-  margin-left: 10px;
-  width: 18px;
-  height: 18px;
+  margin: 0 5px 5px 5px;
+  width: 15px;
+  height: 15px;
 `;
 export const SMax = styled.div`
   margin-left: 10px;
@@ -122,7 +179,33 @@ export const SMax = styled.div`
   border-radius: 5px;
   color: #fff;
   font-size: 12px;
-  padding: 4px 20px;
+  padding: 0px 15px;
+`;
+export const SBoxOne = styled.div`
+  width: 100%;
+  :last-child {
+    margin-top: 10px;
+  }
+  @media only screen and (max-width: 768px) {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    :last-child {
+      margin-top: 20px;
+    }
+  }
+`;
+export const SBoxHarvest = styled.div`
+  width: 100%;
+  @media only screen and (max-width: 768px) {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    :last-child {
+      margin-top: 20px;
+    }
+    :last-child {
+      border-bottom: none;
+    }
+  }
 `;
 export const SBtnDisabled = styled.div`
   position: absolute;
@@ -143,7 +226,7 @@ export const SBtn = styled.div`
   align-items: center;
 
   @media only screen and (max-width: 768px) {
-    margin-top: 0;
+    margin-top: 10px;
     margin-left: 5px;
     margin-left: 10px;
   }
@@ -152,7 +235,6 @@ export const SBtnUn = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: flex-start;
     margin-top: 10px;
@@ -167,21 +249,19 @@ export const SBtnStake = styled.button`
   color: #fff;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 220px;
+  min-width: 200px;
   text-align: center;
   margin-right: 10px;
   border: none;
   outline: none;
-  margin-top: 10px;
   margin-right: 15px;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
     margin-left: 0px !important;
   }
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
-    margin: 0 15px 0 10px;
   }
 `;
 export const SBtnLoadding = styled.button`
@@ -190,14 +270,14 @@ export const SBtnLoadding = styled.button`
   color: #fff;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 220px;
+  min-width: 200px;
   text-align: center;
   border: none;
   outline: none;
   margin-top: 10px;
   margin-right: 15px;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
     margin-left: 0px !important;
   }
   :disabled {
@@ -211,12 +291,12 @@ export const SBtnUnstake = styled.div`
   background: #fff;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 220px;
+  min-width: 200px;
   text-align: center;
   border: 1px solid #f84960;
   margin-right: 15px;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
   }
 `;
 export const SSTake = styled.button`
@@ -237,6 +317,28 @@ export const SSTake = styled.button`
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0;
+    margin-right: 10%;
+  }
+`;
+export const SSTaked = styled.button`
+  cursor: pointer;
+  background: #107def;
+  color: #fff;
+  border-radius: 5px;
+  padding: 8px 20px;
+  min-width: 150px;
+  text-align: center;
+  margin-left: 30px;
+  border: none;
+  outline: none;
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
+  }
+  @media only screen and (max-width: 768px) {
+    min-width: 150px;
+    margin-left: 0;
+    margin-right: 5%;
   }
 `;
 export const SSUnTake = styled.button`
@@ -245,7 +347,7 @@ export const SSUnTake = styled.button`
   color: #f84960;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 220px;
+  min-width: 200px;
   text-align: center;
   border: 1px solid #f84960;
   outline: none;
@@ -255,12 +357,12 @@ export const SSUnTake = styled.button`
     cursor: not-allowed;
   }
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
   }
 `;
 export const SBtnUnStakeStart = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   @media only screen and (max-width: 768px) {
     justify-content: center;
@@ -268,6 +370,7 @@ export const SBtnUnStakeStart = styled.div`
 `;
 export const SBoxState = styled.div`
   width: 100%;
+  justify-content: center;
   display: flex;
   align-items: center;
   @media only screen and (max-width: 768px) {
@@ -280,6 +383,7 @@ export const SBoxUnState = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
+    padding: 0 10px;
   }
 `;
 export const SBoxUnStateDetails = styled.div`
@@ -303,24 +407,45 @@ export const SInfor = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 15px;
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 15px;
   align-items: center;
-  :last-child {
-    border-bottom: none !important;
+  @media only screen and (max-width: 768px) {
+    border-bottom: none;
+    padding: 0 10px;
+  }
+`;
+export const SInforNotBorder = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 15px;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    padding: 0 10px;
   }
 `;
 export const SInforClaim = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
   margin-top: 10px;
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 15px;
-  :last-child {
+  @media only screen and (max-width: 768px) {
+    border-bottom: none;
+    padding: 0 10px;
+  }
+`;
+export const SInforClaimNoBorder = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-bottom: 15px;
+  @media only screen and (max-width: 768px) {
     border-bottom: none !important;
+    padding: 0 10px;
   }
 `;
 export const SInforText = styled.div`
@@ -368,20 +493,22 @@ export const SQuestionClaim = styled.img`
 `;
 export const SBtnClaim = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
+    padding: 0 10px;
   }
 `;
 export const SBtnClaimStart = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
+    padding: 0 10px;
   }
 `;
 export const SClaim = styled.button`
@@ -391,13 +518,13 @@ export const SClaim = styled.button`
   font-weight: 700;
   border-radius: 8px;
   padding: 8px 20px;
-  min-width: 220px;
+  min-width: 200px;
   text-align: center;
   margin-right: 15px;
   outline: none;
   border: none;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
   }
 `;
 export const SUnClaim = styled.div`
@@ -408,12 +535,12 @@ export const SUnClaim = styled.div`
   opacity: 0.5;
   border-radius: 8px;
   padding: 8px 20px;
-  min-width: 220px;
+  min-width: 200px;
   text-align: center;
   margin-right: 15px;
   cursor: not-allowed;
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    width: 100%;
   }
 `;
 export const STimeClaim = styled.div`
@@ -535,6 +662,7 @@ export const SSliderNoDataText = styled.div`
   line-height: 27px;
   color: #9d9fa7;
   margin-bottom: 20px;
+  margin-top: 20px;
 `;
 export const SItemSlider = styled.div`
   width: 100%;
