@@ -239,6 +239,7 @@ function Staking({ settings, setSetting }) {
           const pendingAmountNumber = divDecimals(res.pendingAmount, 18);
           const amountNumber = divDecimals(res.amount, 18);
           const totalAmount = amountNumber.plus(pendingAmountNumber);
+          const totalAmountNumber = totalAmount.toNumber();
           const accBaseRewardBigNumber = divDecimals(
             objClaim.accBaseReward,
             18
@@ -291,6 +292,7 @@ function Staking({ settings, setSetting }) {
               amountString !== 0 && amountString < 0.001
                 ? '<0.001'
                 : renderValueFixed(totalAmount).toString(),
+            amountNumber: totalAmountNumber,
             available: renderValueFixed(balanceBigFormat).toString(),
             availableNumber: balanceBigNumber.toNumber(),
             accBaseReward:
@@ -435,8 +437,8 @@ function Staking({ settings, setSetting }) {
     }
   };
   const handleMaxValueStaked = () => {
-    setVal(userInfo?.amount);
-    if (userInfo?.amount > 0) {
+    setVal(userInfo?.amountNumber);
+    if (userInfo?.amountNumber > 0) {
       setMessErr({
         mess: '',
         show: false
@@ -1305,9 +1307,9 @@ function Staking({ settings, setSetting }) {
                                         </Tooltip>
                                       </ST.SBtnUnStakeStart>
                                     </Col>
-
                                     <Col xs={{ span: 24 }} lg={{ span: 8 }}>
                                       {expiryTimeUnstakeLP &&
+                                      userInfo.amount > 0 &&
                                       address &&
                                       isApproveLP ? (
                                         <CountDownClaim
