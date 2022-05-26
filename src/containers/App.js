@@ -16,7 +16,7 @@ import VoteOverview from 'containers/Main/VoteOverview';
 import ProposerDetail from 'containers/Main/ProposerDetail';
 import VoterLeaderboard from 'containers/Main/VoterLeaderboard';
 import Forbidden from 'containers/Main/Forbidden';
-import History from 'containers/Main/History';
+import History from 'containers/Main/History/History';
 import { ApolloProvider } from 'react-apollo';
 import { MoralisProvider } from 'react-moralis';
 import * as constants from 'utilities/constants';
