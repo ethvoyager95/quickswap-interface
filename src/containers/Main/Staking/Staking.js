@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-useless-concat */
 /* eslint-disable no-sequences */
@@ -187,6 +188,8 @@ function Staking({ settings, setSetting }) {
   const [isAprroveVstrk, setIsAprroveVstrk] = useState(false);
   const [isClaimBaseReward, setisClaimBaseReward] = useState(false);
   const [isClaimBootReward, setIsClaimBootReward] = useState(false);
+  const [disabledBtn, setDisabledBtn] = useState(false);
+  const [disabledBtnUn, setDisabledBtnUn] = useState(false);
   const [countNFT, setCounNFT] = useState(0);
   const [isUnStakeLp, setIsUnStakeLp] = useState(false);
   const [itemStaking, setItemStaking] = useState([]);
@@ -195,7 +198,6 @@ function Staking({ settings, setSetting }) {
   const [yourBoostAPR, setYourBoostAPR] = useState(0);
   const [valueNFTStake, setValueNFTStake] = useState('');
   const [valueNFTUnStake, setValueNFTUnStake] = useState('');
-
   // contract
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
@@ -397,7 +399,6 @@ function Staking({ settings, setSetting }) {
               });
             });
             const lengthArr = newArray.length;
-
             if (lengthArr === 0 || lengthArr === 1) {
               setYourBoostAPR(0);
             } else {
@@ -418,18 +419,61 @@ function Staking({ settings, setSetting }) {
     setIsLoading(false);
   }, [address, txhash, window.ethereum]);
   // change amount
+  const enforcer = nextUserInput => {
+    const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
+    if (nextUserInput === '' || numberDigitsRegex.test(nextUserInput)) {
+      setVal(nextUserInput);
+    }
+  };
+
   const handleChangeValue = event => {
+    enforcer(event.target.value.replace(/,/g, '.'));
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
     if (!numberDigitsRegex.test(event.target.value)) {
       return;
     }
+
     setMessErr({
       mess: '',
       show: false
     });
-    if (event.target.value < 0) {
-      setVal(0);
+    const number = event.target.value;
+    if (/^0/.test(val)) {
+      const valueZero = val.replace(/^0/, '');
+      setVal(valueZero);
+      setMessErr({
+        mess: 'Invalid amount',
+        show: true
+      });
+    }
+    if (number === '0') {
+      setMessErr({
+        mess: 'Invalid amount',
+        show: true
+      });
+      setDisabledBtn(true);
+      setDisabledBtnUn(true);
     } else {
+      setMessErr({
+        mess: '',
+        show: false
+      });
+      setDisabledBtn(false);
+      setDisabledBtnUn(false);
+    }
+
+    // if (Number(number) > 0 && Number(number) > +userInfo?.available) {
+    //   setDisabledBtn(true);
+    //   setMessErr({
+    //     mess: 'The amount has exceeded your balance. Try again!',
+    //     show: true
+    //   });
+    // } else {
+    //   setDisabledBtn(false);
+    // }
+    if (Number(number) < 0) {
+      setVal(0);
+    } else if (Number(number) > 0) {
       const valueFormat = event?.target.value.replace(/,/g, '.');
       const lstValueFormat = valueFormat?.toString().split('.');
       if (lstValueFormat.length > 1) {
@@ -484,7 +528,7 @@ function Staking({ settings, setSetting }) {
           setIsApproveLP(true);
         }
       });
-  }, [val, address, handleMaxValue, userInfo, handleMaxValueStaked]);
+  }, [val, address, handleMaxValue, userInfo, handleMaxValueStaked, txhash]);
   const checkApproveNFT = useCallback(async () => {
     await methods
       .call(nFtContract.methods.isApprovedForAll, [
@@ -496,7 +540,7 @@ function Staking({ settings, setSetting }) {
           setIsApproveNFT(res);
         }
       });
-  }, [address]);
+  }, [address, txhash]);
   const checkApproveVstrk = useCallback(async () => {
     await methods
       .call(vStrkContract.methods.allowance, [
@@ -513,7 +557,7 @@ function Staking({ settings, setSetting }) {
           }
         }
       });
-  }, [val, handleMaxValue, handleMaxValueStaked, address, userInfo]);
+  }, [val, handleMaxValue, handleMaxValueStaked, address, userInfo, txhash]);
   // approved Lp
   const handleApproveLp = useCallback(async () => {
     setiIsConfirm(true);
@@ -611,38 +655,35 @@ function Staking({ settings, setSetting }) {
         throw err;
       });
   }, []);
+
   const expiryTimeUnstakeLP = useMemo(() => {
-    if (userInfo) {
-      const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setHours(overOneDate.getHours() + 2); // 1 hourr
-      // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
-    }
-    return null;
-  }, [userInfo, address, txhash]);
+    const overOneDate = new Date(userInfo.depositedDate * 1000);
+    return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
+    // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
+  }, [userInfo, address, txhash, isApproveLP]);
+
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setHours(overOneDate.getHours() + 1); // 1 hourr
+      return overOneDate.setMinutes(overOneDate.getMinutes() + 10); // 10 minute
       // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
     }
-    return null;
-  }, [userInfo, address, txhash]);
+  }, [userInfo, address, txhash, isApproveLP]);
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
       const over30days = new Date(userInfo.boostedDate * 1000);
-      return over30days.setHours(over30days.getHours() + 3); // 3 hour
+      return over30days.setMinutes(over30days.getMinutes() + 30); // 30 minute
       // return over30days.setDate(over30days.getDate() + 30); // 30 days
     }
-    return null;
-  }, [userInfo, address, txhash]);
+  }, [userInfo, address, txhash, isApproveLP]);
 
   // stake
   const handleStake = async () => {
     if (val > +userInfo?.available) {
       setMessErr({
-        mess: 'The amount has exceded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
       return;
@@ -685,6 +726,10 @@ function Staking({ settings, setSetting }) {
             setIsSuccess(true);
             setIsLoadingBtn(false);
             setVal('');
+            // console.log(expiryTimeUnstakeLP, 'expiryTimeUnstakeLP');
+            // console.log(userInfo.amount, ' .amount');
+            // console.log(address, ' address');
+            // console.log(isApproveLP, 'isApproveLP');
           }
         })
         .catch(err => {
@@ -721,6 +766,10 @@ function Staking({ settings, setSetting }) {
         show: true
       });
     } else {
+      setMessErr({
+        mess: '',
+        show: true
+      });
       // withdraw test
       setiIsConfirm(true);
       setIsLoadingUnStake(true);
@@ -986,6 +1035,9 @@ function Staking({ settings, setSetting }) {
                           pattern="^[0-9]*[.,]?[0-9]*$"
                           min={0}
                           minLength={1}
+                          spellCheck="false"
+                          autoComplete="off"
+                          autoCorrect="off"
                           maxLength={79}
                           placeholder="Enter a number"
                           onChange={event => handleChangeValue(event)}
@@ -1019,7 +1071,12 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               {userInfo.available ?? '0.0'}
-                              <ST.SMax onClick={handleMaxValue}>MAX</ST.SMax>
+                              <ST.SMax
+                                disabled={userInfo.availableNumber === 0}
+                                onClick={handleMaxValue}
+                              >
+                                MAX
+                              </ST.SMax>
                             </ST.SInforValue>
                           ) : (
                             <ST.SInforValue>
@@ -1027,7 +1084,13 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgFlashSmall src={IconFlashSmall} />
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
-                              -<ST.SMax onClick={handleMaxValue}>MAX</ST.SMax>
+                              -
+                              <ST.SMax
+                                disabled={userInfo.availableNumber === 0}
+                                onClick={handleMaxValue}
+                              >
+                                MAX
+                              </ST.SMax>
                             </ST.SInforValue>
                           )}
                         </ST.SInfor>
@@ -1106,6 +1169,10 @@ function Staking({ settings, setSetting }) {
                                               >
                                                 <ST.SBtnUnStakeStart>
                                                   <ST.SBtnStake
+                                                    disabled={
+                                                      disabledBtn ||
+                                                      Number(val) === 0
+                                                    }
                                                     onClick={handleStake}
                                                   >
                                                     Stake
@@ -1177,7 +1244,10 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               {userInfo.amount ?? '0.0'}
-                              <ST.SMax onClick={handleMaxValueStaked}>
+                              <ST.SMax
+                                disabled={userInfo.amountNumber === 0}
+                                onClick={handleMaxValueStaked}
+                              >
                                 MAX
                               </ST.SMax>
                             </ST.SInforValue>
@@ -1188,7 +1258,10 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               -
-                              <ST.SMax onClick={handleMaxValueStaked}>
+                              <ST.SMax
+                                disabled={userInfo.amountNumber === 0}
+                                onClick={handleMaxValueStaked}
+                              >
                                 MAX
                               </ST.SMax>
                             </ST.SInforValue>
@@ -1240,6 +1313,10 @@ function Staking({ settings, setSetting }) {
                                             >
                                               <ST.SBtnUnStakeStart>
                                                 <ST.SBtnUnstake
+                                                  disabled={
+                                                    disabledBtnUn ||
+                                                    Number(val) === 0
+                                                  }
                                                   onClick={handleUnStake}
                                                 >
                                                   UnStake
@@ -1307,7 +1384,7 @@ function Staking({ settings, setSetting }) {
                                       </ST.SBtnUnStakeStart>
                                     </Col>
                                     <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                                      {expiryTimeUnstakeLP &&
+                                      {expiryTimeUnstakeLP > 0 &&
                                       userInfo.amount > 0 &&
                                       address &&
                                       isApproveLP ? (

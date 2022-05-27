@@ -90,7 +90,7 @@ function CountDownClaim({ times, address }) {
         clearInterval(timeInterval);
         setExpiryTime(false);
       }
-    }, 2000);
+    }, 1000);
   };
   useEffect(() => {
     let updateTimer;

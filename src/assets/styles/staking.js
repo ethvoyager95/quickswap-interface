@@ -170,7 +170,7 @@ export const SImgErr = styled.img`
   width: 15px;
   height: 15px;
 `;
-export const SMax = styled.div`
+export const SMax = styled.button`
   margin-left: 10px;
   cursor: pointer;
   color: #107def;
@@ -180,6 +180,12 @@ export const SMax = styled.div`
   color: #fff;
   font-size: 12px;
   padding: 0px 15px;
+  outline: none;
+  border: none;
+  :disabled {
+    cursor: not-allowed;
+    color: #fff;
+  }
 `;
 export const SBoxOne = styled.div`
   width: 100%;
@@ -262,6 +268,9 @@ export const SBtnStake = styled.button`
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
+    &:hover {
+      background: #d9d9d9 !important;
+    }
   }
 `;
 export const SBtnLoadding = styled.button`
@@ -285,7 +294,7 @@ export const SBtnLoadding = styled.button`
     cursor: not-allowed;
   }
 `;
-export const SBtnUnstake = styled.div`
+export const SBtnUnstake = styled.button`
   cursor: pointer;
   color: #f84960;
   background: #fff;
@@ -295,8 +304,19 @@ export const SBtnUnstake = styled.div`
   text-align: center;
   border: 1px solid #f84960;
   margin-right: 15px;
+  outline: none;
+  &:hover {
+    background: #fff !important;
+  }
   @media only screen and (max-width: 768px) {
     width: 100%;
+  }
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
+    &:hover {
+      background: #d9d9d9 !important;
+    }
   }
 `;
 export const SSTake = styled.button`
