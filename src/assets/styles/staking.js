@@ -268,6 +268,9 @@ export const SBtnStake = styled.button`
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
+    &:hover {
+      background: #d9d9d9 !important;
+    }
   }
 `;
 export const SBtnLoadding = styled.button`
@@ -311,6 +314,9 @@ export const SBtnUnstake = styled.button`
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
+    &:hover {
+      background: #d9d9d9 !important;
+    }
   }
 `;
 export const SSTake = styled.button`

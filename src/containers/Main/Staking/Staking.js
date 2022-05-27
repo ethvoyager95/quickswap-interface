@@ -528,7 +528,7 @@ function Staking({ settings, setSetting }) {
           setIsApproveLP(true);
         }
       });
-  }, [val, address, handleMaxValue, userInfo, handleMaxValueStaked]);
+  }, [val, address, handleMaxValue, userInfo, handleMaxValueStaked, txhash]);
   const checkApproveNFT = useCallback(async () => {
     await methods
       .call(nFtContract.methods.isApprovedForAll, [
@@ -540,7 +540,7 @@ function Staking({ settings, setSetting }) {
           setIsApproveNFT(res);
         }
       });
-  }, [address]);
+  }, [address, txhash]);
   const checkApproveVstrk = useCallback(async () => {
     await methods
       .call(vStrkContract.methods.allowance, [
@@ -557,7 +557,7 @@ function Staking({ settings, setSetting }) {
           }
         }
       });
-  }, [val, handleMaxValue, handleMaxValueStaked, address, userInfo]);
+  }, [val, handleMaxValue, handleMaxValueStaked, address, userInfo, txhash]);
   // approved Lp
   const handleApproveLp = useCallback(async () => {
     setiIsConfirm(true);
@@ -661,7 +661,10 @@ function Staking({ settings, setSetting }) {
     return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
     // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
   }, [userInfo, address, txhash, isApproveLP]);
-  console.log(expiryTimeUnstakeLP, 'expiryTimeUnstakeLP');
+  console.log(expiryTimeUnstakeLP, 'expiryTimeUnstakeLP 1');
+  console.log(userInfo.amount, '  amount 1');
+  console.log(address, ' address 1 ');
+  console.log(isApproveLP, 'isApproveLP 1');
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
     if (userInfo) {
@@ -726,6 +729,10 @@ function Staking({ settings, setSetting }) {
             setIsSuccess(true);
             setIsLoadingBtn(false);
             setVal('');
+            console.log(expiryTimeUnstakeLP, 'expiryTimeUnstakeLP');
+            console.log(userInfo.amount, ' .amount');
+            console.log(address, ' address');
+            console.log(isApproveLP, 'isApproveLP');
           }
         })
         .catch(err => {
