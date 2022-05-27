@@ -291,7 +291,7 @@ export const SBtnLoadding = styled.button`
     cursor: not-allowed;
   }
 `;
-export const SBtnUnstake = styled.div`
+export const SBtnUnstake = styled.button`
   cursor: pointer;
   color: #f84960;
   background: #fff;
@@ -301,8 +301,16 @@ export const SBtnUnstake = styled.div`
   text-align: center;
   border: 1px solid #f84960;
   margin-right: 15px;
+  outline: none;
+  &:hover {
+    background: #fff !important;
+  }
   @media only screen and (max-width: 768px) {
     width: 100%;
+  }
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
   }
 `;
 export const SSTake = styled.button`

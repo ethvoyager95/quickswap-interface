@@ -190,7 +190,6 @@ function Staking({ settings, setSetting }) {
   const [isClaimBootReward, setIsClaimBootReward] = useState(false);
   const [disabledBtn, setDisabledBtn] = useState(false);
   const [disabledBtnUn, setDisabledBtnUn] = useState(false);
-
   const [countNFT, setCounNFT] = useState(0);
   const [isUnStakeLp, setIsUnStakeLp] = useState(false);
   const [itemStaking, setItemStaking] = useState([]);
@@ -658,12 +657,11 @@ function Staking({ settings, setSetting }) {
   }, []);
 
   const expiryTimeUnstakeLP = useMemo(() => {
-    if (userInfo) {
-      const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
-    }
+    const overOneDate = new Date(userInfo.depositedDate * 1000);
+    return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
+    // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
   }, [userInfo, address, txhash, isApproveLP]);
+  console.log(expiryTimeUnstakeLP, 'expiryTimeUnstakeLP');
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
     if (userInfo) {
