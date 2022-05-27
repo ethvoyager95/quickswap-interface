@@ -28,7 +28,8 @@ import {
   SECOND2DAY,
   SECOND30DAY,
   PERCENT_APR,
-  MAX_STAKE_NFT
+  MAX_STAKE_NFT,
+  SETTING_SLIDER
 } from './helper';
 // eslint-disable-next-line import/named
 import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
@@ -89,76 +90,9 @@ function SamplePrevArrow(props) {
   );
 }
 const AUDITOR_SETTING = {
-  dots: false,
-  infinite: false,
-  loop: false,
-  autoplay: false,
-  speed: 2000,
-  autoplaySpeed: 2000,
-  slidesToShow: 4,
-  slidesToScroll: 4,
-  initialSlide: 0,
+  ...SETTING_SLIDER,
   nextArrow: <SampleNextArrow />,
-  prevArrow: <SamplePrevArrow />,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 1,
-        infinite: true,
-        dots: true
-      }
-    },
-    {
-      breakpoint: 820,
-      settings: {
-        slidesToShow: 4,
-        slidesToScroll: 1,
-        initialSlide: 0,
-        dots: false,
-        infinite: false,
-        loop: false,
-        autoplay: false
-      }
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 8,
-        slidesToScroll: 1,
-        initialSlide: 0,
-        dots: false,
-        infinite: false,
-        loop: false,
-        autoplay: false
-      }
-    },
-    {
-      breakpoint: 600,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        initialSlide: 0,
-        dots: false,
-        infinite: false,
-        loop: false,
-        autoplay: false
-      }
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        initialSlide: 0,
-        dots: false,
-        infinite: false,
-        loop: false,
-        autoplay: false
-      }
-    }
-  ]
+  prevArrow: <SamplePrevArrow />
 };
 // eslint-disable-next-line react/prop-types
 function Staking({ settings, setSetting }) {
@@ -237,7 +171,6 @@ function Staking({ settings, setSetting }) {
       await methods
         .call(farmingContract.methods.userInfo, [0, address])
         .then(res => {
-          console.log(res, 'res');
           const balanceBigNumber = divDecimals(sTokenBalance, 18);
           const pendingAmountNumber = divDecimals(res.pendingAmount, 18);
           const amountNumber = divDecimals(res.amount, 18);
@@ -329,7 +262,7 @@ function Staking({ settings, setSetting }) {
           throw err;
         });
     }
-  }, [address, txhash]);
+  }, [address, txhash, window.ethereum]);
   // get data
   useMemo(async () => {
     if (!address) {
@@ -428,6 +361,7 @@ function Staking({ settings, setSetting }) {
             setIsLoading(false);
           } else {
             setDataNFTUnState([]);
+            setYourBoostAPR(0);
           }
         });
     } catch (err) {
@@ -435,7 +369,7 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     setIsLoading(false);
-  }, [address, txhash, window.ethereum]);
+  }, [address, txhash, window.ethereum, dataNFT]);
   // change amount
   const enforcer = nextUserInput => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -656,10 +590,12 @@ function Staking({ settings, setSetting }) {
   }, []);
 
   const expiryTimeUnstakeLP = useMemo(() => {
-    const overOneDate = new Date(userInfo.depositedDate * 1000);
-    return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
-    // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
-  }, [userInfo, address, txhash, isApproveLP]);
+    if (userInfo) {
+      const overOneDate = new Date(userInfo.depositedDate * 1000);
+      return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
+      // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
+    }
+  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
 
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
@@ -668,7 +604,7 @@ function Staking({ settings, setSetting }) {
       return overOneDate.setMinutes(overOneDate.getMinutes() + 10); // 10 minute
       // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
     }
-  }, [userInfo, address, txhash, isApproveLP]);
+  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
@@ -676,7 +612,7 @@ function Staking({ settings, setSetting }) {
       return over30days.setMinutes(over30days.getMinutes() + 30); // 30 minute
       // return over30days.setDate(over30days.getDate() + 30); // 30 days
     }
-  }, [userInfo, address, txhash, isApproveLP]);
+  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
 
   // stake
   const handleStake = async () => {
@@ -820,7 +756,6 @@ function Staking({ settings, setSetting }) {
         address
       )
       .then(res => {
-        console.log(res, 'res base');
         if (res) {
           setTxhash(res.transactionHash);
           setiIsConfirm(false);
@@ -829,7 +764,6 @@ function Staking({ settings, setSetting }) {
         }
       })
       .catch(err => {
-        console.log(err, 'err base');
         if (err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
@@ -852,14 +786,12 @@ function Staking({ settings, setSetting }) {
         address
       )
       .then(res => {
-        console.log(res, 'res boost');
         setTxhash(res.transactionHash);
         setiIsConfirm(false);
         setIsSuccess(true);
         setTextSuccess('Claim Boost Reward successfully');
       })
       .catch(err => {
-        console.log(err, 'err boost');
         if (err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
@@ -979,6 +911,7 @@ function Staking({ settings, setSetting }) {
   };
   const handleCloseSuccess = () => {
     setIsSuccess(false);
+    window.location.reload();
   };
   const handleCloseErr = () => {
     setIsShowCancel(false);
@@ -1101,6 +1034,7 @@ function Staking({ settings, setSetting }) {
                       <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                         <Row>
                           <ST.SRowColumn>
+                            {/* check approve lp */}
                             {address && isApproveLP && (
                               <>
                                 {/* stake lp */}
@@ -1270,6 +1204,7 @@ function Staking({ settings, setSetting }) {
                               <ST.SBtnUn>
                                 {isUnStakeLp ? (
                                   <>
+                                    {/* check appove nft */}
                                     {isAprroveVstrk ? (
                                       <>
                                         {isLoadingUnStake ? (
@@ -1378,13 +1313,14 @@ function Staking({ settings, setSetting }) {
                                       </ST.SBtnUnStakeStart>
                                     </Col>
                                     <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                                      {expiryTimeUnstakeLP > 0 &&
+                                      {expiryTimeUnstakeLP &&
                                       userInfo.amount > 0 &&
                                       address &&
                                       isApproveLP ? (
                                         <CountDownClaim
                                           times={expiryTimeUnstakeLP}
                                           address={address}
+                                          txh={txhash}
                                         />
                                       ) : (
                                         <></>
@@ -1451,10 +1387,16 @@ function Staking({ settings, setSetting }) {
                               )}
                             </Col>
                             <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                              {expiryTimeBase && address && isApproveLP ? (
+                              {expiryTimeBase &&
+                              userInfo.depositedDate > 0 &&
+                              address &&
+                              userInfo.accBaseReward &&
+                              isApproveLP ? (
                                 <CountDownClaim
                                   times={expiryTimeBase}
+                                  times2={expiryTimeBase}
                                   address={address}
+                                  txh={txhash}
                                 />
                               ) : (
                                 <></>
@@ -1512,10 +1454,15 @@ function Staking({ settings, setSetting }) {
                               )}
                             </Col>
                             <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                              {expiryTimeBoost && address && isApproveLP ? (
+                              {expiryTimeBoost &&
+                              userInfo.boostedDate > 0 &&
+                              address &&
+                              userInfo.accBoostReward &&
+                              isApproveLP ? (
                                 <CountDownClaim
                                   times={expiryTimeBoost}
                                   address={address}
+                                  txh={txhash}
                                 />
                               ) : (
                                 <></>
@@ -1764,13 +1711,15 @@ function Staking({ settings, setSetting }) {
         />
         {/* Confirm */}
         <DialogConfirm isConfirm={isConfirm} close={handleCloseConfirm} />
-        <DialogSuccess
-          isSuccess={isSuccess}
-          close={handleCloseSuccess}
-          address={settings?.selectedAddress}
-          text={textSuccess}
-          txh={txhash}
-        />
+        {isSuccess && (
+          <DialogSuccess
+            isSuccess={isSuccess}
+            close={handleCloseSuccess}
+            address={settings?.selectedAddress}
+            text={textSuccess}
+            txh={txhash}
+          />
+        )}
       </React.Fragment>
     </>
   );

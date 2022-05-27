@@ -16,6 +16,76 @@ export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)
   .toString(10);
+export const SETTING_SLIDER = {
+  dots: false,
+  infinite: false,
+  loop: false,
+  autoplay: false,
+  speed: 2000,
+  autoplaySpeed: 2000,
+  slidesToShow: 4,
+  slidesToScroll: 4,
+  initialSlide: 0,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        infinite: true,
+        dots: true
+      }
+    },
+    {
+      breakpoint: 820,
+      settings: {
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        initialSlide: 0,
+        dots: false,
+        infinite: false,
+        loop: false,
+        autoplay: false
+      }
+    },
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 8,
+        slidesToScroll: 1,
+        initialSlide: 0,
+        dots: false,
+        infinite: false,
+        loop: false,
+        autoplay: false
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        initialSlide: 0,
+        dots: false,
+        infinite: false,
+        loop: false,
+        autoplay: false
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        initialSlide: 0,
+        dots: false,
+        infinite: false,
+        loop: false,
+        autoplay: false
+      }
+    }
+  ]
+};
 export const divDecimals = (value, decimal) => {
   if (value) {
     return new BigNumber(value).div(new BigNumber(10).pow(decimal));

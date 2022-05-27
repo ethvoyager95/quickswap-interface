@@ -186,7 +186,6 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
   };
   const getEthScanLink = (id, data, type) => {
     const chain = chains[id];
-
     if (!chain) {
       return '';
     }
