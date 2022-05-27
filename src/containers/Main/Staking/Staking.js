@@ -189,6 +189,8 @@ function Staking({ settings, setSetting }) {
   const [isClaimBaseReward, setisClaimBaseReward] = useState(false);
   const [isClaimBootReward, setIsClaimBootReward] = useState(false);
   const [disabledBtn, setDisabledBtn] = useState(false);
+  const [disabledBtnUn, setDisabledBtnUn] = useState(false);
+
   const [countNFT, setCounNFT] = useState(0);
   const [isUnStakeLp, setIsUnStakeLp] = useState(false);
   const [itemStaking, setItemStaking] = useState([]);
@@ -451,22 +453,25 @@ function Staking({ settings, setSetting }) {
         show: true
       });
       setDisabledBtn(true);
+      setDisabledBtnUn(true);
     } else {
       setMessErr({
         mess: '',
         show: false
       });
+      setDisabledBtn(false);
+      setDisabledBtnUn(false);
     }
 
-    if (Number(number) > 0 && Number(number) > +userInfo?.available) {
-      setDisabledBtn(true);
-      setMessErr({
-        mess: 'The amount has exceeded your balance. Try again!',
-        show: true
-      });
-    } else {
-      setDisabledBtn(false);
-    }
+    // if (Number(number) > 0 && Number(number) > +userInfo?.available) {
+    //   setDisabledBtn(true);
+    //   setMessErr({
+    //     mess: 'The amount has exceeded your balance. Try again!',
+    //     show: true
+    //   });
+    // } else {
+    //   setDisabledBtn(false);
+    // }
     if (Number(number) < 0) {
       setVal(0);
     } else if (Number(number) > 0) {
@@ -658,7 +663,7 @@ function Staking({ settings, setSetting }) {
       return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
       // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
     }
-  }, [userInfo, address, txhash]);
+  }, [userInfo, address, txhash, isApproveLP]);
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
     if (userInfo) {
@@ -666,7 +671,7 @@ function Staking({ settings, setSetting }) {
       return overOneDate.setMinutes(overOneDate.getMinutes() + 10); // 10 minute
       // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
     }
-  }, [userInfo, address, txhash]);
+  }, [userInfo, address, txhash, isApproveLP]);
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
@@ -674,7 +679,7 @@ function Staking({ settings, setSetting }) {
       return over30days.setMinutes(over30days.getMinutes() + 30); // 30 minute
       // return over30days.setDate(over30days.getDate() + 30); // 30 days
     }
-  }, [userInfo, address, txhash]);
+  }, [userInfo, address, txhash, isApproveLP]);
 
   // stake
   const handleStake = async () => {
@@ -759,6 +764,10 @@ function Staking({ settings, setSetting }) {
         show: true
       });
     } else {
+      setMessErr({
+        mess: '',
+        show: true
+      });
       // withdraw test
       setiIsConfirm(true);
       setIsLoadingUnStake(true);
@@ -1302,6 +1311,10 @@ function Staking({ settings, setSetting }) {
                                             >
                                               <ST.SBtnUnStakeStart>
                                                 <ST.SBtnUnstake
+                                                  disabled={
+                                                    disabledBtnUn ||
+                                                    Number(val) === 0
+                                                  }
                                                   onClick={handleUnStake}
                                                 >
                                                   UnStake
