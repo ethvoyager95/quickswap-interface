@@ -430,11 +430,17 @@ function Staking({ settings, setSetting }) {
     if (!numberDigitsRegex.test(event.target.value)) {
       return;
     }
+
     setMessErr({
       mess: '',
       show: false
     });
     const number = event.target.value;
+    if (Number(number) === 0) {
+      console.log('a');
+      event.preventDefault();
+      setVal(0);
+    }
     if (number === '0') {
       setMessErr({
         mess: 'Invalid amount',

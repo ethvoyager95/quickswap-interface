@@ -55,9 +55,7 @@ function CountDownClaim({ times, address }) {
     countdownlMinutes: '',
     countdownSeconds: ''
   });
-  useEffect(() => {
-    setExpiryTime(times);
-  });
+
   const countdownTimer = () => {
     if (!address) {
       setCountdownTime({
@@ -69,7 +67,7 @@ function CountDownClaim({ times, address }) {
     }
     const timeInterval = setInterval(() => {
       setIsLoading(true);
-      const countdownDateTime = new Date(times).getTime();
+      const countdownDateTime = new Date(expiryTime).getTime();
       const currentTime = new Date().getTime();
       const remainingDayTime = countdownDateTime - currentTime;
       const totalDays = Math.floor(remainingDayTime / (1000 * 60 * 60 * 24));
