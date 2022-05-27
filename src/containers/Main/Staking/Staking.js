@@ -1394,7 +1394,6 @@ function Staking({ settings, setSetting }) {
                               isApproveLP ? (
                                 <CountDownClaim
                                   times={expiryTimeBase}
-                                  times2={expiryTimeBase}
                                   address={address}
                                   txh={txhash}
                                 />
