@@ -188,6 +188,7 @@ function Staking({ settings, setSetting }) {
   const [isAprroveVstrk, setIsAprroveVstrk] = useState(false);
   const [isClaimBaseReward, setisClaimBaseReward] = useState(false);
   const [isClaimBootReward, setIsClaimBootReward] = useState(false);
+  const [disabledBtn, setDisabledBtn] = useState(false);
   const [countNFT, setCounNFT] = useState(0);
   const [isUnStakeLp, setIsUnStakeLp] = useState(false);
   const [itemStaking, setItemStaking] = useState([]);
@@ -417,7 +418,14 @@ function Staking({ settings, setSetting }) {
     setIsLoading(false);
   }, [address, txhash, window.ethereum]);
   // change amount
+  const enforcer = nextUserInput => {
+    const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
+    if (nextUserInput === '' || numberDigitsRegex.test(nextUserInput)) {
+      setVal(nextUserInput);
+    }
+  };
   const handleChangeValue = event => {
+    enforcer(event.target.value.replace(/,/g, '.'));
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
     if (!numberDigitsRegex.test(event.target.value)) {
       return;
@@ -426,7 +434,23 @@ function Staking({ settings, setSetting }) {
       mess: '',
       show: false
     });
-    if (event.target.value < 0) {
+    const number = event.target.value;
+    if (number === '0') {
+      setMessErr({
+        mess: 'Invalid amount',
+        show: true
+      });
+      setDisabledBtn(true);
+    } else if (number > 0 && number > +userInfo?.available) {
+      setDisabledBtn(true);
+      setMessErr({
+        mess: 'The amount has exceeded your balance. Try again!',
+        show: true
+      });
+    } else {
+      setDisabledBtn(false);
+    }
+    if (number < 0) {
       setVal(0);
     } else {
       const valueFormat = event?.target.value.replace(/,/g, '.');
@@ -639,7 +663,7 @@ function Staking({ settings, setSetting }) {
   const handleStake = async () => {
     if (val > +userInfo?.available) {
       setMessErr({
-        mess: 'The amount has exceded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
       return;
@@ -983,6 +1007,9 @@ function Staking({ settings, setSetting }) {
                           pattern="^[0-9]*[.,]?[0-9]*$"
                           min={0}
                           minLength={1}
+                          spellCheck="false"
+                          autoComplete="off"
+                          autoCorrect="off"
                           maxLength={79}
                           placeholder="Enter a number"
                           onChange={event => handleChangeValue(event)}
@@ -1114,6 +1141,10 @@ function Staking({ settings, setSetting }) {
                                               >
                                                 <ST.SBtnUnStakeStart>
                                                   <ST.SBtnStake
+                                                    disabled={
+                                                      disabledBtn ||
+                                                      Number(val) === 0
+                                                    }
                                                     onClick={handleStake}
                                                   >
                                                     Stake
