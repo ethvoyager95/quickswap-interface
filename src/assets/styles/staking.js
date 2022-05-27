@@ -170,7 +170,7 @@ export const SImgErr = styled.img`
   width: 15px;
   height: 15px;
 `;
-export const SMax = styled.div`
+export const SMax = styled.button`
   margin-left: 10px;
   cursor: pointer;
   color: #107def;
@@ -180,6 +180,12 @@ export const SMax = styled.div`
   color: #fff;
   font-size: 12px;
   padding: 0px 15px;
+  outline: none;
+  border: none;
+  :disabled {
+    cursor: not-allowed;
+    color: #fff;
+  }
 `;
 export const SBoxOne = styled.div`
   width: 100%;

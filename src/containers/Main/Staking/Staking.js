@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-useless-concat */
 /* eslint-disable no-sequences */
@@ -195,7 +196,6 @@ function Staking({ settings, setSetting }) {
   const [yourBoostAPR, setYourBoostAPR] = useState(0);
   const [valueNFTStake, setValueNFTStake] = useState('');
   const [valueNFTUnStake, setValueNFTUnStake] = useState('');
-
   // contract
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
@@ -397,7 +397,6 @@ function Staking({ settings, setSetting }) {
               });
             });
             const lengthArr = newArray.length;
-
             if (lengthArr === 0 || lengthArr === 1) {
               setYourBoostAPR(0);
             } else {
@@ -611,31 +610,29 @@ function Staking({ settings, setSetting }) {
         throw err;
       });
   }, []);
+
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setHours(overOneDate.getHours() + 2); // 1 hourr
+      return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
       // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
     }
-    return null;
   }, [userInfo, address, txhash]);
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setHours(overOneDate.getHours() + 1); // 1 hourr
+      return overOneDate.setMinutes(overOneDate.getMinutes() + 10); // 10 minute
       // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
     }
-    return null;
   }, [userInfo, address, txhash]);
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
       const over30days = new Date(userInfo.boostedDate * 1000);
-      return over30days.setHours(over30days.getHours() + 3); // 3 hour
+      return over30days.setMinutes(over30days.getMinutes() + 30); // 30 minute
       // return over30days.setDate(over30days.getDate() + 30); // 30 days
     }
-    return null;
   }, [userInfo, address, txhash]);
 
   // stake
@@ -1019,7 +1016,12 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               {userInfo.available ?? '0.0'}
-                              <ST.SMax onClick={handleMaxValue}>MAX</ST.SMax>
+                              <ST.SMax
+                                disabled={userInfo.availableNumber === 0}
+                                onClick={handleMaxValue}
+                              >
+                                MAX
+                              </ST.SMax>
                             </ST.SInforValue>
                           ) : (
                             <ST.SInforValue>
@@ -1027,7 +1029,13 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgFlashSmall src={IconFlashSmall} />
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
-                              -<ST.SMax onClick={handleMaxValue}>MAX</ST.SMax>
+                              -
+                              <ST.SMax
+                                disabled={userInfo.availableNumber === 0}
+                                onClick={handleMaxValue}
+                              >
+                                MAX
+                              </ST.SMax>
                             </ST.SInforValue>
                           )}
                         </ST.SInfor>
@@ -1177,7 +1185,10 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               {userInfo.amount ?? '0.0'}
-                              <ST.SMax onClick={handleMaxValueStaked}>
+                              <ST.SMax
+                                disabled={userInfo.amountNumber === 0}
+                                onClick={handleMaxValueStaked}
+                              >
                                 MAX
                               </ST.SMax>
                             </ST.SInforValue>
@@ -1188,7 +1199,10 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               -
-                              <ST.SMax onClick={handleMaxValueStaked}>
+                              <ST.SMax
+                                disabled={userInfo.amountNumber === 0}
+                                onClick={handleMaxValueStaked}
+                              >
                                 MAX
                               </ST.SMax>
                             </ST.SInforValue>
@@ -1307,7 +1321,7 @@ function Staking({ settings, setSetting }) {
                                       </ST.SBtnUnStakeStart>
                                     </Col>
                                     <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                                      {expiryTimeUnstakeLP &&
+                                      {expiryTimeUnstakeLP > 0 &&
                                       userInfo.amount > 0 &&
                                       address &&
                                       isApproveLP ? (

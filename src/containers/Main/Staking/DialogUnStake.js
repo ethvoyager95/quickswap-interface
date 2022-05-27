@@ -310,7 +310,7 @@ function DialogUnStake({
   const [val, setValue] = useState(valueNFTUnStake);
   const [messErr, setMessErr] = useState();
   const [, setItemSelect] = useState(0);
-  const [totalSelect, setTotalSelect] = useState(0);
+  const [totalSelect] = useState(MAX_STAKE_NFT);
   const [beforeUnStake, setBeforeUnStake] = useState(0);
   const [afterUnStake, setAfterUnStake] = useState(0);
   const [currentNFTAmount, setCurrentNFTAmount] = useState(0);
@@ -335,7 +335,6 @@ function DialogUnStake({
   };
   useEffect(() => {
     setItemSelect(itemStaked.length);
-    setTotalSelect(list.length);
     const ITEM_STAKE = list.length;
 
     const listIds = _.map(list, 'token_id');
