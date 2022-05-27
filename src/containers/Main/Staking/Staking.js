@@ -262,7 +262,7 @@ function Staking({ settings, setSetting }) {
           throw err;
         });
     }
-  }, [address, txhash, window.ethereum]);
+  }, [address, txhash, window.ethereum, userInfo]);
   // get data
   useMemo(async () => {
     if (!address) {
@@ -370,6 +370,30 @@ function Staking({ settings, setSetting }) {
     }
     setIsLoading(false);
   }, [address, txhash, window.ethereum, dataNFT]);
+  const expiryTimeUnstakeLP = useMemo(() => {
+    if (userInfo) {
+      const overOneDate = new Date(userInfo.depositedDate * 1000);
+      return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
+      // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
+    }
+  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+
+  // time claim base reward countdown
+  const expiryTimeBase = useMemo(() => {
+    if (userInfo) {
+      const overOneDate = new Date(userInfo.depositedDate * 1000);
+      return overOneDate.setMinutes(overOneDate.getMinutes() + 10); // 10 minute
+      // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
+    }
+  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+  // time claim boost reward count down
+  const expiryTimeBoost = useMemo(() => {
+    if (userInfo) {
+      const over30days = new Date(userInfo.boostedDate * 1000);
+      return over30days.setMinutes(over30days.getMinutes() + 30); // 30 minute
+      // return over30days.setDate(over30days.getDate() + 30); // 30 days
+    }
+  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
   // change amount
   const enforcer = nextUserInput => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -461,7 +485,15 @@ function Staking({ settings, setSetting }) {
           setIsApproveLP(true);
         }
       });
-  }, [val, address, handleMaxValue, userInfo, handleMaxValueStaked, txhash]);
+  }, [
+    val,
+    address,
+    handleMaxValue,
+    userInfo,
+    handleMaxValueStaked,
+    txhash,
+    expiryTimeUnstakeLP
+  ]);
   const checkApproveNFT = useCallback(async () => {
     await methods
       .call(nFtContract.methods.isApprovedForAll, [
@@ -588,31 +620,6 @@ function Staking({ settings, setSetting }) {
         throw err;
       });
   }, []);
-
-  const expiryTimeUnstakeLP = useMemo(() => {
-    if (userInfo) {
-      const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
-    }
-  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
-
-  // time claim base reward countdown
-  const expiryTimeBase = useMemo(() => {
-    if (userInfo) {
-      const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setMinutes(overOneDate.getMinutes() + 10); // 10 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
-    }
-  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
-  // time claim boost reward count down
-  const expiryTimeBoost = useMemo(() => {
-    if (userInfo) {
-      const over30days = new Date(userInfo.boostedDate * 1000);
-      return over30days.setMinutes(over30days.getMinutes() + 30); // 30 minute
-      // return over30days.setDate(over30days.getDate() + 30); // 30 days
-    }
-  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
 
   // stake
   const handleStake = async () => {
