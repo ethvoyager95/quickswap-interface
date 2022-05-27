@@ -82,7 +82,7 @@ const SRowText = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin: 10px 0 20px 0;
+  margin: 30px 0 20px 0;
 `;
 const STack = styled.div`
   color: #6d6f7b;
@@ -169,7 +169,7 @@ const SRowBox = styled.div`
 `;
 const SRowBoxText = styled.div`
   color: #0b0f23;
-  font-weight: 500;
+  font-weight: 900;
   font-size: 16px;
   line-height: 24px;
 `;
@@ -223,10 +223,10 @@ const SBtnCancel = styled.div`
   color: #107def;
   background: #ffffff;
   border-radius: 8px;
-  padding: 6px 12px;
+  padding: 15px 12px;
   display: flex;
   justify-content: center;
-  width: 120px;
+  width: 150px;
   margin-left: 10px;
   cursor: pointer;
   border: 1px solid #fff;
@@ -242,10 +242,10 @@ const SBtnStake = styled.button`
   color: #fff;
   background: #107def;
   border-radius: 8px;
-  padding: 6px 12px;
+  padding: 15px 12px;
   display: flex;
   justify-content: center;
-  width: 120px;
+  width: 150px;
   margin-left: 10px;
   cursor: pointer;
   outline: none;

@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
 import ErrIcon from '../../../assets/img/err_modal.svg';
+import IconClose from '../../../assets/img/close.svg';
 
 const useStyles = makeStyles({
   root: {
@@ -87,6 +88,14 @@ const SImg = styled.img`
   margin: 30px auto;
   display: block;
 `;
+const SIcon = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 20px;
+`;
+const SIconClose = styled.img`
+  cursor: pointer;
+`;
 function DialogErr({ isShow, text, close }) {
   const classes = useStyles();
 
@@ -95,6 +104,9 @@ function DialogErr({ isShow, text, close }) {
       <React.Fragment>
         <Dialog className={classes.root} open={isShow} onClose={close}>
           <SMain>
+            <SIcon>
+              <SIconClose src={IconClose} onClick={close} />
+            </SIcon>
             <SImg src={ErrIcon} />
             <STitle>{text}</STitle>
             <SText>You have declined the transaction in your wallet</SText>

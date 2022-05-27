@@ -776,6 +776,7 @@ function Staking({ settings, setSetting }) {
           setiIsConfirm(false);
           setIsSuccess(true);
           setIsLoadingUnStake(false);
+          setVal('');
         })
         .catch(err => {
           if (err.message.includes('User denied')) {
@@ -1306,7 +1307,7 @@ function Staking({ settings, setSetting }) {
                                                   }
                                                   onClick={handleUnStake}
                                                 >
-                                                  UnStake
+                                                  Unstake
                                                 </ST.SBtnUnstake>
                                                 <Tooltip
                                                   placement="right"

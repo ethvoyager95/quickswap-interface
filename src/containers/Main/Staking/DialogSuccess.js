@@ -17,8 +17,7 @@ const useStyles = makeStyles({
       borderRadius: '20px',
       position: 'relative',
       width: '700px',
-      color: '#ffffff',
-      height: '450px'
+      color: '#ffffff'
     }
   },
   closeBtn: {
@@ -132,6 +131,7 @@ const SGoto = styled.a`
   width: 100%;
   display: block;
   margin-top: 20px;
+  padding-bottom: 30px;
   cursor: pointer;
 `;
 const SHrefIcon = styled.img`
