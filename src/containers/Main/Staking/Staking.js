@@ -237,6 +237,7 @@ function Staking({ settings, setSetting }) {
       await methods
         .call(farmingContract.methods.userInfo, [0, address])
         .then(res => {
+          console.log(res, 'res');
           const balanceBigNumber = divDecimals(sTokenBalance, 18);
           const pendingAmountNumber = divDecimals(res.pendingAmount, 18);
           const amountNumber = divDecimals(res.amount, 18);
@@ -275,13 +276,16 @@ function Staking({ settings, setSetting }) {
           const timeBootsUnstake = +res.boostedDate;
           const overTimeBaseReward = currentTime - timeBaseUnstake;
           const overTimeBootReward = currentTime - timeBootsUnstake;
-
           if (timeBaseUnstake === 0) {
             setisClaimBaseReward(false);
             setIsUnStakeLp(false);
           } else {
             setisClaimBaseReward(overTimeBaseReward >= SECOND24H);
-            setIsUnStakeLp(overTimeBaseReward >= SECOND2DAY);
+            if (overTimeBaseReward >= SECOND2DAY) {
+              setIsUnStakeLp(true);
+            } else {
+              setIsUnStakeLp(false);
+            }
           }
           if (timeBootsUnstake === 0) {
             setIsClaimBootReward(false);
@@ -510,10 +514,6 @@ function Staking({ settings, setSetting }) {
       setIsApproveLP(false);
       return;
     }
-    if (Number(userInfo.available) === 0) {
-      setIsApproveLP(false);
-      return;
-    }
     await methods
       .call(lpContract.methods.allowance, [
         address,
@@ -521,9 +521,6 @@ function Staking({ settings, setSetting }) {
       ])
       .then(res => {
         const lpApproved = divDecimals(res, 18);
-        if (messErr.show || messErr.noLP) {
-          setIsApproveLP(true);
-        }
         if (lpApproved.isZero() || +val > lpApproved.toNumber()) {
           setIsApproveLP(false);
         } else {
@@ -683,7 +680,7 @@ function Staking({ settings, setSetting }) {
 
   // stake
   const handleStake = async () => {
-    if (val > +userInfo?.available) {
+    if (val > +userInfo?.availableNumber) {
       setMessErr({
         mess: 'The amount has exceeded your balance. Try again!',
         show: true
@@ -751,7 +748,7 @@ function Staking({ settings, setSetting }) {
     }
   };
   const handleUnStake = async () => {
-    if (val > +userInfo?.amount) {
+    if (val > +userInfo?.amountNumber) {
       setMessErr({
         mess: 'The amount has exceded your balance. Try again',
         show: true
@@ -823,6 +820,7 @@ function Staking({ settings, setSetting }) {
         address
       )
       .then(res => {
+        console.log(res, 'res base');
         if (res) {
           setTxhash(res.transactionHash);
           setiIsConfirm(false);
@@ -831,6 +829,7 @@ function Staking({ settings, setSetting }) {
         }
       })
       .catch(err => {
+        console.log(err, 'err base');
         if (err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
@@ -853,12 +852,14 @@ function Staking({ settings, setSetting }) {
         address
       )
       .then(res => {
+        console.log(res, 'res boost');
         setTxhash(res.transactionHash);
         setiIsConfirm(false);
         setIsSuccess(true);
         setTextSuccess('Claim Boost Reward successfully');
       })
       .catch(err => {
+        console.log(err, 'err boost');
         if (err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
@@ -1205,22 +1206,13 @@ function Staking({ settings, setSetting }) {
                               </>
                             )}
                             {/* Approve */}
-                            {address &&
-                            userInfo.availableNumber &&
-                            !isApproveLP ? (
+                            {address && !isApproveLP ? (
                               <>
                                 <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                                   <ST.SBtn>
-                                    {!isApproveLP ? (
-                                      <>
-                                        {' '}
-                                        <ST.SBtnStake onClick={handleApproveLp}>
-                                          Approve Staking
-                                        </ST.SBtnStake>
-                                      </>
-                                    ) : (
-                                      <></>
-                                    )}
+                                    <ST.SBtnStake onClick={handleApproveLp}>
+                                      Approve Staking
+                                    </ST.SBtnStake>
                                   </ST.SBtn>
                                 </Col>
                               </>
