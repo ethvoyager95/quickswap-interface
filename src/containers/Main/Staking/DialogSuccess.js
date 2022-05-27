@@ -204,7 +204,15 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
   return (
     <>
       <React.Fragment>
-        <Dialog className={classes.root} open={isSuccess} onClose={close}>
+        <Dialog
+          className={classes.root}
+          open={isSuccess}
+          onClose={reason => {
+            if (reason === 'backdropClick') {
+              close();
+            }
+          }}
+        >
           <SMain>
             <SIcon>
               <SIconClose src={IconClose} onClick={close} />

@@ -31,7 +31,7 @@ import {
   MAX_STAKE_NFT
 } from './helper';
 // eslint-disable-next-line import/named
-import { axiosInstanceMoralis } from '../../../utilities/axios';
+import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
 import '../../../assets/styles/slick.scss';
 import * as ST from '../../../assets/styles/staking.js';
 // eslint-disable-next-line import/no-duplicates
@@ -53,7 +53,6 @@ import DialogStake from './DialogStake';
 import Loadding from './Loadding';
 // eslint-disable-next-line import/order
 import IconQuestion from '../../../assets/img/error-outline.svg';
-import IconDuck from '../../../assets/img/default_slider.svg';
 import IconLink from '../../../assets/img/launch.svg';
 import IconLinkBlue from '../../../assets/img/link_blue.svg';
 import IconNoData from '../../../assets/img/no_data.svg';
@@ -198,6 +197,7 @@ function Staking({ settings, setSetting }) {
   const [yourBoostAPR, setYourBoostAPR] = useState(0);
   const [valueNFTStake, setValueNFTStake] = useState('');
   const [valueNFTUnStake, setValueNFTUnStake] = useState('');
+  const [fakeImgNFT, setFakeImgNFT] = useState('');
   // contract
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
@@ -334,7 +334,21 @@ function Staking({ settings, setSetting }) {
       return;
     }
     setIsLoading(true);
+    let tokenUri = null;
+    let imgFake = null;
     try {
+      await methods
+        .call(nFtContract.methods.notRevealedUri, [])
+        .then(res => {
+          tokenUri = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await axiosInstance.get(`${tokenUri}`).then(res => {
+        imgFake = res?.data.image;
+        setFakeImgNFT(imgFake);
+      });
       await axiosInstanceMoralis
         .get(`/${address}/nft?chain=rinkeby&format=decimal&limit=20`)
         .then(res => {
@@ -355,7 +369,7 @@ function Staking({ settings, setSetting }) {
               if (item?.metadata?.image) {
                 item.img = item?.metadata?.image;
               } else {
-                item.img = IconDuck;
+                item.img = imgFake;
               }
             });
             const dataStakeClone = _.cloneDeep(dataConvert);
@@ -394,7 +408,7 @@ function Staking({ settings, setSetting }) {
                 name: 'AnnexIronWolf ' + `#${item}`,
                 token_id: item,
                 id: +item,
-                img: IconDuck,
+                img: fakeImgNFT,
                 active: false
               });
             });

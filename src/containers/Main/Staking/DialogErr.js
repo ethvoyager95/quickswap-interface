@@ -102,7 +102,15 @@ function DialogErr({ isShow, text, close }) {
   return (
     <>
       <React.Fragment>
-        <Dialog className={classes.root} open={isShow} onClose={close}>
+        <Dialog
+          className={classes.root}
+          open={isShow}
+          onClose={reason => {
+            if (reason === 'backdropClick') {
+              close();
+            }
+          }}
+        >
           <SMain>
             <SIcon>
               <SIconClose src={IconClose} onClick={close} />

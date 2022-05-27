@@ -106,7 +106,15 @@ function DialogConfirm({ isConfirm, close }) {
   return (
     <>
       <React.Fragment>
-        <Dialog className={classes.root} open={isConfirm} onClose={close}>
+        <Dialog
+          className={classes.root}
+          open={isConfirm}
+          onClose={reason => {
+            if (reason === 'backdropClick') {
+              close();
+            }
+          }}
+        >
           <SMain>
             <SIcon>
               <SIconClose src={IconClose} onClick={close} />

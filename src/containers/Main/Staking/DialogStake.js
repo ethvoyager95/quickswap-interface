@@ -414,7 +414,15 @@ function DialogStake({
   return (
     <>
       <React.Fragment>
-        <Dialog className={classes.root} open={isStakeNFT} onClose={close}>
+        <Dialog
+          className={classes.root}
+          open={isStakeNFT}
+          onClose={reason => {
+            if (reason === 'backdropClick') {
+              close();
+            }
+          }}
+        >
           <SMain>
             <SIcon>
               <SIconClose src={IconClose} onClick={close} />
