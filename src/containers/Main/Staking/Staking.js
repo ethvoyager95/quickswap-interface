@@ -438,15 +438,13 @@ function Staking({ settings, setSetting }) {
       show: false
     });
     const number = event.target.value;
-    if (/^0/.test(val)) {
-      const valueZero = val.replace(/^0/, '');
-      setVal(valueZero);
+    if (number === '') {
       setMessErr({
-        mess: 'Invalid amount',
-        show: true
+        mess: '',
+        show: false
       });
     }
-    if (number === '0') {
+    if (number !== '' && Number(number) === 0) {
       setMessErr({
         mess: 'Invalid amount',
         show: true
@@ -461,16 +459,6 @@ function Staking({ settings, setSetting }) {
       setDisabledBtn(false);
       setDisabledBtnUn(false);
     }
-
-    // if (Number(number) > 0 && Number(number) > +userInfo?.available) {
-    //   setDisabledBtn(true);
-    //   setMessErr({
-    //     mess: 'The amount has exceeded your balance. Try again!',
-    //     show: true
-    //   });
-    // } else {
-    //   setDisabledBtn(false);
-    // }
     if (Number(number) < 0) {
       setVal(0);
     } else if (Number(number) > 0) {
@@ -726,10 +714,6 @@ function Staking({ settings, setSetting }) {
             setIsSuccess(true);
             setIsLoadingBtn(false);
             setVal('');
-            // console.log(expiryTimeUnstakeLP, 'expiryTimeUnstakeLP');
-            // console.log(userInfo.amount, ' .amount');
-            // console.log(address, ' address');
-            // console.log(isApproveLP, 'isApproveLP');
           }
         })
         .catch(err => {
@@ -1041,6 +1025,9 @@ function Staking({ settings, setSetting }) {
                           maxLength={79}
                           placeholder="Enter a number"
                           onChange={event => handleChangeValue(event)}
+                          onBlur={event => {
+                            setVal(Number(event.target.value));
+                          }}
                         />
                         {messErr?.show === true && (
                           <ST.SError>{messErr.mess}</ST.SError>

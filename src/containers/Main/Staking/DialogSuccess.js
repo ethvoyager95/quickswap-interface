@@ -175,11 +175,13 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
     try {
       await navigator.clipboard.writeText(copyMe);
       setCopySuccess('Copied!');
-      setInterval(() => {
+      setTimeout(() => {
         setCopySuccess('');
-      }, 1500);
+      }, 2000);
     } catch (err) {
-      setCopySuccess('Copied!');
+      if (err) {
+        setCopySuccess('Failed to copy!');
+      }
     }
   };
   const getEthScanLink = (id, data, type) => {
