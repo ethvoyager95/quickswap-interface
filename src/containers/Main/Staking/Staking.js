@@ -424,6 +424,7 @@ function Staking({ settings, setSetting }) {
       setVal(nextUserInput);
     }
   };
+
   const handleChangeValue = event => {
     enforcer(event.target.value.replace(/,/g, '.'));
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -436,10 +437,13 @@ function Staking({ settings, setSetting }) {
       show: false
     });
     const number = event.target.value;
-    if (Number(number) === 0) {
-      console.log('a');
-      event.preventDefault();
-      setVal(0);
+    if (/^0/.test(val)) {
+      const valueZero = val.replace(/^0/, '');
+      setVal(valueZero);
+      setMessErr({
+        mess: 'Invalid amount',
+        show: true
+      });
     }
     if (number === '0') {
       setMessErr({
@@ -447,7 +451,14 @@ function Staking({ settings, setSetting }) {
         show: true
       });
       setDisabledBtn(true);
-    } else if (number > 0 && number > +userInfo?.available) {
+    } else {
+      setMessErr({
+        mess: '',
+        show: false
+      });
+    }
+
+    if (Number(number) > 0 && Number(number) > +userInfo?.available) {
       setDisabledBtn(true);
       setMessErr({
         mess: 'The amount has exceeded your balance. Try again!',
@@ -456,9 +467,9 @@ function Staking({ settings, setSetting }) {
     } else {
       setDisabledBtn(false);
     }
-    if (number < 0) {
+    if (Number(number) < 0) {
       setVal(0);
-    } else {
+    } else if (Number(number) > 0) {
       const valueFormat = event?.target.value.replace(/,/g, '.');
       const lstValueFormat = valueFormat?.toString().split('.');
       if (lstValueFormat.length > 1) {
