@@ -16,7 +16,7 @@ const useStyles = makeStyles({
       position: 'relative',
       width: '700px',
       color: '#ffffff',
-      height: '300px'
+      height: '320px'
     }
   },
   closeBtn: {

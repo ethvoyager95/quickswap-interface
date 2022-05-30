@@ -61,7 +61,7 @@ import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
 import IconVstrkSmall from '../../../assets/img/flash_vstrk.svg';
-// import IconSelect from '../../../assets/img/select.svg';
+import IconDuck from '../../../assets/img/duck.svg';
 // import IconNotSelect from '../../../assets/img/not_select.svg';
 // import IconNotConnect from '../../../assets/img/not_connect_data.svg';
 
@@ -280,10 +280,19 @@ function Staking({ settings, setSetting }) {
         .catch(err => {
           throw err;
         });
-      await axiosInstance.get(`${tokenUri}`).then(res => {
-        imgFake = res?.data.image;
-        setFakeImgNFT(imgFake);
-      });
+      if (tokenUri) {
+        await axiosInstance
+          .get(`${tokenUri}`)
+          .then(res => {
+            if (res) {
+              imgFake = res?.data.image ?? '';
+              setFakeImgNFT(imgFake);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
       await axiosInstanceMoralis
         .get(`/${address}/nft?chain=rinkeby&format=decimal&limit=20`)
         .then(res => {
@@ -304,7 +313,7 @@ function Staking({ settings, setSetting }) {
               if (item?.metadata?.image) {
                 item.img = item?.metadata?.image;
               } else {
-                item.img = imgFake;
+                item.img = IconDuck;
               }
             });
             const dataStakeClone = _.cloneDeep(dataConvert);
@@ -343,7 +352,7 @@ function Staking({ settings, setSetting }) {
                 name: 'AnnexIronWolf ' + `#${item}`,
                 token_id: item,
                 id: +item,
-                img: fakeImgNFT,
+                img: fakeImgNFT || IconDuck,
                 active: false
               });
             });
