@@ -74,16 +74,14 @@ const STitle = styled.div`
   }
 `;
 const SText = styled.div`
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
   letter-spacing: 0.25px;
-  color: #141414;
+  color: #9d9fa7;
   text-align: center;
   margin-top: 20px;
 `;
-const SImg = styled.img``;
 const SLink = styled.div`
   width: 100%;
   display: block;
@@ -101,7 +99,7 @@ const SAddress = styled.div`
   color: #0b0f23;
   text-align: center;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 `;
 const SNoti = styled.div`
   color: #0b0f23;
@@ -219,7 +217,7 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
             </SIcon>
             <SIconSucsess src={IconSuccess} />
             <STitle>{text}</STitle>
-            <SImg />
+            <SText>Your transaction has been executed successfully</SText>
             <SLink>
               <SView>View on explorer</SView>
               <SCopy>
@@ -233,7 +231,6 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
                 </SAddress>
               </SCopy>
             </SLink>
-            <SText>Your transaction has been executed successfully</SText>
             <SGoto
               target="_blank"
               href={getEthScanLink(chainId, txh, 'transaction')}
