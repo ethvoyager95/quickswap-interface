@@ -510,7 +510,7 @@ function DialogUnStake({
                         handleUnStakeDialog(val, event, checked, messErr)
                       }
                     >
-                      UnStake
+                      Unstake
                     </SBtnUnStake>
                   </SBtn>
                 </Col>

@@ -180,6 +180,9 @@ export const shortValue = (value, decimal) => {
   if (value > -0.001 && value < 0) {
     return '< -0.001';
   }
+  if (value === 0) {
+    return '0.0';
+  }
   const lstValueFormat = value?.toString().split('.');
   if (lstValueFormat.length > 1) {
     const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(
@@ -195,7 +198,7 @@ export const renderValueFixed = value => {
   if (!valueNumber || valueNumber === 0) {
     return '0.0';
   }
-  return shortValue(parseFloat(value), 5);
+  return shortValue(value, 5);
 };
 export const getShortAddress = address => {
   if (address.length === 0) return '';

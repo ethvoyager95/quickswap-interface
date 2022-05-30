@@ -1063,6 +1063,7 @@ function Staking({ settings, setSetting }) {
   // change accounts
   useEffect(() => {
     if (!address) {
+      setYourBoostAPR(0);
       return;
     }
     if (window.ethereum) {
@@ -1075,6 +1076,7 @@ function Staking({ settings, setSetting }) {
       });
     }
   }, [window.ethereum, address]);
+  console.log(userInfo.availableNumber, 'availableNumber');
   return (
     <>
       <React.Fragment>
@@ -1148,7 +1150,9 @@ function Staking({ settings, setSetting }) {
                                   <ST.SImgFlashSmall src={IconFlashSmall} />
                                   <ST.SImgLpSmall src={IconLpSmall} />
                                 </ST.SIconSmall>
-                                {userInfo.availableNumber ?? '0.0'}
+                                {userInfo.availableNumber > 0
+                                  ? userInfo.availableNumber
+                                  : '0.0'}
                               </ST.SInforValue>
                             ) : (
                               <ST.SInforValue>
@@ -1327,7 +1331,9 @@ function Staking({ settings, setSetting }) {
                                       <ST.SImgFlashSmall src={IconFlashSmall} />
                                       <ST.SImgLpSmall src={IconLpSmall} />
                                     </ST.SIconSmall>
-                                    {userInfo.amountNumber ?? '0.0'}
+                                    {userInfo.amountNumber > 0
+                                      ? userInfo.amountNumber
+                                      : '0.0'}
                                   </ST.SInforValueUn>
                                 ) : (
                                   <ST.SInforValueUn>
@@ -1682,13 +1688,14 @@ function Staking({ settings, setSetting }) {
                         </ST.SText>
                       </ST.SFlex>
                       <ST.SFlexEnd>
-                        {address && dataNFT.length > 0 ? (
+                        {address ? (
                           <>
                             {isApproveNFT ? (
                               <>
                                 <ST.SSTake
                                   disabled={
-                                    itemStaking.length === MAX_STAKE_NFT
+                                    itemStaking.length === MAX_STAKE_NFT ||
+                                    dataNFT.length === 0
                                   }
                                   onClick={handleStakeNFT}
                                 >
@@ -1765,11 +1772,14 @@ function Staking({ settings, setSetting }) {
                   </Row>
                   <Row>
                     <ST.SFlexEnd>
-                      {address && dataNFTUnState.length > 0 ? (
+                      {address ? (
                         <>
                           {isApproveNFT ? (
                             <>
-                              <ST.SSTaked onClick={handleUnStakeNFT}>
+                              <ST.SSTaked
+                                disabled={dataNFTUnState.length === 0}
+                                onClick={handleUnStakeNFT}
+                              >
                                 UnStake
                               </ST.SSTaked>
                             </>
