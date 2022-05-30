@@ -1076,7 +1076,6 @@ function Staking({ settings, setSetting }) {
       });
     }
   }, [window.ethereum, address]);
-  console.log(userInfo.availableNumber, 'availableNumber');
   return (
     <>
       <React.Fragment>
