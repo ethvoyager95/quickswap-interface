@@ -6,6 +6,7 @@ import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
+import IconClose from '../../../assets/img/close.svg';
 import Loadding from './Loadding';
 
 const useStyles = makeStyles({
@@ -91,15 +92,33 @@ const SText = styled.div`
   display: block;
   margin-top: 20px;
 `;
-
+const SIcon = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 20px;
+`;
+const SIconClose = styled.img`
+  cursor: pointer;
+`;
 function DialogConfirm({ isConfirm, close }) {
   const classes = useStyles();
 
   return (
     <>
       <React.Fragment>
-        <Dialog className={classes.root} open={isConfirm} onClose={close}>
+        <Dialog
+          className={classes.root}
+          open={isConfirm}
+          onClose={reason => {
+            if (reason === 'backdropClick') {
+              close();
+            }
+          }}
+        >
           <SMain>
+            <SIcon>
+              <SIconClose src={IconClose} onClick={close} />
+            </SIcon>
             <SLoading>
               <Loadding />
             </SLoading>

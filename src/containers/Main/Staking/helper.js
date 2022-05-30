@@ -6,9 +6,9 @@ export const TIME_CLAIM_LP = 1;
 export const TIME_CLAIM_NFT = 30;
 export const MAX_STAKE_NFT = 10;
 export const PERCENT_APR = 20;
-export const SECOND24H = 600; // 86400
-export const SECOND2DAY = 1200; // 172800
-export const SECOND30DAY = 1800; // 2592000
+export const SECOND24H = 180; // 86400
+export const SECOND2DAY = 240; // 172800
+export const SECOND30DAY = 300; // 2592000
 export const FAKE_STRK = 30.07;
 export const FAKE_ETH = 0.38;
 export const FAKE_TOTAL_SUPPLY = 582099001354;
@@ -16,6 +16,76 @@ export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)
   .toString(10);
+export const SETTING_SLIDER = {
+  dots: false,
+  infinite: false,
+  loop: false,
+  autoplay: false,
+  speed: 2000,
+  autoplaySpeed: 2000,
+  slidesToShow: 4,
+  slidesToScroll: 4,
+  initialSlide: 0,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        infinite: true,
+        dots: true
+      }
+    },
+    {
+      breakpoint: 820,
+      settings: {
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        initialSlide: 0,
+        dots: false,
+        infinite: false,
+        loop: false,
+        autoplay: false
+      }
+    },
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 8,
+        slidesToScroll: 1,
+        initialSlide: 0,
+        dots: false,
+        infinite: false,
+        loop: false,
+        autoplay: false
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        initialSlide: 0,
+        dots: false,
+        infinite: false,
+        loop: false,
+        autoplay: false
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        initialSlide: 0,
+        dots: false,
+        infinite: false,
+        loop: false,
+        autoplay: false
+      }
+    }
+  ]
+};
 export const divDecimals = (value, decimal) => {
   if (value) {
     return new BigNumber(value).div(new BigNumber(10).pow(decimal));

@@ -17,8 +17,7 @@ const useStyles = makeStyles({
       borderRadius: '20px',
       position: 'relative',
       width: '700px',
-      color: '#ffffff',
-      height: '450px'
+      color: '#ffffff'
     }
   },
   closeBtn: {
@@ -132,6 +131,7 @@ const SGoto = styled.a`
   width: 100%;
   display: block;
   margin-top: 20px;
+  padding-bottom: 30px;
   cursor: pointer;
 `;
 const SHrefIcon = styled.img`
@@ -175,16 +175,17 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
     try {
       await navigator.clipboard.writeText(copyMe);
       setCopySuccess('Copied!');
-      setInterval(() => {
+      setTimeout(() => {
         setCopySuccess('');
-      }, 1500);
+      }, 2000);
     } catch (err) {
-      setCopySuccess('Copied!');
+      if (err) {
+        setCopySuccess('Failed to copy!');
+      }
     }
   };
   const getEthScanLink = (id, data, type) => {
     const chain = chains[id];
-
     if (!chain) {
       return '';
     }
@@ -202,7 +203,15 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
   return (
     <>
       <React.Fragment>
-        <Dialog className={classes.root} open={isSuccess} onClose={close}>
+        <Dialog
+          className={classes.root}
+          open={isSuccess}
+          onClose={reason => {
+            if (reason === 'backdropClick') {
+              close();
+            }
+          }}
+        >
           <SMain>
             <SIcon>
               <SIconClose src={IconClose} onClick={close} />

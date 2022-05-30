@@ -16,7 +16,6 @@ import MainLayout from 'containers/Layout/MainLayout';
 import { Row, Col, Tooltip } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
 import BigNumber from 'bignumber.js';
-import Web3 from 'web3';
 import _ from 'lodash';
 import * as constants from 'utilities/constants';
 // import { checkIsValidNetwork } from 'utilities/common';
@@ -28,10 +27,11 @@ import {
   SECOND2DAY,
   SECOND30DAY,
   PERCENT_APR,
-  MAX_STAKE_NFT
+  MAX_STAKE_NFT,
+  SETTING_SLIDER
 } from './helper';
 // eslint-disable-next-line import/named
-import { axiosInstanceMoralis } from '../../../utilities/axios';
+import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
 import '../../../assets/styles/slick.scss';
 import * as ST from '../../../assets/styles/staking.js';
 // eslint-disable-next-line import/no-duplicates
@@ -53,7 +53,6 @@ import DialogStake from './DialogStake';
 import Loadding from './Loadding';
 // eslint-disable-next-line import/order
 import IconQuestion from '../../../assets/img/error-outline.svg';
-import IconDuck from '../../../assets/img/default_slider.svg';
 import IconLink from '../../../assets/img/launch.svg';
 import IconLinkBlue from '../../../assets/img/link_blue.svg';
 import IconNoData from '../../../assets/img/no_data.svg';
@@ -90,76 +89,9 @@ function SamplePrevArrow(props) {
   );
 }
 const AUDITOR_SETTING = {
-  dots: false,
-  infinite: false,
-  loop: false,
-  autoplay: false,
-  speed: 2000,
-  autoplaySpeed: 2000,
-  slidesToShow: 4,
-  slidesToScroll: 4,
-  initialSlide: 0,
+  ...SETTING_SLIDER,
   nextArrow: <SampleNextArrow />,
-  prevArrow: <SamplePrevArrow />,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 1,
-        infinite: true,
-        dots: true
-      }
-    },
-    {
-      breakpoint: 820,
-      settings: {
-        slidesToShow: 4,
-        slidesToScroll: 1,
-        initialSlide: 0,
-        dots: false,
-        infinite: false,
-        loop: false,
-        autoplay: false
-      }
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 8,
-        slidesToScroll: 1,
-        initialSlide: 0,
-        dots: false,
-        infinite: false,
-        loop: false,
-        autoplay: false
-      }
-    },
-    {
-      breakpoint: 600,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        initialSlide: 0,
-        dots: false,
-        infinite: false,
-        loop: false,
-        autoplay: false
-      }
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        initialSlide: 0,
-        dots: false,
-        infinite: false,
-        loop: false,
-        autoplay: false
-      }
-    }
-  ]
+  prevArrow: <SamplePrevArrow />
 };
 // eslint-disable-next-line react/prop-types
 function Staking({ settings, setSetting }) {
@@ -198,6 +130,7 @@ function Staking({ settings, setSetting }) {
   const [yourBoostAPR, setYourBoostAPR] = useState(0);
   const [valueNFTStake, setValueNFTStake] = useState('');
   const [valueNFTUnStake, setValueNFTUnStake] = useState('');
+  const [fakeImgNFT, setFakeImgNFT] = useState('');
   // contract
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
@@ -205,7 +138,6 @@ function Staking({ settings, setSetting }) {
   const nFtContract = getNFTContract();
   // get userInfor
   useMemo(async () => {
-    window.web3 = new Web3(window.ethereum);
     let sTokenBalance = null;
     if (address) {
       sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
@@ -275,13 +207,16 @@ function Staking({ settings, setSetting }) {
           const timeBootsUnstake = +res.boostedDate;
           const overTimeBaseReward = currentTime - timeBaseUnstake;
           const overTimeBootReward = currentTime - timeBootsUnstake;
-
           if (timeBaseUnstake === 0) {
             setisClaimBaseReward(false);
             setIsUnStakeLp(false);
           } else {
             setisClaimBaseReward(overTimeBaseReward >= SECOND24H);
-            setIsUnStakeLp(overTimeBaseReward >= SECOND2DAY);
+            if (overTimeBaseReward >= SECOND2DAY) {
+              setIsUnStakeLp(true);
+            } else {
+              setIsUnStakeLp(false);
+            }
           }
           if (timeBootsUnstake === 0) {
             setIsClaimBootReward(false);
@@ -325,7 +260,7 @@ function Staking({ settings, setSetting }) {
           throw err;
         });
     }
-  }, [address, txhash]);
+  }, [address, txhash, window.ethereum]);
   // get data
   useMemo(async () => {
     if (!address) {
@@ -334,7 +269,21 @@ function Staking({ settings, setSetting }) {
       return;
     }
     setIsLoading(true);
+    let tokenUri = null;
+    let imgFake = null;
     try {
+      await methods
+        .call(nFtContract.methods.notRevealedUri, [])
+        .then(res => {
+          tokenUri = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await axiosInstance.get(`${tokenUri}`).then(res => {
+        imgFake = res?.data.image;
+        setFakeImgNFT(imgFake);
+      });
       await axiosInstanceMoralis
         .get(`/${address}/nft?chain=rinkeby&format=decimal&limit=20`)
         .then(res => {
@@ -355,7 +304,7 @@ function Staking({ settings, setSetting }) {
               if (item?.metadata?.image) {
                 item.img = item?.metadata?.image;
               } else {
-                item.img = IconDuck;
+                item.img = imgFake;
               }
             });
             const dataStakeClone = _.cloneDeep(dataConvert);
@@ -394,7 +343,7 @@ function Staking({ settings, setSetting }) {
                 name: 'AnnexIronWolf ' + `#${item}`,
                 token_id: item,
                 id: +item,
-                img: IconDuck,
+                img: fakeImgNFT,
                 active: false
               });
             });
@@ -410,6 +359,7 @@ function Staking({ settings, setSetting }) {
             setIsLoading(false);
           } else {
             setDataNFTUnState([]);
+            setYourBoostAPR(0);
           }
         });
     } catch (err) {
@@ -417,7 +367,31 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     setIsLoading(false);
-  }, [address, txhash, window.ethereum]);
+  }, [address, txhash, window.ethereum, dataNFT]);
+  const expiryTimeUnstakeLP = useMemo(() => {
+    if (userInfo) {
+      const overOneDate = new Date(userInfo.depositedDate * 1000);
+      return overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
+      // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
+    }
+  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+
+  // time claim base reward countdown
+  const expiryTimeBase = useMemo(() => {
+    if (userInfo) {
+      const overOneDate = new Date(userInfo.depositedDate * 1000);
+      return overOneDate.setMinutes(overOneDate.getMinutes() + 3); // 3 minute
+      // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
+    }
+  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+  // time claim boost reward count down
+  const expiryTimeBoost = useMemo(() => {
+    if (userInfo) {
+      const over30days = new Date(userInfo.boostedDate * 1000);
+      return over30days.setMinutes(over30days.getMinutes() + 5); // 3 minute
+      // return over30days.setDate(over30days.getDate() + 30); // 30 days
+    }
+  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
   // change amount
   const enforcer = nextUserInput => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -438,15 +412,13 @@ function Staking({ settings, setSetting }) {
       show: false
     });
     const number = event.target.value;
-    if (/^0/.test(val)) {
-      const valueZero = val.replace(/^0/, '');
-      setVal(valueZero);
+    if (number === '') {
       setMessErr({
-        mess: 'Invalid amount',
-        show: true
+        mess: '',
+        show: false
       });
     }
-    if (number === '0') {
+    if (number !== '' && Number(number) === 0) {
       setMessErr({
         mess: 'Invalid amount',
         show: true
@@ -461,16 +433,6 @@ function Staking({ settings, setSetting }) {
       setDisabledBtn(false);
       setDisabledBtnUn(false);
     }
-
-    // if (Number(number) > 0 && Number(number) > +userInfo?.available) {
-    //   setDisabledBtn(true);
-    //   setMessErr({
-    //     mess: 'The amount has exceeded your balance. Try again!',
-    //     show: true
-    //   });
-    // } else {
-    //   setDisabledBtn(false);
-    // }
     if (Number(number) < 0) {
       setVal(0);
     } else if (Number(number) > 0) {
@@ -508,10 +470,6 @@ function Staking({ settings, setSetting }) {
       setIsApproveLP(false);
       return;
     }
-    if (Number(userInfo.available) === 0) {
-      setIsApproveLP(false);
-      return;
-    }
     await methods
       .call(lpContract.methods.allowance, [
         address,
@@ -519,16 +477,21 @@ function Staking({ settings, setSetting }) {
       ])
       .then(res => {
         const lpApproved = divDecimals(res, 18);
-        if (messErr.show || messErr.noLP) {
-          setIsApproveLP(true);
-        }
         if (lpApproved.isZero() || +val > lpApproved.toNumber()) {
           setIsApproveLP(false);
         } else {
           setIsApproveLP(true);
         }
       });
-  }, [val, address, handleMaxValue, userInfo, handleMaxValueStaked, txhash]);
+  }, [
+    val,
+    address,
+    handleMaxValue,
+    userInfo,
+    handleMaxValueStaked,
+    txhash,
+    expiryTimeUnstakeLP
+  ]);
   const checkApproveNFT = useCallback(async () => {
     await methods
       .call(nFtContract.methods.isApprovedForAll, [
@@ -656,32 +619,9 @@ function Staking({ settings, setSetting }) {
       });
   }, []);
 
-  const expiryTimeUnstakeLP = useMemo(() => {
-    const overOneDate = new Date(userInfo.depositedDate * 1000);
-    return overOneDate.setMinutes(overOneDate.getMinutes() + 20); // 20 minute
-    // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
-  }, [userInfo, address, txhash, isApproveLP]);
-
-  // time claim base reward countdown
-  const expiryTimeBase = useMemo(() => {
-    if (userInfo) {
-      const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setMinutes(overOneDate.getMinutes() + 10); // 10 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
-    }
-  }, [userInfo, address, txhash, isApproveLP]);
-  // time claim boost reward count down
-  const expiryTimeBoost = useMemo(() => {
-    if (userInfo) {
-      const over30days = new Date(userInfo.boostedDate * 1000);
-      return over30days.setMinutes(over30days.getMinutes() + 30); // 30 minute
-      // return over30days.setDate(over30days.getDate() + 30); // 30 days
-    }
-  }, [userInfo, address, txhash, isApproveLP]);
-
   // stake
   const handleStake = async () => {
-    if (val > +userInfo?.available) {
+    if (val > +userInfo?.availableNumber) {
       setMessErr({
         mess: 'The amount has exceeded your balance. Try again!',
         show: true
@@ -726,10 +666,6 @@ function Staking({ settings, setSetting }) {
             setIsSuccess(true);
             setIsLoadingBtn(false);
             setVal('');
-            // console.log(expiryTimeUnstakeLP, 'expiryTimeUnstakeLP');
-            // console.log(userInfo.amount, ' .amount');
-            // console.log(address, ' address');
-            // console.log(isApproveLP, 'isApproveLP');
           }
         })
         .catch(err => {
@@ -753,7 +689,7 @@ function Staking({ settings, setSetting }) {
     }
   };
   const handleUnStake = async () => {
-    if (val > +userInfo?.amount) {
+    if (val > +userInfo?.amountNumber) {
       setMessErr({
         mess: 'The amount has exceded your balance. Try again',
         show: true
@@ -792,6 +728,7 @@ function Staking({ settings, setSetting }) {
           setiIsConfirm(false);
           setIsSuccess(true);
           setIsLoadingUnStake(false);
+          setVal('');
         })
         .catch(err => {
           if (err.message.includes('User denied')) {
@@ -979,6 +916,7 @@ function Staking({ settings, setSetting }) {
   };
   const handleCloseSuccess = () => {
     setIsSuccess(false);
+    window.location.reload();
   };
   const handleCloseErr = () => {
     setIsShowCancel(false);
@@ -1041,6 +979,9 @@ function Staking({ settings, setSetting }) {
                           maxLength={79}
                           placeholder="Enter a number"
                           onChange={event => handleChangeValue(event)}
+                          onBlur={event => {
+                            setVal(Number(event.target.value));
+                          }}
                         />
                         {messErr?.show === true && (
                           <ST.SError>{messErr.mess}</ST.SError>
@@ -1098,6 +1039,7 @@ function Staking({ settings, setSetting }) {
                       <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                         <Row>
                           <ST.SRowColumn>
+                            {/* check approve lp */}
                             {address && isApproveLP && (
                               <>
                                 {/* stake lp */}
@@ -1203,22 +1145,13 @@ function Staking({ settings, setSetting }) {
                               </>
                             )}
                             {/* Approve */}
-                            {address &&
-                            userInfo.availableNumber &&
-                            !isApproveLP ? (
+                            {address && !isApproveLP ? (
                               <>
                                 <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                                   <ST.SBtn>
-                                    {!isApproveLP ? (
-                                      <>
-                                        {' '}
-                                        <ST.SBtnStake onClick={handleApproveLp}>
-                                          Approve Staking
-                                        </ST.SBtnStake>
-                                      </>
-                                    ) : (
-                                      <></>
-                                    )}
+                                    <ST.SBtnStake onClick={handleApproveLp}>
+                                      Approve Staking
+                                    </ST.SBtnStake>
                                   </ST.SBtn>
                                 </Col>
                               </>
@@ -1276,6 +1209,7 @@ function Staking({ settings, setSetting }) {
                               <ST.SBtnUn>
                                 {isUnStakeLp ? (
                                   <>
+                                    {/* check appove nft */}
                                     {isAprroveVstrk ? (
                                       <>
                                         {isLoadingUnStake ? (
@@ -1319,7 +1253,7 @@ function Staking({ settings, setSetting }) {
                                                   }
                                                   onClick={handleUnStake}
                                                 >
-                                                  UnStake
+                                                  Unstake
                                                 </ST.SBtnUnstake>
                                                 <Tooltip
                                                   placement="right"
@@ -1384,13 +1318,14 @@ function Staking({ settings, setSetting }) {
                                       </ST.SBtnUnStakeStart>
                                     </Col>
                                     <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                                      {expiryTimeUnstakeLP > 0 &&
+                                      {expiryTimeUnstakeLP &&
                                       userInfo.amount > 0 &&
                                       address &&
                                       isApproveLP ? (
                                         <CountDownClaim
                                           times={expiryTimeUnstakeLP}
                                           address={address}
+                                          txh={txhash}
                                         />
                                       ) : (
                                         <></>
@@ -1457,10 +1392,15 @@ function Staking({ settings, setSetting }) {
                               )}
                             </Col>
                             <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                              {expiryTimeBase && address && isApproveLP ? (
+                              {expiryTimeBase &&
+                              userInfo.depositedDate > 0 &&
+                              address &&
+                              userInfo.accBaseReward &&
+                              isApproveLP ? (
                                 <CountDownClaim
                                   times={expiryTimeBase}
                                   address={address}
+                                  txh={txhash}
                                 />
                               ) : (
                                 <></>
@@ -1518,10 +1458,15 @@ function Staking({ settings, setSetting }) {
                               )}
                             </Col>
                             <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                              {expiryTimeBoost && address && isApproveLP ? (
+                              {expiryTimeBoost &&
+                              userInfo.boostedDate > 0 &&
+                              address &&
+                              userInfo.accBoostReward &&
+                              isApproveLP ? (
                                 <CountDownClaim
                                   times={expiryTimeBoost}
                                   address={address}
+                                  txh={txhash}
                                 />
                               ) : (
                                 <></>
@@ -1770,13 +1715,15 @@ function Staking({ settings, setSetting }) {
         />
         {/* Confirm */}
         <DialogConfirm isConfirm={isConfirm} close={handleCloseConfirm} />
-        <DialogSuccess
-          isSuccess={isSuccess}
-          close={handleCloseSuccess}
-          address={settings?.selectedAddress}
-          text={textSuccess}
-          txh={txhash}
-        />
+        {isSuccess && (
+          <DialogSuccess
+            isSuccess={isSuccess}
+            close={handleCloseSuccess}
+            address={settings?.selectedAddress}
+            text={textSuccess}
+            txh={txhash}
+          />
+        )}
       </React.Fragment>
     </>
   );

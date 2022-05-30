@@ -36,12 +36,16 @@ const SItemTime = styled.div`
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
+  width: 100px;
+  text-align: center;
 `;
 const SItemText = styled.div`
   color: #6d6f7b;
   font-weight: 500;
   font-size: 12px;
   line-height: 19px;
+  width: 100px;
+  text-align: center;
 `;
 const abortController = new AbortController();
 
@@ -90,7 +94,7 @@ function CountDownClaim({ times, address }) {
         clearInterval(timeInterval);
         setExpiryTime(false);
       }
-    }, 1000);
+    }, 2000);
   };
   useEffect(() => {
     let updateTimer;
