@@ -1319,93 +1319,61 @@ function Staking({ settings, setSetting }) {
                             </ST.SLinkErrUn>
                           )}
                         </Col>
-                        <ST.SBoxOne>
-                          <Row>
+                        <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                          <ST.SInforNotBorder>
+                            <ST.SInforTextUn>Staked</ST.SInforTextUn>
+                            {address ? (
+                              <ST.SInforValueUn>
+                                <ST.SIconSmall>
+                                  <ST.SImgFlashSmall src={IconFlashSmall} />
+                                  <ST.SImgLpSmall src={IconLpSmall} />
+                                </ST.SIconSmall>
+                                {userInfo.amountNumber > 0
+                                  ? userInfo.amountNumber
+                                  : '0.0'}
+                              </ST.SInforValueUn>
+                            ) : (
+                              <ST.SInforValueUn>
+                                <ST.SIconSmall>
+                                  <ST.SImgFlashSmall src={IconFlashSmall} />
+                                  <ST.SImgLpSmall src={IconLpSmall} />
+                                </ST.SIconSmall>
+                                -
+                              </ST.SInforValueUn>
+                            )}
+                          </ST.SInforNotBorder>
+                        </Col>
+                        <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                          {/* Unstake lp */}
+                          <ST.SBoxUnState>
                             <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                              <ST.SInforNotBorder>
-                                <ST.SInforTextUn>Staked</ST.SInforTextUn>
-                                {address ? (
-                                  <ST.SInforValueUn>
-                                    <ST.SIconSmall>
-                                      <ST.SImgFlashSmall src={IconFlashSmall} />
-                                      <ST.SImgLpSmall src={IconLpSmall} />
-                                    </ST.SIconSmall>
-                                    {userInfo.amountNumber > 0
-                                      ? userInfo.amountNumber
-                                      : '0.0'}
-                                  </ST.SInforValueUn>
-                                ) : (
-                                  <ST.SInforValueUn>
-                                    <ST.SIconSmall>
-                                      <ST.SImgFlashSmall src={IconFlashSmall} />
-                                      <ST.SImgLpSmall src={IconLpSmall} />
-                                    </ST.SIconSmall>
-                                    -
-                                  </ST.SInforValueUn>
-                                )}
-                              </ST.SInforNotBorder>
-                            </Col>
-                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                              {/* Unstake lp */}
-                              <ST.SBoxUnState>
-                                <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                                  {address && isApproveLP && (
+                              {address && isApproveLP && (
+                                <>
+                                  {isUnStakeLp ? (
                                     <>
-                                      {isUnStakeLp ? (
+                                      {/* check appove nft */}
+                                      {isAprroveVstrk ? (
                                         <>
-                                          {/* check appove nft */}
-                                          {isAprroveVstrk ? (
+                                          {isLoadingUnStake ? (
                                             <>
-                                              {isLoadingUnStake ? (
-                                                <>
-                                                  <Col
-                                                    xs={{ span: 24 }}
-                                                    lg={{ span: 24 }}
+                                              <Col
+                                                xs={{ span: 24 }}
+                                                lg={{ span: 24 }}
+                                              >
+                                                <ST.SBtnUnStakeStart>
+                                                  <ST.SBtnLoadding disabled>
+                                                    Loading...
+                                                  </ST.SBtnLoadding>
+                                                  <Tooltip
+                                                    placement="right"
+                                                    title="Countdown time will be reset if you unstake a part without claiming the rewards"
                                                   >
-                                                    <ST.SBtnUnStakeStart>
-                                                      <ST.SBtnLoadding disabled>
-                                                        Loading...
-                                                      </ST.SBtnLoadding>
-                                                      <Tooltip
-                                                        placement="right"
-                                                        title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                                      >
-                                                        <ST.SQuestion
-                                                          src={IconQuestion}
-                                                        />
-                                                      </Tooltip>
-                                                    </ST.SBtnUnStakeStart>
-                                                  </Col>
-                                                </>
-                                              ) : (
-                                                <>
-                                                  <Col
-                                                    xs={{ span: 24 }}
-                                                    lg={{ span: 24 }}
-                                                  >
-                                                    <ST.SBtnUnStakeStart>
-                                                      <ST.SBtnUnstake
-                                                        disabled={
-                                                          disabledBtnUn ||
-                                                          Number(valUnStake) ===
-                                                            0
-                                                        }
-                                                        onClick={handleUnStake}
-                                                      >
-                                                        Unstake
-                                                      </ST.SBtnUnstake>
-                                                      <Tooltip
-                                                        placement="right"
-                                                        title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                                      >
-                                                        <ST.SQuestion
-                                                          src={IconQuestion}
-                                                        />
-                                                      </Tooltip>
-                                                    </ST.SBtnUnStakeStart>
-                                                  </Col>
-                                                </>
-                                              )}
+                                                    <ST.SQuestion
+                                                      src={IconQuestion}
+                                                    />
+                                                  </Tooltip>
+                                                </ST.SBtnUnStakeStart>
+                                              </Col>
                                             </>
                                           ) : (
                                             <>
@@ -1414,11 +1382,15 @@ function Staking({ settings, setSetting }) {
                                                 lg={{ span: 24 }}
                                               >
                                                 <ST.SBtnUnStakeStart>
-                                                  <ST.SBtnStake
-                                                    onClick={handleApproveVstrk}
+                                                  <ST.SBtnUnstake
+                                                    disabled={
+                                                      disabledBtnUn ||
+                                                      Number(valUnStake) === 0
+                                                    }
+                                                    onClick={handleUnStake}
                                                   >
-                                                    Approve Staking
-                                                  </ST.SBtnStake>
+                                                    Unstake
+                                                  </ST.SBtnUnstake>
                                                   <Tooltip
                                                     placement="right"
                                                     title="Countdown time will be reset if you unstake a part without claiming the rewards"
@@ -1434,54 +1406,74 @@ function Staking({ settings, setSetting }) {
                                         </>
                                       ) : (
                                         <>
-                                          {!isShowCountDownUnStake && (
-                                            <Col
-                                              xs={{ span: 24 }}
-                                              lg={{ span: 24 }}
-                                            >
-                                              <ST.SBtnUnStakeStart>
-                                                <ST.SSUnTake disabled>
-                                                  UnStake
-                                                </ST.SSUnTake>
-                                                <Tooltip
-                                                  placement="right"
-                                                  title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                                >
-                                                  <ST.SQuestion
-                                                    src={IconQuestion}
-                                                  />
-                                                </Tooltip>
-                                              </ST.SBtnUnStakeStart>
-                                            </Col>
-                                          )}
-
                                           <Col
                                             xs={{ span: 24 }}
                                             lg={{ span: 24 }}
                                           >
-                                            {expiryTimeUnstakeLP &&
-                                            isShowCountDownUnStake &&
-                                            userInfo.amount > 0 &&
-                                            address &&
-                                            isApproveLP ? (
-                                              <CountDownClaim
-                                                times={expiryTimeUnstakeLP}
-                                                address={address}
-                                                txh={txhash}
-                                              />
-                                            ) : (
-                                              <></>
-                                            )}
+                                            <ST.SBtnUnStakeStart>
+                                              <ST.SBtnStake
+                                                onClick={handleApproveVstrk}
+                                              >
+                                                Approve Staking
+                                              </ST.SBtnStake>
+                                              <Tooltip
+                                                placement="right"
+                                                title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                              >
+                                                <ST.SQuestion
+                                                  src={IconQuestion}
+                                                />
+                                              </Tooltip>
+                                            </ST.SBtnUnStakeStart>
                                           </Col>
                                         </>
                                       )}
                                     </>
+                                  ) : (
+                                    <>
+                                      {!isShowCountDownUnStake && (
+                                        <Col
+                                          xs={{ span: 24 }}
+                                          lg={{ span: 24 }}
+                                        >
+                                          <ST.SBtnUnStakeStart>
+                                            <ST.SSUnTake disabled>
+                                              UnStake
+                                            </ST.SSUnTake>
+                                            <Tooltip
+                                              placement="right"
+                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                            >
+                                              <ST.SQuestion
+                                                src={IconQuestion}
+                                              />
+                                            </Tooltip>
+                                          </ST.SBtnUnStakeStart>
+                                        </Col>
+                                      )}
+
+                                      <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                                        {expiryTimeUnstakeLP &&
+                                        isShowCountDownUnStake &&
+                                        userInfo.amount > 0 &&
+                                        address &&
+                                        isApproveLP ? (
+                                          <CountDownClaim
+                                            times={expiryTimeUnstakeLP}
+                                            address={address}
+                                            txh={txhash}
+                                          />
+                                        ) : (
+                                          <></>
+                                        )}
+                                      </Col>
+                                    </>
                                   )}
-                                </Col>
-                              </ST.SBoxUnState>
+                                </>
+                              )}
                             </Col>
-                          </Row>
-                        </ST.SBoxOne>
+                          </ST.SBoxUnState>
+                        </Col>
                       </Row>
                     </Col>
                   </Row>
