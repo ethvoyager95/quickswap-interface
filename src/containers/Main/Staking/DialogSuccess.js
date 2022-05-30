@@ -6,6 +6,7 @@ import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
+import { getShortAddress } from './helper';
 import IconSuccess from '../../../assets/img/success.svg';
 import IconClose from '../../../assets/img/close.svg';
 import IconCopy from '../../../assets/img/copy.svg';
@@ -223,7 +224,7 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
               <SView>View on explorer</SView>
               <SCopy>
                 <SAddress>
-                  {address}
+                  {getShortAddress(address)}
                   <SIconCopy
                     src={IconCopy}
                     onClick={() => copyToClipBoard(address)}

@@ -96,6 +96,9 @@ export const SDivHarvest = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 export const STextModel = styled.div`
   color: #000000;
@@ -216,7 +219,7 @@ export const SLinkErrUn = styled.a`
   }
 `;
 export const SImgErr = styled.img`
-  margin: 0 5px 5px 5px;
+  margin: 0 5px;
   width: 15px;
   height: 15px;
 `;
@@ -506,7 +509,6 @@ export const SInfor = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding-bottom: 15px;
   align-items: center;
   @media only screen and (max-width: 768px) {
     padding: 0 10px;
@@ -516,7 +518,6 @@ export const SInforNotBorder = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding-bottom: 15px;
   align-items: center;
   @media only screen and (max-width: 768px) {
     padding: 0 10px;
@@ -562,6 +563,14 @@ export const SInforText = styled.div`
   color: #6d6f7b;
   display: flex;
 `;
+export const SInforTextMargin = styled.div`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #6d6f7b;
+  display: flex;
+  margin-left: 10%;
+`;
 export const SInforTextVSTRK = styled.div`
   font-weight: 500;
   font-size: 16px;
@@ -570,6 +579,8 @@ export const SInforTextVSTRK = styled.div`
   display: flex;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
+    padding: 0 10px;
+    margin-top: 10px;
   }
 `;
 export const SInforTextUn = styled.div`
@@ -597,6 +608,16 @@ export const SInforValue = styled.div`
   color: #0b0f23;
   display: flex;
   margin-right: 10%;
+  @media only screen and (max-width: 768px) {
+    margin-right: 0%;
+  }
+`;
+export const SInforValueNoMargin = styled.div`
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 24px;
+  color: #0b0f23;
+  display: flex;
   @media only screen and (max-width: 768px) {
     margin-right: 0%;
   }
