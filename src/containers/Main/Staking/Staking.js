@@ -60,8 +60,8 @@ import IConNext from '../../../assets/img/arrow-next.svg';
 import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
-import IconVstrkSmall from '../../../assets/img/flash_vstrk.svg';
 import IconDuck from '../../../assets/img/duck.svg';
+// import IconVstrkSmall from '../../../assets/img/flash_vstrk.svg';
 // import IconNotSelect from '../../../assets/img/not_select.svg';
 // import IconNotConnect from '../../../assets/img/not_connect_data.svg';
 
@@ -97,7 +97,13 @@ const AUDITOR_SETTING = {
 function Staking({ settings, setSetting }) {
   const address = settings.selectedAddress;
   const [val, setVal] = useState('');
+  const [valUnStake, setValUnStake] = useState('');
   const [messErr, setMessErr] = useState({
+    mess: '',
+    show: false,
+    noLP: false
+  });
+  const [messErrUnStake, setMessErrUnStake] = useState({
     mess: '',
     show: false,
     noLP: false
@@ -124,6 +130,13 @@ function Staking({ settings, setSetting }) {
   const [disabledBtnUn, setDisabledBtnUn] = useState(false);
   const [countNFT, setCounNFT] = useState(0);
   const [isUnStakeLp, setIsUnStakeLp] = useState(false);
+  const [isShowCountDownUnStake, setIsShowCountDownUnStake] = useState(false);
+  const [isShowCountDownClaimBase, setIsShowCountDownClaimBase] = useState(
+    false
+  );
+  const [isShowCountDownClaimBoost, setIsShowCountDownClaimBoost] = useState(
+    false
+  );
   const [itemStaking, setItemStaking] = useState([]);
   const [itemStaked, setItemStaked] = useState([]);
   const [userInfo, setUserInfo] = useState({});
@@ -174,18 +187,19 @@ function Staking({ settings, setSetting }) {
           const amountNumber = divDecimals(res.amount, 18);
           const totalAmount = amountNumber.plus(pendingAmountNumber);
           const totalAmountNumber = totalAmount.toNumber();
-          const accBaseRewardBigNumber = divDecimals(
-            objClaim.accBaseReward,
-            18
-          );
+          const accBaseRewardBigNumber = divDecimals(objClaim.accBaseReward, 6);
           const accBoostRewardBigNumber = divDecimals(
             objClaim.accBoostReward,
-            18
+            6
           );
           const amountString = amountNumber?.toNumber();
           const accBaseRewardString = accBaseRewardBigNumber.toNumber();
           const accBoostRewardString = accBoostRewardBigNumber.toNumber();
           const balanceBigFormat = balanceBigNumber
+            .toNumber()
+            .toFixed(4)
+            .toString();
+          const totalAmountBigNumber = totalAmount
             .toNumber()
             .toFixed(4)
             .toString();
@@ -197,6 +211,19 @@ function Staking({ settings, setSetting }) {
             });
           } else {
             setMessErr({
+              mess: '',
+              show: false,
+              noLP: false
+            });
+          }
+          if (amountNumber.isZero()) {
+            setMessErrUnStake({
+              mess: 'No tokens to stake: Get STRK-ETH LP',
+              show: false,
+              noLP: true
+            });
+          } else {
+            setMessErrUnStake({
               mess: '',
               show: false,
               noLP: false
@@ -223,12 +250,22 @@ function Staking({ settings, setSetting }) {
           } else {
             setIsClaimBootReward(overTimeBootReward >= SECOND30DAY);
           }
+          if (accBaseRewardString > 0) {
+            setisClaimBaseReward(true);
+          } else {
+            setisClaimBaseReward(false);
+          }
+          if (accBoostRewardString > 0) {
+            setIsClaimBootReward(true);
+          } else {
+            setIsClaimBootReward(false);
+          }
           objUser = {
             ...res,
             amount:
               amountString !== 0 && amountString < 0.001
                 ? '<0.001'
-                : renderValueFixed(totalAmount).toString(),
+                : renderValueFixed(totalAmountBigNumber).toString(),
             amountNumber: totalAmountNumber,
             available: renderValueFixed(balanceBigFormat).toString(),
             availableNumber: balanceBigNumber.toNumber(),
@@ -380,25 +417,63 @@ function Staking({ settings, setSetting }) {
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 dâys
+      const result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
+      // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 days
+      const currentDateTime = new Date();
+      const resultInSecondsCurrent = Math.floor(
+        currentDateTime.getTime() / 1000
+      );
+      const afterStakeSeconds = Math.floor(
+        resultInSecondsCurrent - result / 1000
+      );
+      if (afterStakeSeconds > SECOND2DAY) {
+        setIsShowCountDownUnStake(false);
+      } else {
+        setIsShowCountDownUnStake(true);
+      }
+      return result;
     }
   }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
-
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      return overOneDate.setMinutes(overOneDate.getMinutes() + 3); // 3 minute
+      const result = overOneDate.setMinutes(overOneDate.getMinutes() + 3); // 3 minute
       // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
+      const currentDateTime = new Date();
+      const resultInSecondsCurrent = Math.floor(
+        currentDateTime.getTime() / 1000
+      );
+      const afterStakeSeconds = Math.floor(
+        resultInSecondsCurrent - result / 1000
+      );
+      if (afterStakeSeconds > SECOND24H) {
+        setIsShowCountDownClaimBase(false);
+      } else {
+        setIsShowCountDownClaimBase(true);
+      }
+      return result;
     }
   }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
       const over30days = new Date(userInfo.boostedDate * 1000);
-      return over30days.setMinutes(over30days.getMinutes() + 5); // 3 minute
+      const result = over30days.setMinutes(over30days.getMinutes() + 5); // 3 minute
       // return over30days.setDate(over30days.getDate() + 30); // 30 days
+      const currentDateTime = new Date();
+      const resultInSecondsCurrent = Math.floor(
+        currentDateTime.getTime() / 1000
+      );
+      const afterStakeSeconds = Math.floor(
+        resultInSecondsCurrent - result / 1000
+      );
+      if (afterStakeSeconds > SECOND30DAY) {
+        setIsShowCountDownClaimBoost(false);
+      } else {
+        setIsShowCountDownClaimBoost(true);
+      }
+      return result;
     }
   }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
   // change amount
@@ -408,7 +483,12 @@ function Staking({ settings, setSetting }) {
       setVal(nextUserInput);
     }
   };
-
+  const enforcerUnStake = nextUserInput => {
+    const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
+    if (nextUserInput === '' || numberDigitsRegex.test(nextUserInput)) {
+      setValUnStake(nextUserInput);
+    }
+  };
   const handleChangeValue = event => {
     enforcer(event.target.value.replace(/,/g, '.'));
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -433,14 +513,12 @@ function Staking({ settings, setSetting }) {
         show: true
       });
       setDisabledBtn(true);
-      setDisabledBtnUn(true);
     } else {
       setMessErr({
         mess: '',
         show: false
       });
       setDisabledBtn(false);
-      setDisabledBtnUn(false);
     }
     if (Number(number) < 0) {
       setVal(0);
@@ -455,6 +533,49 @@ function Staking({ settings, setSetting }) {
       setVal(valueFormat);
     }
   };
+  const handleChangeValueUnstake = event => {
+    enforcerUnStake(event.target.value.replace(/,/g, '.'));
+    const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
+    if (!numberDigitsRegex.test(event.target.value)) {
+      return;
+    }
+    setMessErrUnStake({
+      mess: '',
+      show: false
+    });
+    const number = event.target.value;
+    if (number === '') {
+      setMessErrUnStake({
+        mess: '',
+        show: false
+      });
+    }
+    if (number !== '' && Number(number) === 0) {
+      setMessErrUnStake({
+        mess: 'Invalid amount',
+        show: true
+      });
+      setDisabledBtnUn(true);
+    } else {
+      setMessErr({
+        mess: '',
+        show: false
+      });
+      setDisabledBtnUn(false);
+    }
+    if (Number(number) < 0) {
+      setValUnStake(0);
+    } else if (Number(number) > 0) {
+      const valueFormat = event?.target.value.replace(/,/g, '.');
+      const lstValueFormat = valueFormat?.toString().split('.');
+      if (lstValueFormat.length > 1) {
+        const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(0, 5)}`;
+        setValUnStake(result);
+        return;
+      }
+      setValUnStake(valueFormat);
+    }
+  };
   const handleMaxValue = () => {
     setVal(userInfo?.availableNumber);
     if (userInfo?.availableNumber > 0) {
@@ -465,9 +586,9 @@ function Staking({ settings, setSetting }) {
     }
   };
   const handleMaxValueStaked = () => {
-    setVal(userInfo?.amountNumber);
+    setValUnStake(userInfo?.amountNumber);
     if (userInfo?.amountNumber > 0) {
-      setMessErr({
+      setMessErrUnStake({
         mess: '',
         show: false
       });
@@ -698,27 +819,27 @@ function Staking({ settings, setSetting }) {
     }
   };
   const handleUnStake = async () => {
-    if (val > +userInfo?.amountNumber) {
-      setMessErr({
+    if (valUnStake > +userInfo?.amountNumber) {
+      setMessErrUnStake({
         mess: 'The amount has exceded your balance. Try again',
         show: true
       });
       return;
     }
-    if (!val || val === 0) {
-      setMessErr({
+    if (!valUnStake || valUnStake === 0) {
+      setMessErrUnStake({
         mess: 'Invalid amount',
         show: true
       });
     } else {
-      setMessErr({
+      setMessErrUnStake({
         mess: '',
         show: true
       });
       // withdraw test
       setiIsConfirm(true);
       setIsLoadingUnStake(true);
-      const valueBigNumber = new BigNumber(val);
+      const valueBigNumber = new BigNumber(valUnStake);
       await methods
         .send(
           farmingContract.methods.withdraw,
@@ -737,7 +858,7 @@ function Staking({ settings, setSetting }) {
           setiIsConfirm(false);
           setIsSuccess(true);
           setIsLoadingUnStake(false);
-          setVal('');
+          setValUnStake('');
         })
         .catch(err => {
           if (err.message.includes('User denied')) {
@@ -753,7 +874,7 @@ function Staking({ settings, setSetting }) {
           }
           throw err;
         });
-      setMessErr({
+      setMessErrUnStake({
         mess: '',
         show: false
       });
@@ -965,7 +1086,7 @@ function Staking({ settings, setSetting }) {
                 <DashboardStaking amount={countNFT} address={address} />
                 <ST.SDivPadding>
                   <ST.SHeader>
-                    <ST.STextModel>Interest Rate Model</ST.STextModel>
+                    <ST.STextModel>STRK-ETH Staking</ST.STextModel>
                     <ST.SHref target="_blank" href={constants.SUPPORT_URL}>
                       Get STRK-ETH LPs
                       <ST.SImgErr src={IconLinkBlue} />
@@ -974,79 +1095,71 @@ function Staking({ settings, setSetting }) {
 
                   <Row>
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                      <ST.SInput>
-                        <input
-                          type="text"
-                          value={val}
-                          inputMode="decimal"
-                          pattern="^[0-9]*[.,]?[0-9]*$"
-                          min={0}
-                          minLength={1}
-                          spellCheck="false"
-                          autoComplete="off"
-                          autoCorrect="off"
-                          maxLength={79}
-                          placeholder="Enter a number"
-                          onChange={event => handleChangeValue(event)}
-                          onBlur={event => {
-                            setVal(Number(event.target.value));
-                          }}
-                        />
-                        {messErr?.show === true && (
-                          <ST.SError>{messErr.mess}</ST.SError>
-                        )}
-                        {messErr?.noLP === true && (
-                          <ST.SLinkErr>
-                            {messErr.mess}
+                      <Row>
+                        <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                          <ST.SInput>
+                            <input
+                              type="text"
+                              value={val}
+                              inputMode="decimal"
+                              pattern="^[0-9]*[.,]?[0-9]*$"
+                              min={0}
+                              minLength={1}
+                              spellCheck="false"
+                              autoComplete="off"
+                              autoCorrect="off"
+                              maxLength={79}
+                              placeholder="Enter a number"
+                              onChange={event => handleChangeValue(event)}
+                              onBlur={event => {
+                                setVal(Number(event.target.value));
+                              }}
+                            />
+                            <ST.SMax
+                              disabled={userInfo.amountNumber === 0 || !address}
+                              onClick={handleMaxValue}
+                            >
+                              MAX
+                            </ST.SMax>
+                          </ST.SInput>
+                        </Col>
+                        <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                          {messErr?.show === true && (
+                            <ST.SError>{messErr.mess}</ST.SError>
+                          )}
+                          {messErr?.noLP === true && (
                             <ST.SLinkErr
                               target="_blank"
                               href={constants.SUPPORT_URL}
                             >
-                              <ST.SImgErr src={IconLink} />
+                              {messErr.mess}
+                              <ST.SLinkErr>
+                                <ST.SImgErr src={IconLink} />
+                              </ST.SLinkErr>
                             </ST.SLinkErr>
-                          </ST.SLinkErr>
-                        )}
-                      </ST.SInput>
-                    </Col>
-                  </Row>
-                  <ST.SBoxOne>
-                    <Row>
-                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <ST.SInfor>
-                          <ST.SInforText>Available</ST.SInforText>
-                          {address ? (
-                            <ST.SInforValue>
-                              <ST.SIconSmall>
-                                <ST.SImgFlashSmall src={IconFlashSmall} />
-                                <ST.SImgLpSmall src={IconLpSmall} />
-                              </ST.SIconSmall>
-                              {userInfo.available ?? '0.0'}
-                              <ST.SMax
-                                disabled={userInfo.availableNumber === 0}
-                                onClick={handleMaxValue}
-                              >
-                                MAX
-                              </ST.SMax>
-                            </ST.SInforValue>
-                          ) : (
-                            <ST.SInforValue>
-                              <ST.SIconSmall>
-                                <ST.SImgFlashSmall src={IconFlashSmall} />
-                                <ST.SImgLpSmall src={IconLpSmall} />
-                              </ST.SIconSmall>
-                              -
-                              <ST.SMax
-                                disabled={userInfo.availableNumber === 0}
-                                onClick={handleMaxValue}
-                              >
-                                MAX
-                              </ST.SMax>
-                            </ST.SInforValue>
                           )}
-                        </ST.SInfor>
-                      </Col>
-                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <Row>
+                        </Col>
+                        <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                          <ST.SInfor>
+                            <ST.SInforText>Available</ST.SInforText>
+                            {address ? (
+                              <ST.SInforValue>
+                                <ST.SIconSmall>
+                                  <ST.SImgFlashSmall src={IconFlashSmall} />
+                                  <ST.SImgLpSmall src={IconLpSmall} />
+                                </ST.SIconSmall>
+                                {userInfo.availableNumber ?? '0.0'}
+                              </ST.SInforValue>
+                            ) : (
+                              <ST.SInforValue>
+                                <ST.SIconSmall>
+                                  <ST.SImgFlashSmall src={IconFlashSmall} />
+                                  <ST.SImgLpSmall src={IconLpSmall} />
+                                </ST.SIconSmall>
+                                -
+                              </ST.SInforValue>
+                            )}
+                          </ST.SInfor>
                           <ST.SRowColumn>
                             {/* check approve lp */}
                             {address && isApproveLP && (
@@ -1076,12 +1189,6 @@ function Staking({ settings, setSetting }) {
                                               </Tooltip>
                                             </ST.SBtnUnStakeStart>
                                           </Col>
-                                          <Col
-                                            xs={{ span: 24 }}
-                                            lg={{ span: 8 }}
-                                          >
-                                            {}
-                                          </Col>
                                         </>
                                       ) : (
                                         <>
@@ -1104,12 +1211,6 @@ function Staking({ settings, setSetting }) {
                                                     />
                                                   </Tooltip>
                                                 </ST.SBtnUnStakeStart>
-                                              </Col>
-                                              <Col
-                                                xs={{ span: 24 }}
-                                                lg={{ span: 8 }}
-                                              >
-                                                {}
                                               </Col>
                                             </>
                                           ) : (
@@ -1138,12 +1239,6 @@ function Staking({ settings, setSetting }) {
                                                   </Tooltip>
                                                 </ST.SBtnUnStakeStart>
                                               </Col>
-                                              <Col
-                                                xs={{ span: 24 }}
-                                                lg={{ span: 8 }}
-                                              >
-                                                {}
-                                              </Col>
                                             </>
                                           )}
                                         </>
@@ -1170,191 +1265,254 @@ function Staking({ settings, setSetting }) {
                               </>
                             )}
                           </ST.SRowColumn>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </ST.SBoxOne>
-                  <ST.SBoxOne>
-                    <Row>
-                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <ST.SInforNotBorder>
-                          <ST.SInforText>Staked</ST.SInforText>
-                          {address ? (
-                            <ST.SInforValue>
-                              <ST.SIconSmall>
-                                <ST.SImgFlashSmall src={IconFlashSmall} />
-                                <ST.SImgLpSmall src={IconLpSmall} />
-                              </ST.SIconSmall>
-                              {userInfo.amount ?? '0.0'}
-                              <ST.SMax
-                                disabled={userInfo.amountNumber === 0}
-                                onClick={handleMaxValueStaked}
-                              >
-                                MAX
-                              </ST.SMax>
-                            </ST.SInforValue>
-                          ) : (
-                            <ST.SInforValue>
-                              <ST.SIconSmall>
-                                <ST.SImgFlashSmall src={IconFlashSmall} />
-                                <ST.SImgLpSmall src={IconLpSmall} />
-                              </ST.SIconSmall>
-                              -
-                              <ST.SMax
-                                disabled={userInfo.amountNumber === 0}
-                                onClick={handleMaxValueStaked}
-                              >
-                                MAX
-                              </ST.SMax>
-                            </ST.SInforValue>
+                        </Col>
+                      </Row>
+                    </Col>
+                    {/* Unstake */}
+                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                      <Row>
+                        <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                          <ST.SInputUnStake>
+                            <input
+                              type="text"
+                              value={valUnStake}
+                              inputMode="decimal"
+                              pattern="^[0-9]*[.,]?[0-9]*$"
+                              min={0}
+                              minLength={1}
+                              spellCheck="false"
+                              autoComplete="off"
+                              autoCorrect="off"
+                              maxLength={79}
+                              placeholder="Enter a number"
+                              onChange={event =>
+                                handleChangeValueUnstake(event)
+                              }
+                              onBlur={event => {
+                                setValUnStake(Number(event.target.value));
+                              }}
+                            />
+                            <ST.SMaxUn
+                              disabled={userInfo.amountNumber === 0 || !address}
+                              onClick={handleMaxValueStaked}
+                            >
+                              MAX
+                            </ST.SMaxUn>
+                          </ST.SInputUnStake>
+                        </Col>
+                        <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                          {messErrUnStake?.show === true && (
+                            <ST.SErrorUn>{messErrUnStake.mess}</ST.SErrorUn>
                           )}
-                        </ST.SInforNotBorder>
-                      </Col>
-                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        {/* Unstake lp */}
-                        <ST.SBoxUnState>
-                          <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                            {address && isApproveLP && (
-                              <ST.SBtnUn>
-                                {isUnStakeLp ? (
-                                  <>
-                                    {/* check appove nft */}
-                                    {isAprroveVstrk ? (
-                                      <>
-                                        {isLoadingUnStake ? (
-                                          <>
-                                            <Col
-                                              xs={{ span: 24 }}
-                                              lg={{ span: 12 }}
-                                            >
-                                              <ST.SBtnUnStakeStart>
-                                                <ST.SBtnLoadding disabled>
-                                                  Loading...
-                                                </ST.SBtnLoadding>
-                                                <Tooltip
-                                                  placement="right"
-                                                  title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                                >
-                                                  <ST.SQuestion
-                                                    src={IconQuestion}
-                                                  />
-                                                </Tooltip>
-                                              </ST.SBtnUnStakeStart>
-                                            </Col>
-                                            <Col
-                                              xs={{ span: 24 }}
-                                              lg={{ span: 8 }}
-                                            >
-                                              {}
-                                            </Col>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <Col
-                                              xs={{ span: 24 }}
-                                              lg={{ span: 12 }}
-                                            >
-                                              <ST.SBtnUnStakeStart>
-                                                <ST.SBtnUnstake
-                                                  disabled={
-                                                    disabledBtnUn ||
-                                                    Number(val) === 0
-                                                  }
-                                                  onClick={handleUnStake}
-                                                >
-                                                  Unstake
-                                                </ST.SBtnUnstake>
-                                                <Tooltip
-                                                  placement="right"
-                                                  title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                                >
-                                                  <ST.SQuestion
-                                                    src={IconQuestion}
-                                                  />
-                                                </Tooltip>
-                                              </ST.SBtnUnStakeStart>
-                                            </Col>
-                                            <Col
-                                              xs={{ span: 24 }}
-                                              lg={{ span: 8 }}
-                                            >
-                                              {}
-                                            </Col>
-                                          </>
-                                        )}
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Col
-                                          xs={{ span: 24 }}
-                                          lg={{ span: 12 }}
-                                        >
-                                          <ST.SBtnUnStakeStart>
-                                            <ST.SBtnStake
-                                              onClick={handleApproveVstrk}
-                                            >
-                                              Approve Staking
-                                            </ST.SBtnStake>
-                                            <Tooltip
-                                              placement="right"
-                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                            >
-                                              <ST.SQuestion
-                                                src={IconQuestion}
-                                              />
-                                            </Tooltip>
-                                          </ST.SBtnUnStakeStart>
-                                        </Col>
-                                        <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                                          {}
-                                        </Col>
-                                      </>
-                                    )}
-                                  </>
+                          {messErrUnStake?.noLP === true && (
+                            <ST.SLinkErrUn
+                              target="_blank"
+                              href={constants.SUPPORT_URL}
+                            >
+                              {messErrUnStake.mess}
+                              <ST.SLinkErr>
+                                <ST.SImgErr src={IconLink} />
+                              </ST.SLinkErr>
+                            </ST.SLinkErrUn>
+                          )}
+                        </Col>
+                        <ST.SBoxOne>
+                          <Row>
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                              <ST.SInforNotBorder>
+                                <ST.SInforTextUn>Staked</ST.SInforTextUn>
+                                {address ? (
+                                  <ST.SInforValueUn>
+                                    <ST.SIconSmall>
+                                      <ST.SImgFlashSmall src={IconFlashSmall} />
+                                      <ST.SImgLpSmall src={IconLpSmall} />
+                                    </ST.SIconSmall>
+                                    {userInfo.amountNumber ?? '0.0'}
+                                  </ST.SInforValueUn>
                                 ) : (
-                                  <>
-                                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                                      <ST.SBtnUnStakeStart>
-                                        <ST.SSUnTake disabled>
-                                          UnStake
-                                        </ST.SSUnTake>
-                                        <Tooltip
-                                          placement="right"
-                                          title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                        >
-                                          <ST.SQuestion src={IconQuestion} />
-                                        </Tooltip>
-                                      </ST.SBtnUnStakeStart>
-                                    </Col>
-                                    <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                                      {expiryTimeUnstakeLP &&
-                                      userInfo.amount > 0 &&
-                                      address &&
-                                      isApproveLP ? (
-                                        <CountDownClaim
-                                          times={expiryTimeUnstakeLP}
-                                          address={address}
-                                          txh={txhash}
-                                        />
-                                      ) : (
-                                        <></>
-                                      )}
-                                    </Col>
-                                  </>
+                                  <ST.SInforValueUn>
+                                    <ST.SIconSmall>
+                                      <ST.SImgFlashSmall src={IconFlashSmall} />
+                                      <ST.SImgLpSmall src={IconLpSmall} />
+                                    </ST.SIconSmall>
+                                    -
+                                  </ST.SInforValueUn>
                                 )}
-                              </ST.SBtnUn>
-                            )}
-                          </Col>
-                        </ST.SBoxUnState>
-                      </Col>
-                    </Row>
-                  </ST.SBoxOne>
+                              </ST.SInforNotBorder>
+                            </Col>
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                              {/* Unstake lp */}
+                              <ST.SBoxUnState>
+                                <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                                  {address && isApproveLP && (
+                                    <>
+                                      {isUnStakeLp ? (
+                                        <>
+                                          {/* check appove nft */}
+                                          {isAprroveVstrk ? (
+                                            <>
+                                              {isLoadingUnStake ? (
+                                                <>
+                                                  <Col
+                                                    xs={{ span: 24 }}
+                                                    lg={{ span: 24 }}
+                                                  >
+                                                    <ST.SBtnUnStakeStart>
+                                                      <ST.SBtnLoadding disabled>
+                                                        Loading...
+                                                      </ST.SBtnLoadding>
+                                                      <Tooltip
+                                                        placement="right"
+                                                        title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                                      >
+                                                        <ST.SQuestion
+                                                          src={IconQuestion}
+                                                        />
+                                                      </Tooltip>
+                                                    </ST.SBtnUnStakeStart>
+                                                  </Col>
+                                                </>
+                                              ) : (
+                                                <>
+                                                  <Col
+                                                    xs={{ span: 24 }}
+                                                    lg={{ span: 24 }}
+                                                  >
+                                                    <ST.SBtnUnStakeStart>
+                                                      <ST.SBtnUnstake
+                                                        disabled={
+                                                          disabledBtnUn ||
+                                                          Number(valUnStake) ===
+                                                            0
+                                                        }
+                                                        onClick={handleUnStake}
+                                                      >
+                                                        Unstake
+                                                      </ST.SBtnUnstake>
+                                                      <Tooltip
+                                                        placement="right"
+                                                        title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                                      >
+                                                        <ST.SQuestion
+                                                          src={IconQuestion}
+                                                        />
+                                                      </Tooltip>
+                                                    </ST.SBtnUnStakeStart>
+                                                  </Col>
+                                                </>
+                                              )}
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Col
+                                                xs={{ span: 24 }}
+                                                lg={{ span: 24 }}
+                                              >
+                                                <ST.SBtnUnStakeStart>
+                                                  <ST.SBtnStake
+                                                    onClick={handleApproveVstrk}
+                                                  >
+                                                    Approve Staking
+                                                  </ST.SBtnStake>
+                                                  <Tooltip
+                                                    placement="right"
+                                                    title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                                  >
+                                                    <ST.SQuestion
+                                                      src={IconQuestion}
+                                                    />
+                                                  </Tooltip>
+                                                </ST.SBtnUnStakeStart>
+                                              </Col>
+                                            </>
+                                          )}
+                                        </>
+                                      ) : (
+                                        <>
+                                          {!isShowCountDownUnStake && (
+                                            <Col
+                                              xs={{ span: 24 }}
+                                              lg={{ span: 24 }}
+                                            >
+                                              <ST.SBtnUnStakeStart>
+                                                <ST.SSUnTake disabled>
+                                                  UnStake
+                                                </ST.SSUnTake>
+                                                <Tooltip
+                                                  placement="right"
+                                                  title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                                >
+                                                  <ST.SQuestion
+                                                    src={IconQuestion}
+                                                  />
+                                                </Tooltip>
+                                              </ST.SBtnUnStakeStart>
+                                            </Col>
+                                          )}
+
+                                          <Col
+                                            xs={{ span: 24 }}
+                                            lg={{ span: 24 }}
+                                          >
+                                            {expiryTimeUnstakeLP &&
+                                            isShowCountDownUnStake &&
+                                            userInfo.amount > 0 &&
+                                            address &&
+                                            isApproveLP ? (
+                                              <CountDownClaim
+                                                times={expiryTimeUnstakeLP}
+                                                address={address}
+                                                txh={txhash}
+                                              />
+                                            ) : (
+                                              <></>
+                                            )}
+                                          </Col>
+                                        </>
+                                      )}
+                                    </>
+                                  )}
+                                </Col>
+                              </ST.SBoxUnState>
+                            </Col>
+                          </Row>
+                        </ST.SBoxOne>
+                      </Row>
+                    </Col>
+                  </Row>
                 </ST.SDivPadding>
                 <ST.SDivPaddingMT>
                   <ST.SDivHarvest>
                     <ST.SText>STRK-ETH Harvest</ST.SText>
+                    <ST.SInforTextVSTRK>
+                      vSTRK claimed
+                      <ST.SVSTRKTootip>
+                        <Tooltip
+                          placement="right"
+                          title="vSTRK is auto-claimed to your wallet 
+                              (10 vSTRK is minted for each STRK-ETH to stake)"
+                        >
+                          <ST.SQuestion src={IconQuestion} />
+                        </Tooltip>
+                      </ST.SVSTRKTootip>
+                      {address ? (
+                        <>
+                          <ST.SIconSmall>
+                            <ST.SImgLpSmall src={IconFlashSmall} />
+                          </ST.SIconSmall>
+                          {userInfo.vStrk ?? '0.0'}
+                        </>
+                      ) : (
+                        <>
+                          <ST.SIconSmall>
+                            <ST.SImgLpSmall src={IconFlashSmall} />
+                          </ST.SIconSmall>
+                          -
+                        </>
+                      )}
+                    </ST.SInforTextVSTRK>
                   </ST.SDivHarvest>
-                  {/* Claim base */}
+                  {/* Base reward */}
                   <ST.SBoxHarvest>
                     <Row>
                       <Col xs={{ span: 24 }} lg={{ span: 12 }}>
@@ -1377,153 +1535,127 @@ function Staking({ settings, setSetting }) {
                             </ST.SInforValue>
                           )}
                         </ST.SInforClaim>
+                        {address && isApproveLP && !isShowCountDownClaimBase && (
+                          <ST.SInforClaim>
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                              <ST.SBtnClaim>
+                                {isClaimBaseReward ? (
+                                  <ST.SClaim onClick={handleClainBaseReward}>
+                                    Claim
+                                  </ST.SClaim>
+                                ) : (
+                                  <ST.SUnClaim>Claim</ST.SUnClaim>
+                                )}
+                                <Tooltip
+                                  placement="right"
+                                  title="You can only claim reward once daily"
+                                >
+                                  <ST.SQuestionClaim src={IconQuestion} />
+                                </Tooltip>
+                              </ST.SBtnClaim>
+                            </Col>
+                          </ST.SInforClaim>
+                        )}
+
+                        {expiryTimeBase &&
+                        isShowCountDownClaimBase &&
+                        userInfo.depositedDate > 0 &&
+                        address &&
+                        userInfo.accBaseReward &&
+                        isApproveLP ? (
+                          <ST.SInforClaim>
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                              <CountDownClaim
+                                times={expiryTimeBase}
+                                address={address}
+                                txh={txhash}
+                              />
+                            </Col>
+                          </ST.SInforClaim>
+                        ) : (
+                          <></>
+                        )}
                       </Col>
+
+                      {/* Boost reward */}
                       <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                         <Row>
-                          <ST.SBoxState>
-                            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                              {address && isApproveLP && (
-                                <ST.SBtnClaim>
-                                  {isClaimBaseReward ? (
-                                    <ST.SClaim onClick={handleClainBaseReward}>
-                                      Claim
-                                    </ST.SClaim>
-                                  ) : (
-                                    <ST.SUnClaim>Claim</ST.SUnClaim>
-                                  )}
-                                  <Tooltip
-                                    placement="right"
-                                    title="You can only claim reward once daily"
-                                  >
-                                    <ST.SQuestionClaim src={IconQuestion} />
-                                  </Tooltip>
-                                </ST.SBtnClaim>
-                              )}
-                            </Col>
-                            <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                              {expiryTimeBase &&
-                              userInfo.depositedDate > 0 &&
-                              address &&
-                              userInfo.accBaseReward &&
-                              isApproveLP ? (
-                                <CountDownClaim
-                                  times={expiryTimeBase}
-                                  address={address}
-                                  txh={txhash}
-                                />
+                          <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                            <ST.SInforClaim>
+                              <ST.SInforTextMargin>
+                                Boost Reward
+                              </ST.SInforTextMargin>
+                              {address ? (
+                                <ST.SInforValueNoMargin>
+                                  <ST.SIconSmall>
+                                    <ST.SImgFlashSmall src={IconFlashSmall} />
+                                  </ST.SIconSmall>
+                                  {userInfo.accBoostReward ?? '0.0'}
+                                </ST.SInforValueNoMargin>
                               ) : (
-                                <></>
+                                <ST.SInforValueNoMargin>
+                                  <ST.SIconSmall>
+                                    <ST.SImgFlashSmall src={IconFlashSmall} />
+                                  </ST.SIconSmall>
+                                  -
+                                </ST.SInforValueNoMargin>
                               )}
-                            </Col>
-                          </ST.SBoxState>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </ST.SBoxHarvest>
+                            </ST.SInforClaim>
+                            {address &&
+                              isApproveLP &&
+                              !isShowCountDownClaimBoost && (
+                                <ST.SInforClaim>
+                                  <ST.SBoxState>
+                                    <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                                      <ST.SBtnClaimStart>
+                                        {isClaimBootReward ? (
+                                          <ST.SClaim
+                                            onClick={handleClainBootReward}
+                                          >
+                                            Claim
+                                          </ST.SClaim>
+                                        ) : (
+                                          <ST.SUnClaim>Claim</ST.SUnClaim>
+                                        )}
+                                        <Tooltip
+                                          placement="right"
+                                          title="You can only claim reward once monthly"
+                                        >
+                                          <ST.SQuestionClaim
+                                            src={IconQuestion}
+                                          />
+                                        </Tooltip>
+                                      </ST.SBtnClaimStart>
+                                    </Col>
+                                  </ST.SBoxState>
+                                </ST.SInforClaim>
+                              )}
 
-                  {/* Claim boost */}
-                  <ST.SBoxHarvest>
-                    <Row>
-                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <ST.SInforClaim>
-                          <ST.SInforText>Boost Reward</ST.SInforText>
-                          {address ? (
-                            <ST.SInforValue>
-                              <ST.SIconSmall>
-                                <ST.SImgFlashSmall src={IconFlashSmall} />
-                              </ST.SIconSmall>
-                              {userInfo.accBoostReward ?? '0.0'}
-                            </ST.SInforValue>
-                          ) : (
-                            <ST.SInforValue>
-                              <ST.SIconSmall>
-                                <ST.SImgFlashSmall src={IconFlashSmall} />
-                              </ST.SIconSmall>
-                              -
-                            </ST.SInforValue>
-                          )}
-                        </ST.SInforClaim>
-                      </Col>
-                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <Row>
-                          <ST.SBoxState>
-                            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                              {address && isApproveLP && (
-                                <ST.SBtnClaimStart>
-                                  {isClaimBootReward ? (
-                                    <ST.SClaim onClick={handleClainBootReward}>
-                                      Claim
-                                    </ST.SClaim>
-                                  ) : (
-                                    <ST.SUnClaim>Claim</ST.SUnClaim>
-                                  )}
-                                  <Tooltip
-                                    placement="right"
-                                    title="You can only claim reward once monthly"
-                                  >
-                                    <ST.SQuestionClaim src={IconQuestion} />
-                                  </Tooltip>
-                                </ST.SBtnClaimStart>
-                              )}
-                            </Col>
-                            <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                              {expiryTimeBoost &&
-                              userInfo.boostedDate > 0 &&
-                              address &&
-                              userInfo.accBoostReward &&
-                              isApproveLP ? (
-                                <CountDownClaim
-                                  times={expiryTimeBoost}
-                                  address={address}
-                                  txh={txhash}
-                                />
-                              ) : (
-                                <></>
-                              )}
-                            </Col>
-                          </ST.SBoxState>
+                            {expiryTimeBoost &&
+                            isShowCountDownClaimBoost &&
+                            userInfo.boostedDate > 0 &&
+                            address &&
+                            userInfo.accBoostReward &&
+                            isApproveLP ? (
+                              <ST.SInforClaimCountDown>
+                                <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                                  <CountDownClaim
+                                    times={expiryTimeBoost}
+                                    address={address}
+                                    txh={txhash}
+                                  />
+                                </Col>
+                              </ST.SInforClaimCountDown>
+                            ) : (
+                              <></>
+                            )}
+                          </Col>
                         </Row>
-                      </Col>
-                    </Row>
-                  </ST.SBoxHarvest>
-
-                  {/* vstrk */}
-                  <ST.SBoxHarvest>
-                    <Row>
-                      <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <ST.SInforClaimNoBorder>
-                          <ST.SInforText>
-                            vSTRK claimed
-                            <ST.SVSTRKTootip>
-                              <Tooltip
-                                placement="right"
-                                title="vSTRK is auto-claimed to your wallet 
-                              (10 vSTRK is minted for each STRK-ETH to stake)"
-                              >
-                                <ST.SQuestion src={IconQuestion} />
-                              </Tooltip>
-                            </ST.SVSTRKTootip>
-                          </ST.SInforText>
-                          {address ? (
-                            <ST.SInforValue>
-                              <ST.SIconSmall>
-                                <ST.SImgLpSmall src={IconVstrkSmall} />
-                              </ST.SIconSmall>
-                              {userInfo.vStrk ?? '0.0'}
-                            </ST.SInforValue>
-                          ) : (
-                            <ST.SInforValue>
-                              <ST.SIconSmall>
-                                <ST.SImgLpSmall src={IconVstrkSmall} />
-                              </ST.SIconSmall>
-                              -
-                            </ST.SInforValue>
-                          )}
-                        </ST.SInforClaimNoBorder>
                       </Col>
                     </Row>
                   </ST.SBoxHarvest>
                 </ST.SDivPaddingMT>
+
                 <ST.SDiv>
                   <Row>
                     <ST.SRowFlex>
@@ -1623,7 +1755,10 @@ function Staking({ settings, setSetting }) {
                       <ST.SFlexEnd>
                         <ST.SDetailsColor>
                           {' '}
-                          Your Boost APR: {yourBoostAPR}%{' '}
+                          Your Boost APR:
+                          <ST.SDetailsColorBold>
+                            {yourBoostAPR}%{' '}
+                          </ST.SDetailsColorBold>
                         </ST.SDetailsColor>
                       </ST.SFlexEnd>
                     </ST.SRowFlex>

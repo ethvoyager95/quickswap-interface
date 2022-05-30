@@ -105,6 +105,7 @@ const SValueBox = styled.div`
   font-size: 20px;
   line-height: 27px;
   font-weight: 900;
+  text-align: right;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }

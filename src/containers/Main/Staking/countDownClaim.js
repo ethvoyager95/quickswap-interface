@@ -9,44 +9,44 @@ import PropTypes from 'prop-types';
 
 const SBtnClaim = styled.div`
   display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
+  justify-content: center;
   @media only screen and (max-width: 768px) {
     justify-content: center;
   }
 `;
-const STimeClaim = styled.div`
-  margin-left: 10px;
-  display: block;
-  width: 100%;
+const SBoxTime = styled.button`
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  background: #fff;
+  color: #f84960;
+  border-radius: 5px;
+  padding: 8px 20px;
+  margin-right: 30px;
+  width: 250px;
+  text-align: center;
+  border: 1px solid #f84960;
+  outline: none;
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
+  }
   @media only screen and (max-width: 768px) {
-    width: 200px;
+    width: 100%;
   }
 `;
-const STimeNumer = styled.div`
+const STimeClaim = styled.div`
+  width: 100%;
+  margin-right: 15px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
 `;
-const STimeText = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-const SItemTime = styled.div`
-  color: #0b0f23;
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 24px;
-  width: 100px;
-  text-align: center;
-`;
-const SItemText = styled.div`
-  color: #6d6f7b;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 19px;
-  width: 100px;
-  text-align: center;
-`;
+
+const STimeText = styled.div``;
+
 const abortController = new AbortController();
 
 // eslint-disable-next-line react/prop-types
@@ -115,36 +115,20 @@ function CountDownClaim({ times, address }) {
       {expiryTime !== false ? (
         <>
           <SBtnClaim>
-            {countdownTime && (
+            {countdownTime && !loadding && (
               <STimeClaim>
-                <STimeNumer>
-                  <SItemTime>{countdownTime.countdownDays} </SItemTime>
-                  <SItemTime>{countdownTime.countdownHours}</SItemTime>
-                  <SItemTime>{countdownTime.countdownMinutes}</SItemTime>
-                  <SItemTime>{countdownTime.countdownSeconds} </SItemTime>
-                </STimeNumer>
-                {!loadding && (
-                  <STimeText>
-                    {countdownTime.countdownDays != null && (
-                      <SItemText>DAYS</SItemText>
-                    )}
-                    {countdownTime.countdownHours != null && (
-                      <SItemText>HOURS</SItemText>
-                    )}
-                    {countdownTime.countdownMinutes != null && (
-                      <SItemText>MIN</SItemText>
-                    )}
-                    {countdownTime.countdownSeconds != null && (
-                      <SItemText>SEC</SItemText>
-                    )}
-                  </STimeText>
-                )}
+                <SBoxTime disabled>
+                  <STimeText>{countdownTime.countdownDays} Days :</STimeText>
+                  <STimeText>{countdownTime.countdownHours} Hours :</STimeText>
+                  <STimeText>{countdownTime.countdownMinutes} Min :</STimeText>
+                  <STimeText>{countdownTime.countdownSeconds} Sec</STimeText>
+                </SBoxTime>
               </STimeClaim>
             )}
           </SBtnClaim>
         </>
       ) : (
-        <p>{}</p>
+        <>{}</>
       )}
     </>
   );

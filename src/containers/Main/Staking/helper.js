@@ -188,12 +188,16 @@ export const shortValue = (value, decimal) => {
     )}`;
     return result;
   }
-  return parseFloat(value);
+  return value;
 };
 export const renderValueFixed = value => {
   const valueNumber = +value;
   if (!valueNumber || valueNumber === 0) {
     return '0.0';
   }
-  return shortValue(value, 2);
+  return shortValue(parseFloat(value), 5);
+};
+export const getShortAddress = address => {
+  if (address.length === 0) return '';
+  return `${address?.slice(0, 4)}...${address?.slice(-4)}`;
 };
