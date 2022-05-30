@@ -195,7 +195,7 @@ export const renderValueFixed = value => {
   if (!valueNumber || valueNumber === 0) {
     return '0.0';
   }
-  return shortValue(parseFloat(value), 6);
+  return shortValue(parseFloat(value), 5);
 };
 export const getShortAddress = address => {
   if (address.length === 0) return '';
