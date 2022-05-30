@@ -94,6 +94,8 @@ export const SDivHarvest = styled.div`
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 10px;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
 `;
 export const STextModel = styled.div`
   color: #000000;
@@ -125,9 +127,11 @@ export const SHref = styled.a`
 export const SInput = styled.div`
   position: relative;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: flex-start;
   input {
     border: 1px solid #ccc !important;
-    width: 100%;
+    width: 90%;
     padding: 8px;
     border-radius: 8px;
     outline: none;
@@ -141,6 +145,35 @@ export const SInput = styled.div`
   }
   @media only screen and (max-width: 768px) {
     padding: 0 10px;
+    input {
+      width: 100%;
+    }
+  }
+`;
+export const SInputUnStake = styled.div`
+  position: relative;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: flex-end;
+  input {
+    border: 1px solid #ccc !important;
+    width: 90%;
+    padding: 8px;
+    border-radius: 8px;
+    outline: none;
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus-visible {
+      border: 1px solid #ccc !important;
+      outline: none;
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    padding: 0 10px;
+    input {
+      width: 100%;
+    }
   }
 `;
 export const SError = styled.div`
@@ -149,6 +182,14 @@ export const SError = styled.div`
   font-weight: 400;
   font-size: 14px;
   line-height: 23px;
+`;
+export const SErrorUn = styled.div`
+  color: #e80e0e;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 23px;
+  margin-left: 10%;
 `;
 export const SHrefErr = styled.div`
   color: #e80e0e;
@@ -160,6 +201,15 @@ export const SHrefErr = styled.div`
 export const SLinkErr = styled.a`
   color: #f84960;
   display: flex;
+  margin-top: 5px;
+  :hover {
+    color: #f84960;
+  }
+`;
+export const SLinkErrUn = styled.a`
+  color: #f84960;
+  display: flex;
+  margin-left: 10%;
   margin-top: 5px;
   :hover {
     color: #f84960;
@@ -179,12 +229,41 @@ export const SMax = styled.button`
   border-radius: 5px;
   color: #fff;
   font-size: 12px;
-  padding: 0px 15px;
+  padding: 5px 15px;
   outline: none;
   border: none;
+  position: absolute;
+  top: 15%;
+  right: 12%;
   :disabled {
     cursor: not-allowed;
     color: #fff;
+  }
+  @media only screen and (max-width: 768px) {
+    right: 5%;
+  }
+`;
+export const SMaxUn = styled.button`
+  margin-left: 10px;
+  cursor: pointer;
+  color: #107def;
+  font-weight: 700;
+  background: #107def;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 15px;
+  outline: none;
+  border: none;
+  position: absolute;
+  top: 15%;
+  right: 2%;
+  :disabled {
+    cursor: not-allowed;
+    color: #fff;
+  }
+  @media only screen and (max-width: 768px) {
+    right: 5%;
   }
 `;
 export const SBoxOne = styled.div`
@@ -255,7 +334,7 @@ export const SBtnStake = styled.button`
   color: #fff;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 200px;
+  min-width: 250px;
   text-align: center;
   margin-right: 10px;
   border: none;
@@ -279,7 +358,7 @@ export const SBtnLoadding = styled.button`
   color: #fff;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 200px;
+  min-width: 250px;
   text-align: center;
   border: none;
   outline: none;
@@ -300,7 +379,7 @@ export const SBtnUnstake = styled.button`
   background: #fff;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 200px;
+  min-width: 250px;
   text-align: center;
   border: 1px solid #f84960;
   margin-right: 15px;
@@ -367,7 +446,7 @@ export const SSUnTake = styled.button`
   color: #f84960;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 200px;
+  min-width: 250px;
   text-align: center;
   border: 1px solid #f84960;
   outline: none;
@@ -427,11 +506,9 @@ export const SInfor = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #e5e5e5;
   padding-bottom: 15px;
   align-items: center;
   @media only screen and (max-width: 768px) {
-    border-bottom: none;
     padding: 0 10px;
   }
 `;
@@ -450,7 +527,17 @@ export const SInforClaim = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 15px;
+  @media only screen and (max-width: 768px) {
+    border-bottom: none;
+    padding: 0 10px;
+  }
+`;
+export const SInforClaimCountDown = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
   padding-bottom: 15px;
   @media only screen and (max-width: 768px) {
     border-bottom: none;
@@ -475,10 +562,46 @@ export const SInforText = styled.div`
   color: #6d6f7b;
   display: flex;
 `;
+export const SInforTextVSTRK = styled.div`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #6d6f7b;
+  display: flex;
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
+`;
+export const SInforTextUn = styled.div`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #6d6f7b;
+  display: flex;
+  margin-left: 10%;
+  @media only screen and (max-width: 768px) {
+    margin: 10px 0px 10px 0px;
+  }
+`;
 export const SVSTRKTootip = styled.div`
+  margin-right: 30px;
   margin-left: 10px;
+  @media only screen and (max-width: 768px) {
+    margin: 0;
+  }
 `;
 export const SInforValue = styled.div`
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 24px;
+  color: #0b0f23;
+  display: flex;
+  margin-right: 10%;
+  @media only screen and (max-width: 768px) {
+    margin-right: 0%;
+  }
+`;
+export const SInforValueUn = styled.div`
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
@@ -538,7 +661,7 @@ export const SClaim = styled.button`
   font-weight: 700;
   border-radius: 8px;
   padding: 8px 20px;
-  min-width: 200px;
+  min-width: 250px;
   text-align: center;
   margin-right: 15px;
   outline: none;
@@ -555,7 +678,7 @@ export const SUnClaim = styled.div`
   opacity: 0.5;
   border-radius: 8px;
   padding: 8px 20px;
-  min-width: 200px;
+  min-width: 250px;
   text-align: center;
   margin-right: 15px;
   cursor: not-allowed;
@@ -590,26 +713,18 @@ export const SDetails = styled.div`
     font-size: 18px;
   }
 `;
-export const SSelected = styled.div`
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 22px;
-  color: ##6d6f7b;
-  margin-top: 20px;
-  min-width: 200px;
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-    margin-top: 0;
-  }
-`;
 export const SDetailsColor = styled.div`
   font-size: 16px;
-  line-height: 24px
   line-height: 35px;
   color: ##6d6f7b;
+  display: flex;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
   }
+`;
+export const SDetailsColorBold = styled.div`
+  font-weight: 900;
+  color: #000000;
 `;
 export const SRowFlex = styled.div`
   display: flex;
