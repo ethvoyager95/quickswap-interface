@@ -117,7 +117,10 @@ export const getVSTRKContract = () => {
   );
 };
 export const getSTRKContract = () => {
-  return new instance.eth.Contract(constants.STRK_ABI, constants.STRK_ADDRESS);
+  return new instance.eth.Contract(
+    JSON.parse(constants.STRK_ABI),
+    constants.STRK_ADDRESS
+  );
 };
 export const methods = {
   call,
