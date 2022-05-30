@@ -1487,7 +1487,7 @@ function Staking({ settings, setSetting }) {
                     vSTRK claimed
                     <ST.SVSTRKTootip>
                       <Tooltip
-                        placement="right"
+                        placement="top"
                         title="vSTRK is auto-claimed to your wallet 
                               (10 vSTRK is minted for each STRK-ETH to stake)"
                       >
