@@ -303,6 +303,22 @@ function Staking({ settings, setSetting }) {
           .catch(err => {
             throw err;
           });
+        await axiosInstance
+          .get('api/user/total_claim', {
+            params: {
+              user_address: address
+            }
+          })
+          .then(res => {
+            const totalClaim = divDecimals(
+              res.data.data.totalClaim,
+              18
+            ).toNumber();
+            setUserInfo({
+              ...objUser,
+              totalClaim: totalClaim ? renderValueFixed(totalClaim) : '0.0'
+            });
+          });
       }
     }
   }, [address, txhash, window.ethereum]);
@@ -1498,7 +1514,7 @@ function Staking({ settings, setSetting }) {
                 <ST.SDivHarvest>
                   <ST.SText>STRK-ETH Harvest</ST.SText>
                   <ST.SInforTextVSTRK>
-                    vSTRK claimed
+                    STRK claimed
                     <ST.SVSTRKTootip>
                       <Tooltip
                         placement="top"
@@ -1513,7 +1529,7 @@ function Staking({ settings, setSetting }) {
                         <ST.SIconSmall>
                           <ST.SImgLpSmall src={IconFlashSmall} />
                         </ST.SIconSmall>
-                        {userInfo.vStrk ?? '0.0'}
+                        {userInfo.totalClaim ?? '0.0'}
                       </>
                     ) : (
                       <>

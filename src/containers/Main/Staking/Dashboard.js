@@ -134,12 +134,11 @@ function DashboardStaking({ address, amount }) {
     await methods
       .call(farmingContract.methods.rewardPerBlock, [])
       .then(res => {
-        const result = divDecimals(res, 6);
-        const block = getBaseApr(amount, result.toNumber());
-        const baseAprCaculator = getBaseApr(amount, block);
-        const baseAprBigNumber = divDecimals(baseAprCaculator, 18);
-        const baseAprPer = renderValueFixed(baseAprBigNumber);
+        const result = divDecimals(res, 18).toNumber();
+        const baseAprCaculator = getBaseApr(+amountDeposit, result);
+        const baseAprPer = renderValueFixed(baseAprCaculator);
         setBaseAPR(baseAprPer);
+        console.log('data', baseAprCaculator.toString());
       })
       .catch(err => {
         throw err;
