@@ -343,6 +343,7 @@ export const SBtnStake = styled.button`
   border: none;
   outline: none;
   margin-right: 15px;
+  margin-top: 10px;
   @media only screen and (max-width: 768px) {
     width: 100%;
     margin-left: 0px !important;

@@ -93,8 +93,10 @@ export const divDecimals = (value, decimal) => {
   return new BigNumber(0);
 };
 export const getBaseApr = (liquidity, block) => {
+  console.log('liquidity', liquidity);
+  console.log('block', block);
   if (liquidity && block) {
-    const ETHEREUM_PER_BLOCK = 6289;
+    const ETHEREUM_PER_BLOCK = 86400 / 15;
     const DAY_OF_YEAR = 365;
     const STRK_REWARD_ONE_YEAR = new BigNumber(block)
       .times(new BigNumber(ETHEREUM_PER_BLOCK))
@@ -166,7 +168,7 @@ export const shortValue = (value, decimal) => {
     return `${sliceDecimal(value / milion, decimal, 'US', false)}M`;
   }
   if (value >= grand) {
-    return `${sliceDecimal(value / k, decimal, 'US', false)}K`;
+    return `${sliceDecimal(value / grand, decimal, 'US', false)}K`;
   }
   if (!value || value === 0) {
     return 0;

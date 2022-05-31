@@ -436,14 +436,21 @@ function Staking({ settings, setSetting }) {
       const afterStakeSeconds = Math.floor(
         resultInSecondsCurrent - result / 1000
       );
-      if (afterStakeSeconds > SECOND2DAY) {
+      if (afterStakeSeconds > 0) {
         setIsShowCountDownUnStake(false);
       } else {
         setIsShowCountDownUnStake(true);
       }
+      const timeInterval = setInterval(() => {
+        if (afterStakeSeconds > 0) {
+          setIsShowCountDownUnStake(false);
+        }
+        clearInterval(timeInterval);
+      }, 2000);
       return result;
     }
   }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
     if (userInfo) {
@@ -457,14 +464,21 @@ function Staking({ settings, setSetting }) {
       const afterStakeSeconds = Math.floor(
         resultInSecondsCurrent - result / 1000
       );
-      if (afterStakeSeconds > SECOND24H) {
+      if (afterStakeSeconds > 0) {
         setIsShowCountDownClaimBase(false);
       } else {
         setIsShowCountDownClaimBase(true);
       }
+      const timeInterval = setInterval(() => {
+        if (afterStakeSeconds > 0) {
+          setIsShowCountDownClaimBase(false);
+        }
+        clearInterval(timeInterval);
+      }, 2000);
       return result;
     }
   }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
@@ -478,11 +492,17 @@ function Staking({ settings, setSetting }) {
       const afterStakeSeconds = Math.floor(
         resultInSecondsCurrent - result / 1000
       );
-      if (afterStakeSeconds > SECOND30DAY) {
+      if (afterStakeSeconds > 0) {
         setIsShowCountDownClaimBoost(false);
       } else {
         setIsShowCountDownClaimBoost(true);
       }
+      const timeInterval = setInterval(() => {
+        if (afterStakeSeconds > 0) {
+          setIsShowCountDownClaimBoost(false);
+        }
+        clearInterval(timeInterval);
+      }, 2000);
       return result;
     }
   }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
@@ -623,15 +643,7 @@ function Staking({ settings, setSetting }) {
           setIsApproveLP(true);
         }
       });
-  }, [
-    val,
-    address,
-    handleMaxValue,
-    userInfo,
-    handleMaxValueStaked,
-    txhash,
-    expiryTimeUnstakeLP
-  ]);
+  }, [val, address, handleMaxValue, userInfo, handleMaxValueStaked, txhash]);
   const checkApproveNFT = useCallback(async () => {
     await methods
       .call(nFtContract.methods.isApprovedForAll, [
@@ -931,10 +943,12 @@ function Staking({ settings, setSetting }) {
         address
       )
       .then(res => {
-        setTxhash(res.transactionHash);
-        setiIsConfirm(false);
-        setIsSuccess(true);
-        setTextSuccess('Claim Boost Reward successfully');
+        if (res) {
+          setTxhash(res.transactionHash);
+          setiIsConfirm(false);
+          setIsSuccess(true);
+          setTextSuccess('Claim Boost Reward successfully');
+        }
       })
       .catch(err => {
         if (err.message.includes('User denied')) {
@@ -1056,7 +1070,7 @@ function Staking({ settings, setSetting }) {
   };
   const handleCloseSuccess = () => {
     setIsSuccess(false);
-    window.location.reload();
+    // window.location.reload();
   };
   const handleCloseErr = () => {
     setIsShowCancel(false);
@@ -1627,7 +1641,6 @@ function Staking({ settings, setSetting }) {
                                 </ST.SBoxState>
                               </ST.SInforClaim>
                             )}
-
                           {expiryTimeBoost &&
                           isShowCountDownClaimBoost &&
                           userInfo.boostedDate > 0 &&
