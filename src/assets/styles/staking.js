@@ -571,6 +571,9 @@ export const SInforTextMargin = styled.div`
   color: #6d6f7b;
   display: flex;
   margin-left: 10%;
+  @media only screen and (max-width: 768px) {
+    margin-left: 0%;
+  }
 `;
 export const SInforTextVSTRK = styled.div`
   font-weight: 500;
