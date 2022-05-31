@@ -126,7 +126,6 @@ const abortController = new AbortController();
 
 function DashboardStaking({ address, amount }) {
   const [baseAPR, setBaseAPR] = useState(0);
-  const [perblock, setPerblock] = useState(0);
   const [amountStaked, setAmountStaked] = useState(0);
   const [totalLiquidity, setTotalLiqudity] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
@@ -135,7 +134,12 @@ function DashboardStaking({ address, amount }) {
     await methods
       .call(farmingContract.methods.rewardPerBlock, [])
       .then(res => {
-        setPerblock(res);
+        const result = divDecimals(res, 6);
+        const block = getBaseApr(amount, result.toNumber());
+        const baseAprCaculator = getBaseApr(amount, block);
+        const baseAprBigNumber = divDecimals(baseAprCaculator, 18);
+        const baseAprPer = renderValueFixed(baseAprBigNumber);
+        setBaseAPR(baseAprPer);
       })
       .catch(err => {
         throw err;
@@ -143,10 +147,6 @@ function DashboardStaking({ address, amount }) {
   };
   useEffect(() => {
     getPerBlock();
-    const baseAprCaculator = getBaseApr(amount, perblock);
-    const baseAprBigNumber = divDecimals(baseAprCaculator, 18);
-    const baseAprPer = renderValueFixed(baseAprBigNumber);
-    setBaseAPR(baseAprPer);
   }, [address, amount]);
   const getRate = async () => {
     let rateStrkVsUSD = null;
