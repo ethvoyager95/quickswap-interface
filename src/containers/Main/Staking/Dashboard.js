@@ -16,7 +16,6 @@ import {
   getBaseApr,
   getLiquidity,
   renderValueFixed,
-  MAX_STAKE_NFT,
   FAKE_ETH,
   FAKE_STRK,
   FAKE_TOTAL_SUPPLY
@@ -126,10 +125,9 @@ const SIconFlash = styled.img`
 const abortController = new AbortController();
 
 function DashboardStaking({ address, amount }) {
-  const [countAmount, setCountAmount] = useState(null);
   const [baseAPR, setBaseAPR] = useState(0);
   const [perblock, setPerblock] = useState(0);
-  const [amountBoost] = useState(MAX_STAKE_NFT);
+  const [amountStaked, setAmountStaked] = useState(0);
   const [totalLiquidity, setTotalLiqudity] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
   const farmingContract = getFarmingContract();
@@ -145,14 +143,10 @@ function DashboardStaking({ address, amount }) {
   };
   useEffect(() => {
     getPerBlock();
-    setCountAmount(amount);
     const baseAprCaculator = getBaseApr(amount, perblock);
     const baseAprBigNumber = divDecimals(baseAprCaculator, 18);
     const baseAprPer = renderValueFixed(baseAprBigNumber);
     setBaseAPR(baseAprPer);
-    if (!address) {
-      setCountAmount(0);
-    }
   }, [address, amount]);
   const getRate = async () => {
     let rateStrkVsUSD = null;
@@ -201,6 +195,8 @@ function DashboardStaking({ address, amount }) {
             const result = res.data.data;
             const totalDepositString = divDecimals(result.totalDeposit, 18);
             setAmountDeposit(renderValueFixed(totalDepositString.toString()));
+            const totalStake = result?.totalBoost;
+            setAmountStaked(totalStake);
           }
         })
         .catch(err => {
@@ -247,9 +243,7 @@ function DashboardStaking({ address, amount }) {
               <SBox>
                 <SItemsBox>
                   <STextBox>NFTs Staked</STextBox>
-                  <SValueBox>
-                    {countAmount} / {amountBoost}
-                  </SValueBox>
+                  <SValueBox>{amountStaked}</SValueBox>
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Liquidity</STextBox>

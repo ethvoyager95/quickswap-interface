@@ -166,7 +166,7 @@ export const shortValue = (value, decimal) => {
     return `${sliceDecimal(value / milion, decimal, 'US', false)}M`;
   }
   if (value >= grand) {
-    return `${sliceDecimal(value / k, decimal, 'US', false)}K`;
+    return `${sliceDecimal(value / grand, decimal, 'US', false)}K`;
   }
   if (!value || value === 0) {
     return 0;
