@@ -178,6 +178,7 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
         setCopySuccess('');
       }, 2000);
     } catch (err) {
+      console.log(err, 'err copy');
       if (err) {
         setCopySuccess('Failed to copy!');
       }
@@ -221,14 +222,16 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
             <SLink>
               <SView>View on explorer</SView>
               <SCopy>
-                <SAddress>
-                  {getShortAddress(address)}
-                  <SIconCopy
-                    src={IconCopy}
-                    onClick={() => copyToClipBoard(address)}
-                  />
-                  <SNoti>{copySuccess}</SNoti>
-                </SAddress>
+                {address && (
+                  <SAddress>
+                    {getShortAddress(address)}
+                    <SIconCopy
+                      src={IconCopy}
+                      onClick={() => copyToClipBoard(address)}
+                    />
+                    <SNoti>{copySuccess}</SNoti>
+                  </SAddress>
+                )}
               </SCopy>
             </SLink>
             <SGoto

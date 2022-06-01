@@ -208,6 +208,10 @@ export const SLinkErr = styled.a`
   :hover {
     color: #f84960;
   }
+  @media only screen and (max-width: 768px) {
+    margin-left: 3%;
+    margin-top: 0px;
+  }
 `;
 export const SLinkErrUn = styled.a`
   color: #f84960;
@@ -337,7 +341,7 @@ export const SBtnStake = styled.button`
   color: #fff;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 250px;
+  min-width: 280px;
   text-align: center;
   margin-right: 10px;
   border: none;
@@ -362,7 +366,7 @@ export const SBtnLoadding = styled.button`
   color: #fff;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 250px;
+  min-width: 280px;
   text-align: center;
   border: none;
   outline: none;
@@ -383,10 +387,11 @@ export const SBtnUnstake = styled.button`
   background: #fff;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 250px;
+  min-width: 280px;
   text-align: center;
   border: 1px solid #f84960;
   margin-right: 15px;
+  margin-top: 10px;
   outline: none;
   &:hover {
     background: #fff !important;
@@ -450,7 +455,7 @@ export const SSUnTake = styled.button`
   color: #f84960;
   border-radius: 5px;
   padding: 8px 20px;
-  min-width: 250px;
+  min-width: 280px;
   text-align: center;
   border: 1px solid #f84960;
   outline: none;
@@ -470,6 +475,9 @@ export const SBtnUnStakeStart = styled.div`
   @media only screen and (max-width: 768px) {
     justify-content: center;
   }
+`;
+export const SCountDown = styled.div`
+  display: flex;
 `;
 export const SBoxState = styled.div`
   width: 100%;
@@ -511,6 +519,7 @@ export const SInfor = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 15px;
   @media only screen and (max-width: 768px) {
     padding: 0 10px;
   }
@@ -520,6 +529,7 @@ export const SInforNotBorder = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 15px;
   @media only screen and (max-width: 768px) {
     padding: 0 10px;
   }
@@ -571,6 +581,9 @@ export const SInforTextMargin = styled.div`
   color: #6d6f7b;
   display: flex;
   margin-left: 10%;
+  @media only screen and (max-width: 768px) {
+    margin-left: 0%;
+  }
 `;
 export const SInforTextVSTRK = styled.div`
   font-weight: 500;
@@ -634,6 +647,10 @@ export const SIconSmall = styled.div`
   margin-right: 10px;
   display: block;
 `;
+export const STotalClaim = styled.div`
+  font-weight: 900;
+  color: #0b0f23;
+`;
 export const SImgFlashSmall = styled.img``;
 export const SImgLpSmall = styled.img`
   margin-left: -5px;
@@ -645,6 +662,17 @@ export const SQuestion = styled.img`
   @media only screen and (max-width: 768px) {
     width: 15px;
     height: 15px;
+  }
+`;
+export const SQuestionClaimed = styled.img`
+  width: 23px;
+  height: 23px;
+  margin-right: 10px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
+    margin-right: 20px;
+    margin-left: 5px;
   }
 `;
 export const SQuestionClaim = styled.img`
@@ -683,7 +711,7 @@ export const SClaim = styled.button`
   font-weight: 700;
   border-radius: 8px;
   padding: 8px 20px;
-  min-width: 250px;
+  min-width: 280px;
   text-align: center;
   margin-right: 15px;
   outline: none;
@@ -700,7 +728,7 @@ export const SUnClaim = styled.div`
   opacity: 0.5;
   border-radius: 8px;
   padding: 8px 20px;
-  min-width: 250px;
+  min-width: 280px;
   text-align: center;
   margin-right: 15px;
   cursor: not-allowed;
