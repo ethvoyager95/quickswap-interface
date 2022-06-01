@@ -146,7 +146,6 @@ function CountDownClaim({
     if (remainingDayTime <= 0) {
       setExpiryTime(false);
     }
-    console.log('=================>', expiryTime, times);
     const totalDays = Math.floor(remainingDayTime / (1000 * 60 * 60 * 24));
     const totalHours = Math.floor(
       (remainingDayTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -164,7 +163,11 @@ function CountDownClaim({
     setCountdownTime(runningCountdownTime);
   };
   useEffect(() => {
-    setExpiryTime(times);
+    if (times <= new Date().getTime()) {
+      setExpiryTime(false);
+    } else {
+      setExpiryTime(times);
+    }
     let updateTimer;
     if (address) {
       updateTimer = setInterval(() => {
