@@ -125,7 +125,7 @@ const SIconFlash = styled.img`
 `;
 const abortController = new AbortController();
 
-function DashboardStaking({ address, amount }) {
+function DashboardStaking({ amount }) {
   const [baseAPR, setBaseAPR] = useState(0);
   const [amountStaked, setAmountStaked] = useState(0);
   const [totalLiquidity, setTotalLiqudity] = useState(0);
@@ -157,7 +157,7 @@ function DashboardStaking({ address, amount }) {
   };
   useEffect(() => {
     getPerBlock();
-  }, [address, amount]);
+  }, [amount]);
   const getRate = async () => {
     let rateStrkVsUSD = null;
     let rateStrkVsETH = null;
@@ -232,21 +232,20 @@ function DashboardStaking({ address, amount }) {
   useEffect(() => {
     getRate();
     let updateTimer;
-    if (address) {
-      updateTimer = setInterval(() => {
-        getRate();
-      }, 15000);
-    }
+    // eslint-disable-next-line prefer-const
+    updateTimer = setInterval(() => {
+      getRate();
+    }, 15000);
     return function cleanup() {
       abortController.abort();
       if (updateTimer) {
         clearInterval(updateTimer);
       }
     };
-  }, [address]);
+  }, []);
   useEffect(() => {
     getDataDashBoard();
-  }, [address]);
+  }, []);
   return (
     <>
       <React.Fragment>
@@ -284,11 +283,7 @@ function DashboardStaking({ address, amount }) {
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Base APR</STextBox>
-                  {address ? (
-                    <SValueBox>{baseAPR}% </SValueBox>
-                  ) : (
-                    <SValueBox>0% </SValueBox>
-                  )}
+                  {baseAPR && <SValueBox>{baseAPR}% </SValueBox>}
                 </SItemsBox>
               </SBox>
             </Col>
@@ -299,13 +294,11 @@ function DashboardStaking({ address, amount }) {
   );
 }
 DashboardStaking.propTypes = {
-  amount: PropTypes.number,
-  address: PropTypes.string
+  amount: PropTypes.number
 };
 
 DashboardStaking.defaultProps = {
-  amount: 0,
-  address: ''
+  amount: 0
 };
 
 const mapStateToProps = ({ account }) => ({

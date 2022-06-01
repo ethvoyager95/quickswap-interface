@@ -1185,7 +1185,7 @@ function Staking({ settings, setSetting }) {
           <ST.SHr />
           <Row className="all-section">
             <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-              <DashboardStaking amount={countNFT} address={address} />
+              <DashboardStaking amount={countNFT} />
               <ST.SDivPadding>
                 <ST.SHeader>
                   <ST.STextModel>STRK-ETH Staking</ST.STextModel>
@@ -1684,13 +1684,21 @@ function Staking({ settings, setSetting }) {
                       isApproveLP ? (
                         <ST.SInforClaim>
                           <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                            <CountDownClaim
-                              times={expiryTimeBase}
-                              address={address}
-                              txh={txhash}
-                              type={CLAIMBASE}
-                              handleClainBaseReward={handleClainBaseReward}
-                            />
+                            <ST.SCountDown>
+                              <CountDownClaim
+                                times={expiryTimeBase}
+                                address={address}
+                                txh={txhash}
+                                type={CLAIMBASE}
+                                handleClainBaseReward={handleClainBaseReward}
+                              />
+                              <Tooltip
+                                placement="right"
+                                title="You can only claim reward once daily"
+                              >
+                                <ST.SQuestionClaim src={IconQuestion} />
+                              </Tooltip>
+                            </ST.SCountDown>
                           </Col>
                         </ST.SInforClaim>
                       ) : (
@@ -1757,13 +1765,23 @@ function Staking({ settings, setSetting }) {
                           isApproveLP ? (
                             <ST.SInforClaimCountDown>
                               <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                                <CountDownClaim
-                                  times={expiryTimeBoost}
-                                  address={address}
-                                  txh={txhash}
-                                  type={CLAIMBOOST}
-                                  handleClainBootReward={handleClainBootReward}
-                                />
+                                <ST.SCountDown>
+                                  <CountDownClaim
+                                    times={expiryTimeBoost}
+                                    address={address}
+                                    txh={txhash}
+                                    type={CLAIMBOOST}
+                                    handleClainBootReward={
+                                      handleClainBootReward
+                                    }
+                                  />
+                                  <Tooltip
+                                    placement="right"
+                                    title="You can only claim reward once monthly"
+                                  >
+                                    <ST.SQuestionClaim src={IconQuestion} />
+                                  </Tooltip>
+                                </ST.SCountDown>
                               </Col>
                             </ST.SInforClaimCountDown>
                           ) : (
@@ -1865,7 +1883,9 @@ function Staking({ settings, setSetting }) {
                     <ST.SFlex>
                       <ST.SText>NFT staked</ST.SText>
                     </ST.SFlex>
-                    {dataNFTUnState.length > 0 ? (
+                    {yourBoostAPR &&
+                    yourBoostAPR !== 0 &&
+                    dataNFTUnState.length > 0 ? (
                       <ST.SFlexEnd>
                         <ST.SDetailsColor>
                           {' '}
@@ -1879,7 +1899,7 @@ function Staking({ settings, setSetting }) {
                       <ST.SFlexEnd>
                         <ST.SDetailsColor>
                           Your Boost APR:{' '}
-                          <ST.SDetailsColorBold>-</ST.SDetailsColorBold>
+                          <ST.SDetailsColorNotBold>-</ST.SDetailsColorNotBold>
                         </ST.SDetailsColor>
                       </ST.SFlexEnd>
                     )}

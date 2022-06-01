@@ -478,6 +478,8 @@ export const SBtnUnStakeStart = styled.div`
 `;
 export const SCountDown = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 export const SBoxState = styled.div`
   width: 100%;
@@ -775,6 +777,12 @@ export const SDetailsColor = styled.div`
 export const SDetailsColorBold = styled.div`
   font-weight: 900;
   color: #000000;
+  margin-left: 5px;
+`;
+export const SDetailsColorNotBold = styled.div`
+  font-weight: 400;
+  color: #000000;
+  margin-left: 5px;
 `;
 export const SRowFlex = styled.div`
   display: flex;

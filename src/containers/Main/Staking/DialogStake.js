@@ -386,7 +386,7 @@ function DialogStake({
       if (itemStaked === 0 && NUMBER_VAL > CURRENT_STAKED) {
         setMessErr(`Invalid number. You can not stake more than 20 NFTs`);
         setDisabledBtn(true);
-      } else if (itemStaked > 0 && NFT_BEGIN_STAKED > CURRENT_STAKED) {
+      } else if (itemStaked > 0 && NFT_BEGIN_STAKED > MAX_STAKE_NFT) {
         setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
         setDisabledBtn(true);
       } else {
@@ -408,7 +408,6 @@ function DialogStake({
     setCurrentNFTAmount(currentNFT);
     setValue(valueNFTStake);
   }, [valueNFTStake, isStakeNFT, currentNFT]);
-  console.log(currentNFTAmount, 'currentNFTAmount');
   return (
     <>
       <React.Fragment>
