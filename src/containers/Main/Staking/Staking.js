@@ -28,7 +28,11 @@ import {
   SECOND30DAY,
   PERCENT_APR,
   MAX_STAKE_NFT,
-  SETTING_SLIDER
+  SETTING_SLIDER,
+  UNSTAKE,
+  CLAIMBASE,
+  CLAIMBOOST,
+  UNSTAKENFT
 } from './helper';
 // eslint-disable-next-line import/named
 import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
@@ -42,6 +46,7 @@ import {
   getLPContract,
   getVSTRKContract,
   getNFTContract,
+  getSTRKClaimContract,
   methods
 } from '../../../utilities/ContractService';
 import DashboardStaking from './Dashboard';
@@ -137,6 +142,10 @@ function Staking({ settings, setSetting }) {
   const [isShowCountDownClaimBoost, setIsShowCountDownClaimBoost] = useState(
     false
   );
+  const [isShowCountDownUnStakeNFT, setIsShowCountDownUnStakeNFT] = useState(
+    false
+  );
+
   const [itemStaking, setItemStaking] = useState([]);
   const [itemStaked, setItemStaked] = useState([]);
   const [userInfo, setUserInfo] = useState({});
@@ -149,9 +158,12 @@ function Staking({ settings, setSetting }) {
   const lpContract = getLPContract();
   const vStrkContract = getVSTRKContract();
   const nFtContract = getNFTContract();
+  const strkContract = getSTRKClaimContract();
   // get userInfor
   useMemo(async () => {
     let sTokenBalance = null;
+    let decimalLp = null;
+    let decimalStrkClaim = null;
     if (address) {
       sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
         address
@@ -180,17 +192,36 @@ function Staking({ settings, setSetting }) {
           throw err;
         });
       await methods
+        .call(lpContract.methods.decimals, [])
+        .then(res => {
+          decimalLp = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
+        .call(strkContract.methods.decimals, [])
+        .then(res => {
+          decimalStrkClaim = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
         .call(farmingContract.methods.userInfo, [0, address])
         .then(res => {
-          const balanceBigNumber = divDecimals(sTokenBalance, 18);
-          const pendingAmountNumber = divDecimals(res.pendingAmount, 18);
-          const amountNumber = divDecimals(res.amount, 18);
+          const balanceBigNumber = divDecimals(sTokenBalance, decimalLp);
+          const pendingAmountNumber = divDecimals(res.pendingAmount, decimalLp);
+          const amountNumber = divDecimals(res.amount, decimalLp);
           const totalAmount = amountNumber.plus(pendingAmountNumber);
           const totalAmountNumber = totalAmount.toNumber();
-          const accBaseRewardBigNumber = divDecimals(objClaim.accBaseReward, 6);
+          const accBaseRewardBigNumber = divDecimals(
+            objClaim.accBaseReward,
+            decimalStrkClaim
+          );
           const accBoostRewardBigNumber = divDecimals(
             objClaim.accBoostReward,
-            6
+            decimalStrkClaim
           );
           const amountString = amountNumber?.toNumber();
           const accBaseRewardString = accBaseRewardBigNumber.toNumber();
@@ -211,19 +242,6 @@ function Staking({ settings, setSetting }) {
             });
           } else {
             setMessErr({
-              mess: '',
-              show: false,
-              noLP: false
-            });
-          }
-          if (amountNumber.isZero()) {
-            setMessErrUnStake({
-              mess: 'No tokens to stake: Get STRK-ETH LP',
-              show: false,
-              noLP: true
-            });
-          } else {
-            setMessErrUnStake({
               mess: '',
               show: false,
               noLP: false
@@ -285,24 +303,6 @@ function Staking({ settings, setSetting }) {
           throw err;
         });
       if (address) {
-        await methods
-          .call(vStrkContract.methods.balanceOf, [address])
-          .then(res => {
-            if (res) {
-              const vStrkString = divDecimals(res, 18);
-              const vStrkNumber = vStrkString.toNumber();
-              if (vStrkString < 0.001) {
-                setUserInfo({ ...objUser, vStrk: '< 0.001' });
-              }
-              setUserInfo({
-                ...objUser,
-                vStrk: vStrkNumber ? renderValueFixed(vStrkNumber) : '0.0'
-              });
-            }
-          })
-          .catch(err => {
-            throw err;
-          });
         await axiosInstance
           .get('api/user/total_claim', {
             params: {
@@ -311,8 +311,8 @@ function Staking({ settings, setSetting }) {
           })
           .then(res => {
             const totalClaim = divDecimals(
-              res.data.data.totalClaim,
-              18
+              res?.data?.data?.totalClaim,
+              decimalStrkClaim
             ).toNumber();
             setUserInfo({
               ...objUser,
@@ -440,11 +440,12 @@ function Staking({ settings, setSetting }) {
     }
     setIsLoading(false);
   }, [address, txhash, window.ethereum, dataNFT]);
+
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
       const result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 2); // 1 days
+      // return overOneDate.setDate(overOneDate.getDate() + 2); // 2 days
       const currentDateTime = new Date();
       const resultInSecondsCurrent = Math.floor(
         currentDateTime.getTime() / 1000
@@ -522,6 +523,33 @@ function Staking({ settings, setSetting }) {
       return result;
     }
   }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+
+  const expiryTimeUnstakeNFT = useMemo(() => {
+    if (userInfo) {
+      const overOneDate = new Date(userInfo.depositedDate * 1000);
+      const result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
+      // return overOneDate.setDate(overOneDate.getDate() + 2); // 2 days
+      const currentDateTime = new Date();
+      const resultInSecondsCurrent = Math.floor(
+        currentDateTime.getTime() / 1000
+      );
+      const afterStakeSeconds = Math.floor(
+        resultInSecondsCurrent - result / 1000
+      );
+      if (afterStakeSeconds > 0) {
+        setIsShowCountDownUnStakeNFT(false);
+      } else {
+        setIsShowCountDownUnStakeNFT(true);
+      }
+      const timeInterval = setInterval(() => {
+        if (afterStakeSeconds > 0) {
+          setIsShowCountDownUnStakeNFT(false);
+        }
+        clearInterval(timeInterval);
+      }, 2000);
+      return result;
+    }
+  }, [address, txhash, isApproveNFT, userInfo, window.ethereum]);
   // change amount
   const enforcer = nextUserInput => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -566,6 +594,13 @@ function Staking({ settings, setSetting }) {
       });
       setDisabledBtn(false);
     }
+    if (number > +userInfo?.availableNumber) {
+      setMessErr({
+        mess: 'The amount has exceeded your balance. Try again!',
+        show: true
+      });
+      return;
+    }
     if (Number(number) < 0) {
       setVal(0);
     } else if (Number(number) > 0) {
@@ -608,6 +643,13 @@ function Staking({ settings, setSetting }) {
         show: false
       });
       setDisabledBtnUn(false);
+    }
+    if (number > +userInfo?.amountNumber) {
+      setMessErrUnStake({
+        mess: 'The amount has exceded your balance. Try again',
+        show: true
+      });
+      return;
     }
     if (Number(number) < 0) {
       setValUnStake(0);
@@ -744,19 +786,7 @@ function Staking({ settings, setSetting }) {
         throw err;
       });
   }, [val, handleMaxValue, handleMaxValueStaked]);
-  // check approve lp
-  useEffect(() => {
-    checkApproveLP();
-    checkApproveNFT();
-    checkApproveVstrk();
-  }, [
-    val,
-    handleMaxValue,
-    handleMaxValueStaked,
-    isApproveLP,
-    txhash,
-    dataNFTUnState
-  ]);
+
   const handleApproveNFT = useCallback(async () => {
     setiIsConfirm(true);
     await methods
@@ -1001,12 +1031,14 @@ function Staking({ settings, setSetting }) {
             address
           )
           .then(res => {
-            setTxhash(res.transactionHash);
-            setTextSuccess('Stake NFT successfully');
-            setiIsConfirm(false);
-            setIsSuccess(true);
-            setValueNFTStake('');
-            setItemStaking([]);
+            if (res) {
+              setTxhash(res.transactionHash);
+              setTextSuccess('Stake NFT successfully');
+              setiIsConfirm(false);
+              setIsSuccess(true);
+              setValueNFTStake('');
+              setItemStaking([]);
+            }
           })
           .catch(err => {
             if (err.message.includes('User denied')) {
@@ -1048,12 +1080,14 @@ function Staking({ settings, setSetting }) {
             address
           )
           .then(res => {
-            setTxhash(res.transactionHash);
-            setTextSuccess('Unstake NFT successfully');
-            setiIsConfirm(false);
-            setIsSuccess(true);
-            setValueNFTUnStake('');
-            setItemStaked([]);
+            if (res) {
+              setTxhash(res.transactionHash);
+              setTextSuccess('Unstake NFT successfully');
+              setiIsConfirm(false);
+              setIsSuccess(true);
+              setValueNFTUnStake('');
+              setItemStaked([]);
+            }
           })
           .catch(err => {
             if (err.message.includes('User denied')) {
@@ -1099,7 +1133,19 @@ function Staking({ settings, setSetting }) {
     setIsStakeNFT(false);
     setValueNFTStake('');
   };
-
+  // check approve lp
+  useEffect(() => {
+    checkApproveLP();
+    checkApproveNFT();
+    checkApproveVstrk();
+  }, [
+    val,
+    handleMaxValue,
+    handleMaxValueStaked,
+    isApproveLP,
+    txhash,
+    dataNFTUnState
+  ]);
   // change accounts
   useEffect(() => {
     if (!address) {
@@ -1149,14 +1195,22 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            placeholder="Enter a number"
+                            placeholder={
+                              userInfo.availableNumber
+                                ? 'Enter a number'
+                                : '0.0'
+                            }
                             onChange={event => handleChangeValue(event)}
                             onBlur={event => {
-                              setVal(Number(event.target.value));
+                              if (event.target.value !== '') {
+                                setVal(Number(event.target.value));
+                              }
                             }}
                           />
                           <ST.SMax
-                            disabled={userInfo.amountNumber === 0 || !address}
+                            disabled={
+                              userInfo.availableNumber === 0 || !address
+                            }
                             onClick={handleMaxValue}
                           >
                             MAX
@@ -1326,10 +1380,14 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            placeholder="Enter a number"
+                            placeholder={
+                              userInfo.amountNumber ? 'Enter a number' : '0.0'
+                            }
                             onChange={event => handleChangeValueUnstake(event)}
                             onBlur={event => {
-                              setValUnStake(Number(event.target.value));
+                              if (event.target.value !== '') {
+                                setValUnStake(Number(event.target.value));
+                              }
                             }}
                           />
                           <ST.SMaxUn
@@ -1487,14 +1545,28 @@ function Staking({ settings, setSetting }) {
                                     <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                                       {expiryTimeUnstakeLP &&
                                       isShowCountDownUnStake &&
-                                      userInfo.amount > 0 &&
+                                      userInfo.amountNumber > 0 &&
                                       address &&
                                       isApproveLP ? (
-                                        <CountDownClaim
-                                          times={expiryTimeUnstakeLP}
-                                          address={address}
-                                          txh={txhash}
-                                        />
+                                        <>
+                                          <ST.SCountDown>
+                                            <CountDownClaim
+                                              times={expiryTimeUnstakeLP}
+                                              address={address}
+                                              txh={txhash}
+                                              type={UNSTAKE}
+                                              handleUnStake={handleUnStake}
+                                            />
+                                            <Tooltip
+                                              placement="right"
+                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                            >
+                                              <ST.SQuestion
+                                                src={IconQuestion}
+                                              />
+                                            </Tooltip>
+                                          </ST.SCountDown>
+                                        </>
                                       ) : (
                                         <></>
                                       )}
@@ -1521,7 +1593,7 @@ function Staking({ settings, setSetting }) {
                         title="vSTRK is auto-claimed to your wallet 
                               (10 vSTRK is minted for each STRK-ETH to stake)"
                       >
-                        <ST.SQuestion src={IconQuestion} />
+                        <ST.SQuestionClaimed src={IconQuestion} />
                       </Tooltip>
                     </ST.SVSTRKTootip>
                     {address ? (
@@ -1529,7 +1601,9 @@ function Staking({ settings, setSetting }) {
                         <ST.SIconSmall>
                           <ST.SImgLpSmall src={IconFlashSmall} />
                         </ST.SIconSmall>
-                        {userInfo.totalClaim ?? '0.0'}
+                        <ST.STotalClaim>
+                          {userInfo.totalClaim ?? '0.0'}
+                        </ST.STotalClaim>
                       </>
                     ) : (
                       <>
@@ -1598,6 +1672,8 @@ function Staking({ settings, setSetting }) {
                               times={expiryTimeBase}
                               address={address}
                               txh={txhash}
+                              type={CLAIMBASE}
+                              handleClainBaseReward={handleClainBaseReward}
                             />
                           </Col>
                         </ST.SInforClaim>
@@ -1669,6 +1745,8 @@ function Staking({ settings, setSetting }) {
                                   times={expiryTimeBoost}
                                   address={address}
                                   txh={txhash}
+                                  type={CLAIMBOOST}
+                                  handleClainBootReward={handleClainBootReward}
                                 />
                               </Col>
                             </ST.SInforClaimCountDown>
@@ -1688,23 +1766,12 @@ function Staking({ settings, setSetting }) {
                     <ST.SFlex>
                       <ST.SText>
                         NFT Staking
-                        {address ? (
-                          <>
-                            <Tooltip
-                              placement="right"
-                              title="Only display all NFTs that can be staked into this pool"
-                            >
-                              <ST.SQuestion src={IconQuestion} />
-                            </Tooltip>
-                          </>
-                        ) : (
-                          <Tooltip
-                            placement="right"
-                            title="Connect wallet to see your NFTs"
-                          >
-                            <ST.SQuestion src={IconQuestion} />
-                          </Tooltip>
-                        )}
+                        <Tooltip
+                          placement="right"
+                          title="Only display all NFTs that can be staked into this pool"
+                        >
+                          <ST.SQuestion src={IconQuestion} />
+                        </Tooltip>
                       </ST.SText>
                     </ST.SFlex>
                     <ST.SFlexEnd>
@@ -1755,19 +1822,20 @@ function Staking({ settings, setSetting }) {
                       )}
 
                       <Slider {...AUDITOR_SETTING}>
-                        {dataNFT?.map(item => {
-                          return (
-                            <ST.SItemSlider key={item.id}>
-                              <ST.SImgSlider src={item.img} />
-                              <ST.SBoxSlider>
-                                <ST.STitleSlider>{item.name}</ST.STitleSlider>
-                                <ST.SDescriptionSlider>
-                                  {item.description}
-                                </ST.SDescriptionSlider>
-                              </ST.SBoxSlider>
-                            </ST.SItemSlider>
-                          );
-                        })}
+                        {dataNFT &&
+                          dataNFT?.map(item => {
+                            return (
+                              <ST.SItemSlider key={item.id}>
+                                <ST.SImgSlider src={item.img} />
+                                <ST.SBoxSlider>
+                                  <ST.STitleSlider>{item.name}</ST.STitleSlider>
+                                  <ST.SDescriptionSlider>
+                                    {item.description}
+                                  </ST.SDescriptionSlider>
+                                </ST.SBoxSlider>
+                              </ST.SItemSlider>
+                            );
+                          })}
                       </Slider>
                     </ST.SSlider>
                   </>
@@ -1779,38 +1847,43 @@ function Staking({ settings, setSetting }) {
                     <ST.SFlex>
                       <ST.SText>NFT staked</ST.SText>
                     </ST.SFlex>
-                    <ST.SFlexEnd>
-                      <ST.SDetailsColor>
-                        {' '}
-                        Your Boost APR:
-                        <ST.SDetailsColorBold>
-                          {yourBoostAPR}%{' '}
-                        </ST.SDetailsColorBold>
-                      </ST.SDetailsColor>
-                    </ST.SFlexEnd>
+                    {dataNFTUnState.length > 0 && (
+                      <ST.SFlexEnd>
+                        <ST.SDetailsColor>
+                          {' '}
+                          Your Boost APR:
+                          <ST.SDetailsColorBold>
+                            {yourBoostAPR}%{' '}
+                          </ST.SDetailsColorBold>
+                        </ST.SDetailsColor>
+                      </ST.SFlexEnd>
+                    )}
                   </ST.SRowFlex>
                 </Row>
                 <Row>
                   <ST.SFlexEnd>
-                    {address ? (
+                    {address && !isShowCountDownUnStakeNFT && (
                       <>
-                        {isApproveNFT ? (
-                          <>
-                            <ST.SSTaked
-                              disabled={dataNFTUnState.length === 0}
-                              onClick={handleUnStakeNFT}
-                            >
-                              UnStake
-                            </ST.SSTaked>
-                          </>
-                        ) : (
-                          <>
-                            <ST.SSTaked onClick={handleApproveNFT}>
-                              Approve Staking
-                            </ST.SSTaked>
-                          </>
-                        )}
+                        <ST.SSTaked
+                          disabled={dataNFTUnState.length === 0}
+                          onClick={handleUnStakeNFT}
+                        >
+                          UnStake
+                        </ST.SSTaked>
                       </>
+                    )}
+                    {expiryTimeUnstakeNFT &&
+                    isShowCountDownUnStakeNFT &&
+                    dataNFTUnState.length > 0 &&
+                    address &&
+                    isApproveNFT ? (
+                      <CountDownClaim
+                        times={expiryTimeUnstakeLP}
+                        address={address}
+                        txh={txhash}
+                        type={UNSTAKENFT}
+                        handleUnStakeNFT={handleUnStakeNFT}
+                      />
                     ) : (
                       <></>
                     )}

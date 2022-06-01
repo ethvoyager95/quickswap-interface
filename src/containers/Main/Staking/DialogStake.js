@@ -64,9 +64,6 @@ const SMainColor = styled.div`
   background: #eceff9;
   margin-top: 20px;
 `;
-// const SItem = styled.div`
-//   widht: 100%;
-// `;
 const STitle = styled.div`
   color: #0b0f23;
   text-align: center;
@@ -83,6 +80,7 @@ const SRowText = styled.div`
   display: flex;
   justify-content: space-between;
   margin: 30px 0 20px 0;
+  align-items: center;
 `;
 const STack = styled.div`
   color: #6d6f7b;
@@ -93,6 +91,10 @@ const STack = styled.div`
   button {
     margin-right: 10px;
   }
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+    min-width: 100px;
+  }
 `;
 const STitleInput = styled.div`
   color: #6d6f7b;
@@ -100,52 +102,10 @@ const STitleInput = styled.div`
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
-// const SCount = styled.div`
-//   font-style: normal;
-//   font-weight: 700;
-//   font-size: 18px;
-//   line-height: 32px;
-//   display: flex;
-//   align-items: center;
-//   color: #141414;
-// `;
-// const SRow = styled.div`
-//   display: flex;
-//   width: 100%;
-//   justify-content: space-between;
-//   border-bottom: 1px solid #5a617d;
-//   padding: 20px 0 20px 0;
-// `;
-// const SLeft = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
-// const SRight = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   font-style: normal;
-//   font-weight: 700;
-//   font-size: 18px;
-//   line-height: 20px;
-//   text-align: right;
-//   letter-spacing: 0.1px;
-//   color: rgba(0, 28, 78, 0.87);
-// `;
-// const SImg = styled.img`
-//   width: 72px;
-//   height: 72px;
-// `;
-// const SDetails = styled.div`
-//   color: #001c4e;
-//   font-style: normal;
-//   font-weight: 700;
-//   font-size: 14px;
-//   line-height: 32px;
-//   margin-left: 15px;
-// `;
 const SBox = styled.div`
   width: 100%;
   margin-top: 30px;
@@ -167,11 +127,40 @@ const SRowBox = styled.div`
     width: 100%;
   }
 `;
+const SColBox = styled.div`
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 25px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.1px;
+  color: #141414;
+  display: flex;
+  margin-bottom: 5px;
+  ul {
+    padding: 0 0 0 20px;
+    width: 100%;
+  }
+`;
 const SRowBoxText = styled.div`
   color: #0b0f23;
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
+const SRowBoxTextApr = styled.div`
+  color: #0b0f23;
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 24px;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    margin-left: 5%;
+  }
 `;
 const STextBox = styled.div`
   font-style: normal;
@@ -181,7 +170,10 @@ const STextBox = styled.div`
   display: flex;
   align-items: center;
   letter-spacing: 0.1px;
-  color: #141414;
+  color: #0b0f23;
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 const SCircle = styled.div`
   width: 5px;
@@ -192,14 +184,14 @@ const SCircle = styled.div`
 `;
 const SValueBox = styled.div`
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 14px;
   line-height: 20px;
   display: flex;
   align-items: center;
   text-align: right;
   letter-spacing: 0.1px;
-  color: #141414;
+  color: #0b0f23;
 `;
 const SUl = styled.div`
   margin-left: 15px;
@@ -230,6 +222,10 @@ const SBtnCancel = styled.div`
   margin-left: 10px;
   cursor: pointer;
   border: 1px solid #fff;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
 `;
 const SBtnStake = styled.button`
   font-style: normal;
@@ -252,6 +248,10 @@ const SBtnStake = styled.button`
   border: none;
   box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
   border-radius: 8px;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
 `;
 const SInput = styled.div`
   position: relative;
@@ -387,9 +387,9 @@ function DialogStake({
         setMessErr(`Invalid number. You can stake only ${AMOUNT_STAKE} NFTs`);
         setDisabledBtn(true);
       } else if (NUMBER_VAL > MAX_STAKE_NFT) {
-        setMessErr(`Invalid number. You can not stake more than 10 NFTs`);
+        setMessErr(`Invalid number. You can not stake more than 20 NFTs`);
         setDisabledBtn(true);
-      } else if (AMOUNT_STAKE > 10 && NUMBER_VAL > MAX_STAKE) {
+      } else if (AMOUNT_STAKE > MAX_STAKE_NFT && NUMBER_VAL > MAX_STAKE) {
         setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
         setDisabledBtn(true);
       } else {
@@ -458,45 +458,23 @@ function DialogStake({
             {messErr && <SError>{messErr}</SError>}
           </SMain>
           <SMainColor>
-            {/* <SCount>{itemStaking.length} items</SCount> */}
-            {/* <SItem>
-              {itemStaking?.map(item => {
-                return (
-                  <>
-                    <SRow>
-                      <SLeft>
-                        <SImg src={item.img} />
-                        <SDetails>{item.name}</SDetails>
-                      </SLeft>
-                      <SRight>{item.description}</SRight>
-                    </SRow>
-                  </>
-                );
-              })}
-            </SItem> */}
             <SBox>
               <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 10 }}>
-                  {/* <SRowBox>
-                    <STextBox>NFT selected</STextBox>
-                    <SValueBox>
-                      {itemSelect}/{totalSelect}
-                    </SValueBox>
-                  </SRowBox> */}
-                  <SRowBox>
+                <Col xs={{ span: 8 }} lg={{ span: 10 }}>
+                  <SColBox>
                     <SRowBoxText>Staked NFT</SRowBoxText>
-                    <SValueBox>
-                      {currentNFTAmount}/{totalSelect}
-                    </SValueBox>
-                  </SRowBox>
+                  </SColBox>
+                  <SValueBox>
+                    {currentNFTAmount}/{totalSelect}
+                  </SValueBox>
                 </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 2 }}>
+                <Col xs={{ span: 0 }} lg={{ span: 2 }}>
                   {}
                 </Col>
 
-                <Col xs={{ span: 24 }} lg={{ span: 10 }}>
+                <Col xs={{ span: 16 }} lg={{ span: 10 }}>
                   <SRowBox>
-                    <SRowBoxText>Boost APR</SRowBoxText>
+                    <SRowBoxTextApr>Boost APR</SRowBoxTextApr>
                   </SRowBox>
                   <SUl>
                     <SRowBox>
