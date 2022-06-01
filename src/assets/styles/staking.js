@@ -425,7 +425,7 @@ export const SSTake = styled.button`
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0;
-    margin-right: 10%;
+    margin: 3%;
   }
 `;
 export const SSTaked = styled.button`
@@ -446,7 +446,7 @@ export const SSTaked = styled.button`
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0;
-    margin-right: 5%;
+    margin: 3%;
   }
 `;
 export const SSUnTake = styled.button`

@@ -1774,34 +1774,36 @@ function Staking({ settings, setSetting }) {
                         </Tooltip>
                       </ST.SText>
                     </ST.SFlex>
-                    <ST.SFlexEnd>
-                      {address ? (
-                        <>
-                          {isApproveNFT ? (
-                            <>
-                              <ST.SSTake
-                                disabled={
-                                  itemStaking.length === MAX_STAKE_NFT ||
-                                  dataNFT.length === 0
-                                }
-                                onClick={handleStakeNFT}
-                              >
-                                Stake
-                              </ST.SSTake>
-                            </>
-                          ) : (
-                            <>
-                              <ST.SSTake onClick={handleApproveNFT}>
-                                Approve Staking
-                              </ST.SSTake>
-                            </>
-                          )}
-                        </>
-                      ) : (
-                        <> </>
-                      )}
-                    </ST.SFlexEnd>
                   </ST.SRowFlex>
+                </Row>
+                <Row>
+                  <ST.SFlexEnd>
+                    {address ? (
+                      <>
+                        {isApproveNFT ? (
+                          <>
+                            <ST.SSTake
+                              disabled={
+                                itemStaking.length === MAX_STAKE_NFT ||
+                                dataNFT.length === 0
+                              }
+                              onClick={handleStakeNFT}
+                            >
+                              Stake
+                            </ST.SSTake>
+                          </>
+                        ) : (
+                          <>
+                            <ST.SSTake onClick={handleApproveNFT}>
+                              Approve Staking
+                            </ST.SSTake>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <> </>
+                    )}
+                  </ST.SFlexEnd>
                 </Row>
                 {isLoading ? (
                   <Row>
@@ -1847,7 +1849,7 @@ function Staking({ settings, setSetting }) {
                     <ST.SFlex>
                       <ST.SText>NFT staked</ST.SText>
                     </ST.SFlex>
-                    {dataNFTUnState.length > 0 && (
+                    {dataNFTUnState.length > 0 ? (
                       <ST.SFlexEnd>
                         <ST.SDetailsColor>
                           {' '}
@@ -1855,6 +1857,13 @@ function Staking({ settings, setSetting }) {
                           <ST.SDetailsColorBold>
                             {yourBoostAPR}%{' '}
                           </ST.SDetailsColorBold>
+                        </ST.SDetailsColor>
+                      </ST.SFlexEnd>
+                    ) : (
+                      <ST.SFlexEnd>
+                        <ST.SDetailsColor>
+                          Your Boost APR:{' '}
+                          <ST.SDetailsColorBold>-</ST.SDetailsColorBold>
                         </ST.SDetailsColor>
                       </ST.SFlexEnd>
                     )}

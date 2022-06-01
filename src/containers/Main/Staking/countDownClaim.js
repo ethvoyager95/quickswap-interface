@@ -226,28 +226,24 @@ function CountDownClaim({
           )}
           {type === CLAIMBASE && (
             <SUntake>
-              <SClaim onClick={handleClainBaseReward}>
-                Claim
-                <Tooltip
-                  placement="right"
-                  title="You can only claim reward once daily"
-                >
-                  <SQuestion src={IconQuestion} />
-                </Tooltip>
-              </SClaim>
+              <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
+              <Tooltip
+                placement="right"
+                title="You can only claim reward once daily"
+              >
+                <SQuestion src={IconQuestion} />
+              </Tooltip>
             </SUntake>
           )}
           {type === CLAIMBOOST && (
             <SUntake>
-              <SClaim onClick={handleClainBootReward}>
-                Claim
-                <Tooltip
-                  placement="right"
-                  title="You can only claim reward once monthly"
-                >
-                  <SQuestion src={IconQuestion} />
-                </Tooltip>
-              </SClaim>
+              <SClaim onClick={handleClainBootReward}>Claim</SClaim>
+              <Tooltip
+                placement="right"
+                title="You can only claim reward once monthly"
+              >
+                <SQuestion src={IconQuestion} />
+              </Tooltip>
             </SUntake>
           )}
           {type === UNSTAKENFT && (

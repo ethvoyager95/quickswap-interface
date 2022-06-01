@@ -296,7 +296,7 @@ const SIcon = styled.div`
 const SIconClose = styled.img`
   cursor: pointer;
 `;
-const PERCENT = 20;
+const PERCENT = 10;
 
 function DialogStake({
   isStakeNFT,
@@ -345,7 +345,6 @@ function DialogStake({
     // setTotalSelect(listStake.length);
     setItemStaked(listUnStake.length);
     const listIds = _.map(listStake, 'token_id');
-
     if (checked) {
       const ITEM_UNSTAKE = listUnStake.length;
 
@@ -380,16 +379,14 @@ function DialogStake({
       }
       // NFT AMOUNT CAN STAKE
       const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
+      const CURRENT_STAKED = listUnStake.length;
       // NFT CURREN AMOUNT
-      const AMOUNT_STAKE = listStake.length;
       const NUMBER_VAL = Number(val);
-      if (NUMBER_VAL > AMOUNT_STAKE && NUMBER_VAL < MAX_STAKE_NFT) {
-        setMessErr(`Invalid number. You can stake only ${AMOUNT_STAKE} NFTs`);
-        setDisabledBtn(true);
-      } else if (NUMBER_VAL > MAX_STAKE_NFT) {
+      const NFT_BEGIN_STAKED = NUMBER_VAL + CURRENT_STAKED;
+      if (itemStaked === 0 && NUMBER_VAL > CURRENT_STAKED) {
         setMessErr(`Invalid number. You can not stake more than 20 NFTs`);
         setDisabledBtn(true);
-      } else if (AMOUNT_STAKE > MAX_STAKE_NFT && NUMBER_VAL > MAX_STAKE) {
+      } else if (itemStaked > 0 && NFT_BEGIN_STAKED > CURRENT_STAKED) {
         setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
         setDisabledBtn(true);
       } else {
@@ -408,9 +405,10 @@ function DialogStake({
     }
   }, [val, isStakeNFT, listStake, checked]);
   useEffect(() => {
-    setValue(valueNFTStake);
     setCurrentNFTAmount(currentNFT);
+    setValue(valueNFTStake);
   }, [valueNFTStake, isStakeNFT, currentNFT]);
+  console.log(currentNFTAmount, 'currentNFTAmount');
   return (
     <>
       <React.Fragment>
