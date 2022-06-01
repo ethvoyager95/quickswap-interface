@@ -150,7 +150,6 @@ function DashboardStaking({ address, amount }) {
         const baseAprCaculator = getBaseApr(+amountDeposit, result);
         const baseAprPer = renderValueFixed(baseAprCaculator);
         setBaseAPR(baseAprPer);
-        console.log('data', baseAprCaculator.toString());
       })
       .catch(err => {
         throw err;
