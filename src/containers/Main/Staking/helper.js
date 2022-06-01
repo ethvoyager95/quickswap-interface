@@ -16,6 +16,7 @@ export const UNSTAKE = 'UNSTAKE';
 export const CLAIMBASE = 'CLAIMBASE';
 export const CLAIMBOOST = 'CLAIMBOOST';
 export const UNSTAKENFT = 'UNSTAKENFT';
+const REQUIRED_DECIMAL = 5;
 export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)
@@ -157,11 +158,35 @@ const sliceDecimal = (number, decimal, locale, trailDoubleZero) => {
 
   return wholeNumber;
 };
+export const validationMaxDecimalsNoRound = number => {
+  if (number && parseFloat(number) < 0.000001) {
+    return '< 0.000001';
+  }
+  function join(wholeNumber, decimals) {
+    if (!decimals) return wholeNumber;
+    return [wholeNumber, decimals].join('.');
+  }
+  const bigNum = new BigNumber(number);
+
+  const algoFormat = Intl.NumberFormat('en-US');
+  let [wholeNumber, decimals] = bigNum.toFixed().split('.');
+
+  wholeNumber = algoFormat.format(parseFloat(wholeNumber));
+
+  if (decimals) {
+    if (decimals.length > REQUIRED_DECIMAL) {
+      decimals = decimals.substr(0, REQUIRED_DECIMAL);
+    }
+    return join(wholeNumber, decimals);
+  }
+  return wholeNumber;
+};
 
 export const shortValue = (value, decimal) => {
   // eslint-disable-next-line no-bitwise
   // eslint-disable-next-line no-restricted-globals
   if (isNaN(value)) return '';
+  const thound = 1000;
   const grand = 10000;
   const milion = 1000000;
   const bilion = 1000000000;
@@ -172,7 +197,11 @@ export const shortValue = (value, decimal) => {
     return `${sliceDecimal(value / milion, decimal, 'US', false)}M`;
   }
   if (value >= grand) {
-    return `${sliceDecimal(value / grand, decimal, 'US', false)}K`;
+    // return `${sliceDecimal(value / grand, decimal, 'US', false)}K`;
+    return validationMaxDecimalsNoRound(value, decimal);
+  }
+  if (value >= thound) {
+    return validationMaxDecimalsNoRound(value, decimal);
   }
   if (!value || value === 0) {
     return '0.0';
@@ -201,7 +230,7 @@ export const renderValueFixed = value => {
   if (!valueNumber || valueNumber === 0) {
     return '0.0';
   }
-  return shortValue(value, 5);
+  return shortValue(value, REQUIRED_DECIMAL);
 };
 export const getShortAddress = address => {
   if (address.length === 0) return '';

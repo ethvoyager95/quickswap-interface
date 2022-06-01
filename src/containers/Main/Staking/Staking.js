@@ -322,6 +322,7 @@ function Staking({ settings, setSetting }) {
       }
     }
   }, [address, txhash, window.ethereum]);
+
   // get data
   useMemo(async () => {
     if (!address) {
@@ -1243,7 +1244,7 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               {userInfo.availableNumber > 0
-                                ? userInfo.availableNumber
+                                ? userInfo.available
                                 : '0.0'}
                             </ST.SInforValue>
                           ) : (
@@ -1424,7 +1425,7 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               {userInfo.amountNumber > 0
-                                ? userInfo.amountNumber
+                                ? userInfo.amount
                                 : '0.0'}
                             </ST.SInforValueUn>
                           ) : (
@@ -1557,14 +1558,6 @@ function Staking({ settings, setSetting }) {
                                               type={UNSTAKE}
                                               handleUnStake={handleUnStake}
                                             />
-                                            <Tooltip
-                                              placement="right"
-                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                            >
-                                              <ST.SQuestion
-                                                src={IconQuestion}
-                                              />
-                                            </Tooltip>
                                           </ST.SCountDown>
                                         </>
                                       ) : (
@@ -1672,16 +1665,9 @@ function Staking({ settings, setSetting }) {
                               <CountDownClaim
                                 times={expiryTimeBase}
                                 address={address}
-                                txh={txhash}
                                 type={CLAIMBASE}
                                 handleClainBaseReward={handleClainBaseReward}
                               />
-                              <Tooltip
-                                placement="right"
-                                title="You can only claim reward once daily"
-                              >
-                                <ST.SQuestionClaim src={IconQuestion} />
-                              </Tooltip>
                             </ST.SCountDown>
                           </Col>
                         </ST.SInforClaim>
@@ -1734,7 +1720,7 @@ function Staking({ settings, setSetting }) {
                                         placement="right"
                                         title="You can only claim reward once monthly"
                                       >
-                                        <ST.SQuestionClaim src={IconQuestion} />
+                                        <ST.SQuestion src={IconQuestion} />
                                       </Tooltip>
                                     </ST.SBtnClaimStart>
                                   </Col>
@@ -1753,18 +1739,11 @@ function Staking({ settings, setSetting }) {
                                   <CountDownClaim
                                     times={expiryTimeBoost}
                                     address={address}
-                                    txh={txhash}
                                     type={CLAIMBOOST}
                                     handleClainBootReward={
                                       handleClainBootReward
                                     }
                                   />
-                                  <Tooltip
-                                    placement="right"
-                                    title="You can only claim reward once monthly"
-                                  >
-                                    <ST.SQuestionClaim src={IconQuestion} />
-                                  </Tooltip>
                                 </ST.SCountDown>
                               </Col>
                             </ST.SInforClaimCountDown>
@@ -1893,12 +1872,12 @@ function Staking({ settings, setSetting }) {
                   <ST.SFlexEnd>
                     {address && !isShowCountDownUnStakeNFT && (
                       <>
-                        <ST.SSTaked
+                        <ST.SSUnTaked
                           disabled={dataNFTUnState.length === 0}
                           onClick={handleUnStakeNFT}
                         >
                           UnStake
-                        </ST.SSTaked>
+                        </ST.SSUnTaked>
                       </>
                     )}
                     {expiryTimeUnstakeNFT &&
@@ -1909,9 +1888,9 @@ function Staking({ settings, setSetting }) {
                       <CountDownClaim
                         times={expiryTimeUnstakeLP}
                         address={address}
-                        txh={txhash}
                         type={UNSTAKENFT}
                         handleUnStakeNFT={handleUnStakeNFT}
+                        valUnStake={valUnStake}
                       />
                     ) : (
                       <></>

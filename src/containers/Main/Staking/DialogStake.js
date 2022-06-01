@@ -347,10 +347,12 @@ function DialogStake({
     const listIds = _.map(listStake, 'token_id');
     if (checked) {
       const ITEM_UNSTAKE = listUnStake.length;
-
       if (val === '') {
         setBeforeStaking(itemStaked * PERCENT);
         setAfterStake(itemStaked * PERCENT);
+      } else if (val * PERCENT === PERCENT) {
+        setBeforeStaking(0);
+        setAfterStake(0);
       } else {
         setBeforeStaking(PERCENT * ITEM_UNSTAKE);
         setAfterStake(PERCENT * val + itemStaked * PERCENT);
@@ -383,7 +385,7 @@ function DialogStake({
       // NFT CURREN AMOUNT
       const NUMBER_VAL = Number(val);
       const NFT_BEGIN_STAKED = NUMBER_VAL + CURRENT_STAKED;
-      if (itemStaked === 0 && NUMBER_VAL > CURRENT_STAKED) {
+      if (itemStaked === 0 && NUMBER_VAL > MAX_STAKE_NFT) {
         setMessErr(`Invalid number. You can not stake more than 20 NFTs`);
         setDisabledBtn(true);
       } else if (itemStaked > 0 && NFT_BEGIN_STAKED > MAX_STAKE_NFT) {

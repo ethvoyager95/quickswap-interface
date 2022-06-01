@@ -449,6 +449,31 @@ export const SSTaked = styled.button`
     margin: 3%;
   }
 `;
+export const SSUnTaked = styled.button`
+  cursor: pointer;
+  color: #f84960;
+  background: #fff;
+  border-radius: 5px;
+  padding: 8px 20px;
+  min-width: 150px;
+  text-align: center;
+  border: 1px solid #f84960;
+  margin-right: 15px;
+  margin-top: 10px;
+  outline: none;
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
+  }
+  :hover {
+    background: #fff !important;
+  }
+  @media only screen and (max-width: 768px) {
+    min-width: 150px;
+    margin-left: 0;
+    margin: 3%;
+  }
+`;
 export const SSUnTake = styled.button`
   cursor: pointer;
   background: #fff;
