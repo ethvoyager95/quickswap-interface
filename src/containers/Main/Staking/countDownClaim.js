@@ -124,7 +124,6 @@ function CountDownClaim({
   handleUnStakeNFT
 }) {
   const [expiryTime, setExpiryTime] = useState(times);
-  const [loadding, setIsLoading] = useState(true);
   const [countdownTime, setCountdownTime] = useState({
     countdownDays: '',
     countdownHours: '',
@@ -141,34 +140,31 @@ function CountDownClaim({
         countdownSeconds: ''
       });
     }
-    const timeInterval = setInterval(() => {
-      setIsLoading(true);
-      const countdownDateTime = new Date(expiryTime).getTime();
-      const currentTime = new Date().getTime();
-      const remainingDayTime = countdownDateTime - currentTime;
-      const totalDays = Math.floor(remainingDayTime / (1000 * 60 * 60 * 24));
-      const totalHours = Math.floor(
-        (remainingDayTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      const totalMinutes = Math.floor(
-        (remainingDayTime % (1000 * 60 * 60)) / (1000 * 60)
-      );
-      const totalSeconds = Math.floor((remainingDayTime % (1000 * 60)) / 1000);
-      const runningCountdownTime = {
-        countdownDays: totalDays ?? '',
-        countdownHours: totalHours ?? '',
-        countdownMinutes: totalMinutes ?? '',
-        countdownSeconds: totalSeconds ?? ''
-      };
-      setCountdownTime(runningCountdownTime);
-      setIsLoading(false);
-      if (remainingDayTime <= 0) {
-        clearInterval(timeInterval);
-        setExpiryTime(false);
-      }
-    }, 2000);
+    const countdownDateTime = new Date(expiryTime).getTime();
+    const currentTime = new Date().getTime();
+    const remainingDayTime = countdownDateTime - currentTime;
+    if (remainingDayTime <= 0) {
+      setExpiryTime(false);
+    }
+    console.log('=================>', expiryTime, times);
+    const totalDays = Math.floor(remainingDayTime / (1000 * 60 * 60 * 24));
+    const totalHours = Math.floor(
+      (remainingDayTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const totalMinutes = Math.floor(
+      (remainingDayTime % (1000 * 60 * 60)) / (1000 * 60)
+    );
+    const totalSeconds = Math.floor((remainingDayTime % (1000 * 60)) / 1000);
+    const runningCountdownTime = {
+      countdownDays: totalDays ?? '',
+      countdownHours: totalHours ?? '',
+      countdownMinutes: totalMinutes ?? '',
+      countdownSeconds: totalSeconds ?? ''
+    };
+    setCountdownTime(runningCountdownTime);
   };
   useEffect(() => {
+    setExpiryTime(times);
     let updateTimer;
     if (address) {
       updateTimer = setInterval(() => {
@@ -181,13 +177,13 @@ function CountDownClaim({
         clearInterval(updateTimer);
       }
     };
-  });
+  }, [times, countdownTime]);
   return (
     <>
       {expiryTime !== false ? (
         <>
           <SBtnClaim>
-            {countdownTime && !loadding && (
+            {countdownTime && (
               <STimeClaim className={type === UNSTAKENFT ? 'margin-0' : ''}>
                 <SBoxTime disabled>
                   <STimeNumber>
