@@ -4,14 +4,18 @@ import BigNumber from 'bignumber.js';
 export const TIME_UNSTAKE_LP = 2;
 export const TIME_CLAIM_LP = 1;
 export const TIME_CLAIM_NFT = 30;
-export const MAX_STAKE_NFT = 10;
-export const PERCENT_APR = 20;
+export const MAX_STAKE_NFT = 20; // maximumboost count
+export const PERCENT_APR = 10;
 export const SECOND24H = 180; // 86400
 export const SECOND2DAY = 240; // 172800
 export const SECOND30DAY = 300; // 2592000
 export const FAKE_STRK = 30.07;
 export const FAKE_ETH = 0.38;
 export const FAKE_TOTAL_SUPPLY = 582099001354;
+export const UNSTAKE = 'UNSTAKE';
+export const CLAIMBASE = 'CLAIMBASE';
+export const CLAIMBOOST = 'CLAIMBOOST';
+export const UNSTAKENFT = 'UNSTAKENFT';
 export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)
@@ -93,8 +97,6 @@ export const divDecimals = (value, decimal) => {
   return new BigNumber(0);
 };
 export const getBaseApr = (liquidity, block) => {
-  console.log('liquidity', liquidity);
-  console.log('block', block);
   if (liquidity && block) {
     const ETHEREUM_PER_BLOCK = 86400 / 15;
     const DAY_OF_YEAR = 365;
@@ -173,7 +175,7 @@ export const shortValue = (value, decimal) => {
     return `${sliceDecimal(value / grand, decimal, 'US', false)}K`;
   }
   if (!value || value === 0) {
-    return 0;
+    return '0.0';
   }
   if (value < 0.0001 && value > 0) {
     return '< 0.0001';
@@ -183,9 +185,6 @@ export const shortValue = (value, decimal) => {
   }
   if (value > -0.001 && value < 0) {
     return '< -0.001';
-  }
-  if (value === 0) {
-    return '0.0';
   }
   const lstValueFormat = value?.toString().split('.');
   if (lstValueFormat.length > 1) {

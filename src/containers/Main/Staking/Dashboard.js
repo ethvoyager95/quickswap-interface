@@ -22,6 +22,7 @@ import {
 } from './helper';
 import {
   getFarmingContract,
+  getSTRKClaimContract,
   methods
 } from '../../../utilities/ContractService';
 
@@ -47,8 +48,8 @@ const SLogoFlash = styled.img`
   width: 60px;
   height: 60px;
   @media only screen and (max-width: 768px) {
-    width: 45px;
-    height: 45px;
+    width: 30px;
+    height: 30px;
   }
 `;
 const SLogoLP = styled.img`
@@ -56,8 +57,8 @@ const SLogoLP = styled.img`
   height: 60px;
   margin-left: -10px;
   @media only screen and (max-width: 768px) {
-    width: 45px;
-    height: 45px;
+    width: 30px;
+    height: 30px;
   }
 `;
 const STitle = styled.div`
@@ -130,15 +131,25 @@ function DashboardStaking({ address, amount }) {
   const [totalLiquidity, setTotalLiqudity] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
   const farmingContract = getFarmingContract();
+  const strkContract = getSTRKClaimContract();
+
   const getPerBlock = async () => {
+    let decimalStrkClaim = null;
+    await methods
+      .call(strkContract.methods.decimals, [])
+      .then(res => {
+        decimalStrkClaim = res;
+      })
+      .catch(err => {
+        throw err;
+      });
     await methods
       .call(farmingContract.methods.rewardPerBlock, [])
       .then(res => {
-        const result = divDecimals(res, 18).toNumber();
+        const result = divDecimals(res, decimalStrkClaim).toNumber();
         const baseAprCaculator = getBaseApr(+amountDeposit, result);
         const baseAprPer = renderValueFixed(baseAprCaculator);
         setBaseAPR(baseAprPer);
-        console.log('data', baseAprCaculator.toString());
       })
       .catch(err => {
         throw err;
@@ -185,6 +196,7 @@ function DashboardStaking({ address, amount }) {
     }
   };
   const getDataDashBoard = async () => {
+    let totalLiquid = 0;
     try {
       // eslint-disable-next-line no-debugger
       await axiosInstance
@@ -195,6 +207,7 @@ function DashboardStaking({ address, amount }) {
             const totalDepositString = divDecimals(result.totalDeposit, 18);
             setAmountDeposit(renderValueFixed(totalDepositString.toString()));
             const totalStake = result?.totalBoost;
+            totalLiquid = totalDepositString?.toNumber();
             setAmountStaked(totalStake);
           }
         })
@@ -204,6 +217,17 @@ function DashboardStaking({ address, amount }) {
     } catch (err) {
       throw err;
     }
+    await methods
+      .call(farmingContract.methods.rewardPerBlock, [])
+      .then(res => {
+        const result = divDecimals(res, 18).toNumber();
+        const baseAprCaculator = getBaseApr(totalLiquid, result);
+        const baseAprPer = renderValueFixed(baseAprCaculator);
+        setBaseAPR(baseAprPer);
+      })
+      .catch(err => {
+        throw err;
+      });
   };
   useEffect(() => {
     getRate();
