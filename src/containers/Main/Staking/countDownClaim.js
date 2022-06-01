@@ -164,7 +164,11 @@ function CountDownClaim({
     setCountdownTime(runningCountdownTime);
   };
   useEffect(() => {
-    setExpiryTime(times);
+    if (times <= new Date().getTime()) {
+      setExpiryTime(false);
+    } else {
+      setExpiryTime(times);
+    }
     let updateTimer;
     if (address) {
       updateTimer = setInterval(() => {

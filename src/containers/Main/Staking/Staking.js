@@ -311,22 +311,6 @@ function Staking({ settings, setSetting }) {
           })
           .then(res => {
             const totalClaim = divDecimals(
-              res?.data?.data?.totalClaim,
-              decimalStrkClaim
-            ).toNumber();
-            setUserInfo({
-              ...objUser,
-              totalClaim: totalClaim ? renderValueFixed(totalClaim) : '0.0'
-            });
-          });
-        await axiosInstance
-          .get('api/user/total_claim', {
-            params: {
-              user_address: address
-            }
-          })
-          .then(res => {
-            const totalClaim = divDecimals(
               res.data.data.totalClaim,
               18
             ).toNumber();
