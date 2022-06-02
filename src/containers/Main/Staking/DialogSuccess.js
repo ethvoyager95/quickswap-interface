@@ -224,10 +224,10 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
               <SCopy>
                 {address && (
                   <SAddress>
-                    {getShortAddress(address)}
+                    {getShortAddress(txh)}
                     <SIconCopy
                       src={IconCopy}
-                      onClick={() => copyToClipBoard(address)}
+                      onClick={() => copyToClipBoard(txh)}
                     />
                     <SNoti>{copySuccess}</SNoti>
                   </SAddress>
