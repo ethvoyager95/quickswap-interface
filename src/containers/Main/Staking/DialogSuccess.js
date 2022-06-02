@@ -1,6 +1,7 @@
 import { Dialog, makeStyles } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import PropTypes, { func } from 'prop-types';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
@@ -112,6 +113,7 @@ const SIcon = styled.div`
 `;
 const SIconCopy = styled.img`
   cursor: pointer;
+  margin-left: 8px;
 `;
 const SIconClose = styled.img`
   cursor: pointer;
@@ -170,19 +172,11 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
   const classes = useStyles();
   const [copySuccess, setCopySuccess] = useState('');
   const [chainId, setChainId] = useState('');
-  const copyToClipBoard = async copyMe => {
-    try {
-      await navigator.clipboard.writeText(String(copyMe));
-      setCopySuccess('Copied!');
-      setTimeout(() => {
-        setCopySuccess('');
-      }, 2000);
-    } catch (err) {
-      console.log(err, 'err copy');
-      if (err) {
-        setCopySuccess('Failed to copy!');
-      }
-    }
+  const copyToClipBoard = () => {
+    setCopySuccess('Copied!');
+    setTimeout(() => {
+      setCopySuccess('');
+    }, 2000);
   };
   const getEthScanLink = (id, data, type) => {
     const chain = chains[id];
@@ -225,10 +219,14 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
                 {address && (
                   <SAddress>
                     {getShortAddress(txh)}
-                    <SIconCopy
-                      src={IconCopy}
-                      onClick={() => copyToClipBoard(txh)}
-                    />
+                    <CopyToClipboard
+                      text={txh}
+                      onCopy={() => {
+                        copyToClipBoard();
+                      }}
+                    >
+                      <SIconCopy src={IconCopy} />
+                    </CopyToClipboard>
                     <SNoti>{copySuccess}</SNoti>
                   </SAddress>
                 )}
