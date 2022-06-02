@@ -1196,11 +1196,12 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            placeholder={
-                              userInfo.availableNumber
-                                ? 'Enter a number'
-                                : '0.0'
-                            }
+                            placeholder="Enter a number"
+                            // placeholder={
+                            //   userInfo.availableNumber
+                            //     ? 'Enter a number'
+                            //     : '0.0'
+                            // }
                             onChange={event => handleChangeValue(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
@@ -1381,9 +1382,10 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            placeholder={
-                              userInfo.amountNumber ? 'Enter a number' : '0.0'
-                            }
+                            // placeholder={
+                            //   userInfo.amountNumber ? 'Enter a number' : '0.0'
+                            // }
+                            placeholder="Enter a number"
                             onChange={event => handleChangeValueUnstake(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {

@@ -132,32 +132,6 @@ function DashboardStaking({ amount }) {
   const [amountDeposit, setAmountDeposit] = useState(0);
   const farmingContract = getFarmingContract();
   const strkContract = getSTRKClaimContract();
-
-  const getPerBlock = async () => {
-    let decimalStrkClaim = null;
-    await methods
-      .call(strkContract.methods.decimals, [])
-      .then(res => {
-        decimalStrkClaim = res;
-      })
-      .catch(err => {
-        throw err;
-      });
-    await methods
-      .call(farmingContract.methods.rewardPerBlock, [])
-      .then(res => {
-        const result = divDecimals(res, decimalStrkClaim).toNumber();
-        const baseAprCaculator = getBaseApr(+amountDeposit, result);
-        const baseAprPer = renderValueFixed(baseAprCaculator);
-        setBaseAPR(baseAprPer);
-      })
-      .catch(err => {
-        throw err;
-      });
-  };
-  useEffect(() => {
-    getPerBlock();
-  }, [amount]);
   const getRate = async () => {
     let rateStrkVsUSD = null;
     let rateStrkVsETH = null;
@@ -197,6 +171,7 @@ function DashboardStaking({ amount }) {
   };
   const getDataDashBoard = async () => {
     let totalLiquid = 0;
+    let decimalStrkClaim = null;
     try {
       // eslint-disable-next-line no-debugger
       await axiosInstance
@@ -218,11 +193,19 @@ function DashboardStaking({ amount }) {
       throw err;
     }
     await methods
+      .call(strkContract.methods.decimals, [])
+      .then(res => {
+        decimalStrkClaim = res;
+      })
+      .catch(err => {
+        throw err;
+      });
+    await methods
       .call(farmingContract.methods.rewardPerBlock, [])
       .then(res => {
-        const result = divDecimals(res, 18).toNumber();
+        const result = divDecimals(res, decimalStrkClaim).toNumber();
         const baseAprCaculator = getBaseApr(totalLiquid, result);
-        const baseAprPer = renderValueFixed(baseAprCaculator);
+        const baseAprPer = renderValueFixed(baseAprCaculator.toNumber());
         setBaseAPR(baseAprPer);
       })
       .catch(err => {
@@ -242,10 +225,10 @@ function DashboardStaking({ amount }) {
         clearInterval(updateTimer);
       }
     };
-  }, []);
+  }, [amount]);
   useEffect(() => {
     getDataDashBoard();
-  }, []);
+  }, [amount]);
   return (
     <>
       <React.Fragment>
@@ -283,7 +266,7 @@ function DashboardStaking({ amount }) {
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Base APR</STextBox>
-                  {baseAPR && <SValueBox>{baseAPR}% </SValueBox>}
+                  <SValueBox>{baseAPR}% </SValueBox>
                 </SItemsBox>
               </SBox>
             </Col>

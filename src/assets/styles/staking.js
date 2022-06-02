@@ -25,7 +25,7 @@ export const SDivPadding = styled.div`
   }
   @media only screen and (max-width: 768px) {
     margin-top: 0;
-    padding: 20px 5px;
+    padding: 20px 0;
   }
 `;
 export const SDivPaddingMT = styled.div`
@@ -41,7 +41,7 @@ export const SDivPaddingMT = styled.div`
   }
   @media only screen and (max-width: 768px) {
     margin-top: 20px;
-    padding: 20px 5px;
+    padding: 20px 0;
   }
 `;
 export const SDiv = styled.div`
@@ -59,7 +59,7 @@ export const SDiv = styled.div`
     margin-bottom: 50px;
   }
   @media only screen and (max-width: 768px) {
-    padding: 20px 5px;
+    padding: 20px 0px;
   }
 `;
 export const SHeader = styled.div`
