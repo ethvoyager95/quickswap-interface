@@ -322,6 +322,7 @@ function Staking({ settings, setSetting }) {
       }
     }
   }, [address, txhash, window.ethereum]);
+
   // get data
   useMemo(async () => {
     if (!address) {
@@ -1169,7 +1170,7 @@ function Staking({ settings, setSetting }) {
           <ST.SHr />
           <Row className="all-section">
             <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-              <DashboardStaking amount={countNFT} address={address} />
+              <DashboardStaking amount={countNFT} />
               <ST.SDivPadding>
                 <ST.SHeader>
                   <ST.STextModel>STRK-ETH Staking</ST.STextModel>
@@ -1195,11 +1196,12 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            placeholder={
-                              userInfo.availableNumber
-                                ? 'Enter a number'
-                                : '0.0'
-                            }
+                            placeholder="Enter a number"
+                            // placeholder={
+                            //   userInfo.availableNumber
+                            //     ? 'Enter a number'
+                            //     : '0.0'
+                            // }
                             onChange={event => handleChangeValue(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
@@ -1243,7 +1245,7 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               {userInfo.availableNumber > 0
-                                ? userInfo.availableNumber
+                                ? userInfo.available
                                 : '0.0'}
                             </ST.SInforValue>
                           ) : (
@@ -1380,9 +1382,10 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            placeholder={
-                              userInfo.amountNumber ? 'Enter a number' : '0.0'
-                            }
+                            // placeholder={
+                            //   userInfo.amountNumber ? 'Enter a number' : '0.0'
+                            // }
+                            placeholder="Enter a number"
                             onChange={event => handleChangeValueUnstake(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
@@ -1424,7 +1427,7 @@ function Staking({ settings, setSetting }) {
                                 <ST.SImgLpSmall src={IconLpSmall} />
                               </ST.SIconSmall>
                               {userInfo.amountNumber > 0
-                                ? userInfo.amountNumber
+                                ? userInfo.amount
                                 : '0.0'}
                             </ST.SInforValueUn>
                           ) : (
@@ -1557,14 +1560,6 @@ function Staking({ settings, setSetting }) {
                                               type={UNSTAKE}
                                               handleUnStake={handleUnStake}
                                             />
-                                            <Tooltip
-                                              placement="right"
-                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                            >
-                                              <ST.SQuestion
-                                                src={IconQuestion}
-                                              />
-                                            </Tooltip>
                                           </ST.SCountDown>
                                         </>
                                       ) : (
@@ -1668,13 +1663,14 @@ function Staking({ settings, setSetting }) {
                       isApproveLP ? (
                         <ST.SInforClaim>
                           <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                            <CountDownClaim
-                              times={expiryTimeBase}
-                              address={address}
-                              txh={txhash}
-                              type={CLAIMBASE}
-                              handleClainBaseReward={handleClainBaseReward}
-                            />
+                            <ST.SCountDown>
+                              <CountDownClaim
+                                times={expiryTimeBase}
+                                address={address}
+                                type={CLAIMBASE}
+                                handleClainBaseReward={handleClainBaseReward}
+                              />
+                            </ST.SCountDown>
                           </Col>
                         </ST.SInforClaim>
                       ) : (
@@ -1726,7 +1722,7 @@ function Staking({ settings, setSetting }) {
                                         placement="right"
                                         title="You can only claim reward once monthly"
                                       >
-                                        <ST.SQuestionClaim src={IconQuestion} />
+                                        <ST.SQuestion src={IconQuestion} />
                                       </Tooltip>
                                     </ST.SBtnClaimStart>
                                   </Col>
@@ -1741,13 +1737,16 @@ function Staking({ settings, setSetting }) {
                           isApproveLP ? (
                             <ST.SInforClaimCountDown>
                               <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                                <CountDownClaim
-                                  times={expiryTimeBoost}
-                                  address={address}
-                                  txh={txhash}
-                                  type={CLAIMBOOST}
-                                  handleClainBootReward={handleClainBootReward}
-                                />
+                                <ST.SCountDown>
+                                  <CountDownClaim
+                                    times={expiryTimeBoost}
+                                    address={address}
+                                    type={CLAIMBOOST}
+                                    handleClainBootReward={
+                                      handleClainBootReward
+                                    }
+                                  />
+                                </ST.SCountDown>
                               </Col>
                             </ST.SInforClaimCountDown>
                           ) : (
@@ -1774,34 +1773,36 @@ function Staking({ settings, setSetting }) {
                         </Tooltip>
                       </ST.SText>
                     </ST.SFlex>
-                    <ST.SFlexEnd>
-                      {address ? (
-                        <>
-                          {isApproveNFT ? (
-                            <>
-                              <ST.SSTake
-                                disabled={
-                                  itemStaking.length === MAX_STAKE_NFT ||
-                                  dataNFT.length === 0
-                                }
-                                onClick={handleStakeNFT}
-                              >
-                                Stake
-                              </ST.SSTake>
-                            </>
-                          ) : (
-                            <>
-                              <ST.SSTake onClick={handleApproveNFT}>
-                                Approve Staking
-                              </ST.SSTake>
-                            </>
-                          )}
-                        </>
-                      ) : (
-                        <> </>
-                      )}
-                    </ST.SFlexEnd>
                   </ST.SRowFlex>
+                </Row>
+                <Row>
+                  <ST.SFlexEnd>
+                    {address ? (
+                      <>
+                        {isApproveNFT ? (
+                          <>
+                            <ST.SSTake
+                              disabled={
+                                itemStaking.length === MAX_STAKE_NFT ||
+                                dataNFT.length === 0
+                              }
+                              onClick={handleStakeNFT}
+                            >
+                              Stake
+                            </ST.SSTake>
+                          </>
+                        ) : (
+                          <>
+                            <ST.SSTake onClick={handleApproveNFT}>
+                              Approve Staking
+                            </ST.SSTake>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <> </>
+                    )}
+                  </ST.SFlexEnd>
                 </Row>
                 {isLoading ? (
                   <Row>
@@ -1847,7 +1848,9 @@ function Staking({ settings, setSetting }) {
                     <ST.SFlex>
                       <ST.SText>NFT staked</ST.SText>
                     </ST.SFlex>
-                    {dataNFTUnState.length > 0 && (
+                    {yourBoostAPR &&
+                    yourBoostAPR !== 0 &&
+                    dataNFTUnState.length > 0 ? (
                       <ST.SFlexEnd>
                         <ST.SDetailsColor>
                           {' '}
@@ -1857,6 +1860,13 @@ function Staking({ settings, setSetting }) {
                           </ST.SDetailsColorBold>
                         </ST.SDetailsColor>
                       </ST.SFlexEnd>
+                    ) : (
+                      <ST.SFlexEnd>
+                        <ST.SDetailsColor>
+                          Your Boost APR:{' '}
+                          <ST.SDetailsColorNotBold>-</ST.SDetailsColorNotBold>
+                        </ST.SDetailsColor>
+                      </ST.SFlexEnd>
                     )}
                   </ST.SRowFlex>
                 </Row>
@@ -1864,12 +1874,12 @@ function Staking({ settings, setSetting }) {
                   <ST.SFlexEnd>
                     {address && !isShowCountDownUnStakeNFT && (
                       <>
-                        <ST.SSTaked
+                        <ST.SSUnTaked
                           disabled={dataNFTUnState.length === 0}
                           onClick={handleUnStakeNFT}
                         >
                           UnStake
-                        </ST.SSTaked>
+                        </ST.SSUnTaked>
                       </>
                     )}
                     {expiryTimeUnstakeNFT &&
@@ -1880,9 +1890,9 @@ function Staking({ settings, setSetting }) {
                       <CountDownClaim
                         times={expiryTimeUnstakeLP}
                         address={address}
-                        txh={txhash}
                         type={UNSTAKENFT}
                         handleUnStakeNFT={handleUnStakeNFT}
+                        valUnStake={valUnStake}
                       />
                     ) : (
                       <></>

@@ -14,6 +14,7 @@ const SBtnClaim = styled.div`
   display: flex;
   margin-top: 10px;
   justify-content: center;
+  align-items: center;
   @media only screen and (max-width: 768px) {
     justify-content: center;
   }
@@ -59,8 +60,9 @@ const STimeText = styled.div`
 const SUntake = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
-const SBtnUnstake = styled.div`
+const SBtnUnstake = styled.button`
   cursor: pointer;
   color: #f84960;
   background: #fff;
@@ -97,7 +99,6 @@ export const SClaim = styled.button`
   margin-right: 15px;
   outline: none;
   border: none;
-  margin: auto;
   @media only screen and (max-width: 768px) {
     width: 100%;
   }
@@ -121,9 +122,11 @@ function CountDownClaim({
   handleUnStake,
   handleClainBaseReward,
   handleClainBootReward,
-  handleUnStakeNFT
+  handleUnStakeNFT,
+  valUnStake
 }) {
   const [expiryTime, setExpiryTime] = useState(times);
+  const [isLoadding, setIsLoading] = useState(false);
   const [countdownTime, setCountdownTime] = useState({
     countdownDays: '',
     countdownHours: '',
@@ -132,6 +135,7 @@ function CountDownClaim({
   });
 
   const countdownTimer = () => {
+    setIsLoading(false);
     if (!address) {
       setCountdownTime({
         countdownDays: '',
@@ -161,6 +165,7 @@ function CountDownClaim({
       countdownSeconds: totalSeconds ?? ''
     };
     setCountdownTime(runningCountdownTime);
+    setIsLoading(true);
   };
   useEffect(() => {
     if (times <= new Date().getTime()) {
@@ -181,32 +186,59 @@ function CountDownClaim({
       }
     };
   }, [times, countdownTime]);
+
   return (
     <>
       {expiryTime !== false ? (
         <>
           <SBtnClaim>
-            {countdownTime && (
-              <STimeClaim className={type === UNSTAKENFT ? 'margin-0' : ''}>
-                <SBoxTime disabled>
-                  <STimeNumber>
-                    {countdownTime.countdownDays}
-                    <STimeText>Days :</STimeText>
-                  </STimeNumber>
-                  <STimeNumber>
-                    {countdownTime.countdownHours}
-                    <STimeText>Hours :</STimeText>
-                  </STimeNumber>
-                  <STimeNumber>
-                    {countdownTime.countdownMinutes}
-                    <STimeText>Min :</STimeText>
-                  </STimeNumber>
-                  <STimeNumber>
-                    {countdownTime.countdownSeconds}
-                    <STimeText>Sec</STimeText>
-                  </STimeNumber>
-                </SBoxTime>
-              </STimeClaim>
+            {countdownTime && isLoadding && (
+              <>
+                <STimeClaim className={type === UNSTAKENFT ? 'margin-0' : ''}>
+                  <SBoxTime disabled>
+                    <STimeNumber>
+                      {countdownTime.countdownDays}
+                      <STimeText>Days :</STimeText>
+                    </STimeNumber>
+                    <STimeNumber>
+                      {countdownTime.countdownHours}
+                      <STimeText>Hours :</STimeText>
+                    </STimeNumber>
+                    <STimeNumber>
+                      {countdownTime.countdownMinutes}
+                      <STimeText>Min :</STimeText>
+                    </STimeNumber>
+                    <STimeNumber>
+                      {countdownTime.countdownSeconds}
+                      <STimeText>Sec</STimeText>
+                    </STimeNumber>
+                  </SBoxTime>
+                </STimeClaim>
+                {type === UNSTAKE && (
+                  <Tooltip
+                    placement="right"
+                    title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                  >
+                    <SQuestion src={IconQuestion} />
+                  </Tooltip>
+                )}
+                {type === CLAIMBASE && (
+                  <Tooltip
+                    placement="right"
+                    title="You can only claim reward once daily"
+                  >
+                    <SQuestion src={IconQuestion} />
+                  </Tooltip>
+                )}
+                {type === CLAIMBOOST && (
+                  <Tooltip
+                    placement="right"
+                    title="You can only claim reward once monthly"
+                  >
+                    <SQuestion src={IconQuestion} />
+                  </Tooltip>
+                )}
+              </>
             )}
           </SBtnClaim>
         </>
@@ -214,7 +246,12 @@ function CountDownClaim({
         <>
           {type === UNSTAKE && (
             <SUntake>
-              <SBtnUnstake onClick={handleUnStake}>Untake</SBtnUnstake>
+              <SBtnUnstake
+                disabled={valUnStake === 0 || valUnStake === ''}
+                onClick={handleUnStake}
+              >
+                Untake
+              </SBtnUnstake>
               <Tooltip
                 placement="right"
                 title="Countdown time will be reset if you unstake a part without claiming the rewards"
@@ -225,33 +262,35 @@ function CountDownClaim({
           )}
           {type === CLAIMBASE && (
             <SUntake>
-              <SClaim onClick={handleClainBaseReward}>
-                Claim
-                <Tooltip
-                  placement="right"
-                  title="You can only claim reward once daily"
-                >
-                  <SQuestion src={IconQuestion} />
-                </Tooltip>
-              </SClaim>
+              <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
+              <Tooltip
+                placement="right"
+                title="You can only claim reward once daily"
+              >
+                <SQuestion src={IconQuestion} />
+              </Tooltip>
             </SUntake>
           )}
           {type === CLAIMBOOST && (
             <SUntake>
-              <SClaim onClick={handleClainBootReward}>
-                Claim
-                <Tooltip
-                  placement="right"
-                  title="You can only claim reward once monthly"
-                >
-                  <SQuestion src={IconQuestion} />
-                </Tooltip>
-              </SClaim>
+              <SClaim onClick={handleClainBootReward}>Claim</SClaim>
+              <Tooltip
+                placement="right"
+                title="You can only claim reward once monthly"
+              >
+                <SQuestion src={IconQuestion} />
+              </Tooltip>
             </SUntake>
           )}
           {type === UNSTAKENFT && (
             <SUntake>
               <SClaim onClick={handleUnStakeNFT}>UnStake</SClaim>
+              <Tooltip
+                placement="right"
+                title="Countdown time will be reset if you unstake a part without claiming the rewards"
+              >
+                <SQuestion src={IconQuestion} />
+              </Tooltip>
             </SUntake>
           )}
         </>
@@ -266,7 +305,8 @@ CountDownClaim.propTypes = {
   handleUnStake: PropTypes.func,
   handleClainBaseReward: PropTypes.func,
   handleClainBootReward: PropTypes.func,
-  handleUnStakeNFT: PropTypes.func
+  handleUnStakeNFT: PropTypes.func,
+  valUnStake: PropTypes.number
 };
 
 CountDownClaim.defaultProps = {
@@ -276,7 +316,8 @@ CountDownClaim.defaultProps = {
   handleUnStake: '',
   handleClainBaseReward: '',
   handleClainBootReward: '',
-  handleUnStakeNFT: ''
+  handleUnStakeNFT: '',
+  valUnStake: 0
 };
 
 const mapStateToProps = ({ account }) => ({

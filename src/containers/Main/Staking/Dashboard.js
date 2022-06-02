@@ -125,39 +125,13 @@ const SIconFlash = styled.img`
 `;
 const abortController = new AbortController();
 
-function DashboardStaking({ address, amount }) {
+function DashboardStaking({ amount }) {
   const [baseAPR, setBaseAPR] = useState(0);
   const [amountStaked, setAmountStaked] = useState(0);
   const [totalLiquidity, setTotalLiqudity] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
   const farmingContract = getFarmingContract();
   const strkContract = getSTRKClaimContract();
-
-  const getPerBlock = async () => {
-    let decimalStrkClaim = null;
-    await methods
-      .call(strkContract.methods.decimals, [])
-      .then(res => {
-        decimalStrkClaim = res;
-      })
-      .catch(err => {
-        throw err;
-      });
-    await methods
-      .call(farmingContract.methods.rewardPerBlock, [])
-      .then(res => {
-        const result = divDecimals(res, decimalStrkClaim).toNumber();
-        const baseAprCaculator = getBaseApr(+amountDeposit, result);
-        const baseAprPer = renderValueFixed(baseAprCaculator);
-        setBaseAPR(baseAprPer);
-      })
-      .catch(err => {
-        throw err;
-      });
-  };
-  useEffect(() => {
-    getPerBlock();
-  }, [address, amount]);
   const getRate = async () => {
     let rateStrkVsUSD = null;
     let rateStrkVsETH = null;
@@ -197,6 +171,7 @@ function DashboardStaking({ address, amount }) {
   };
   const getDataDashBoard = async () => {
     let totalLiquid = 0;
+    let decimalStrkClaim = null;
     try {
       // eslint-disable-next-line no-debugger
       await axiosInstance
@@ -218,11 +193,19 @@ function DashboardStaking({ address, amount }) {
       throw err;
     }
     await methods
+      .call(strkContract.methods.decimals, [])
+      .then(res => {
+        decimalStrkClaim = res;
+      })
+      .catch(err => {
+        throw err;
+      });
+    await methods
       .call(farmingContract.methods.rewardPerBlock, [])
       .then(res => {
-        const result = divDecimals(res, 18).toNumber();
+        const result = divDecimals(res, decimalStrkClaim).toNumber();
         const baseAprCaculator = getBaseApr(totalLiquid, result);
-        const baseAprPer = renderValueFixed(baseAprCaculator);
+        const baseAprPer = renderValueFixed(baseAprCaculator.toNumber());
         setBaseAPR(baseAprPer);
       })
       .catch(err => {
@@ -232,21 +215,20 @@ function DashboardStaking({ address, amount }) {
   useEffect(() => {
     getRate();
     let updateTimer;
-    if (address) {
-      updateTimer = setInterval(() => {
-        getRate();
-      }, 15000);
-    }
+    // eslint-disable-next-line prefer-const
+    updateTimer = setInterval(() => {
+      getRate();
+    }, 15000);
     return function cleanup() {
       abortController.abort();
       if (updateTimer) {
         clearInterval(updateTimer);
       }
     };
-  }, [address]);
+  }, [amount]);
   useEffect(() => {
     getDataDashBoard();
-  }, [address]);
+  }, [amount]);
   return (
     <>
       <React.Fragment>
@@ -284,11 +266,7 @@ function DashboardStaking({ address, amount }) {
                 </SItemsBox>
                 <SItemsBox>
                   <STextBox>Base APR</STextBox>
-                  {address ? (
-                    <SValueBox>{baseAPR}% </SValueBox>
-                  ) : (
-                    <SValueBox>0% </SValueBox>
-                  )}
+                  <SValueBox>{baseAPR}% </SValueBox>
                 </SItemsBox>
               </SBox>
             </Col>
@@ -299,13 +277,11 @@ function DashboardStaking({ address, amount }) {
   );
 }
 DashboardStaking.propTypes = {
-  amount: PropTypes.number,
-  address: PropTypes.string
+  amount: PropTypes.number
 };
 
 DashboardStaking.defaultProps = {
-  amount: 0,
-  address: ''
+  amount: 0
 };
 
 const mapStateToProps = ({ account }) => ({

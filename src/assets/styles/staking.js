@@ -25,7 +25,7 @@ export const SDivPadding = styled.div`
   }
   @media only screen and (max-width: 768px) {
     margin-top: 0;
-    padding: 20px 5px;
+    padding: 20px 0;
   }
 `;
 export const SDivPaddingMT = styled.div`
@@ -41,7 +41,7 @@ export const SDivPaddingMT = styled.div`
   }
   @media only screen and (max-width: 768px) {
     margin-top: 20px;
-    padding: 20px 5px;
+    padding: 20px 0;
   }
 `;
 export const SDiv = styled.div`
@@ -59,7 +59,7 @@ export const SDiv = styled.div`
     margin-bottom: 50px;
   }
   @media only screen and (max-width: 768px) {
-    padding: 20px 5px;
+    padding: 20px 0px;
   }
 `;
 export const SHeader = styled.div`
@@ -425,7 +425,7 @@ export const SSTake = styled.button`
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0;
-    margin-right: 10%;
+    margin: 3%;
   }
 `;
 export const SSTaked = styled.button`
@@ -446,7 +446,32 @@ export const SSTaked = styled.button`
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0;
-    margin-right: 5%;
+    margin: 3%;
+  }
+`;
+export const SSUnTaked = styled.button`
+  cursor: pointer;
+  color: #f84960;
+  background: #fff;
+  border-radius: 5px;
+  padding: 8px 20px;
+  min-width: 150px;
+  text-align: center;
+  border: 1px solid #f84960;
+  margin-right: 15px;
+  margin-top: 10px;
+  outline: none;
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
+  }
+  :hover {
+    background: #fff !important;
+  }
+  @media only screen and (max-width: 768px) {
+    min-width: 150px;
+    margin-left: 0;
+    margin: 3%;
   }
 `;
 export const SSUnTake = styled.button`
@@ -478,6 +503,8 @@ export const SBtnUnStakeStart = styled.div`
 `;
 export const SCountDown = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 export const SBoxState = styled.div`
   width: 100%;
@@ -775,6 +802,12 @@ export const SDetailsColor = styled.div`
 export const SDetailsColorBold = styled.div`
   font-weight: 900;
   color: #000000;
+  margin-left: 5px;
+`;
+export const SDetailsColorNotBold = styled.div`
+  font-weight: 400;
+  color: #000000;
+  margin-left: 5px;
 `;
 export const SRowFlex = styled.div`
   display: flex;

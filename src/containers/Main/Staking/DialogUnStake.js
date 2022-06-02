@@ -297,7 +297,7 @@ const SIcon = styled.div`
 const SIconClose = styled.img`
   cursor: pointer;
 `;
-const PERCENT = 20;
+const PERCENT = 10;
 
 function DialogUnStake({
   isUnStakeNFT,
@@ -365,20 +365,21 @@ function DialogUnStake({
       setDisabledBtn(false);
     }
     if (checked) {
-      const MAX_UNSTAKE = list.length;
+      const CURRENT_STAKED = list.length;
       const NUMBER_VAL = Number(val);
-      if (NUMBER_VAL > MAX_UNSTAKE && NUMBER_VAL < MAX_STAKE_NFT) {
-        setMessErr(
-          `Invalid number. You can only unstake upto ${MAX_UNSTAKE} NFTs`
-        );
-        setDisabledBtn(true);
-      } else if (NUMBER_VAL > MAX_STAKE_NFT) {
-        setMessErr(`Invalid number. You can not unstake more than 20 NFTs`);
-        setDisabledBtn(true);
-      } else {
-        setMessErr('');
-        setDisabledBtn(false);
-      }
+      if (NUMBER_VAL)
+        if (NUMBER_VAL > CURRENT_STAKED) {
+          setMessErr(
+            `Invalid number. You can only unstake upto ${CURRENT_STAKED} NFTs`
+          );
+          setDisabledBtn(true);
+        } else if (NUMBER_VAL > MAX_STAKE_NFT) {
+          setMessErr(`Invalid number. You can not unstake more than 20 NFTs`);
+          setDisabledBtn(true);
+        } else {
+          setMessErr('');
+          setDisabledBtn(false);
+        }
     } else {
       const listIds = _.map(list, 'token_id');
       if (val && !_.includes(listIds, val)) {

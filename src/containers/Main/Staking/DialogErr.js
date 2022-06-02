@@ -1,5 +1,5 @@
 import { Dialog, makeStyles } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes, { func } from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
@@ -98,7 +98,14 @@ const SIconClose = styled.img`
 `;
 function DialogErr({ isShow, text, close }) {
   const classes = useStyles();
-
+  const [notDeclined, setNotIsDeClined] = useState(false);
+  useEffect(() => {
+    if (text.includes('Some thing went wrong')) {
+      setNotIsDeClined(true);
+    } else {
+      setNotIsDeClined(false);
+    }
+  }, [text]);
   return (
     <>
       <React.Fragment>
@@ -117,7 +124,11 @@ function DialogErr({ isShow, text, close }) {
             </SIcon>
             <SImg src={ErrIcon} />
             <STitle>{text}</STitle>
-            <SText>You have declined the transaction in your wallet</SText>
+            {!notDeclined ? (
+              <SText>You have declined the transaction in your wallet</SText>
+            ) : (
+              <SText />
+            )}
           </SMain>
         </Dialog>
       </React.Fragment>
