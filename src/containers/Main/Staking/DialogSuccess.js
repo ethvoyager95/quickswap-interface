@@ -172,7 +172,7 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
   const [chainId, setChainId] = useState('');
   const copyToClipBoard = async copyMe => {
     try {
-      await navigator.clipboard.writeText(copyMe);
+      await navigator.clipboard.writeText(String(copyMe));
       setCopySuccess('Copied!');
       setTimeout(() => {
         setCopySuccess('');
