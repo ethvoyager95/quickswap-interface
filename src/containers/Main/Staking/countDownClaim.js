@@ -61,6 +61,7 @@ const SUntake = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 10px;
 `;
 const SBtnUnstake = styled.button`
   cursor: pointer;
@@ -102,6 +103,35 @@ export const SClaim = styled.button`
   @media only screen and (max-width: 768px) {
     width: 100%;
   }
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
+    &:hover {
+    }
+  }
+`;
+const SBoxAproving = styled.div`
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+`;
+export const SApproving = styled.button`
+  cursor: pointer;
+  background: #107def;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 8px 20px;
+  width: 280px;
+  text-align: center;
+  margin-right: 50px;
+  margin-top: 10px;
+  outline: none;
+  border: none;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
 `;
 const SQuestion = styled.img`
   width: 23px;
@@ -123,7 +153,11 @@ function CountDownClaim({
   handleClainBaseReward,
   handleClainBootReward,
   handleUnStakeNFT,
-  valUnStake
+  valUnStake,
+  isAprroveVstrk,
+  handleApproveVstrk,
+  isClaimBaseReward,
+  isClaimBootReward
 }) {
   const [expiryTime, setExpiryTime] = useState(times);
   const [isLoadding, setIsLoading] = useState(false);
@@ -245,24 +279,43 @@ function CountDownClaim({
       ) : (
         <>
           {type === UNSTAKE && (
-            <SUntake>
-              <SBtnUnstake
-                disabled={valUnStake === 0 || valUnStake === ''}
-                onClick={handleUnStake}
-              >
-                Untake
-              </SBtnUnstake>
-              <Tooltip
-                placement="right"
-                title="Countdown time will be reset if you unstake a part without claiming the rewards"
-              >
-                <SQuestion src={IconQuestion} />
-              </Tooltip>
-            </SUntake>
+            <>
+              {isAprroveVstrk ? (
+                <>
+                  <SUntake>
+                    <SBtnUnstake
+                      disabled={valUnStake === 0 || valUnStake === ''}
+                      onClick={handleUnStake}
+                    >
+                      Untake
+                    </SBtnUnstake>
+                    <Tooltip
+                      placement="right"
+                      title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                    >
+                      <SQuestion src={IconQuestion} />
+                    </Tooltip>
+                  </SUntake>
+                </>
+              ) : (
+                <>
+                  <SBoxAproving>
+                    <SApproving onClick={handleApproveVstrk}>
+                      Approve Staking
+                    </SApproving>
+                  </SBoxAproving>
+                </>
+              )}
+            </>
           )}
           {type === CLAIMBASE && (
             <SUntake>
-              <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
+              <SClaim
+                disabled={!isClaimBaseReward}
+                onClick={handleClainBaseReward}
+              >
+                Claim
+              </SClaim>
               <Tooltip
                 placement="right"
                 title="You can only claim reward once daily"
@@ -273,7 +326,12 @@ function CountDownClaim({
           )}
           {type === CLAIMBOOST && (
             <SUntake>
-              <SClaim onClick={handleClainBootReward}>Claim</SClaim>
+              <SClaim
+                disabled={!isClaimBootReward}
+                onClick={handleClainBootReward}
+              >
+                Claim
+              </SClaim>
               <Tooltip
                 placement="right"
                 title="You can only claim reward once monthly"
@@ -306,7 +364,11 @@ CountDownClaim.propTypes = {
   handleClainBaseReward: PropTypes.func,
   handleClainBootReward: PropTypes.func,
   handleUnStakeNFT: PropTypes.func,
-  valUnStake: PropTypes.number
+  valUnStake: PropTypes.number,
+  isAprroveVstrk: PropTypes.bool,
+  handleApproveVstrk: PropTypes.func,
+  isClaimBaseReward: PropTypes.bool,
+  isClaimBootReward: PropTypes.bool
 };
 
 CountDownClaim.defaultProps = {
@@ -317,7 +379,11 @@ CountDownClaim.defaultProps = {
   handleClainBaseReward: '',
   handleClainBootReward: '',
   handleUnStakeNFT: '',
-  valUnStake: 0
+  valUnStake: 0,
+  isAprroveVstrk: false,
+  handleApproveVstrk: '',
+  isClaimBaseReward: false,
+  isClaimBootReward: false
 };
 
 const mapStateToProps = ({ account }) => ({

@@ -148,8 +148,8 @@ function DashboardStaking({ amount }) {
             const objPriceStrkToEthereum = _.find(result, item => {
               return item.symbol === 'eth';
             });
-            rateStrkVsUSD = renderValueFixed(objPriceStrkToUSD.amount);
-            rateStrkVsETH = renderValueFixed(objPriceStrkToEthereum.amount);
+            rateStrkVsUSD = objPriceStrkToUSD.amount;
+            rateStrkVsETH = objPriceStrkToEthereum.amount;
             totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
             const totalLiquidityBigNumber = getLiquidity(
               rateStrkVsUSD,

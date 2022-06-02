@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { Row, Col, Switch } from 'antd';
 import _ from 'lodash';
 import IconClose from '../../../assets/img/close.svg';
-import { MAX_STAKE_NFT } from './helper';
+import { MAX_STAKE_NFT, LIST_BLOCK_VALUE } from './helper';
 
 const useStyles = makeStyles({
   root: {
@@ -435,6 +435,11 @@ function DialogUnStake({
                 maxLength={79}
                 placeholder="Enter a number"
                 onChange={event => handleChangeValueUnStakeNft(event)}
+                onKeyPress={event => {
+                  if (_.includes(LIST_BLOCK_VALUE, event.which)) {
+                    event.preventDefault();
+                  }
+                }}
               />
             </SInput>
             {messErr && <SError>{messErr}</SError>}

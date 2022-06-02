@@ -226,14 +226,8 @@ function Staking({ settings, setSetting }) {
           const amountString = amountNumber?.toNumber();
           const accBaseRewardString = accBaseRewardBigNumber.toNumber();
           const accBoostRewardString = accBoostRewardBigNumber.toNumber();
-          const balanceBigFormat = balanceBigNumber
-            .toNumber()
-            .toFixed(4)
-            .toString();
-          const totalAmountBigNumber = totalAmount
-            .toNumber()
-            .toFixed(4)
-            .toString();
+          const balanceBigFormat = balanceBigNumber.toNumber().toString();
+          const totalAmountBigNumber = totalAmount.toNumber().toString();
           if (balanceBigNumber.isZero()) {
             setMessErr({
               mess: 'No tokens to stake: Get STRK-ETH LP',
@@ -537,11 +531,13 @@ function Staking({ settings, setSetting }) {
       const afterStakeSeconds = Math.floor(
         resultInSecondsCurrent - result / 1000
       );
+
       if (afterStakeSeconds > 0) {
         setIsShowCountDownUnStakeNFT(false);
       } else {
         setIsShowCountDownUnStakeNFT(true);
       }
+
       const timeInterval = setInterval(() => {
         if (afterStakeSeconds > 0) {
           setIsShowCountDownUnStakeNFT(false);
@@ -559,18 +555,42 @@ function Staking({ settings, setSetting }) {
     }
   };
   const enforcerUnStake = nextUserInput => {
-    const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
-    if (nextUserInput === '' || numberDigitsRegex.test(nextUserInput)) {
+    const numberDigitsRegexUn = /^\d*(\.\d{0,18})?$/g;
+    if (nextUserInput === '' || numberDigitsRegexUn.test(nextUserInput)) {
       setValUnStake(nextUserInput);
     }
   };
+  const replaceValue = value => {
+    const valueFormat = value.replace(/,/g, '.');
+    const lstValueFormat = valueFormat?.toString().split('.');
+    if (lstValueFormat.length > 1) {
+      const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(0, 5)}`;
+      return Number(result);
+    }
+  };
+  // ear input value
+  useMemo(() => {
+    if (Number(val) > +userInfo?.availableNumber) {
+      setMessErr({
+        mess: 'The amount has exceeded your balance. Try again!',
+        show: true
+      });
+    }
+  }, [val, userInfo]);
+  useMemo(() => {
+    if (Number(valueNFTUnStake) > +userInfo?.amountNumber) {
+      setMessErrUnStake({
+        mess: 'The amount has exceded your balance. Try again',
+        show: true
+      });
+    }
+  }, [valUnStake, userInfo]);
   const handleChangeValue = event => {
     enforcer(event.target.value.replace(/,/g, '.'));
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
     if (!numberDigitsRegex.test(event.target.value)) {
       return;
     }
-
     setMessErr({
       mess: '',
       show: false
@@ -595,16 +615,21 @@ function Staking({ settings, setSetting }) {
       });
       setDisabledBtn(false);
     }
-    if (number > +userInfo?.availableNumber) {
+    if (Number(number) > +userInfo?.availableNumber) {
       setMessErr({
         mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
-      return;
+    }
+    if (Number(number) && !+userInfo?.availableNumber) {
+      setMessErr({
+        mess: 'The amount has exceeded your balance. Try again!',
+        show: true
+      });
     }
     if (Number(number) < 0) {
       setVal(0);
-    } else if (Number(number) > 0) {
+    } else if (Number(number) >= 0) {
       const valueFormat = event?.target.value.replace(/,/g, '.');
       const lstValueFormat = valueFormat?.toString().split('.');
       if (lstValueFormat.length > 1) {
@@ -626,6 +651,7 @@ function Staking({ settings, setSetting }) {
       show: false
     });
     const number = event.target.value;
+
     if (number === '') {
       setMessErrUnStake({
         mess: '',
@@ -639,7 +665,7 @@ function Staking({ settings, setSetting }) {
       });
       setDisabledBtnUn(true);
     } else {
-      setMessErr({
+      setMessErrUnStake({
         mess: '',
         show: false
       });
@@ -650,11 +676,16 @@ function Staking({ settings, setSetting }) {
         mess: 'The amount has exceded your balance. Try again',
         show: true
       });
-      return;
+    }
+    if (number && !+userInfo?.amountNumber) {
+      setMessErrUnStake({
+        mess: 'The amount has exceded your balance. Try again',
+        show: true
+      });
     }
     if (Number(number) < 0) {
       setValUnStake(0);
-    } else if (Number(number) > 0) {
+    } else if (Number(number) >= 0) {
       const valueFormat = event?.target.value.replace(/,/g, '.');
       const lstValueFormat = valueFormat?.toString().split('.');
       if (lstValueFormat.length > 1) {
@@ -704,17 +735,17 @@ function Staking({ settings, setSetting }) {
       });
   }, [val, address, handleMaxValue, userInfo, handleMaxValueStaked, txhash]);
   const checkApproveNFT = useCallback(async () => {
-    await methods
-      .call(nFtContract.methods.isApprovedForAll, [
-        address,
-        constants.CONTRACT_FARMING_ADDRESS
-      ])
-      .then(res => {
-        if (res) {
+    if (address) {
+      await methods
+        .call(nFtContract.methods.isApprovedForAll, [
+          address,
+          constants.CONTRACT_FARMING_ADDRESS
+        ])
+        .then(res => {
           setIsApproveNFT(res);
-        }
-      });
-  }, [address, txhash]);
+        });
+    }
+  }, [address, txhash, userInfo, window.ethereum]);
   const checkApproveVstrk = useCallback(async () => {
     await methods
       .call(vStrkContract.methods.allowance, [
@@ -845,6 +876,7 @@ function Staking({ settings, setSetting }) {
         setiIsConfirm(false);
         return;
       }
+
       await methods
         .send(
           farmingContract.methods.deposit,
@@ -881,6 +913,7 @@ function Staking({ settings, setSetting }) {
           }
           throw err;
         });
+
       setMessErr({
         mess: '',
         show: false
@@ -1207,6 +1240,7 @@ function Staking({ settings, setSetting }) {
                               if (event.target.value !== '') {
                                 setVal(Number(event.target.value));
                               }
+                              replaceValue(event.target.value);
                             }}
                           />
                           <ST.SMax
@@ -1220,7 +1254,7 @@ function Staking({ settings, setSetting }) {
                         </ST.SInput>
                       </Col>
                       <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                        {messErr?.show === true && (
+                        {messErr.show === true && (
                           <ST.SError>{messErr.mess}</ST.SError>
                         )}
                         {messErr?.noLP === true && (
@@ -1230,7 +1264,7 @@ function Staking({ settings, setSetting }) {
                           >
                             {messErr.mess}
                             <ST.SLinkErr>
-                              <ST.SImgErr src={IconLink} />
+                              <ST.SImgErrNoMargin src={IconLink} />
                             </ST.SLinkErr>
                           </ST.SLinkErr>
                         )}
@@ -1351,9 +1385,9 @@ function Staking({ settings, setSetting }) {
                             <>
                               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                                 <ST.SBtn>
-                                  <ST.SBtnStake onClick={handleApproveLp}>
+                                  <ST.SBtnApprove onClick={handleApproveLp}>
                                     Approve Staking
-                                  </ST.SBtnStake>
+                                  </ST.SBtnApprove>
                                 </ST.SBtn>
                               </Col>
                             </>
@@ -1391,6 +1425,7 @@ function Staking({ settings, setSetting }) {
                               if (event.target.value !== '') {
                                 setValUnStake(Number(event.target.value));
                               }
+                              replaceValue(event.target.value);
                             }}
                           />
                           <ST.SMaxUn
@@ -1479,7 +1514,7 @@ function Staking({ settings, setSetting }) {
                                               xs={{ span: 24 }}
                                               lg={{ span: 24 }}
                                             >
-                                              <ST.SBtnUnStakeStart>
+                                              <ST.SBtnUnStakeStartNotBorder>
                                                 <ST.SBtnUnstake
                                                   disabled={
                                                     disabledBtnUn ||
@@ -1497,7 +1532,7 @@ function Staking({ settings, setSetting }) {
                                                     src={IconQuestion}
                                                   />
                                                 </Tooltip>
-                                              </ST.SBtnUnStakeStart>
+                                              </ST.SBtnUnStakeStartNotBorder>
                                             </Col>
                                           </>
                                         )}
@@ -1508,21 +1543,13 @@ function Staking({ settings, setSetting }) {
                                           xs={{ span: 24 }}
                                           lg={{ span: 24 }}
                                         >
-                                          <ST.SBtnUnStakeStart>
+                                          <ST.SBtnUnStakeStartNotBorder>
                                             <ST.SBtnStake
                                               onClick={handleApproveVstrk}
                                             >
                                               Approve Staking
                                             </ST.SBtnStake>
-                                            <Tooltip
-                                              placement="right"
-                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                            >
-                                              <ST.SQuestion
-                                                src={IconQuestion}
-                                              />
-                                            </Tooltip>
-                                          </ST.SBtnUnStakeStart>
+                                          </ST.SBtnUnStakeStartNotBorder>
                                         </Col>
                                       </>
                                     )}
@@ -1531,7 +1558,7 @@ function Staking({ settings, setSetting }) {
                                   <>
                                     {!isShowCountDownUnStake && (
                                       <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                                        <ST.SBtnUnStakeStart>
+                                        <ST.SBtnUnStakeStartNotBorder>
                                           <ST.SSUnTake disabled>
                                             UnStake
                                           </ST.SSUnTake>
@@ -1541,7 +1568,7 @@ function Staking({ settings, setSetting }) {
                                           >
                                             <ST.SQuestion src={IconQuestion} />
                                           </Tooltip>
-                                        </ST.SBtnUnStakeStart>
+                                        </ST.SBtnUnStakeStartNotBorder>
                                       </Col>
                                     )}
 
@@ -1549,8 +1576,7 @@ function Staking({ settings, setSetting }) {
                                       {expiryTimeUnstakeLP &&
                                       isShowCountDownUnStake &&
                                       userInfo.amountNumber > 0 &&
-                                      address &&
-                                      isApproveLP ? (
+                                      address ? (
                                         <>
                                           <ST.SCountDown>
                                             <CountDownClaim
@@ -1559,11 +1585,30 @@ function Staking({ settings, setSetting }) {
                                               txh={txhash}
                                               type={UNSTAKE}
                                               handleUnStake={handleUnStake}
+                                              valUnStake={valUnStake}
+                                              isAprroveVstrk={isAprroveVstrk}
+                                              handleApproveVstrk={
+                                                handleApproveVstrk
+                                              }
                                             />
                                           </ST.SCountDown>
                                         </>
                                       ) : (
-                                        <></>
+                                        <>
+                                          <ST.SBtnUnStakeStartNotBorder>
+                                            <ST.SSUnTake disabled>
+                                              UnStake
+                                            </ST.SSUnTake>
+                                            <Tooltip
+                                              placement="right"
+                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                            >
+                                              <ST.SQuestion
+                                                src={IconQuestion}
+                                              />
+                                            </Tooltip>
+                                          </ST.SBtnUnStakeStartNotBorder>
+                                        </>
                                       )}
                                     </Col>
                                   </>
@@ -1581,22 +1626,15 @@ function Staking({ settings, setSetting }) {
                 <ST.SDivHarvest>
                   <ST.SText>STRK-ETH Harvest</ST.SText>
                   <ST.SInforTextVSTRK>
-                    STRK claimed
-                    <ST.SVSTRKTootip>
-                      <Tooltip
-                        placement="top"
-                        title="vSTRK is auto-claimed to your wallet 
-                              (10 vSTRK is minted for each STRK-ETH to stake)"
-                      >
-                        <ST.SQuestionClaimed src={IconQuestion} />
-                      </Tooltip>
-                    </ST.SVSTRKTootip>
+                    <ST.SInforTextVSTRKDetail>
+                      STRK claimed
+                    </ST.SInforTextVSTRKDetail>
                     {address ? (
                       <>
-                        <ST.SIconSmall>
-                          <ST.SImgLpSmall src={IconFlashSmall} />
-                        </ST.SIconSmall>
                         <ST.STotalClaim>
+                          <ST.SIconSmall>
+                            <ST.SImgLpSmall src={IconFlashSmall} />
+                          </ST.SIconSmall>
                           {userInfo.totalClaim ?? '0.0'}
                         </ST.STotalClaim>
                       </>
@@ -1614,7 +1652,7 @@ function Staking({ settings, setSetting }) {
                 <ST.SBoxHarvest>
                   <Row>
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                      <ST.SInforClaim>
+                      <ST.SInforClaimNotBorder>
                         <ST.SInforText>Base Reward</ST.SInforText>
                         {address ? (
                           <ST.SInforValue>
@@ -1632,7 +1670,7 @@ function Staking({ settings, setSetting }) {
                             -
                           </ST.SInforValue>
                         )}
-                      </ST.SInforClaim>
+                      </ST.SInforClaimNotBorder>
                       {address && isApproveLP && !isShowCountDownClaimBase && (
                         <ST.SInforClaim>
                           <Col xs={{ span: 24 }} lg={{ span: 24 }}>
@@ -1669,6 +1707,7 @@ function Staking({ settings, setSetting }) {
                                 address={address}
                                 type={CLAIMBASE}
                                 handleClainBaseReward={handleClainBaseReward}
+                                isClaimBaseReward={isClaimBaseReward}
                               />
                             </ST.SCountDown>
                           </Col>
@@ -1682,7 +1721,7 @@ function Staking({ settings, setSetting }) {
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                       <Row>
                         <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                          <ST.SInforClaim>
+                          <ST.SInforClaimNotBorder>
                             <ST.SInforTextMargin>
                               Boost Reward
                             </ST.SInforTextMargin>
@@ -1701,11 +1740,11 @@ function Staking({ settings, setSetting }) {
                                 -
                               </ST.SInforValueNoMargin>
                             )}
-                          </ST.SInforClaim>
+                          </ST.SInforClaimNotBorder>
                           {address &&
                             isApproveLP &&
                             !isShowCountDownClaimBoost && (
-                              <ST.SInforClaim>
+                              <ST.SInforClaimNotBorder>
                                 <ST.SBoxState>
                                   <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                                     <ST.SBtnClaimStart>
@@ -1727,7 +1766,7 @@ function Staking({ settings, setSetting }) {
                                     </ST.SBtnClaimStart>
                                   </Col>
                                 </ST.SBoxState>
-                              </ST.SInforClaim>
+                              </ST.SInforClaimNotBorder>
                             )}
                           {expiryTimeBoost &&
                           isShowCountDownClaimBoost &&
@@ -1745,6 +1784,7 @@ function Staking({ settings, setSetting }) {
                                     handleClainBootReward={
                                       handleClainBootReward
                                     }
+                                    isClaimBootReward={isClaimBootReward}
                                   />
                                 </ST.SCountDown>
                               </Col>
@@ -1892,7 +1932,6 @@ function Staking({ settings, setSetting }) {
                         address={address}
                         type={UNSTAKENFT}
                         handleUnStakeNFT={handleUnStakeNFT}
-                        valUnStake={valUnStake}
                       />
                     ) : (
                       <></>
