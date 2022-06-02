@@ -172,7 +172,7 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
   const [chainId, setChainId] = useState('');
   const copyToClipBoard = async copyMe => {
     try {
-      await navigator.clipboard.writeText(copyMe);
+      await navigator.clipboard.writeText(String(copyMe));
       setCopySuccess('Copied!');
       setTimeout(() => {
         setCopySuccess('');
@@ -224,10 +224,10 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
               <SCopy>
                 {address && (
                   <SAddress>
-                    {getShortAddress(address)}
+                    {getShortAddress(txh)}
                     <SIconCopy
                       src={IconCopy}
-                      onClick={() => copyToClipBoard(address)}
+                      onClick={() => copyToClipBoard(txh)}
                     />
                     <SNoti>{copySuccess}</SNoti>
                   </SAddress>
