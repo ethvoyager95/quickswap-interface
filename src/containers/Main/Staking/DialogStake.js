@@ -9,7 +9,7 @@ import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
 import { Row, Col, Switch } from 'antd';
 import _ from 'lodash';
-import { MAX_STAKE_NFT } from './helper';
+import { MAX_STAKE_NFT, LIST_BLOCK_VALUE } from './helper';
 import IconClose from '../../../assets/img/close.svg';
 
 const useStyles = makeStyles({
@@ -312,7 +312,7 @@ function DialogStake({
   const [val, setValue] = useState(valueNFTStake);
   const [messErr, setMessErr] = useState();
   const [, setItemSelect] = useState(itemStaking?.length);
-  const [disabledBtn, setDisabledBtn] = useState(false);
+  const [disabledBtn, setDisabledBtn] = useState(true);
   const [totalSelect] = useState(MAX_STAKE_NFT);
   const [currentNFTAmount, setCurrentNFTAmount] = useState(0);
   const [itemStaked, setItemStaked] = useState(listUnStake?.length);
@@ -350,7 +350,7 @@ function DialogStake({
       if (val === '') {
         setBeforeStaking(itemStaked * PERCENT);
         setAfterStake(itemStaked * PERCENT);
-      } else if (val * PERCENT === PERCENT) {
+      } else if (itemStaked === 0 && val * PERCENT === PERCENT) {
         setBeforeStaking(0);
         setAfterStake(0);
       } else {
@@ -370,37 +370,48 @@ function DialogStake({
   }, [itemStaking, listStake, listUnStake, isStakeNFT, checked, val]);
 
   useEffect(() => {
+    // NFT AMOUNT CAN STAKE
+    const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
+    const CURRENT_STAKED = listUnStake.length;
+    // NFT CURREN AMOUNT
+    const NUMBER_VAL = Number(val);
+    const NFT_BEGIN_STAKED = NUMBER_VAL + CURRENT_STAKED;
     if (val === '') {
       setMessErr('');
-      setDisabledBtn(false);
+      setDisabledBtn(true);
     }
     if (checked) {
       if (val === '') {
         setMessErr('');
-        setDisabledBtn(false);
+        setDisabledBtn(true);
       }
-      // NFT AMOUNT CAN STAKE
-      const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
-      const CURRENT_STAKED = listUnStake.length;
-      // NFT CURREN AMOUNT
-      const NUMBER_VAL = Number(val);
-      const NFT_BEGIN_STAKED = NUMBER_VAL + CURRENT_STAKED;
+
       if (itemStaked === 0 && NUMBER_VAL > MAX_STAKE_NFT) {
         setMessErr(`Invalid number. You can not stake more than 20 NFTs`);
         setDisabledBtn(true);
       } else if (itemStaked > 0 && NFT_BEGIN_STAKED > MAX_STAKE_NFT) {
         setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
         setDisabledBtn(true);
+      } else if (!val) {
+        setMessErr('');
+        setDisabledBtn(true);
       } else {
         setMessErr('');
         setDisabledBtn(false);
+      }
+      if (Number(val) === 0) {
+        setMessErr('');
+        setDisabledBtn(true);
       }
     } else {
       const listIds = _.map(listStake, 'token_id');
       if (val && !_.includes(listIds, val)) {
         setMessErr('Invalid tokenID');
         setDisabledBtn(true);
-      } else {
+      } else if (itemStaked > 0 && NFT_BEGIN_STAKED > MAX_STAKE_NFT) {
+        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
+        setDisabledBtn(true);
+      } else if (val) {
         setMessErr('');
         setDisabledBtn(false);
       }
@@ -452,6 +463,11 @@ function DialogStake({
                 maxLength={79}
                 placeholder="Enter a number"
                 onChange={event => handleChangeValueStakeNft(event)}
+                onKeyPress={event => {
+                  if (_.includes(LIST_BLOCK_VALUE, event.which)) {
+                    event.preventDefault();
+                  }
+                }}
               />
             </SInput>
             {messErr && <SError>{messErr}</SError>}

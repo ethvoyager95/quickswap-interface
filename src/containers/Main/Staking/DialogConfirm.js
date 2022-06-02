@@ -123,7 +123,7 @@ function DialogConfirm({ isConfirm, close }) {
               <Loadding />
             </SLoading>
             <STitle>Waiting for confirmation</STitle>
-            <SText>Please confirm your transaction in your wallet</SText>
+            <SText>Confirming the transaction...</SText>
           </SMain>
         </Dialog>
       </React.Fragment>

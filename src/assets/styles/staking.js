@@ -174,6 +174,7 @@ export const SInputUnStake = styled.div`
   }
   @media only screen and (max-width: 768px) {
     padding: 0 10px;
+    margin-top: 10px;
     input {
       width: 100%;
     }
@@ -211,6 +212,8 @@ export const SLinkErr = styled.a`
   @media only screen and (max-width: 768px) {
     margin-left: 3%;
     margin-top: 0px;
+    display: flex;
+    align-items: center;
   }
 `;
 export const SLinkErrUn = styled.a`
@@ -223,9 +226,14 @@ export const SLinkErrUn = styled.a`
   }
 `;
 export const SImgErr = styled.img`
-  margin: 0 5px;
-  width: 15px;
-  height: 15px;
+  margin: 0 10px;
+  width: 12px;
+  height: 12px;
+`;
+export const SImgErrNoMargin = styled.img`
+  margin: 0;
+  width: 12px;
+  height: 12px;
 `;
 export const SMax = styled.button`
   margin-left: 10px;
@@ -351,6 +359,33 @@ export const SBtnStake = styled.button`
   @media only screen and (max-width: 768px) {
     width: 100%;
     margin-left: 0px !important;
+    // margin-right: 10px !important;
+  }
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
+    &:hover {
+      background: #d9d9d9 !important;
+    }
+  }
+`;
+export const SBtnApprove = styled.button`
+  cursor: pointer;
+  background: #107def;
+  color: #fff;
+  border-radius: 5px;
+  padding: 8px 20px;
+  min-width: 280px;
+  text-align: center;
+  margin-right: 10px;
+  border: none;
+  outline: none;
+  margin-right: 15px;
+  margin-top: 10px;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    margin-left: 0px !important;
+    margin-right: 10px !important;
   }
   :disabled {
     color: #fff !important;
@@ -499,6 +534,17 @@ export const SBtnUnStakeStart = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     justify-content: center;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 15px;
+  }
+`;
+export const SBtnUnStakeStartNotBorder = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    justify-content: center;
+    padding-bottom: 10px;
   }
 `;
 export const SCountDown = styled.div`
@@ -570,6 +616,19 @@ export const SInforClaim = styled.div`
   @media only screen and (max-width: 768px) {
     border-bottom: none;
     padding: 0 10px;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 15px;
+  }
+`;
+export const SInforClaimNotBorder = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-bottom: 15px;
+  @media only screen and (max-width: 768px) {
+    border-bottom: none;
+    padding: 0 10px;
   }
 `;
 export const SInforClaimCountDown = styled.div`
@@ -622,7 +681,15 @@ export const SInforTextVSTRK = styled.div`
     font-size: 12px;
     padding: 0 10px;
     margin-top: 10px;
+    justify-content: space-between;
   }
+`;
+export const SInforTextVSTRKDetail = styled.div`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #6d6f7b;
+  margin-right: 20px;
 `;
 export const SInforTextUn = styled.div`
   font-weight: 500;
@@ -677,6 +744,7 @@ export const SIconSmall = styled.div`
 export const STotalClaim = styled.div`
   font-weight: 900;
   color: #0b0f23;
+  display: flex;
 `;
 export const SImgFlashSmall = styled.img``;
 export const SImgLpSmall = styled.img`
@@ -689,6 +757,7 @@ export const SQuestion = styled.img`
   @media only screen and (max-width: 768px) {
     width: 15px;
     height: 15px;
+    margin-right: 0px !important;
   }
 `;
 export const SQuestionClaimed = styled.img`
@@ -709,6 +778,7 @@ export const SQuestionClaim = styled.img`
   @media only screen and (max-width: 768px) {
     width: 15px;
     height: 15px;
+    margin-right: 0;
   }
 `;
 export const SBtnClaim = styled.div`
@@ -718,7 +788,6 @@ export const SBtnClaim = styled.div`
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
-    padding: 0 10px;
   }
 `;
 export const SBtnClaimStart = styled.div`
@@ -797,6 +866,7 @@ export const SDetailsColor = styled.div`
   display: flex;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
+    margin-right: 10px;
   }
 `;
 export const SDetailsColorBold = styled.div`
@@ -892,6 +962,10 @@ export const SBoxSlider = styled.div`
   width: 100%;
   background: #3e3f4d;
   padding: 15px;
+  @media only screen and (max-width: 768px) {
+    padding: 5px;
+    font-size: 12px;
+  }
 `;
 export const STitleSlider = styled.div`
   color: #fff;

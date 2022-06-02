@@ -16,6 +16,8 @@ export const UNSTAKE = 'UNSTAKE';
 export const CLAIMBASE = 'CLAIMBASE';
 export const CLAIMBOOST = 'CLAIMBOOST';
 export const UNSTAKENFT = 'UNSTAKENFT';
+// chacracter -+e.0 block
+export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 101];
 const REQUIRED_DECIMAL = 5;
 export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
@@ -206,14 +208,8 @@ export const shortValue = (value, decimal) => {
   if (!value || value === 0) {
     return '0.0';
   }
-  if (value < 0.0001 && value > 0) {
-    return '< 0.0001';
-  }
-  if (value > -0.01 && value < 0) {
-    return '< -0.01';
-  }
-  if (value > -0.001 && value < 0) {
-    return '< -0.001';
+  if (value <= 0.000001) {
+    return '< 0.000001';
   }
   const lstValueFormat = value?.toString().split('.');
   if (lstValueFormat.length > 1) {
