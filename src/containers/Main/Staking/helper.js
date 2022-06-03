@@ -208,8 +208,8 @@ export const shortValue = (value, decimal) => {
   if (!value || value === 0) {
     return '0.0';
   }
-  if (value <= 0.000001) {
-    return '< 0.000001';
+  if (value <= 0.00001) {
+    return '<0.00001';
   }
   const lstValueFormat = value?.toString().split('.');
   if (lstValueFormat.length > 1) {

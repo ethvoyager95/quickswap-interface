@@ -319,7 +319,6 @@ function DialogStake({
   const [beforeStake, setBeforeStaking] = useState(0);
   const [afterStake, setAfterStake] = useState(0);
   const [checked, setChecked] = useState(false);
-
   const handleChangeValueStakeNft = useCallback(
     event => {
       if (event.isTrusted) {
@@ -399,17 +398,14 @@ function DialogStake({
         setMessErr('');
         setDisabledBtn(false);
       }
-      if (Number(val) === 0) {
-        setMessErr('');
+      if (val === '0') {
+        setMessErr('Invalid amount');
         setDisabledBtn(true);
       }
     } else {
       const listIds = _.map(listStake, 'token_id');
       if (val && !_.includes(listIds, val)) {
         setMessErr('Invalid tokenID');
-        setDisabledBtn(true);
-      } else if (itemStaked > 0 && NFT_BEGIN_STAKED > MAX_STAKE_NFT) {
-        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
         setDisabledBtn(true);
       } else if (val) {
         setMessErr('');
