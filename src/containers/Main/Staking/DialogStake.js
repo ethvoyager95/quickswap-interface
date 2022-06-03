@@ -56,6 +56,28 @@ const useStyles = makeStyles({
     borderRadius: '5px'
   }
 });
+const SWrapper = styled.div`
+  overflow-y: auto;
+  /* width */
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 3px;
+    background-color: var(--color-blue);
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #539ef9;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+`;
 const SMain = styled.div`
   padding: 0 20px;
 `;
@@ -446,102 +468,104 @@ function DialogStake({
             }
           }}
         >
-          <SMain>
-            <SIcon>
-              <SIconClose src={IconClose} onClick={close} />
-            </SIcon>
-            <STitle>Stake NFT</STitle>
-            <SRowText>
-              {checked ? (
-                <STitleInput>
-                  Please input total number NFTs you want to stake
-                </STitleInput>
-              ) : (
-                <STitleInput>Please input your NFT ID</STitleInput>
-              )}
-              <STack>
-                <Switch checked={checked} onChange={onChangeSwitch} />
-                Stack
-              </STack>
-            </SRowText>
+          <SWrapper>
+            <SMain>
+              <SIcon>
+                <SIconClose src={IconClose} onClick={close} />
+              </SIcon>
+              <STitle>Stake NFT</STitle>
+              <SRowText>
+                {checked ? (
+                  <STitleInput>
+                    Please input total number NFTs you want to stake
+                  </STitleInput>
+                ) : (
+                  <STitleInput>Please input your NFT ID</STitleInput>
+                )}
+                <STack>
+                  <Switch checked={checked} onChange={onChangeSwitch} />
+                  Stack
+                </STack>
+              </SRowText>
 
-            <SInput>
-              <input
-                type="number"
-                value={val}
-                inputMode="decimal"
-                // pattern="^[0-9]*[.,]?[0-9]*$"
-                min={0}
-                minLength={1}
-                maxLength={79}
-                placeholder="Enter a number"
-                onChange={event => handleChangeValueStakeNft(event)}
-                onKeyPress={event => {
-                  if (_.includes(LIST_BLOCK_VALUE, event.which)) {
-                    event.preventDefault();
-                  }
-                }}
-              />
-            </SInput>
-            {messErr && <SError>{messErr}</SError>}
-          </SMain>
-          <SMainColor>
-            <SBox>
-              <Row>
-                <Col xs={{ span: 8 }} lg={{ span: 10 }}>
-                  <SColBox>
-                    <SRowBoxText>Staked NFT</SRowBoxText>
-                  </SColBox>
-                  <SValueBox>
-                    {currentNFTAmount}/{totalSelect}
-                  </SValueBox>
-                </Col>
-                <Col xs={{ span: 0 }} lg={{ span: 2 }}>
-                  {}
-                </Col>
+              <SInput>
+                <input
+                  type="number"
+                  value={val}
+                  inputMode="decimal"
+                  // pattern="^[0-9]*[.,]?[0-9]*$"
+                  min={0}
+                  minLength={1}
+                  maxLength={79}
+                  placeholder="Enter a number"
+                  onChange={event => handleChangeValueStakeNft(event)}
+                  onKeyPress={event => {
+                    if (_.includes(LIST_BLOCK_VALUE, event.which)) {
+                      event.preventDefault();
+                    }
+                  }}
+                />
+              </SInput>
+              {messErr && <SError>{messErr}</SError>}
+            </SMain>
+            <SMainColor>
+              <SBox>
+                <Row>
+                  <Col xs={{ span: 8 }} lg={{ span: 10 }}>
+                    <SColBox>
+                      <SRowBoxText>Staked NFT</SRowBoxText>
+                    </SColBox>
+                    <SValueBox>
+                      {currentNFTAmount}/{totalSelect}
+                    </SValueBox>
+                  </Col>
+                  <Col xs={{ span: 0 }} lg={{ span: 2 }}>
+                    {}
+                  </Col>
 
-                <Col xs={{ span: 16 }} lg={{ span: 10 }}>
-                  <SRowBox>
-                    <SRowBoxTextApr>Boost APR</SRowBoxTextApr>
-                  </SRowBox>
-                  <SUl>
+                  <Col xs={{ span: 16 }} lg={{ span: 10 }}>
                     <SRowBox>
-                      <STextBox>
-                        <SCircle />
-                        Before staking
-                      </STextBox>
-                      <SValueBox>{beforeStake}%</SValueBox>
+                      <SRowBoxTextApr>Boost APR</SRowBoxTextApr>
                     </SRowBox>
+                    <SUl>
+                      <SRowBox>
+                        <STextBox>
+                          <SCircle />
+                          Before staking
+                        </STextBox>
+                        <SValueBox>{beforeStake}%</SValueBox>
+                      </SRowBox>
 
-                    <SRowBox>
-                      <STextBox>
-                        <SCircle />
-                        After staking
-                      </STextBox>
-                      <SValueBox>{afterStake}%</SValueBox>
-                    </SRowBox>
-                  </SUl>
-                </Col>
-              </Row>
-            </SBox>
-            <SBox>
-              <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                  <SBtn>
-                    <SBtnCancel onClick={close}>Cancel</SBtnCancel>
-                    <SBtnStake
-                      disabled={disabledBtn}
-                      onClick={event =>
-                        handleStakeDialog(val, event, checked, messErr)
-                      }
-                    >
-                      Stake
-                    </SBtnStake>
-                  </SBtn>
-                </Col>
-              </Row>
-            </SBox>
-          </SMainColor>
+                      <SRowBox>
+                        <STextBox>
+                          <SCircle />
+                          After staking
+                        </STextBox>
+                        <SValueBox>{afterStake}%</SValueBox>
+                      </SRowBox>
+                    </SUl>
+                  </Col>
+                </Row>
+              </SBox>
+              <SBox>
+                <Row>
+                  <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                    <SBtn>
+                      <SBtnCancel onClick={close}>Cancel</SBtnCancel>
+                      <SBtnStake
+                        disabled={disabledBtn}
+                        onClick={event =>
+                          handleStakeDialog(val, event, checked, messErr)
+                        }
+                      >
+                        Stake
+                      </SBtnStake>
+                    </SBtn>
+                  </Col>
+                </Row>
+              </SBox>
+            </SMainColor>
+          </SWrapper>
         </Dialog>
       </React.Fragment>
     </>
