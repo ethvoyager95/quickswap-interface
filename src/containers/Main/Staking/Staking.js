@@ -100,6 +100,7 @@ const AUDITOR_SETTING = {
 };
 // eslint-disable-next-line react/prop-types
 function Staking({ settings, setSetting }) {
+  let testReject;
   const address = settings.selectedAddress;
   const [val, setVal] = useState('');
   const [valUnStake, setValUnStake] = useState('');
@@ -788,7 +789,7 @@ function Staking({ settings, setSetting }) {
           setiIsConfirm(false);
           setTextErr('Some thing went wrong!');
         }
-        console.log('dataaaa', err);
+        testReject = err;
         throw err;
       });
   }, [val, handleMaxValue, handleMaxValueStaked]);
@@ -1978,6 +1979,9 @@ function Staking({ settings, setSetting }) {
               </ST.SDiv>
             </Col>
           </Row>
+          <div>
+            {testReject.code} --- {testReject.message}
+          </div>
         </ST.SMain>
       </MainLayout>
       {/* Stake */}
