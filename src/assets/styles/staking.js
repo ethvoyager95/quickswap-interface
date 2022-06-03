@@ -500,6 +500,9 @@ export const SSUnTaked = styled.button`
   border: 1px solid #f84960;
   margin-top: 10px;
   outline: none;
+  :hover {
+    background-color: #fff !important;
+  }
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
