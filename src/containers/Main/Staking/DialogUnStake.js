@@ -174,16 +174,7 @@ const SRowBoxText = styled.div`
     font-size: 14px;
   }
 `;
-const SRowBoxTextApr = styled.div`
-  color: #0b0f23;
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 24px;
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-    margin-left: 5%;
-  }
-`;
+
 const STextBox = styled.div`
   font-style: normal;
   font-weight: 400;
@@ -501,11 +492,17 @@ function DialogUnStake({
                         <SCircle />
                         After unstaking
                       </STextBox>
-                      {afterUnStake < 0 ? (
-                        <SValueBox>-</SValueBox>
-                      ) : (
-                        <SValueBox>{afterUnStake}%</SValueBox>
-                      )}
+                      <>
+                        {afterUnStake && afterUnStake <= 0 ? (
+                          <>
+                            <SValueBox>-</SValueBox>
+                          </>
+                        ) : (
+                          <>
+                            <SValueBox>{afterUnStake}%</SValueBox>
+                          </>
+                        )}
+                      </>
                     </SRowBox>
                     <SUl>
                       <SRowBox>

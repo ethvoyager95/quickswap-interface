@@ -409,20 +409,35 @@ function DialogStake({
         setMessErr('');
         setDisabledBtn(true);
       }
-
+      // nhap > 20
       if (itemStaked === 0 && NUMBER_VAL > MAX_STAKE_NFT) {
         setMessErr(`Invalid number. You can not stake more than 20 NFTs`);
         setDisabledBtn(true);
         return;
       }
-      if (val > LIST_STAKE) {
-        setMessErr(`Invalid number. You can stake only ${LIST_STAKE} NFTs`);
+      if (NUMBER_VAL > LIST_STAKE && NUMBER_VAL + CURRENT_STAKED > MAX_STAKE) {
+        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
         setDisabledBtn(true);
         return;
       }
-
-      if (itemStaked > 0 && NFT_BEGIN_STAKED > MAX_STAKE_NFT) {
+      if (NUMBER_VAL && CURRENT_STAKED === MAX_STAKE_NFT) {
         setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
+        setDisabledBtn(true);
+        return;
+      }
+      // nhap input + so luong da staked > max
+      if (
+        itemStaked > 0 &&
+        NFT_BEGIN_STAKED > MAX_STAKE_NFT &&
+        CURRENT_STAKED < MAX_STAKE_NFT
+      ) {
+        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
+        setDisabledBtn(true);
+        return;
+      }
+      // input > so nft hien co
+      if (NUMBER_VAL > LIST_STAKE) {
+        setMessErr(`Invalid number. You can stake only ${LIST_STAKE} NFTs`);
         setDisabledBtn(true);
         return;
       }

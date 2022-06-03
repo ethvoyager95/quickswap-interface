@@ -97,7 +97,7 @@ input::-webkit-inner-spin-button {
   border: 1px solid #107def;
   border-radius: 50%;
   padding: 15px;
-  z-index: 99999;
+  z-index: 99;
 }
 .slick-arrow.slick-prev {
   background-image: url('../img/arrow-prev.svg');
@@ -105,5 +105,5 @@ input::-webkit-inner-spin-button {
   border: 1px solid #107def;
   border-radius: 50%;
   padding: 15px;
-  z-index: 99999;
+  z-index: 99;
 }

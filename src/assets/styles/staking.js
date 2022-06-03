@@ -517,6 +517,9 @@ export const SSUnTaked = styled.button`
       background-color: #d3d3d3 !important;
     }
   }
+  :hover {
+    background-color: #fff !important;
+  }
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0;
