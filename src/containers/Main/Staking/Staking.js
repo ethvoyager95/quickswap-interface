@@ -98,6 +98,8 @@ const AUDITOR_SETTING = {
   nextArrow: <SampleNextArrow />,
   prevArrow: <SamplePrevArrow />
 };
+const abortController = new AbortController();
+
 // eslint-disable-next-line react/prop-types
 function Staking({ settings, setSetting }) {
   const address = settings.selectedAddress;
@@ -176,22 +178,6 @@ function Staking({ settings, setSetting }) {
     let objUser = {};
     if (address) {
       await methods
-        .call(farmingContract.methods.pendingBaseReward, [0, address])
-        .then(res => {
-          objClaim.accBaseReward = res;
-        })
-        .catch(err => {
-          throw err;
-        });
-      await methods
-        .call(farmingContract.methods.pendingBoostReward, [0, address])
-        .then(res => {
-          objClaim.accBoostReward = res;
-        })
-        .catch(err => {
-          throw err;
-        });
-      await methods
         .call(lpContract.methods.decimals, [])
         .then(res => {
           decimalLp = res;
@@ -203,6 +189,22 @@ function Staking({ settings, setSetting }) {
         .call(strkContract.methods.decimals, [])
         .then(res => {
           decimalStrkClaim = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
+        .call(farmingContract.methods.pendingBaseReward, [0, address])
+        .then(res => {
+          objClaim.accBaseReward = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
+        .call(farmingContract.methods.pendingBoostReward, [0, address])
+        .then(res => {
+          objClaim.accBoostReward = res;
         })
         .catch(err => {
           throw err;
@@ -316,7 +318,41 @@ function Staking({ settings, setSetting }) {
       }
     }
   }, [address, txhash, window.ethereum]);
-
+  // const getBaseBoostRealTime = async () => {
+  //   const objClaim = {
+  //     accBaseReward: '',
+  //     accBoostReward: ''
+  //   };
+  //   await methods
+  //     .call(farmingContract.methods.pendingBaseReward, [0, address])
+  //     .then(res => {
+  //       objClaim.accBaseReward = res;
+  //     })
+  //     .catch(err => {
+  //       throw err;
+  //     });
+  //   await methods
+  //     .call(farmingContract.methods.pendingBoostReward, [0, address])
+  //     .then(res => {
+  //       objClaim.accBoostReward = res;
+  //     })
+  //     .catch(err => {
+  //       throw err;
+  //     });
+  // };
+  // useEffect(() => {
+  //   let updateTimerBaseBoost;
+  //   // eslint-disable-next-line prefer-const
+  //   updateTimerBaseBoost = setInterval(() => {
+  //     getBaseBoostRealTime();
+  //   }, 2000);
+  //   return function cleanup() {
+  //     abortController.abort();
+  //     if (updateTimerBaseBoost) {
+  //       clearInterval(updateTimerBaseBoost);
+  //     }
+  //   };
+  // });
   // get data
   useMemo(async () => {
     if (!address) {
