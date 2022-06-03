@@ -421,7 +421,7 @@ function Staking({ settings, setSetting }) {
               const yourBoostAPRPer = PERCENT_APR * lengthArr;
               setYourBoostAPR(yourBoostAPRPer);
             }
-            const newArraySort = _.sortBy(newArray, 'id');
+            const newArraySort = _.sortBy(newArray, 'synced_at');
             setDataNFTUnState(newArraySort);
             setIsLoading(false);
           } else {
@@ -580,7 +580,7 @@ function Staking({ settings, setSetting }) {
   useMemo(() => {
     if (Number(valueNFTUnStake) > +userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again',
         show: true
       });
     }
@@ -673,13 +673,13 @@ function Staking({ settings, setSetting }) {
     }
     if (number > +userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again',
         show: true
       });
     }
     if (number && !+userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again',
         show: true
       });
     }
@@ -923,7 +923,7 @@ function Staking({ settings, setSetting }) {
   const handleUnStake = async () => {
     if (valUnStake > +userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again',
         show: true
       });
       return;
@@ -1556,11 +1556,11 @@ function Staking({ settings, setSetting }) {
                                   </>
                                 ) : (
                                   <>
-                                    {!isShowCountDownUnStake && (
+                                    {!isShowCountDownUnStake && isAprroveVstrk && (
                                       <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                                         <ST.SBtnUnStakeStartNotBorder>
                                           <ST.SSUnTake disabled>
-                                            UnStake
+                                            UnStake1
                                           </ST.SSUnTake>
                                           <Tooltip
                                             placement="right"
@@ -1571,7 +1571,6 @@ function Staking({ settings, setSetting }) {
                                         </ST.SBtnUnStakeStartNotBorder>
                                       </Col>
                                     )}
-
                                     <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                                       {expiryTimeUnstakeLP &&
                                       isShowCountDownUnStake &&

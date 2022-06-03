@@ -110,6 +110,29 @@ export const SClaim = styled.button`
     }
   }
 `;
+export const SSUnTaked = styled.button`
+  cursor: pointer;
+  color: #f84960;
+  background: #fff;
+  border-radius: 5px;
+  padding: 8px 20px;
+  min-width: 150px;
+  text-align: center;
+  border: 1px solid #f84960;
+  margin-right: 15px;
+  margin-top: 10px;
+  outline: none;
+  :disabled {
+    color: #fff !important;
+    cursor: not-allowed;
+  }
+  :hover {
+    background: #fff !important;
+  }
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
+`;
 const SBoxAproving = styled.div`
   width: 100%;
   justify-content: center;
@@ -342,7 +365,7 @@ function CountDownClaim({
           )}
           {type === UNSTAKENFT && (
             <SUntake>
-              <SClaim onClick={handleUnStakeNFT}>UnStake</SClaim>
+              <SSUnTaked onClick={handleUnStakeNFT}>UnStake</SSUnTaked>
               <Tooltip
                 placement="right"
                 title="Countdown time will be reset if you unstake a part without claiming the rewards"

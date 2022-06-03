@@ -1,5 +1,5 @@
 import { Dialog, makeStyles } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes, { func } from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
@@ -318,18 +318,21 @@ function DialogUnStake({
   const [checked, setChecked] = useState(false);
   const [disabledBtn, setDisabledBtn] = useState(false);
 
-  const handleChangeValueUnStakeNft = event => {
-    if (event.isTrusted) {
-      // eslint-disable-next-line no-useless-escape
-      const re = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-      if (!re.test(event.target.value)) {
-        const valueFormat = event.target.value;
-        setValue(valueFormat);
-      } else {
-        setValue('');
+  const handleChangeValueUnStakeNft = useCallback(
+    event => {
+      if (event.isTrusted) {
+        // eslint-disable-next-line no-useless-escape
+        const re = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+        if (!re.test(event.target.value)) {
+          const valueFormat = event.target.value;
+          setValue(valueFormat);
+        } else {
+          setValue('');
+        }
       }
-    }
-  };
+    },
+    [val]
+  );
   const onChangeSwitch = check => {
     setChecked(check);
     setValue('');
@@ -362,30 +365,39 @@ function DialogUnStake({
   useEffect(() => {
     if (val === '') {
       setMessErr('');
-      setDisabledBtn(false);
+      setDisabledBtn(true);
     }
     if (checked) {
       const CURRENT_STAKED = list.length;
       const NUMBER_VAL = Number(val);
-      if (NUMBER_VAL)
-        if (NUMBER_VAL > CURRENT_STAKED) {
-          setMessErr(
-            `Invalid number. You can only unstake upto ${CURRENT_STAKED} NFTs`
-          );
-          setDisabledBtn(true);
-        } else if (NUMBER_VAL > MAX_STAKE_NFT) {
-          setMessErr(`Invalid number. You can not unstake more than 20 NFTs`);
-          setDisabledBtn(true);
-        } else {
-          setMessErr('');
-          setDisabledBtn(false);
-        }
+      if (val === '') {
+        setMessErr('');
+        setDisabledBtn(true);
+      }
+      if (NUMBER_VAL > CURRENT_STAKED) {
+        setMessErr(
+          `Invalid number. You can only unstake upto ${CURRENT_STAKED} NFTs`
+        );
+        setDisabledBtn(true);
+      } else if (NUMBER_VAL > MAX_STAKE_NFT) {
+        setMessErr(`Invalid number. You can not unstake more than 20 NFTs`);
+        setDisabledBtn(true);
+      } else {
+        setMessErr('');
+        setDisabledBtn(false);
+      }
+      if (val === '0') {
+        setMessErr('Invalid amount');
+        setDisabledBtn(true);
+      }
     } else {
       const listIds = _.map(list, 'token_id');
       if (val && !_.includes(listIds, val)) {
         setMessErr('Invalid tokenID');
-      } else {
+        setDisabledBtn(true);
+      } else if (val) {
         setMessErr('');
+        setDisabledBtn(false);
       }
     }
   }, [val, isUnStakeNFT, list, checked]);
