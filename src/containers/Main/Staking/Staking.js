@@ -2082,6 +2082,7 @@ function Staking({ settings, setSetting }) {
         valueNFTUnStake={valueNFTUnStake}
         currentNFT={countNFT}
         handleUnStakeDialog={handleUnStakeDialog}
+        address={address}
       />
       {/* err */}
       <DialogErr isShow={isShowCancel} close={handleCloseErr} text={textErr} />
