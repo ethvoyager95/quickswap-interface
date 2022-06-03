@@ -229,7 +229,7 @@ function Staking({ settings, setSetting }) {
           const totalAmountBigNumber = totalAmount.toNumber().toString();
           if (balanceBigNumber.isZero()) {
             setMessErr({
-              mess: 'No tokens to stake: Get STRK-ETH LP',
+              mess: 'No token to stake: Get STRK-ETH LPs',
               show: false,
               noLP: true
             });
@@ -1975,7 +1975,7 @@ function Staking({ settings, setSetting }) {
                 <Row>
                   <ST.SRowFlex>
                     <ST.SFlex>
-                      <ST.SText>NFT staked</ST.SText>
+                      <ST.SText>NFT Staked</ST.SText>
                     </ST.SFlex>
                     {yourBoostAPR &&
                     yourBoostAPR !== 0 &&
@@ -2018,7 +2018,7 @@ function Staking({ settings, setSetting }) {
                           disabled={dataNFTUnState.length === 0}
                           onClick={handleUnStakeNFT}
                         >
-                          UnStake
+                          Unstake
                         </ST.SSUnTaked>
                       </>
                     )}
