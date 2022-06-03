@@ -1615,21 +1615,6 @@ function Staking({ settings, setSetting }) {
                                   </>
                                 ) : (
                                   <>
-                                    {/* {!isShowCountDownUnStake && isAprroveVstrk && (
-                                      <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                                        <ST.SBtnUnStakeStartNotBorder>
-                                          <ST.SSUnTake disabled>
-                                            UnStake
-                                          </ST.SSUnTake>
-                                          <Tooltip
-                                            placement="right"
-                                            title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                          >
-                                            <ST.SQuestion src={IconQuestion} />
-                                          </Tooltip>
-                                        </ST.SBtnUnStakeStartNotBorder>
-                                      </Col>
-                                    )} */}
                                     <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                                       {expiryTimeUnstakeLP &&
                                       isShowCountDownUnStake &&
@@ -1655,7 +1640,7 @@ function Staking({ settings, setSetting }) {
                                         <>
                                           <ST.SBtnUnStakeStartNotBorder>
                                             <ST.SSUnTake disabled>
-                                              UnStake
+                                              Unstake
                                             </ST.SSUnTake>
                                             <Tooltip
                                               placement="right"
@@ -1998,7 +1983,7 @@ function Staking({ settings, setSetting }) {
                           disabled={dataNFTUnState.length === 0}
                           onClick={handleUnStakeNFT}
                         >
-                          UnStake
+                          Unstake
                         </ST.SSUnTaked>
                       </>
                     )}
