@@ -31,10 +31,12 @@ iframe {
   .slick-prev {
     left: 0px;
     z-index: 999;
+    background-image: url('../img/arrow-prev-mobile.svg');
   }
   .slick-next {
     right: 0px;
     z-index: 999;
+    background-image: url('../img/arrow-next-mobile.svg');
   }
 }
 .ant-tooltip-inner {
