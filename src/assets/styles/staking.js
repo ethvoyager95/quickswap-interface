@@ -499,9 +499,6 @@ export const SSUnTaked = styled.button`
     color: #fff !important;
     cursor: not-allowed;
   }
-  :hover {
-    background: #fff !important;
-  }
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0;

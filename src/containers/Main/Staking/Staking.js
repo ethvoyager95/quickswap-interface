@@ -788,7 +788,7 @@ function Staking({ settings, setSetting }) {
           setiIsConfirm(false);
           setTextErr('Some thing went wrong!');
         }
-        throw err;
+        setTextErr('Decline transaction');
       });
   }, [val, handleMaxValue, handleMaxValueStaked]);
   const handleApproveVstrk = useCallback(async () => {
@@ -815,7 +815,7 @@ function Staking({ settings, setSetting }) {
           setiIsConfirm(false);
           setTextErr('Some thing went wrong!');
         }
-        throw err;
+        setTextErr('Decline transaction');
       });
   }, [val, handleMaxValue, handleMaxValueStaked]);
 
