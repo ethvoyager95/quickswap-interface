@@ -186,6 +186,9 @@ export const SError = styled.div`
   font-weight: 400;
   font-size: 14px;
   line-height: 23px;
+  @media only screen and (max-width: 768px) {
+    margin-left: 10px;
+  }
 `;
 export const SErrorUn = styled.div`
   color: #e80e0e;
@@ -194,6 +197,9 @@ export const SErrorUn = styled.div`
   font-size: 14px;
   line-height: 23px;
   margin-left: 10%;
+  @media only screen and (max-width: 768px) {
+    margin-left: 10px;
+  }
 `;
 export const SHrefErr = styled.div`
   color: #e80e0e;
@@ -432,6 +438,7 @@ export const SBtnUnstake = styled.button`
   }
   @media only screen and (max-width: 768px) {
     width: 100%;
+    margin-top: 0;
   }
   :disabled {
     color: #fff !important;
@@ -555,6 +562,7 @@ export const SBtnUnStakeStartNotBorder = styled.div`
   @media only screen and (max-width: 768px) {
     justify-content: center;
     padding-bottom: 10px;
+    margin-top: 14px;
   }
 `;
 export const SCountDown = styled.div`
