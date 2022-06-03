@@ -489,7 +489,7 @@ function DialogUnStake({
                         <SCircle />
                         After unstaking
                       </STextBox>
-                      {afterUnStake < 0 ? (
+                      {afterUnStake && afterUnStake <= 0 ? (
                         <SValueBox>-</SValueBox>
                       ) : (
                         <SValueBox>{afterUnStake}%</SValueBox>
