@@ -831,8 +831,10 @@ function Staking({ settings, setSetting }) {
       )
       .then(res => {
         if (res) {
-          setiIsConfirm(false);
-          setTxhash(res.transactionHash);
+          if (res) {
+            setiIsConfirm(false);
+            setTxhash(res.transactionHash);
+          }
         }
       })
       .catch(err => {
@@ -847,7 +849,8 @@ function Staking({ settings, setSetting }) {
         }
         throw err;
       });
-  }, [address, val, handleMaxValue, handleMaxValueStaked]);
+  }, [address]);
+
   const handleApproveVstrk = useCallback(async () => {
     setiIsConfirm(true);
     await methods
@@ -858,8 +861,10 @@ function Staking({ settings, setSetting }) {
       )
       .then(res => {
         if (res) {
-          setiIsConfirm(false);
-          setTxhash(res.transactionHash);
+          if (res) {
+            setiIsConfirm(false);
+            setTxhash(res.transactionHash);
+          }
         }
       })
       .catch(err => {
@@ -874,7 +879,7 @@ function Staking({ settings, setSetting }) {
         }
         throw err;
       });
-  }, [address, val, handleMaxValue, handleMaxValueStaked]);
+  }, [address]);
 
   const handleApproveNFT = useCallback(async () => {
     setiIsConfirm(true);
