@@ -15,7 +15,7 @@ import {
   divDecimals,
   getBaseApr,
   getLiquidity,
-  renderValueFixed,
+  renderValueFixedDashboard,
   FAKE_ETH,
   FAKE_STRK,
   FAKE_TOTAL_SUPPLY
@@ -158,7 +158,9 @@ function DashboardStaking({ amount, txh }) {
               FAKE_ETH,
               totalSupply
             );
-            const total = renderValueFixed(totalLiquidityBigNumber.toNumber());
+            const total = renderValueFixedDashboard(
+              totalLiquidityBigNumber.toNumber()
+            );
             setTotalLiqudity(total);
           }
         })
@@ -180,9 +182,10 @@ function DashboardStaking({ amount, txh }) {
           if (res) {
             const result = res.data.data;
             const totalDepositString = divDecimals(result.totalDeposit, 18);
-            setAmountDeposit(renderValueFixed(totalDepositString.toString()));
-            const totalStake = result?.totalBoost;
+            const totalDepositNumber = totalDepositString.toNumber();
             totalLiquid = totalDepositString?.toNumber();
+            setAmountDeposit(renderValueFixedDashboard(totalDepositNumber));
+            const totalStake = result?.totalBoost;
             setAmountStaked(totalStake);
           }
         })
@@ -205,7 +208,9 @@ function DashboardStaking({ amount, txh }) {
       .then(res => {
         const result = divDecimals(res, decimalStrkClaim).toNumber();
         const baseAprCaculator = getBaseApr(totalLiquid, result);
-        const baseAprPer = renderValueFixed(baseAprCaculator.toNumber());
+        const baseAprPer = renderValueFixedDashboard(
+          baseAprCaculator.toNumber()
+        );
         setBaseAPR(baseAprPer);
       })
       .catch(err => {

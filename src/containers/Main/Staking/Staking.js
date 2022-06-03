@@ -222,7 +222,6 @@ function Staking({ settings, setSetting }) {
             objClaim.accBoostReward,
             decimalStrkClaim
           );
-          const amountString = amountNumber?.toNumber();
           const accBaseRewardString = accBaseRewardBigNumber.toNumber();
           const accBoostRewardString = accBoostRewardBigNumber.toNumber();
           const balanceBigFormat = balanceBigNumber.toNumber().toString();
@@ -273,21 +272,12 @@ function Staking({ settings, setSetting }) {
           }
           objUser = {
             ...res,
-            amount:
-              amountString !== 0 && amountString < 0.001
-                ? '<0.001'
-                : renderValueFixed(totalAmountBigNumber).toString(),
+            amount: renderValueFixed(totalAmountBigNumber),
             amountNumber: totalAmountNumber,
             available: renderValueFixed(balanceBigFormat).toString(),
             availableNumber: balanceBigNumber.toNumber(),
-            accBaseReward:
-              accBaseRewardString !== 0 && accBaseRewardString < 0.001
-                ? '<0.001'
-                : renderValueFixed(accBaseRewardString),
-            accBoostReward:
-              accBoostRewardString !== 0 && accBoostRewardString < 0.001
-                ? '<0.001'
-                : renderValueFixed(accBoostRewardString),
+            accBaseReward: renderValueFixed(accBaseRewardString),
+            accBoostReward: renderValueFixed(accBoostRewardString),
             depositedDate: timeBaseUnstake,
             boostedDate: timeBootsUnstake
           };
@@ -358,16 +348,11 @@ function Staking({ settings, setSetting }) {
       );
       const accBaseRewardString = accBaseRewardBigNumber.toNumber();
       const accBoostRewardString = accBoostRewardBigNumber.toNumber();
+
       objUser = {
         ...userInfo,
-        accBaseReward:
-          accBaseRewardString !== 0 && accBaseRewardString < 0.001
-            ? '<0.001'
-            : renderValueFixed(accBaseRewardString),
-        accBoostReward:
-          accBoostRewardString !== 0 && accBoostRewardString < 0.001
-            ? '<0.001'
-            : renderValueFixed(accBoostRewardString)
+        accBaseReward: renderValueFixed(accBaseRewardString),
+        accBoostReward: renderValueFixed(accBoostRewardString)
       };
       setUserInfo({ ...objUser });
     }
