@@ -66,29 +66,26 @@ import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
 import IconDuck from '../../../assets/img/duck.svg';
-// import IconVstrkSmall from '../../../assets/img/flash_vstrk.svg';
-// import IconNotSelect from '../../../assets/img/not_select.svg';
-// import IconNotConnect from '../../../assets/img/not_connect_data.svg';
 
 // eslint-disable-next-line import/order
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
-  const { onClick } = props;
+  const { className, style, onClick } = props;
   return (
-    <ST.SNexSlider
-      src={IConNext}
-      className="slick-arrow slick-next"
+    <div
+      className={className}
+      style={{ ...style, background: IConNext, display: 'block' }}
       onClick={onClick}
     />
   );
 }
 function SamplePrevArrow(props) {
   // eslint-disable-next-line react/prop-types
-  const { onClick } = props;
+  const { className, style, onClick } = props;
   return (
-    <ST.SPrevSlider
-      src={IConPrev}
-      className="slick-arrow slick-prev"
+    <div
+      className={className}
+      style={{ ...style, background: IConPrev, display: 'block' }}
       onClick={onClick}
     />
   );
@@ -318,41 +315,64 @@ function Staking({ settings, setSetting }) {
       }
     }
   }, [address, txhash, window.ethereum]);
-  // const getBaseBoostRealTime = async () => {
-  //   const objClaim = {
-  //     accBaseReward: '',
-  //     accBoostReward: ''
-  //   };
-  //   await methods
-  //     .call(farmingContract.methods.pendingBaseReward, [0, address])
-  //     .then(res => {
-  //       objClaim.accBaseReward = res;
-  //     })
-  //     .catch(err => {
-  //       throw err;
-  //     });
-  //   await methods
-  //     .call(farmingContract.methods.pendingBoostReward, [0, address])
-  //     .then(res => {
-  //       objClaim.accBoostReward = res;
-  //     })
-  //     .catch(err => {
-  //       throw err;
-  //     });
-  // };
-  // useEffect(() => {
-  //   let updateTimerBaseBoost;
-  //   // eslint-disable-next-line prefer-const
-  //   updateTimerBaseBoost = setInterval(() => {
-  //     getBaseBoostRealTime();
-  //   }, 2000);
-  //   return function cleanup() {
-  //     abortController.abort();
-  //     if (updateTimerBaseBoost) {
-  //       clearInterval(updateTimerBaseBoost);
-  //     }
-  //   };
-  // });
+  // get base boost realtime
+  const getBaseBoostRealTime = async () => {
+    if (address) {
+      let objUser = {};
+      let decimalStrkClaim = null;
+      const objClaim = {
+        accBaseReward: '',
+        accBoostReward: ''
+      };
+      await methods
+        .call(strkContract.methods.decimals, [])
+        .then(res => {
+          decimalStrkClaim = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
+        .call(farmingContract.methods.pendingBaseReward, [0, address])
+        .then(res => {
+          objClaim.accBaseReward = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
+        .call(farmingContract.methods.pendingBoostReward, [0, address])
+        .then(res => {
+          objClaim.accBoostReward = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      const accBaseRewardBigNumber = divDecimals(
+        objClaim.accBaseReward,
+        decimalStrkClaim
+      );
+      const accBoostRewardBigNumber = divDecimals(
+        objClaim.accBoostReward,
+        decimalStrkClaim
+      );
+      const accBaseRewardString = accBaseRewardBigNumber.toNumber();
+      const accBoostRewardString = accBoostRewardBigNumber.toNumber();
+      objUser = {
+        ...userInfo,
+        accBaseReward:
+          accBaseRewardString !== 0 && accBaseRewardString < 0.001
+            ? '<0.001'
+            : renderValueFixed(accBaseRewardString),
+        accBoostReward:
+          accBoostRewardString !== 0 && accBoostRewardString < 0.001
+            ? '<0.001'
+            : renderValueFixed(accBoostRewardString)
+      };
+      setUserInfo({ ...objUser });
+    }
+  };
+
   // get data
   useMemo(async () => {
     if (!address) {
@@ -457,8 +477,8 @@ function Staking({ settings, setSetting }) {
               const yourBoostAPRPer = PERCENT_APR * lengthArr;
               setYourBoostAPR(yourBoostAPRPer);
             }
-            const newArraySort = _.sortBy(newArray, 'synced_at');
-            setDataNFTUnState(newArraySort);
+            // const newArraySort = _.sortBy(newArray, 'id');
+            setDataNFTUnState(newArray);
             setIsLoading(false);
           } else {
             setDataNFTUnState([]);
@@ -1236,6 +1256,20 @@ function Staking({ settings, setSetting }) {
       });
     }
   }, [window.ethereum, address]);
+  // realtime base boost reward
+  useEffect(() => {
+    let updateTimerBaseBoost;
+    // eslint-disable-next-line prefer-const
+    updateTimerBaseBoost = setInterval(() => {
+      getBaseBoostRealTime();
+    }, 5000);
+    return function cleanup() {
+      abortController.abort();
+      if (updateTimerBaseBoost) {
+        clearInterval(updateTimerBaseBoost);
+      }
+    };
+  });
   return (
     <>
       <MainLayout>

@@ -981,16 +981,6 @@ export const STitleSlider = styled.div`
 export const SDescriptionSlider = styled.div`
   color: #ff897e;
 `;
-export const SNexSlider = styled.img`
-  color: #fff !important;
-  cursor: pointer;
-  border-radius: 50%;
-`;
-export const SPrevSlider = styled.img`
-  cursor: pointer;
-  color: #fff !important;
-  border-radius: 50%;
-`;
 export const SSactive = styled.img`
   position: absolute;
   width: 25px !important;
