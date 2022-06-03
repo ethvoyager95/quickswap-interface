@@ -306,7 +306,8 @@ function DialogUnStake({
   list,
   valueNFTUnStake,
   currentNFT,
-  handleUnStakeDialog
+  handleUnStakeDialog,
+  address
 }) {
   const [val, setValue] = useState(valueNFTUnStake);
   const [messErr, setMessErr] = useState();
@@ -348,7 +349,8 @@ function DialogUnStake({
         setAfterUnStake(ITEM_STAKE * PERCENT);
       } else {
         setBeforeUnStake(PERCENT * ITEM_STAKE);
-        setAfterUnStake(PERCENT * ITEM_STAKE - val * PERCENT);
+        const value_after_unstake = PERCENT * ITEM_STAKE - val * PERCENT;
+        setAfterUnStake(value_after_unstake);
       }
     } else {
       // eslint-disable-next-line no-lonely-if
@@ -360,7 +362,7 @@ function DialogUnStake({
         setAfterUnStake(PERCENT * ITEM_STAKE - PERCENT);
       }
     }
-  }, [itemStaked, list, isUnStakeNFT, checked, val]);
+  }, [itemStaked, list, isUnStakeNFT, checked, val, address]);
 
   useEffect(() => {
     if (val === '') {
@@ -400,11 +402,11 @@ function DialogUnStake({
         setDisabledBtn(false);
       }
     }
-  }, [val, isUnStakeNFT, list, checked]);
+  }, [val, isUnStakeNFT, list, checked, address]);
   useEffect(() => {
     setValue(valueNFTUnStake);
     setCurrentNFTAmount(currentNFT);
-  }, [valueNFTUnStake, isUnStakeNFT, currentNFT]);
+  }, [valueNFTUnStake, isUnStakeNFT, currentNFT, address]);
   const classes = useStyles();
   return (
     <>
@@ -487,7 +489,11 @@ function DialogUnStake({
                         <SCircle />
                         After unstaking
                       </STextBox>
-                      <SValueBox>{afterUnStake}%</SValueBox>
+                      {afterUnStake < 0 ? (
+                        <SValueBox>-</SValueBox>
+                      ) : (
+                        <SValueBox>{afterUnStake}%</SValueBox>
+                      )}
                     </SRowBox>
                   </SUl>
                 </Col>
@@ -523,7 +529,8 @@ DialogUnStake.propTypes = {
   list: PropTypes.array,
   valueNFTUnStake: PropTypes.string,
   currentNFT: PropTypes.number,
-  handleUnStakeDialog: PropTypes.func
+  handleUnStakeDialog: PropTypes.func,
+  address: PropTypes.string
 };
 
 DialogUnStake.defaultProps = {
@@ -533,7 +540,8 @@ DialogUnStake.defaultProps = {
   list: [],
   valueNFTUnStake: '',
   currentNFT: 0,
-  handleUnStakeDialog: func
+  handleUnStakeDialog: func,
+  address: ''
 };
 
 const mapStateToProps = ({ account }) => ({

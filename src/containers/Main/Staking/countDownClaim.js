@@ -366,12 +366,6 @@ function CountDownClaim({
           {type === UNSTAKENFT && (
             <SUntake>
               <SSUnTaked onClick={handleUnStakeNFT}>UnStake</SSUnTaked>
-              <Tooltip
-                placement="right"
-                title="Countdown time will be reset if you unstake a part without claiming the rewards"
-              >
-                <SQuestion src={IconQuestion} />
-              </Tooltip>
             </SUntake>
           )}
         </>
