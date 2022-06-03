@@ -170,6 +170,7 @@ const SRowBoxText = styled.div`
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
+  margin-top: 10px;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
   }
@@ -184,6 +185,7 @@ const STextBox = styled.div`
   align-items: center;
   letter-spacing: 0.1px;
   color: #0b0f23;
+  margin-left: 10px;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -487,24 +489,9 @@ function DialogUnStake({
                     {}
                   </Col>
                   <Col xs={{ span: 16 }} lg={{ span: 10 }}>
-                    <SRowBox>
-                      <STextBox>
-                        <SCircle />
-                        After unstaking
-                      </STextBox>
-                      <>
-                        {afterUnStake && afterUnStake <= 0 ? (
-                          <>
-                            <SValueBox>-</SValueBox>
-                          </>
-                        ) : (
-                          <>
-                            <SValueBox>{afterUnStake}%</SValueBox>
-                          </>
-                        )}
-                      </>
-                    </SRowBox>
                     <SUl>
+                      <SRowBoxText>Boost APR:</SRowBoxText>
+
                       <SRowBox>
                         <STextBox>
                           <SCircle />
@@ -517,7 +504,15 @@ function DialogUnStake({
                           <SCircle />
                           After unstaking
                         </STextBox>
-                        <SValueBox>{afterUnStake}%</SValueBox>
+                        {afterUnStake && afterUnStake <= 0 ? (
+                          <>
+                            <SValueBox>-</SValueBox>
+                          </>
+                        ) : (
+                          <>
+                            <SValueBox>{afterUnStake}%</SValueBox>
+                          </>
+                        )}
                       </SRowBox>
                     </SUl>
                   </Col>
