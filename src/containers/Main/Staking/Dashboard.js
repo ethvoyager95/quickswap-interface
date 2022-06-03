@@ -125,7 +125,7 @@ const SIconFlash = styled.img`
 `;
 const abortController = new AbortController();
 
-function DashboardStaking({ amount }) {
+function DashboardStaking({ amount, txh }) {
   const [baseAPR, setBaseAPR] = useState(0);
   const [amountStaked, setAmountStaked] = useState(0);
   const [totalLiquidity, setTotalLiqudity] = useState(0);
@@ -218,17 +218,16 @@ function DashboardStaking({ amount }) {
     // eslint-disable-next-line prefer-const
     updateTimer = setInterval(() => {
       getRate();
-    }, 15000);
+      getDataDashBoard();
+    }, 5000);
     return function cleanup() {
       abortController.abort();
       if (updateTimer) {
         clearInterval(updateTimer);
       }
     };
-  }, [amount]);
-  useEffect(() => {
-    getDataDashBoard();
-  }, [amount]);
+  }, [amount, txh]);
+
   return (
     <>
       <React.Fragment>
@@ -277,11 +276,13 @@ function DashboardStaking({ amount }) {
   );
 }
 DashboardStaking.propTypes = {
-  amount: PropTypes.number
+  amount: PropTypes.number,
+  txh: PropTypes.string
 };
 
 DashboardStaking.defaultProps = {
-  amount: 0
+  amount: 0,
+  txh: ''
 };
 
 const mapStateToProps = ({ account }) => ({

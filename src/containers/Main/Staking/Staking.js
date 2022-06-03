@@ -98,6 +98,8 @@ const AUDITOR_SETTING = {
   nextArrow: <SampleNextArrow />,
   prevArrow: <SamplePrevArrow />
 };
+const abortController = new AbortController();
+
 // eslint-disable-next-line react/prop-types
 function Staking({ settings, setSetting }) {
   const address = settings.selectedAddress;
@@ -176,22 +178,6 @@ function Staking({ settings, setSetting }) {
     let objUser = {};
     if (address) {
       await methods
-        .call(farmingContract.methods.pendingBaseReward, [0, address])
-        .then(res => {
-          objClaim.accBaseReward = res;
-        })
-        .catch(err => {
-          throw err;
-        });
-      await methods
-        .call(farmingContract.methods.pendingBoostReward, [0, address])
-        .then(res => {
-          objClaim.accBoostReward = res;
-        })
-        .catch(err => {
-          throw err;
-        });
-      await methods
         .call(lpContract.methods.decimals, [])
         .then(res => {
           decimalLp = res;
@@ -203,6 +189,22 @@ function Staking({ settings, setSetting }) {
         .call(strkContract.methods.decimals, [])
         .then(res => {
           decimalStrkClaim = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
+        .call(farmingContract.methods.pendingBaseReward, [0, address])
+        .then(res => {
+          objClaim.accBaseReward = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      await methods
+        .call(farmingContract.methods.pendingBoostReward, [0, address])
+        .then(res => {
+          objClaim.accBoostReward = res;
         })
         .catch(err => {
           throw err;
@@ -316,7 +318,41 @@ function Staking({ settings, setSetting }) {
       }
     }
   }, [address, txhash, window.ethereum]);
-
+  // const getBaseBoostRealTime = async () => {
+  //   const objClaim = {
+  //     accBaseReward: '',
+  //     accBoostReward: ''
+  //   };
+  //   await methods
+  //     .call(farmingContract.methods.pendingBaseReward, [0, address])
+  //     .then(res => {
+  //       objClaim.accBaseReward = res;
+  //     })
+  //     .catch(err => {
+  //       throw err;
+  //     });
+  //   await methods
+  //     .call(farmingContract.methods.pendingBoostReward, [0, address])
+  //     .then(res => {
+  //       objClaim.accBoostReward = res;
+  //     })
+  //     .catch(err => {
+  //       throw err;
+  //     });
+  // };
+  // useEffect(() => {
+  //   let updateTimerBaseBoost;
+  //   // eslint-disable-next-line prefer-const
+  //   updateTimerBaseBoost = setInterval(() => {
+  //     getBaseBoostRealTime();
+  //   }, 2000);
+  //   return function cleanup() {
+  //     abortController.abort();
+  //     if (updateTimerBaseBoost) {
+  //       clearInterval(updateTimerBaseBoost);
+  //     }
+  //   };
+  // });
   // get data
   useMemo(async () => {
     if (!address) {
@@ -426,6 +462,7 @@ function Staking({ settings, setSetting }) {
             setIsLoading(false);
           } else {
             setDataNFTUnState([]);
+            setCounNFT(0);
             setYourBoostAPR(0);
           }
         });
@@ -790,7 +827,7 @@ function Staking({ settings, setSetting }) {
         }
         throw err;
       });
-  }, [val, handleMaxValue, handleMaxValueStaked]);
+  }, [address, val, handleMaxValue, handleMaxValueStaked]);
   const handleApproveVstrk = useCallback(async () => {
     setiIsConfirm(true);
     await methods
@@ -817,7 +854,7 @@ function Staking({ settings, setSetting }) {
         }
         throw err;
       });
-  }, [val, handleMaxValue, handleMaxValueStaked]);
+  }, [address, val, handleMaxValue, handleMaxValueStaked]);
 
   const handleApproveNFT = useCallback(async () => {
     setiIsConfirm(true);
@@ -847,7 +884,7 @@ function Staking({ settings, setSetting }) {
         }
         throw err;
       });
-  }, []);
+  }, [address]);
 
   // stake
   const handleStake = async () => {
@@ -1139,10 +1176,13 @@ function Staking({ settings, setSetting }) {
           });
       }
     },
-    []
+    [dataNFTUnState]
   );
   // handleOpen
   const handleStakeNFT = () => {
+    if (!userInfo.amountNumber) {
+      return setIsStakeNFT(false);
+    }
     setIsStakeNFT(true);
   };
   const handleUnStakeNFT = () => {
@@ -1203,7 +1243,7 @@ function Staking({ settings, setSetting }) {
           <ST.SHr />
           <Row className="all-section">
             <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-              <DashboardStaking amount={countNFT} />
+              <DashboardStaking amount={countNFT} txh={txhash} />
               <ST.SDivPadding>
                 <ST.SHeader>
                   <ST.STextModel>STRK-ETH Staking</ST.STextModel>
@@ -1556,11 +1596,11 @@ function Staking({ settings, setSetting }) {
                                   </>
                                 ) : (
                                   <>
-                                    {!isShowCountDownUnStake && isAprroveVstrk && (
+                                    {/* {!isShowCountDownUnStake && isAprroveVstrk && (
                                       <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                                         <ST.SBtnUnStakeStartNotBorder>
                                           <ST.SSUnTake disabled>
-                                            UnStake1
+                                            UnStake
                                           </ST.SSUnTake>
                                           <Tooltip
                                             placement="right"
@@ -1570,7 +1610,7 @@ function Staking({ settings, setSetting }) {
                                           </Tooltip>
                                         </ST.SBtnUnStakeStartNotBorder>
                                       </Col>
-                                    )}
+                                    )} */}
                                     <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                                       {expiryTimeUnstakeLP &&
                                       isShowCountDownUnStake &&
@@ -1819,12 +1859,23 @@ function Staking({ settings, setSetting }) {
                             <ST.SSTake
                               disabled={
                                 itemStaking.length === MAX_STAKE_NFT ||
-                                dataNFT.length === 0
+                                dataNFT.length === 0 ||
+                                userInfo.amountNumber === 0
                               }
                               onClick={handleStakeNFT}
                             >
                               Stake
                             </ST.SSTake>
+                            <ST.SToolTipStakeNFT>
+                              {userInfo.amountNumber === 0 && (
+                                <Tooltip
+                                  placement="right"
+                                  title="You must stake STRK-ETH LP Token before staking NFT"
+                                >
+                                  <ST.SQuestion src={IconQuestion} />
+                                </Tooltip>
+                              )}
+                            </ST.SToolTipStakeNFT>
                           </>
                         ) : (
                           <>
@@ -1907,16 +1958,6 @@ function Staking({ settings, setSetting }) {
                 </Row>
                 <Row>
                   <ST.SFlexEnd>
-                    {address && !isShowCountDownUnStakeNFT && (
-                      <>
-                        <ST.SSUnTaked
-                          disabled={dataNFTUnState.length === 0}
-                          onClick={handleUnStakeNFT}
-                        >
-                          UnStake
-                        </ST.SSUnTaked>
-                      </>
-                    )}
                     {expiryTimeUnstakeNFT &&
                     isShowCountDownUnStakeNFT &&
                     dataNFTUnState.length > 0 &&
@@ -1929,7 +1970,14 @@ function Staking({ settings, setSetting }) {
                         handleUnStakeNFT={handleUnStakeNFT}
                       />
                     ) : (
-                      <></>
+                      <>
+                        <ST.SSUnTaked
+                          disabled={dataNFTUnState.length === 0}
+                          onClick={handleUnStakeNFT}
+                        >
+                          UnStake
+                        </ST.SSUnTaked>
+                      </>
                     )}
                   </ST.SFlexEnd>
                 </Row>
@@ -1984,6 +2032,7 @@ function Staking({ settings, setSetting }) {
         valueNFTStake={valueNFTStake}
         currentNFT={countNFT}
         handleStakeDialog={handleStakeDialog}
+        address={address}
       />
 
       {/* UnStake */}

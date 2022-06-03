@@ -306,7 +306,8 @@ function DialogStake({
   listUnStake,
   valueNFTStake,
   currentNFT,
-  handleStakeDialog
+  handleStakeDialog,
+  address
 }) {
   const classes = useStyles();
   const [val, setValue] = useState(valueNFTStake);
@@ -416,7 +417,7 @@ function DialogStake({
   useEffect(() => {
     setCurrentNFTAmount(currentNFT);
     setValue(valueNFTStake);
-  }, [valueNFTStake, isStakeNFT, currentNFT]);
+  }, [valueNFTStake, isStakeNFT, currentNFT, address]);
   return (
     <>
       <React.Fragment>
@@ -538,7 +539,8 @@ DialogStake.propTypes = {
   listUnStake: PropTypes.array,
   valueNFTStake: PropTypes.string,
   currentNFT: PropTypes.number,
-  handleStakeDialog: PropTypes.func
+  handleStakeDialog: PropTypes.func,
+  address: PropTypes.string
 };
 
 DialogStake.defaultProps = {
@@ -549,7 +551,8 @@ DialogStake.defaultProps = {
   listUnStake: [],
   valueNFTStake: '',
   currentNFT: 0,
-  handleStakeDialog: func
+  handleStakeDialog: func,
+  address: ''
 };
 
 const mapStateToProps = ({ account }) => ({
