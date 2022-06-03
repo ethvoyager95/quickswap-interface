@@ -816,7 +816,7 @@ function Staking({ settings, setSetting }) {
         }
       })
       .catch(err => {
-        if (err.message.includes('User denied')) {
+        if (err.code === 4001) {
           setIsShowCancel(true);
           setiIsConfirm(false);
           setTextErr('Decline transaction');
@@ -843,7 +843,7 @@ function Staking({ settings, setSetting }) {
         }
       })
       .catch(err => {
-        if (err.message.includes('User denied')) {
+        if (err.code === 4001) {
           setIsShowCancel(true);
           setiIsConfirm(false);
           setTextErr('Decline transaction');
@@ -873,7 +873,7 @@ function Staking({ settings, setSetting }) {
         }
       })
       .catch(err => {
-        if (err.message.includes('User denied')) {
+        if (err.code === 4001) {
           setIsShowCancel(true);
           setiIsConfirm(false);
           setTextErr('Decline transaction');
@@ -937,7 +937,7 @@ function Staking({ settings, setSetting }) {
           }
         })
         .catch(err => {
-          if (err.message.includes('User denied')) {
+          if (err.code === 4001) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingBtn(false);
@@ -1000,7 +1000,7 @@ function Staking({ settings, setSetting }) {
           setValUnStake('');
         })
         .catch(err => {
-          if (err.message.includes('User denied')) {
+          if (err.code === 4001) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingUnStake(false);
@@ -1038,7 +1038,7 @@ function Staking({ settings, setSetting }) {
         }
       })
       .catch(err => {
-        if (err.message.includes('User denied')) {
+        if (err.code === 4001) {
           setIsShowCancel(true);
           setiIsConfirm(false);
           setTextErr('Decline transaction');
@@ -1068,7 +1068,7 @@ function Staking({ settings, setSetting }) {
         }
       })
       .catch(err => {
-        if (err.message.includes('User denied')) {
+        if (err.code === 4001) {
           setIsShowCancel(true);
           setiIsConfirm(false);
           setTextErr('Decline transaction');
@@ -1112,7 +1112,7 @@ function Staking({ settings, setSetting }) {
             }
           })
           .catch(err => {
-            if (err.message.includes('User denied')) {
+            if (err.code === 4001) {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setTextErr('Decline transaction');
@@ -1161,7 +1161,7 @@ function Staking({ settings, setSetting }) {
             }
           })
           .catch(err => {
-            if (err.message.includes('User denied')) {
+            if (err.code === 4001) {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
