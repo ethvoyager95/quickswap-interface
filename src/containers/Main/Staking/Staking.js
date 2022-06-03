@@ -1812,10 +1812,6 @@ function Staking({ settings, setSetting }) {
                         </Tooltip>
                       </ST.SText>
                     </ST.SFlex>
-                  </ST.SRowFlex>
-                </Row>
-                <Row>
-                  <ST.SFlexEnd>
                     {address ? (
                       <>
                         {isApproveNFT ? (
@@ -1841,7 +1837,7 @@ function Staking({ settings, setSetting }) {
                     ) : (
                       <> </>
                     )}
-                  </ST.SFlexEnd>
+                  </ST.SRowFlex>
                 </Row>
                 {isLoading ? (
                   <Row>

@@ -443,12 +443,12 @@ export const SBtnUnstake = styled.button`
   }
 `;
 export const SSTake = styled.button`
-  cursor: pointer;
   background: #107def;
   color: #fff;
   border-radius: 5px;
   padding: 8px 20px;
   min-width: 150px;
+  min-height: 38px;
   text-align: center;
   margin-left: 30px;
   border: none;
@@ -489,7 +489,7 @@ export const SSUnTaked = styled.button`
   color: #f84960;
   background: #fff;
   border-radius: 5px;
-  padding: 8px 20px;
+  padding: 7px 20px;
   min-width: 150px;
   text-align: center;
   border: 1px solid #f84960;
@@ -884,7 +884,7 @@ export const SRowFlex = styled.div`
   justify-content: space-between;
   margin-bottom: 10px;
   border-bottom: 1px solid #e5e5e5;
-  padding-bottom: 20px;
+  padding: 10px 10px 20px 10px;
 `;
 export const SRowColumn = styled.div`
   display: flex;
