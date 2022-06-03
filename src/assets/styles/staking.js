@@ -463,6 +463,12 @@ export const SSTake = styled.button`
     margin: 3%;
   }
 `;
+export const SToolTipStakeNFT = styled.div`
+  img {
+    margin-right: 0px;
+    margin-left: 10px;
+  }
+`;
 export const SSTaked = styled.button`
   cursor: pointer;
   background: #107def;
@@ -493,12 +499,14 @@ export const SSUnTaked = styled.button`
   min-width: 150px;
   text-align: center;
   border: 1px solid #f84960;
-  margin-right: 15px;
   margin-top: 10px;
   outline: none;
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
+    :hover {
+      background-color: #d3d3d3 !important;
+    }
   }
   :hover {
     background: #fff !important;

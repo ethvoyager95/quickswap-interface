@@ -348,7 +348,8 @@ function DialogUnStake({
         setAfterUnStake(ITEM_STAKE * PERCENT);
       } else {
         setBeforeUnStake(PERCENT * ITEM_STAKE);
-        setAfterUnStake(PERCENT * ITEM_STAKE - val * PERCENT);
+        const value_after_unstake = PERCENT * ITEM_STAKE - val * PERCENT;
+        setAfterUnStake(value_after_unstake);
       }
     } else {
       // eslint-disable-next-line no-lonely-if
@@ -487,7 +488,11 @@ function DialogUnStake({
                         <SCircle />
                         After unstaking
                       </STextBox>
-                      <SValueBox>{afterUnStake}%</SValueBox>
+                      {afterUnStake < 0 ? (
+                        <SValueBox>-</SValueBox>
+                      ) : (
+                        <SValueBox>{afterUnStake}%</SValueBox>
+                      )}
                     </SRowBox>
                   </SUl>
                 </Col>
