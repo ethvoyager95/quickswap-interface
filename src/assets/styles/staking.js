@@ -337,9 +337,7 @@ export const SBtnUn = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     justify-content: flex-start;
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-right: 10px;
+    margin-top: 24px;
     flex-direction: column;
   }
 `;
@@ -359,7 +357,8 @@ export const SBtnStake = styled.button`
   @media only screen and (max-width: 768px) {
     width: 100%;
     margin-left: 0px !important;
-    // margin-right: 10px !important;
+    margin-top: 0;
+    margin-right: 0;
   }
   :disabled {
     color: #fff !important;
@@ -508,9 +507,6 @@ export const SSUnTaked = styled.button`
       background-color: #d3d3d3 !important;
     }
   }
-  :hover {
-    background: #fff !important;
-  }
   @media only screen and (max-width: 768px) {
     min-width: 150px;
     margin-left: 0;
@@ -544,6 +540,9 @@ export const SBtnUnStakeStart = styled.div`
     justify-content: center;
     border-bottom: 1px solid #e5e5e5;
     padding-bottom: 15px;
+    img {
+      margin-left: 15px;
+    }
   }
 `;
 export const SBtnUnStakeStartNotBorder = styled.div`
@@ -623,9 +622,10 @@ export const SInforClaim = styled.div`
   padding-bottom: 15px;
   @media only screen and (max-width: 768px) {
     border-bottom: none;
-    padding: 0 10px;
+    margin: 0 10px;
     border-bottom: 1px solid #e5e5e5;
     padding-bottom: 15px;
+    width: auto;
   }
 `;
 export const SInforClaimNotBorder = styled.div`
@@ -753,6 +753,9 @@ export const STotalClaim = styled.div`
   font-weight: 900;
   color: #0b0f23;
   display: flex;
+  @media only screen and (max-width: 768px) {
+    font-size: 16px;
+  }
 `;
 export const SImgFlashSmall = styled.img``;
 export const SImgLpSmall = styled.img`
@@ -805,7 +808,8 @@ export const SBtnClaimStart = styled.div`
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
-    padding: 0 10px;
+    padding: 0;
+    margin-top: 0;
   }
 `;
 export const SClaim = styled.button`
