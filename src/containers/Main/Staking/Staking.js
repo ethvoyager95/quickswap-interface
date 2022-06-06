@@ -740,7 +740,6 @@ function Staking({ settings, setSetting }) {
     }
     // console.log(valUnStake, 'valUnStake');
   };
-  // console.log(valUnStake, 'valUnStake');
 
   const handleMaxValue = () => {
     const valueDecimals = renderValueFixed(userInfo?.availableNumber);
@@ -1642,13 +1641,23 @@ function Staking({ settings, setSetting }) {
                                               handleApproveVstrk={
                                                 handleApproveVstrk
                                               }
+                                              isShowCountDownUnStake={
+                                                isShowCountDownUnStake
+                                              }
                                             />
                                           </ST.SCountDown>
                                         </>
                                       ) : (
                                         <>
                                           <ST.SBtnUnStakeStartNotBorder>
-                                            <ST.SSUnTake disabled>
+                                            <ST.SSUnTake
+                                              className="mg-10"
+                                              disabled={
+                                                isShowCountDownUnStake ||
+                                                !valUnStake
+                                              }
+                                              onClick={handleUnStake}
+                                            >
                                               Unstake
                                             </ST.SSUnTake>
                                             <Tooltip
@@ -1692,10 +1701,12 @@ function Staking({ settings, setSetting }) {
                       </>
                     ) : (
                       <>
-                        <ST.SIconSmall>
-                          <ST.SImgLpSmall src={IconFlashSmall} />
-                        </ST.SIconSmall>
-                        -
+                        <ST.STotalClaim>
+                          <ST.SIconSmall>
+                            <ST.SImgLpSmall src={IconFlashSmall} />
+                          </ST.SIconSmall>
+                          -
+                        </ST.STotalClaim>
                       </>
                     )}
                   </ST.SInforTextVSTRK>
@@ -1732,7 +1743,14 @@ function Staking({ settings, setSetting }) {
                                   Claim
                                 </ST.SClaim>
                               ) : (
-                                <ST.SUnClaim>Claim</ST.SUnClaim>
+                                <>
+                                  <ST.SClaim
+                                    disabled={isShowCountDownClaimBase}
+                                    onClick={handleClainBaseReward}
+                                  >
+                                    Claim
+                                  </ST.SClaim>
+                                </>
                               )}
                               <Tooltip
                                 placement="right"
@@ -1807,7 +1825,12 @@ function Staking({ settings, setSetting }) {
                                           Claim
                                         </ST.SClaim>
                                       ) : (
-                                        <ST.SUnClaim>Claim</ST.SUnClaim>
+                                        <ST.SClaim
+                                          disabled={isShowCountDownClaimBoost}
+                                          onClick={handleClainBootReward}
+                                        >
+                                          Claim
+                                        </ST.SClaim>
                                       )}
                                       <Tooltip
                                         placement="right"
