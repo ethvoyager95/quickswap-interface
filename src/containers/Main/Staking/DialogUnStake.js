@@ -261,6 +261,9 @@ const SBtnUnStake = styled.button`
   cursor: pointer;
   margin-left: 10px;
   outline: none;
+  :disabled {
+    color: #fff !important;
+  }
   &:hover {
     background: #eceff9 !important;
   }

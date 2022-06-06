@@ -274,6 +274,9 @@ const SBtnStake = styled.button`
     font-size: 14px;
     padding: 10px 12px;
   }
+  :disabled {
+    color: #fff !important;
+  }
 `;
 const SInput = styled.div`
   position: relative;
