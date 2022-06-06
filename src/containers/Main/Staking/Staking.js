@@ -22,6 +22,7 @@ import * as constants from 'utilities/constants';
 import {
   divDecimals,
   renderValueFixed,
+  divDecimalsBigNumber,
   MAX_APPROVE,
   SECOND24H,
   SECOND2DAY,
@@ -102,6 +103,7 @@ function Staking({ settings, setSetting }) {
   const address = settings.selectedAddress;
   const [val, setVal] = useState('');
   const [isMaxValue, setIsMaxValue] = useState(false);
+  const [isMaxValueUnStake, setIsMaxValueUnStake] = useState(false);
   const [valUnStake, setValUnStake] = useState('');
   const [messErr, setMessErr] = useState({
     mess: '',
@@ -212,8 +214,12 @@ function Staking({ settings, setSetting }) {
         .then(res => {
           const balanceBigNumber = divDecimals(sTokenBalance, decimalLp);
           const pendingAmountNumber = divDecimals(res.pendingAmount, decimalLp);
+
           const amountNumber = divDecimals(res.amount, decimalLp);
           const totalAmount = amountNumber.plus(pendingAmountNumber);
+          const totalUnStake = Number(res.pendingAmount) + Number(res.amount);
+          console.log(totalUnStake, 'totalUnStake');
+          console.log(res, 'res');
           const totalAmountNumber = totalAmount.toNumber();
           const accBaseRewardBigNumber = divDecimals(
             objClaim.accBaseReward,
@@ -277,10 +283,13 @@ function Staking({ settings, setSetting }) {
             amountNumber: totalAmountNumber,
             available: renderValueFixed(balanceBigFormat).toString(),
             availableNumber: balanceBigNumber.toNumber(),
+            availableMax: sTokenBalance,
+            amountMax: totalUnStake,
             accBaseReward: renderValueFixed(accBaseRewardString),
             accBoostReward: renderValueFixed(accBoostRewardString),
             depositedDate: timeBaseUnstake,
-            boostedDate: timeBootsUnstake
+            boostedDate: timeBootsUnstake,
+            decimalLp
           };
         })
         .catch(err => {
@@ -306,11 +315,14 @@ function Staking({ settings, setSetting }) {
       }
     }
   }, [address, txhash, window.ethereum]);
-  // get base boost realtime
+
+  // get base boost available realtime
   const getBaseBoostRealTime = async () => {
     if (address) {
       let objUser = {};
       let decimalStrkClaim = null;
+      let sTokenBalance = null;
+      let decimalLp = null;
       const objClaim = {
         accBaseReward: '',
         accBoostReward: ''
@@ -339,6 +351,17 @@ function Staking({ settings, setSetting }) {
         .catch(err => {
           throw err;
         });
+      await methods
+        .call(lpContract.methods.decimals, [])
+        .then(res => {
+          decimalLp = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
+        address
+      ]);
       const accBaseRewardBigNumber = divDecimals(
         objClaim.accBaseReward,
         decimalStrkClaim
@@ -349,11 +372,15 @@ function Staking({ settings, setSetting }) {
       );
       const accBaseRewardString = accBaseRewardBigNumber.toNumber();
       const accBoostRewardString = accBoostRewardBigNumber.toNumber();
+      const balanceBigNumber = divDecimals(sTokenBalance, decimalLp);
+      const balanceBigFormat = balanceBigNumber.toNumber().toString();
 
       objUser = {
         ...userInfo,
         accBaseReward: renderValueFixed(accBaseRewardString),
-        accBoostReward: renderValueFixed(accBoostRewardString)
+        accBoostReward: renderValueFixed(accBoostRewardString),
+        available: renderValueFixed(balanceBigFormat).toString(),
+        availableNumber: balanceBigNumber.toNumber()
       };
       setUserInfo({ ...objUser });
     }
@@ -694,7 +721,7 @@ function Staking({ settings, setSetting }) {
       show: false
     });
     const number = event.target.value;
-
+    setIsMaxValueUnStake(false);
     if (number === '') {
       setMessErrUnStake({
         mess: '',
@@ -741,9 +768,14 @@ function Staking({ settings, setSetting }) {
   };
 
   const handleMaxValue = () => {
-    const valueDecimals = renderValueFixed(userInfo?.availableNumber);
     setIsMaxValue(true);
-    setVal(valueDecimals);
+    const valueDecimals = renderValueFixed(userInfo?.availableNumber);
+    console.log(userInfo.availableNumber, 'valueDecimals');
+    if (userInfo.availableNumber < 0.00001) {
+      setVal(userInfo.availableNumber);
+    } else {
+      setVal(valueDecimals);
+    }
     if (userInfo?.availableNumber > 0) {
       setMessErr({
         mess: '',
@@ -752,7 +784,9 @@ function Staking({ settings, setSetting }) {
     }
   };
   const handleMaxValueStaked = () => {
-    setValUnStake(userInfo?.amountNumber);
+    const valueDecimals = renderValueFixed(userInfo?.amountNumber);
+    setIsMaxValueUnStake(true);
+    setValUnStake(valueDecimals);
     if (userInfo?.amountNumber > 0) {
       setMessErrUnStake({
         mess: '',
@@ -918,8 +952,12 @@ function Staking({ settings, setSetting }) {
       // deposit
       setiIsConfirm(true);
       setIsLoadingBtn(true);
+      const valueMaxStake = divDecimalsBigNumber(
+        userInfo.availableMax,
+        userInfo.decimalLp
+      );
       const valueBigNumber = isMaxValue
-        ? new BigNumber(userInfo?.availableNumber)
+        ? new BigNumber(valueMaxStake)
         : new BigNumber(val);
       if (valueBigNumber.isZero()) {
         setMessErr({
@@ -995,7 +1033,14 @@ function Staking({ settings, setSetting }) {
       // withdraw test
       setiIsConfirm(true);
       setIsLoadingUnStake(true);
-      const valueBigNumber = new BigNumber(valUnStake);
+      const valueMaxUnStake = divDecimalsBigNumber(
+        userInfo.amountMax,
+        userInfo.decimalLp
+      );
+      const valueBigNumber = isMaxValueUnStake
+        ? new BigNumber(valueMaxUnStake)
+        : new BigNumber(valUnStake);
+      console.log(userInfo.amountMax, 'amountMax');
       await methods
         .send(
           farmingContract.methods.withdraw,
@@ -1014,6 +1059,7 @@ function Staking({ settings, setSetting }) {
           setiIsConfirm(false);
           setIsSuccess(true);
           setIsLoadingUnStake(false);
+          setIsMaxValueUnStake(false);
           setValUnStake('');
         })
         .catch(err => {
@@ -1267,6 +1313,7 @@ function Staking({ settings, setSetting }) {
       }
     };
   });
+
   return (
     <>
       <MainLayout>
@@ -1582,6 +1629,7 @@ function Staking({ settings, setSetting }) {
                                             >
                                               <ST.SBtnUnStakeStartNotBorder>
                                                 <ST.SBtnUnstake
+                                                  className="mg-10"
                                                   disabled={
                                                     disabledBtnUn ||
                                                     Number(valUnStake) === 0
@@ -1611,6 +1659,7 @@ function Staking({ settings, setSetting }) {
                                         >
                                           <ST.SBtnUnStakeStartNotBorder>
                                             <ST.SBtnStake
+                                              className="mg-30"
                                               onClick={handleApproveVstrk}
                                             >
                                               Approve Staking
@@ -1742,7 +1791,10 @@ function Staking({ settings, setSetting }) {
                               ) : (
                                 <>
                                   <ST.SClaim
-                                    disabled={isShowCountDownClaimBase}
+                                    disabled={
+                                      isShowCountDownClaimBase ||
+                                      Number(userInfo.accBaseReward) === 0
+                                    }
                                     onClick={handleClainBaseReward}
                                   >
                                     Claim
@@ -1823,7 +1875,11 @@ function Staking({ settings, setSetting }) {
                                         </ST.SClaim>
                                       ) : (
                                         <ST.SClaim
-                                          disabled={isShowCountDownClaimBoost}
+                                          disabled={
+                                            isShowCountDownClaimBoost ||
+                                            Number(userInfo.accBoostReward) ===
+                                              0
+                                          }
                                           onClick={handleClainBootReward}
                                         >
                                           Claim

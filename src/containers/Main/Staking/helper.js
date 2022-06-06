@@ -302,3 +302,7 @@ export const getShortAddress = address => {
   if (address.length === 0) return '';
   return `${address?.slice(0, 4)}...${address?.slice(-4)}`;
 };
+export const divDecimalsBigNumber = (number, decimals) => {
+  const number_str = number.toString().replaceAll(',', '');
+  return new BigNumber(number_str).div(new BigNumber(10).pow(decimals));
+};
