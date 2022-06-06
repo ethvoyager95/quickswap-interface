@@ -182,6 +182,9 @@ function CountDownClaim({
   isClaimBaseReward,
   isClaimBootReward
 }) {
+  console.log(isClaimBaseReward, 'isClaimBaseReward');
+  console.log(isClaimBootReward, 'isClaimBootReward');
+  console.log(valUnStake, 'valUnStake');
   const [expiryTime, setExpiryTime] = useState(times);
   const [isLoadding, setIsLoading] = useState(false);
   const [countdownTime, setCountdownTime] = useState({
