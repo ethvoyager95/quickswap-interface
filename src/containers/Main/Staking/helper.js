@@ -19,6 +19,8 @@ export const UNSTAKENFT = 'UNSTAKENFT';
 // chacracter -+e.0 block
 export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 101];
 const REQUIRED_DECIMAL = 5;
+const DASHBOARD_DECIMALS = 2;
+
 export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)
@@ -39,8 +41,8 @@ export const SETTING_SLIDER = {
       settings: {
         slidesToShow: 2,
         slidesToScroll: 1,
-        infinite: true,
-        dots: true
+        infinite: false,
+        dots: false
       }
     },
     {
@@ -183,7 +185,29 @@ export const validationMaxDecimalsNoRound = number => {
   }
   return wholeNumber;
 };
+export const validationMaxDecimalsNoRoundDashboard = number => {
+  if (number && parseFloat(number) < 0.000001) {
+    return '< 0.000001';
+  }
+  function join(wholeNumber, decimals) {
+    if (!decimals) return wholeNumber;
+    return [wholeNumber, decimals].join('.');
+  }
+  const bigNum = new BigNumber(number);
 
+  const algoFormat = Intl.NumberFormat('en-US');
+  let [wholeNumber, decimals] = bigNum.toFixed().split('.');
+
+  wholeNumber = algoFormat.format(parseFloat(wholeNumber));
+
+  if (decimals) {
+    if (decimals.length > DASHBOARD_DECIMALS) {
+      decimals = decimals.substr(0, DASHBOARD_DECIMALS);
+    }
+    return join(wholeNumber, decimals);
+  }
+  return wholeNumber;
+};
 export const shortValue = (value, decimal) => {
   // eslint-disable-next-line no-bitwise
   // eslint-disable-next-line no-restricted-globals
@@ -221,12 +245,56 @@ export const shortValue = (value, decimal) => {
   }
   return value;
 };
+export const shortValueDashboard = (value, decimal) => {
+  // eslint-disable-next-line no-bitwise
+  // eslint-disable-next-line no-restricted-globals
+  if (isNaN(value)) return '';
+  const thound = 1000;
+  const grand = 10000;
+  const milion = 1000000;
+  const bilion = 1000000000;
+  if (value >= bilion) {
+    return `${sliceDecimal(value / bilion, decimal, 'US', false)}B`;
+  }
+  if (value >= milion) {
+    return `${sliceDecimal(value / milion, decimal, 'US', false)}M`;
+  }
+  if (value >= grand) {
+    // return `${sliceDecimal(value / grand, decimal, 'US', false)}K`;
+    return validationMaxDecimalsNoRoundDashboard(value, decimal);
+  }
+  if (value >= thound) {
+    return validationMaxDecimalsNoRoundDashboard(value, decimal);
+  }
+  if (!value || value === 0) {
+    return '0.0';
+  }
+  if (value <= 0.00001) {
+    return '<0.00001';
+  }
+  const lstValueFormat = value?.toString().split('.');
+  if (lstValueFormat.length > 1) {
+    const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(
+      0,
+      decimal
+    )}`;
+    return result;
+  }
+  return value;
+};
 export const renderValueFixed = value => {
   const valueNumber = +value;
   if (!valueNumber || valueNumber === 0) {
     return '0.0';
   }
   return shortValue(value, REQUIRED_DECIMAL);
+};
+export const renderValueFixedDashboard = value => {
+  const valueNumber = parseFloat(value);
+  if (!valueNumber || valueNumber === 0) {
+    return '0.0';
+  }
+  return shortValueDashboard(value, DASHBOARD_DECIMALS);
 };
 export const getShortAddress = address => {
   if (address.length === 0) return '';

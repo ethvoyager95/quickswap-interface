@@ -188,6 +188,9 @@ export const SError = styled.div`
   font-weight: 400;
   font-size: 14px;
   line-height: 23px;
+  @media only screen and (max-width: 768px) {
+    margin-left: 10px;
+  }
 `;
 export const SErrorUn = styled.div`
   color: #e80e0e;
@@ -196,6 +199,9 @@ export const SErrorUn = styled.div`
   font-size: 14px;
   line-height: 23px;
   margin-left: 10%;
+  @media only screen and (max-width: 768px) {
+    margin-left: 10px;
+  }
 `;
 export const SHrefErr = styled.div`
   color: #e80e0e;
@@ -339,9 +345,7 @@ export const SBtnUn = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     justify-content: flex-start;
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-right: 10px;
+    margin-top: 24px;
     flex-direction: column;
   }
 `;
@@ -361,7 +365,8 @@ export const SBtnStake = styled.button`
   @media only screen and (max-width: 768px) {
     width: 100%;
     margin-left: 0px !important;
-    // margin-right: 10px !important;
+    margin-top: 0;
+    margin-right: 0;
   }
   :disabled {
     color: #fff !important;
@@ -435,6 +440,7 @@ export const SBtnUnstake = styled.button`
   }
   @media only screen and (max-width: 768px) {
     width: 100%;
+    margin-top: 0;
   }
   :disabled {
     color: #fff !important;
@@ -487,7 +493,7 @@ export const SSTaked = styled.button`
     margin-left: 0px;
   }
 `;
-export const SSUnTaked = styled.button`
+export const SSUnSTakedWeb = styled.button`
   cursor: pointer;
   color: #f84960;
   background: #fff;
@@ -497,18 +503,18 @@ export const SSUnTaked = styled.button`
   text-align: center;
   border: 1px solid #f84960;
   outline: none;
+  :hover {
+    background-color: #fff !important;
+  }
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
   }
   :hover {
-    background: #fff !important;
+    background-color: #fff !important;
   }
   @media only screen and (max-width: 768px) {
-    min-width: 125px;
-    margin-left: 0;
-    margin: 3%;
-    display: block;
+    display: none;
   }
 `;
 export const SSUnTake = styled.button`
@@ -538,6 +544,9 @@ export const SBtnUnStakeStart = styled.div`
     justify-content: center;
     border-bottom: 1px solid #e5e5e5;
     padding-bottom: 15px;
+    img {
+      margin-left: 15px;
+    }
   }
 `;
 export const SBtnUnStakeStartNotBorder = styled.div`
@@ -547,6 +556,7 @@ export const SBtnUnStakeStartNotBorder = styled.div`
   @media only screen and (max-width: 768px) {
     justify-content: center;
     padding-bottom: 10px;
+    margin-top: 14px;
   }
 `;
 export const SCountDown = styled.div`
@@ -617,9 +627,10 @@ export const SInforClaim = styled.div`
   padding-bottom: 15px;
   @media only screen and (max-width: 768px) {
     border-bottom: none;
-    padding: 0 10px;
+    margin: 0 10px;
     border-bottom: 1px solid #e5e5e5;
     padding-bottom: 15px;
+    width: auto;
   }
 `;
 export const SInforClaimNotBorder = styled.div`
@@ -747,6 +758,9 @@ export const STotalClaim = styled.div`
   font-weight: 900;
   color: #0b0f23;
   display: flex;
+  @media only screen and (max-width: 768px) {
+    font-size: 16px;
+  }
 `;
 export const SImgFlashSmall = styled.img``;
 export const SImgLpSmall = styled.img`
@@ -799,7 +813,8 @@ export const SBtnClaimStart = styled.div`
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
-    padding: 0 10px;
+    padding: 0;
+    margin-top: 0;
   }
 `;
 export const SClaim = styled.button`
@@ -872,7 +887,7 @@ export const SDetailsColor = styled.div`
   @media only screen and (max-width: 768px) {
     font-size: 13px;
     justify-content: right;
-    padding-left: 55px;
+    padding-left: 20px;
   }
 `;
 export const SDetailsColorBold = styled.div`
@@ -891,9 +906,6 @@ export const SRowFlex = styled.div`
   margin-bottom: 10px;
   padding: 10px 10px 20px 10px;
   border-bottom: 1px solid #e5e5e5;
-  @media only screen and (max-width: 768px) {
-    flex-direction: column;
-  }
 `;
 export const SRowColumn = styled.div`
   display: flex;
@@ -933,7 +945,6 @@ export const SFlexEnd = styled.div`
   padding-left: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: flex-end;
-    display: none;
   }
 `;
 
@@ -985,16 +996,6 @@ export const STitleSlider = styled.div`
 export const SDescriptionSlider = styled.div`
   color: #ff897e;
 `;
-export const SNexSlider = styled.img`
-  color: #fff !important;
-  cursor: pointer;
-  border-radius: 50%;
-`;
-export const SPrevSlider = styled.img`
-  cursor: pointer;
-  color: #fff !important;
-  border-radius: 50%;
-`;
 export const SSactive = styled.img`
   position: absolute;
   width: 25px !important;
@@ -1044,12 +1045,99 @@ export const SWrapperCountDownClaim = styled.div`
 `;
 
 export const SUnstakeCountDownMobile = styled.div`
+  display: none;
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+export const SToolTipStakeNFT = styled.div`
+  img {
+    margin-right: 0px;
+    margin-left: 10px;
+  }
+`;
+
+export const SNexSlider = styled.img`
+  color: #fff !important;
+  cursor: pointer;
+  border-radius: 50%;
+`;
+
+export const SRowFlexNFTStaking = styled.div`
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  @media only screen and (min-width: 768px) {
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px 10px 20px 10px;
+  border-bottom: 1px solid #e5e5e5;
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+export const SUnstakeCountDownWeb = styled.div`
+  display: flex;
+  @media only screen and (max-width: 768px) {
     display: none;
   }
+`;
+
+export const SWrapperTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 9;
+`;
+
+export const SWrapperCountDownWeb = styled.div`
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
+`;
+export const SWrapperCountDownMobile = styled.div`
+  display: none;
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+export const SSUnSTakedMobile = styled.button`
+  display: none;
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: right;
+    width: 125px;
+    cursor: pointer;
+    color: #f84960;
+    background: #fff;
+    border-radius: 5px;
+    padding: 8px 20px;
+    min-width: 125px;
+    text-align: center;
+    border: 1px solid #f84960;
+    outline: none;
+    :hover {
+      background-color: #fff !important;
+    }
+    :disabled {
+      color: #fff !important;
+      cursor: not-allowed;
+    }
+    :hover {
+      background-color: #fff !important;
+    }
+  }
+`;
+
+export const SWrapperUnStake = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;

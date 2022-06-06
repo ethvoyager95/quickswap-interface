@@ -55,6 +55,28 @@ const useStyles = makeStyles({
     borderRadius: '5px'
   }
 });
+const SWrapper = styled.div`
+  overflow-y: auto;
+  /* width */
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 3px;
+    background-color: var(--color-blue);
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #539ef9;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+`;
 const SMain = styled.div`
   padding: 0 20px;
 `;
@@ -148,20 +170,12 @@ const SRowBoxText = styled.div`
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
+  margin-top: 10px;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
   }
 `;
-const SRowBoxTextApr = styled.div`
-  color: #0b0f23;
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 24px;
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-    margin-left: 5%;
-  }
-`;
+
 const STextBox = styled.div`
   font-style: normal;
   font-weight: 400;
@@ -171,6 +185,7 @@ const STextBox = styled.div`
   align-items: center;
   letter-spacing: 0.1px;
   color: #0b0f23;
+  margin-left: 10px;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -306,7 +321,8 @@ function DialogUnStake({
   list,
   valueNFTUnStake,
   currentNFT,
-  handleUnStakeDialog
+  handleUnStakeDialog,
+  address
 }) {
   const [val, setValue] = useState(valueNFTUnStake);
   const [messErr, setMessErr] = useState();
@@ -361,7 +377,7 @@ function DialogUnStake({
         setAfterUnStake(PERCENT * ITEM_STAKE - PERCENT);
       }
     }
-  }, [itemStaked, list, isUnStakeNFT, checked, val]);
+  }, [itemStaked, list, isUnStakeNFT, checked, val, address]);
 
   useEffect(() => {
     if (val === '') {
@@ -401,11 +417,11 @@ function DialogUnStake({
         setDisabledBtn(false);
       }
     }
-  }, [val, isUnStakeNFT, list, checked]);
+  }, [val, isUnStakeNFT, list, checked, address]);
   useEffect(() => {
     setValue(valueNFTUnStake);
     setCurrentNFTAmount(currentNFT);
-  }, [valueNFTUnStake, isUnStakeNFT, currentNFT]);
+  }, [valueNFTUnStake, isUnStakeNFT, currentNFT, address]);
   const classes = useStyles();
   return (
     <>
@@ -419,103 +435,108 @@ function DialogUnStake({
             }
           }}
         >
-          <SMain>
-            <SIcon>
-              <SIconClose src={IconClose} onClick={close} />
-            </SIcon>
-            <STitle>Unstake NFT</STitle>
-            <SRowText>
-              {checked ? (
-                <STitleInput>
-                  Please input total number NFTs you want to unstake
-                </STitleInput>
-              ) : (
-                <STitleInput>Please input your NFT ID</STitleInput>
-              )}
-              <STack>
-                <Switch checked={checked} onChange={onChangeSwitch} />
-                Stack
-              </STack>
-            </SRowText>
-            <SInput>
-              <input
-                type="number"
-                value={val}
-                inputMode="decimal"
-                // pattern="^[0-9]*[.,]?[0-9]*$"
-                min={0}
-                minLength={1}
-                maxLength={79}
-                placeholder="Enter a number"
-                onChange={event => handleChangeValueUnStakeNft(event)}
-                onKeyPress={event => {
-                  if (_.includes(LIST_BLOCK_VALUE, event.which)) {
-                    event.preventDefault();
-                  }
-                }}
-              />
-            </SInput>
-            {messErr && <SError>{messErr}</SError>}
-          </SMain>
-          <SMainColor>
-            <SBox>
-              <Row>
-                <Col xs={{ span: 8 }} lg={{ span: 10 }}>
-                  <SColBox>
-                    <SRowBoxText>Staked NFT</SRowBoxText>
-                  </SColBox>
-                  <SValueBox>
-                    {currentNFTAmount}/{totalSelect}
-                  </SValueBox>
-                </Col>
-                <Col xs={{ span: 0 }} lg={{ span: 2 }}>
-                  {}
-                </Col>
-                <Col xs={{ span: 16 }} lg={{ span: 10 }}>
-                  <SRowBox>
-                    <SRowBoxTextApr>Boost APR</SRowBoxTextApr>
-                  </SRowBox>
-                  <SUl>
-                    <SRowBox>
-                      <STextBox>
-                        <SCircle />
-                        Before unstaking
-                      </STextBox>
-                      <SValueBox>{beforeUnStake}%</SValueBox>
-                    </SRowBox>
-                    <SRowBox>
-                      <STextBox>
-                        <SCircle />
-                        After unstaking
-                      </STextBox>
-                      {afterUnStake < 0 ? (
-                        <SValueBox>-</SValueBox>
-                      ) : (
-                        <SValueBox>{afterUnStake}%</SValueBox>
-                      )}
-                    </SRowBox>
-                  </SUl>
-                </Col>
-              </Row>
-            </SBox>
-            <SBox>
-              <Row>
-                <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                  <SBtn>
-                    <SBtnCancel onClick={close}>Cancel</SBtnCancel>
-                    <SBtnUnStake
-                      disabled={disabledBtn}
-                      onClick={event =>
-                        handleUnStakeDialog(val, event, checked, messErr)
-                      }
-                    >
-                      Unstake
-                    </SBtnUnStake>
-                  </SBtn>
-                </Col>
-              </Row>
-            </SBox>
-          </SMainColor>
+          <SWrapper>
+            <SMain>
+              <SIcon>
+                <SIconClose src={IconClose} onClick={close} />
+              </SIcon>
+              <STitle>Unstake NFT</STitle>
+              <SRowText>
+                {checked ? (
+                  <STitleInput>
+                    Please input total number NFTs you want to unstake
+                  </STitleInput>
+                ) : (
+                  <STitleInput>Please input your NFT ID</STitleInput>
+                )}
+                <STack>
+                  <Switch checked={checked} onChange={onChangeSwitch} />
+                  Stack
+                </STack>
+              </SRowText>
+              <SInput>
+                <input
+                  type="number"
+                  value={val}
+                  inputMode="decimal"
+                  // pattern="^[0-9]*[.,]?[0-9]*$"
+                  min={0}
+                  minLength={1}
+                  maxLength={79}
+                  placeholder="Enter a number"
+                  onChange={event => handleChangeValueUnStakeNft(event)}
+                  onKeyPress={event => {
+                    if (_.includes(LIST_BLOCK_VALUE, event.which)) {
+                      event.preventDefault();
+                    }
+                  }}
+                />
+              </SInput>
+              {messErr && <SError>{messErr}</SError>}
+            </SMain>
+            <SMainColor>
+              <SBox>
+                <Row>
+                  <Col xs={{ span: 8 }} lg={{ span: 10 }}>
+                    <SColBox>
+                      <SRowBoxText>Staked NFT</SRowBoxText>
+                    </SColBox>
+                    <SValueBox>
+                      {currentNFTAmount}/{totalSelect}
+                    </SValueBox>
+                  </Col>
+                  <Col xs={{ span: 0 }} lg={{ span: 2 }}>
+                    {}
+                  </Col>
+                  <Col xs={{ span: 16 }} lg={{ span: 10 }}>
+                    <SUl>
+                      <SRowBoxText>Boost APR:</SRowBoxText>
+
+                      <SRowBox>
+                        <STextBox>
+                          <SCircle />
+                          Before unstaking
+                        </STextBox>
+                        <SValueBox>{beforeUnStake}%</SValueBox>
+                      </SRowBox>
+                      <SRowBox>
+                        <STextBox>
+                          <SCircle />
+                          After unstaking
+                        </STextBox>
+                        {afterUnStake && afterUnStake <= 0 ? (
+                          <>
+                            <SValueBox>-</SValueBox>
+                          </>
+                        ) : (
+                          <>
+                            <SValueBox>{afterUnStake}%</SValueBox>
+                          </>
+                        )}
+                      </SRowBox>
+                    </SUl>
+                  </Col>
+                </Row>
+              </SBox>
+              <SBox>
+                <Row>
+                  <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                    <SBtn>
+                      <SBtnCancel onClick={close}>Cancel</SBtnCancel>
+                      <SBtnUnStake
+                        disabled={disabledBtn}
+                        onClick={event =>
+                          handleUnStakeDialog(val, event, checked, messErr)
+                        }
+                      >
+                        Unstake
+                      </SBtnUnStake>
+                    </SBtn>
+                  </Col>
+                </Row>
+              </SBox>
+            </SMainColor>
+          </SWrapper>
         </Dialog>
       </React.Fragment>
     </>
@@ -528,7 +549,8 @@ DialogUnStake.propTypes = {
   list: PropTypes.array,
   valueNFTUnStake: PropTypes.string,
   currentNFT: PropTypes.number,
-  handleUnStakeDialog: PropTypes.func
+  handleUnStakeDialog: PropTypes.func,
+  address: PropTypes.string
 };
 
 DialogUnStake.defaultProps = {
@@ -538,7 +560,8 @@ DialogUnStake.defaultProps = {
   list: [],
   valueNFTUnStake: '',
   currentNFT: 0,
-  handleUnStakeDialog: func
+  handleUnStakeDialog: func,
+  address: ''
 };
 
 const mapStateToProps = ({ account }) => ({
