@@ -462,8 +462,7 @@ function DialogUnStake({
                   type="number"
                   value={val}
                   inputMode="decimal"
-                  // pattern="^[0-9]*[.,]?[0-9]*$"
-                  pattern="[0-9]*"
+                  pattern="^[0-9]*[]?[0-9]*$"
                   min={0}
                   minLength={1}
                   maxLength={79}
