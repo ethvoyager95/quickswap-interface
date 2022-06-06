@@ -75,11 +75,13 @@ export const SHeader = styled.div`
 `;
 export const SText = styled.div`
   color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 700;
   font-size: 20px;
   line-height: 27px;
-  margin-top: 10px;
-  min-width: 200px;
+  min-width: 95px;
 
   img {
     margin-left: 10px;
@@ -87,7 +89,7 @@ export const SText = styled.div`
   @media only screen and (max-width: 768px) {
     font-size: 17px;
     margin: 0;
-    padding: 0 10px;
+    /* padding: 0 10px; */
   }
 `;
 export const SDivHarvest = styled.div`
@@ -443,10 +445,11 @@ export const SBtnUnstake = styled.button`
   }
 `;
 export const SSTake = styled.button`
+  cursor: pointer;
   background: #107def;
   color: #fff;
   border-radius: 5px;
-  padding: 8px 20px;
+  padding: 9px 20px;
   min-width: 150px;
   min-height: 38px;
   text-align: center;
@@ -458,15 +461,9 @@ export const SSTake = styled.button`
     cursor: not-allowed;
   }
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    min-width: 125px;
     margin-left: 0;
-    margin: 3%;
-  }
-`;
-export const SToolTipStakeNFT = styled.div`
-  img {
-    margin-right: 0px;
-    margin-left: 10px;
+    /* margin: 3%; */
   }
 `;
 export const SSTaked = styled.button`
@@ -485,9 +482,9 @@ export const SSTaked = styled.button`
     cursor: not-allowed;
   }
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
-    margin-left: 0;
+    min-width: 125px;
     margin: 3%;
+    margin-left: 0px;
   }
 `;
 export const SSUnTaked = styled.button`
@@ -495,26 +492,23 @@ export const SSUnTaked = styled.button`
   color: #f84960;
   background: #fff;
   border-radius: 5px;
-  padding: 7px 20px;
+  padding: 8px 20px;
   min-width: 150px;
   text-align: center;
   border: 1px solid #f84960;
-  margin-top: 10px;
   outline: none;
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
-    :hover {
-      background-color: #d3d3d3 !important;
-    }
   }
   :hover {
     background: #fff !important;
   }
   @media only screen and (max-width: 768px) {
-    min-width: 150px;
+    min-width: 125px;
     margin-left: 0;
     margin: 3%;
+    display: block;
   }
 `;
 export const SSUnTake = styled.button`
@@ -636,7 +630,7 @@ export const SInforClaimNotBorder = styled.div`
   padding-bottom: 15px;
   @media only screen and (max-width: 768px) {
     border-bottom: none;
-    padding: 0 10px;
+    /* padding: 0 10px; */
   }
 `;
 export const SInforClaimCountDown = styled.div`
@@ -837,7 +831,7 @@ export const SUnClaim = styled.div`
   margin-right: 15px;
   cursor: not-allowed;
   @media only screen and (max-width: 768px) {
-    width: 100%;
+    /* width: 100%; */
   }
 `;
 export const STimeClaim = styled.div`
@@ -855,7 +849,7 @@ export const STimeText = styled.div`
 `;
 export const SItemTime = styled.div``;
 export const SFlash = styled.img`
-  margin-right: 10px;
+  /* margin-right: 10px; */
 `;
 export const SDetails = styled.div`
   font-weight: 500;
@@ -868,13 +862,17 @@ export const SDetails = styled.div`
   }
 `;
 export const SDetailsColor = styled.div`
+  min-width: fit-content;
   font-size: 16px;
   line-height: 35px;
-  color: ##6d6f7b;
+  color: #6d6f7b;
   display: flex;
+  align-items: center;
+  justify-content: center;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
-    margin-right: 10px;
+    justify-content: right;
+    padding-left: 55px;
   }
 `;
 export const SDetailsColorBold = styled.div`
@@ -891,8 +889,11 @@ export const SRowFlex = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
-  border-bottom: 1px solid #e5e5e5;
   padding: 10px 10px 20px 10px;
+  border-bottom: 1px solid #e5e5e5;
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 export const SRowColumn = styled.div`
   display: flex;
@@ -922,14 +923,17 @@ export const SFlex = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  width: 100%;
 `;
 export const SFlexEnd = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  width: 100%;
+  min-width: 145px;
+  padding-left: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: flex-end;
+    display: none;
   }
 `;
 
@@ -1024,4 +1028,28 @@ export const STextSelecT = styled.div`
   line-height: 28px;
   color: #27282b;
   margin-top: 15px;
+`;
+
+export const SWrapperNFTStake = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+`;
+export const SWrapperCountDownClaim = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+export const SUnstakeCountDownMobile = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  @media only screen and (min-width: 768px) {
+    display: none;
+  }
 `;
