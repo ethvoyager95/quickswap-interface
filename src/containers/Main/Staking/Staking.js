@@ -738,6 +738,7 @@ function Staking({ settings, setSetting }) {
       }
       setValUnStake(valueFormat);
     }
+    // console.log(valUnStake, 'valUnStake');
   };
 
   const handleMaxValue = () => {
@@ -1887,10 +1888,6 @@ function Staking({ settings, setSetting }) {
                         </Tooltip>
                       </ST.SText>
                     </ST.SFlex>
-                  </ST.SRowFlex>
-                </Row>
-                <Row>
-                  <ST.SFlexEnd>
                     {address ? (
                       <>
                         {isApproveNFT ? (
@@ -1898,23 +1895,12 @@ function Staking({ settings, setSetting }) {
                             <ST.SSTake
                               disabled={
                                 itemStaking.length === MAX_STAKE_NFT ||
-                                dataNFT.length === 0 ||
-                                userInfo.amountNumber === 0
+                                dataNFT.length === 0
                               }
                               onClick={handleStakeNFT}
                             >
                               Stake
                             </ST.SSTake>
-                            <ST.SToolTipStakeNFT>
-                              {userInfo.amountNumber === 0 && (
-                                <Tooltip
-                                  placement="right"
-                                  title="You must stake STRK-ETH LP Token before staking NFT"
-                                >
-                                  <ST.SQuestion src={IconQuestion} />
-                                </Tooltip>
-                              )}
-                            </ST.SToolTipStakeNFT>
                           </>
                         ) : (
                           <>
@@ -1927,7 +1913,7 @@ function Staking({ settings, setSetting }) {
                     ) : (
                       <> </>
                     )}
-                  </ST.SFlexEnd>
+                  </ST.SRowFlex>
                 </Row>
                 {isLoading ? (
                   <Row>
@@ -1969,58 +1955,90 @@ function Staking({ settings, setSetting }) {
               </ST.SDiv>
               <ST.SDiv>
                 <Row>
-                  <ST.SRowFlex>
-                    <ST.SFlex>
-                      <ST.SText>NFT Staked</ST.SText>
-                    </ST.SFlex>
-                    {yourBoostAPR &&
-                    yourBoostAPR !== 0 &&
-                    dataNFTUnState.length > 0 ? (
-                      <ST.SFlexEnd>
-                        <ST.SDetailsColor>
-                          {' '}
-                          Your Boost APR:
-                          <ST.SDetailsColorBold>
-                            {yourBoostAPR}%{' '}
-                          </ST.SDetailsColorBold>
-                        </ST.SDetailsColor>
-                      </ST.SFlexEnd>
-                    ) : (
-                      <ST.SFlexEnd>
-                        <ST.SDetailsColor>
-                          Your Boost APR:{' '}
-                          <ST.SDetailsColorNotBold>-</ST.SDetailsColorNotBold>
-                        </ST.SDetailsColor>
-                      </ST.SFlexEnd>
+                  <ST.SRowFlexNFTStaking>
+                    <ST.SWrapperNFTStake>
+                      <ST.SWrapperTitle>
+                        <ST.SFlex>
+                          <ST.SText>NFT Staked</ST.SText>
+                        </ST.SFlex>
+
+                        {yourBoostAPR &&
+                        yourBoostAPR !== 0 &&
+                        dataNFTUnState.length > 0 ? (
+                          <ST.SDetailsColor>
+                            {' '}
+                            Your Boost APR:
+                            <ST.SDetailsColorBold>
+                              {yourBoostAPR}%{' '}
+                            </ST.SDetailsColorBold>
+                          </ST.SDetailsColor>
+                        ) : (
+                          <ST.SDetailsColor>
+                            Your Boost APR:{' '}
+                            <ST.SDetailsColorNotBold>-</ST.SDetailsColorNotBold>
+                          </ST.SDetailsColor>
+                        )}
+                      </ST.SWrapperTitle>
+
+                      <ST.SUnstakeCountDownWeb>
+                        {address && (
+                          <ST.SFlexEnd>
+                            {expiryTimeUnstakeNFT &&
+                            isShowCountDownUnStakeNFT &&
+                            dataNFTUnState.length > 0 &&
+                            isApproveNFT ? (
+                              <ST.SWrapperCountDownWeb>
+                                <CountDownClaim
+                                  times={expiryTimeUnstakeLP}
+                                  address={address}
+                                  type={UNSTAKENFT}
+                                  handleUnStakeNFT={handleUnStakeNFT}
+                                />
+                              </ST.SWrapperCountDownWeb>
+                            ) : (
+                              <>
+                                <ST.SSUnSTakedWeb
+                                  disabled={dataNFTUnState.length === 0}
+                                  onClick={handleUnStakeNFT}
+                                >
+                                  Unstake
+                                </ST.SSUnSTakedWeb>
+                              </>
+                            )}
+                          </ST.SFlexEnd>
+                        )}
+                      </ST.SUnstakeCountDownWeb>
+                    </ST.SWrapperNFTStake>
+
+                    {address && (
+                      <>
+                        {expiryTimeUnstakeNFT &&
+                        isShowCountDownUnStakeNFT &&
+                        dataNFTUnState.length > 0 &&
+                        isApproveNFT ? (
+                          <ST.SWrapperCountDownMobile>
+                            <CountDownClaim
+                              times={expiryTimeUnstakeLP}
+                              address={address}
+                              type={UNSTAKENFT}
+                              handleUnStakeNFT={handleUnStakeNFT}
+                            />
+                          </ST.SWrapperCountDownMobile>
+                        ) : (
+                          <ST.SWrapperUnStake>
+                            <ST.SSUnSTakedMobile
+                              disabled={dataNFTUnState.length === 0}
+                              onClick={handleUnStakeNFT}
+                            >
+                              Unstake
+                            </ST.SSUnSTakedMobile>
+                          </ST.SWrapperUnStake>
+                        )}
+                      </>
                     )}
-                  </ST.SRowFlex>
+                  </ST.SRowFlexNFTStaking>
                 </Row>
-                <Row>
-                  {address && (
-                    <ST.SFlexEnd>
-                      {expiryTimeUnstakeNFT &&
-                      isShowCountDownUnStakeNFT &&
-                      dataNFTUnState.length > 0 &&
-                      isApproveNFT ? (
-                        <CountDownClaim
-                          times={expiryTimeUnstakeLP}
-                          address={address}
-                          type={UNSTAKENFT}
-                          handleUnStakeNFT={handleUnStakeNFT}
-                        />
-                      ) : (
-                        <>
-                          <ST.SSUnTaked
-                            disabled={dataNFTUnState.length === 0}
-                            onClick={handleUnStakeNFT}
-                          >
-                            Unstake
-                          </ST.SSUnTaked>
-                        </>
-                      )}
-                    </ST.SFlexEnd>
-                  )}
-                </Row>
+
                 {isLoading ? (
                   <Row>
                     <Loadding />

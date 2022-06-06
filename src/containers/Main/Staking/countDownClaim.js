@@ -12,11 +12,11 @@ import { UNSTAKE, CLAIMBASE, CLAIMBOOST, UNSTAKENFT } from './helper';
 
 const SBtnClaim = styled.div`
   display: flex;
-  margin-top: 10px;
   justify-content: center;
   align-items: center;
   @media only screen and (max-width: 768px) {
     justify-content: center;
+    width: 100%;
   }
 `;
 const SBoxTime = styled.button`
