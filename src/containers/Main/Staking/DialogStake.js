@@ -448,7 +448,7 @@ function DialogStake({
         setMessErr('');
         setDisabledBtn(false);
       }
-      if (val === '0') {
+      if (val === '0' || (val && Number(val) === 0)) {
         setMessErr('Invalid amount');
         setDisabledBtn(true);
       }
@@ -509,6 +509,7 @@ function DialogStake({
                   value={val}
                   inputMode="decimal"
                   // pattern="^[0-9]*[.,]?[0-9]*$"
+                  pattern="[0-9]*"
                   min={0}
                   minLength={1}
                   maxLength={79}

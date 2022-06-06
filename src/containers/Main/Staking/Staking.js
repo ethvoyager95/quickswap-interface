@@ -101,6 +101,7 @@ const abortController = new AbortController();
 function Staking({ settings, setSetting }) {
   const address = settings.selectedAddress;
   const [val, setVal] = useState('');
+  const [isMaxValue, setIsMaxValue] = useState(false);
   const [valUnStake, setValUnStake] = useState('');
   const [messErr, setMessErr] = useState({
     mess: '',
@@ -462,7 +463,6 @@ function Staking({ settings, setSetting }) {
               const yourBoostAPRPer = PERCENT_APR * lengthArr;
               setYourBoostAPR(yourBoostAPRPer);
             }
-            // const newArraySort = _.sortBy(newArray, 'id');
             setDataNFTUnState(newArray);
             setIsLoading(false);
           } else {
@@ -622,7 +622,7 @@ function Staking({ settings, setSetting }) {
   useMemo(() => {
     if (Number(valueNFTUnStake) > +userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceeded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
     }
@@ -638,6 +638,7 @@ function Staking({ settings, setSetting }) {
       show: false
     });
     const number = event.target.value;
+    setIsMaxValue(false);
     if (number === '') {
       setMessErr({
         mess: '',
@@ -715,13 +716,13 @@ function Staking({ settings, setSetting }) {
     }
     if (number > +userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceeded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
     }
     if (number && !+userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceeded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
     }
@@ -738,8 +739,11 @@ function Staking({ settings, setSetting }) {
       setValUnStake(valueFormat);
     }
   };
+
   const handleMaxValue = () => {
-    setVal(userInfo?.availableNumber);
+    const valueDecimals = renderValueFixed(userInfo?.availableNumber);
+    setIsMaxValue(true);
+    setVal(valueDecimals);
     if (userInfo?.availableNumber > 0) {
       setMessErr({
         mess: '',
@@ -914,7 +918,9 @@ function Staking({ settings, setSetting }) {
       // deposit
       setiIsConfirm(true);
       setIsLoadingBtn(true);
-      const valueBigNumber = new BigNumber(val);
+      const valueBigNumber = isMaxValue
+        ? new BigNumber(userInfo?.availableNumber)
+        : new BigNumber(val);
       if (valueBigNumber.isZero()) {
         setMessErr({
           mess: 'Invalid amount',
@@ -943,6 +949,7 @@ function Staking({ settings, setSetting }) {
             setiIsConfirm(false);
             setIsSuccess(true);
             setIsLoadingBtn(false);
+            setIsMaxValue(false);
             setVal('');
           }
         })
@@ -970,7 +977,7 @@ function Staking({ settings, setSetting }) {
   const handleUnStake = async () => {
     if (valUnStake > +userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceeded your balance. Try again',
+        mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
       return;
@@ -1294,11 +1301,6 @@ function Staking({ settings, setSetting }) {
                             autoCorrect="off"
                             maxLength={79}
                             placeholder="Enter a number"
-                            // placeholder={
-                            //   userInfo.availableNumber
-                            //     ? 'Enter a number'
-                            //     : '0.0'
-                            // }
                             onChange={event => handleChangeValue(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
@@ -1638,13 +1640,23 @@ function Staking({ settings, setSetting }) {
                                               handleApproveVstrk={
                                                 handleApproveVstrk
                                               }
+                                              isShowCountDownUnStake={
+                                                isShowCountDownUnStake
+                                              }
                                             />
                                           </ST.SCountDown>
                                         </>
                                       ) : (
                                         <>
                                           <ST.SBtnUnStakeStartNotBorder>
-                                            <ST.SSUnTake disabled>
+                                            <ST.SSUnTake
+                                              className="mg-10"
+                                              disabled={
+                                                isShowCountDownUnStake ||
+                                                !valUnStake
+                                              }
+                                              onClick={handleUnStake}
+                                            >
                                               Unstake
                                             </ST.SSUnTake>
                                             <Tooltip
@@ -1730,7 +1742,14 @@ function Staking({ settings, setSetting }) {
                                   Claim
                                 </ST.SClaim>
                               ) : (
-                                <ST.SUnClaim>Claim</ST.SUnClaim>
+                                <>
+                                  <ST.SClaim
+                                    disabled={isShowCountDownClaimBase}
+                                    onClick={handleClainBaseReward}
+                                  >
+                                    Claim
+                                  </ST.SClaim>
+                                </>
                               )}
                               <Tooltip
                                 placement="right"
@@ -1805,7 +1824,12 @@ function Staking({ settings, setSetting }) {
                                           Claim
                                         </ST.SClaim>
                                       ) : (
-                                        <ST.SUnClaim>Claim</ST.SUnClaim>
+                                        <ST.SClaim
+                                          disabled={isShowCountDownClaimBoost}
+                                          onClick={handleClainBootReward}
+                                        >
+                                          Claim
+                                        </ST.SClaim>
                                       )}
                                       <Tooltip
                                         placement="right"
@@ -1972,29 +1996,30 @@ function Staking({ settings, setSetting }) {
                   </ST.SRowFlex>
                 </Row>
                 <Row>
-                  <ST.SFlexEnd>
-                    {expiryTimeUnstakeNFT &&
-                    isShowCountDownUnStakeNFT &&
-                    dataNFTUnState.length > 0 &&
-                    address &&
-                    isApproveNFT ? (
-                      <CountDownClaim
-                        times={expiryTimeUnstakeLP}
-                        address={address}
-                        type={UNSTAKENFT}
-                        handleUnStakeNFT={handleUnStakeNFT}
-                      />
-                    ) : (
-                      <>
-                        <ST.SSUnTaked
-                          disabled={dataNFTUnState.length === 0}
-                          onClick={handleUnStakeNFT}
-                        >
-                          Unstake
-                        </ST.SSUnTaked>
-                      </>
-                    )}
-                  </ST.SFlexEnd>
+                  {address && (
+                    <ST.SFlexEnd>
+                      {expiryTimeUnstakeNFT &&
+                      isShowCountDownUnStakeNFT &&
+                      dataNFTUnState.length > 0 &&
+                      isApproveNFT ? (
+                        <CountDownClaim
+                          times={expiryTimeUnstakeLP}
+                          address={address}
+                          type={UNSTAKENFT}
+                          handleUnStakeNFT={handleUnStakeNFT}
+                        />
+                      ) : (
+                        <>
+                          <ST.SSUnTaked
+                            disabled={dataNFTUnState.length === 0}
+                            onClick={handleUnStakeNFT}
+                          >
+                            Unstake
+                          </ST.SSUnTaked>
+                        </>
+                      )}
+                    </ST.SFlexEnd>
+                  )}
                 </Row>
                 {isLoading ? (
                   <Row>

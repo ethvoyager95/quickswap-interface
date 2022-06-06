@@ -537,9 +537,18 @@ export const SSUnTake = styled.button`
   border: 1px solid #f84960;
   outline: none;
   margin-right: 15px;
+  .mg-10:disabled {
+    magin-top: 10px !important;
+  }
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
+    :hover {
+      background-color: #fff !important;
+    }
+  }
+  :hover {
+    background-color: #fff !important;
   }
   @media only screen and (max-width: 768px) {
     width: 100%;
@@ -838,6 +847,10 @@ export const SClaim = styled.button`
   margin-right: 15px;
   outline: none;
   border: none;
+  :disabled {
+    cursor: not-allowed;
+    color: #fff;
+  }
   @media only screen and (max-width: 768px) {
     width: 100%;
   }

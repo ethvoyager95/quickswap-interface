@@ -178,10 +178,9 @@ function CountDownClaim({
   handleUnStakeNFT,
   valUnStake,
   isAprroveVstrk,
-  handleApproveVstrk,
-  isClaimBaseReward,
-  isClaimBootReward
+  handleApproveVstrk
 }) {
+  // console.log({ isClaimBaseReward, isClaimBootReward, valUnStake }, 'infor');
   const [expiryTime, setExpiryTime] = useState(times);
   const [isLoadding, setIsLoading] = useState(false);
   const [countdownTime, setCountdownTime] = useState({
@@ -334,7 +333,7 @@ function CountDownClaim({
           {type === CLAIMBASE && (
             <SUntake>
               <SClaim
-                disabled={!isClaimBaseReward}
+                // disabled={!isClaimBaseReward}
                 onClick={handleClainBaseReward}
               >
                 Claim
@@ -350,7 +349,7 @@ function CountDownClaim({
           {type === CLAIMBOOST && (
             <SUntake>
               <SClaim
-                disabled={!isClaimBootReward}
+                // disabled={!isClaimBootReward}
                 onClick={handleClainBootReward}
               >
                 Claim
@@ -383,9 +382,7 @@ CountDownClaim.propTypes = {
   handleUnStakeNFT: PropTypes.func,
   valUnStake: PropTypes.number,
   isAprroveVstrk: PropTypes.bool,
-  handleApproveVstrk: PropTypes.func,
-  isClaimBaseReward: PropTypes.bool,
-  isClaimBootReward: PropTypes.bool
+  handleApproveVstrk: PropTypes.func
 };
 
 CountDownClaim.defaultProps = {
@@ -398,9 +395,7 @@ CountDownClaim.defaultProps = {
   handleUnStakeNFT: '',
   valUnStake: 0,
   isAprroveVstrk: false,
-  handleApproveVstrk: '',
-  isClaimBaseReward: false,
-  isClaimBootReward: false
+  handleApproveVstrk: ''
 };
 
 const mapStateToProps = ({ account }) => ({
