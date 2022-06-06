@@ -650,7 +650,7 @@ export const SInforClaimNotBorder = styled.div`
   padding-bottom: 15px;
   @media only screen and (max-width: 768px) {
     border-bottom: none;
-    /* padding: 0 10px; */
+    padding: 0 10px;
   }
 `;
 export const SInforClaimCountDown = styled.div`
