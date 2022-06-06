@@ -20,10 +20,13 @@ import _ from 'lodash';
 import * as constants from 'utilities/constants';
 // import { checkIsValidNetwork } from 'utilities/common';
 import {
+  DECIMALS_INPUT,
   divDecimals,
   renderValueFixed,
+  renderValueDecimal,
   divDecimalsBigNumber,
   MAX_APPROVE,
+  MINIMUM_VALUE,
   SECOND24H,
   SECOND2DAY,
   SECOND30DAY,
@@ -214,12 +217,9 @@ function Staking({ settings, setSetting }) {
         .then(res => {
           const balanceBigNumber = divDecimals(sTokenBalance, decimalLp);
           const pendingAmountNumber = divDecimals(res.pendingAmount, decimalLp);
-
           const amountNumber = divDecimals(res.amount, decimalLp);
           const totalAmount = amountNumber.plus(pendingAmountNumber);
           const totalUnStake = Number(res.pendingAmount) + Number(res.amount);
-          console.log(totalUnStake, 'totalUnStake');
-          console.log(res, 'res');
           const totalAmountNumber = totalAmount.toNumber();
           const accBaseRewardBigNumber = divDecimals(
             objClaim.accBaseReward,
@@ -633,7 +633,10 @@ function Staking({ settings, setSetting }) {
     const valueFormat = value.replace(/,/g, '.');
     const lstValueFormat = valueFormat?.toString().split('.');
     if (lstValueFormat.length > 1) {
-      const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(0, 5)}`;
+      const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(
+        0,
+        DECIMALS_INPUT
+      )}`;
       return Number(result);
     }
   };
@@ -703,7 +706,10 @@ function Staking({ settings, setSetting }) {
       const valueFormat = event?.target.value.replace(/,/g, '.');
       const lstValueFormat = valueFormat?.toString().split('.');
       if (lstValueFormat.length > 1) {
-        const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(0, 5)}`;
+        const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(
+          0,
+          DECIMALS_INPUT
+        )}`;
         setVal(result);
         return;
       }
@@ -759,25 +765,37 @@ function Staking({ settings, setSetting }) {
       const valueFormat = event?.target.value.replace(/,/g, '.');
       const lstValueFormat = valueFormat?.toString().split('.');
       if (lstValueFormat.length > 1) {
-        const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(0, 5)}`;
+        const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(
+          0,
+          DECIMALS_INPUT
+        )}`;
         setValUnStake(result);
         return;
       }
       setValUnStake(valueFormat);
     }
-    // console.log(valUnStake, 'valUnStake');
   };
 
   const handleMaxValue = () => {
     setIsMaxValue(true);
-    const valueDecimals = renderValueFixed(userInfo?.availableNumber);
-    console.log(userInfo.availableNumber, 'valueDecimals');
-    if (userInfo.availableNumber < 0.00001) {
-      setVal(userInfo.availableNumber);
+    const valueDecimals = renderValueDecimal(userInfo.availableNumber);
+    if (valueDecimals < MINIMUM_VALUE) {
+      setVal(0);
+      setMessErr({
+        mess: 'Invalid amount',
+        show: true
+      });
     } else {
       setVal(valueDecimals);
+      setMessErr({
+        mess: '',
+        show: false
+      });
     }
-    if (userInfo?.availableNumber > 0) {
+    if (
+      userInfo?.availableNumber > 0 &&
+      userInfo.availableNumber > MINIMUM_VALUE
+    ) {
       setMessErr({
         mess: '',
         show: false
@@ -785,10 +803,22 @@ function Staking({ settings, setSetting }) {
     }
   };
   const handleMaxValueStaked = () => {
-    const valueDecimals = renderValueFixed(userInfo?.amountNumber);
     setIsMaxValueUnStake(true);
-    setValUnStake(valueDecimals);
-    if (userInfo?.amountNumber > 0) {
+    const valueDecimals = renderValueDecimal(userInfo.amountNumber);
+    if (valueDecimals < MINIMUM_VALUE) {
+      setValUnStake(0);
+      setMessErrUnStake({
+        mess: 'Invalid amount',
+        show: true
+      });
+    } else {
+      setValUnStake(valueDecimals);
+      setMessErrUnStake({
+        mess: '',
+        show: false
+      });
+    }
+    if (userInfo?.amountNumber > 0 && userInfo.amountNumber > MINIMUM_VALUE) {
       setMessErrUnStake({
         mess: '',
         show: false
@@ -1041,7 +1071,6 @@ function Staking({ settings, setSetting }) {
       const valueBigNumber = isMaxValueUnStake
         ? new BigNumber(valueMaxUnStake)
         : new BigNumber(valUnStake);
-      console.log(userInfo.amountMax, 'amountMax');
       await methods
         .send(
           farmingContract.methods.withdraw,
@@ -1353,8 +1382,9 @@ function Staking({ settings, setSetting }) {
                             onBlur={event => {
                               if (event.target.value !== '') {
                                 setVal(Number(event.target.value));
+                              } else {
+                                replaceValue(event.target.value);
                               }
-                              replaceValue(event.target.value);
                             }}
                           />
                           <ST.SMax
@@ -1951,7 +1981,8 @@ function Staking({ settings, setSetting }) {
                             <ST.SSTake
                               disabled={
                                 itemStaking.length === MAX_STAKE_NFT ||
-                                dataNFT.length === 0
+                                dataNFT.length === 0 ||
+                                userInfo.amountNumber === 0
                               }
                               onClick={handleStakeNFT}
                             >
