@@ -739,6 +739,7 @@ function Staking({ settings, setSetting }) {
       setValUnStake(valueFormat);
     }
   };
+
   const handleMaxValue = () => {
     const valueDecimals = renderValueFixed(userInfo?.availableNumber);
     setIsMaxValue(true);
@@ -948,6 +949,7 @@ function Staking({ settings, setSetting }) {
             setiIsConfirm(false);
             setIsSuccess(true);
             setIsLoadingBtn(false);
+            setIsMaxValue(false);
             setVal('');
           }
         })
@@ -1638,13 +1640,23 @@ function Staking({ settings, setSetting }) {
                                               handleApproveVstrk={
                                                 handleApproveVstrk
                                               }
+                                              isShowCountDownUnStake={
+                                                isShowCountDownUnStake
+                                              }
                                             />
                                           </ST.SCountDown>
                                         </>
                                       ) : (
                                         <>
                                           <ST.SBtnUnStakeStartNotBorder>
-                                            <ST.SSUnTake disabled>
+                                            <ST.SSUnTake
+                                              className="mg-10"
+                                              disabled={
+                                                isShowCountDownUnStake ||
+                                                !valUnStake
+                                              }
+                                              onClick={handleUnStake}
+                                            >
                                               Unstake
                                             </ST.SSUnTake>
                                             <Tooltip
@@ -1728,7 +1740,14 @@ function Staking({ settings, setSetting }) {
                                   Claim
                                 </ST.SClaim>
                               ) : (
-                                <ST.SUnClaim>Claim</ST.SUnClaim>
+                                <>
+                                  <ST.SClaim
+                                    disabled={isShowCountDownClaimBase}
+                                    onClick={handleClainBaseReward}
+                                  >
+                                    Claim
+                                  </ST.SClaim>
+                                </>
                               )}
                               <Tooltip
                                 placement="right"
@@ -1803,7 +1822,12 @@ function Staking({ settings, setSetting }) {
                                           Claim
                                         </ST.SClaim>
                                       ) : (
-                                        <ST.SUnClaim>Claim</ST.SUnClaim>
+                                        <ST.SClaim
+                                          disabled={isShowCountDownClaimBoost}
+                                          onClick={handleClainBootReward}
+                                        >
+                                          Claim
+                                        </ST.SClaim>
                                       )}
                                       <Tooltip
                                         placement="right"
