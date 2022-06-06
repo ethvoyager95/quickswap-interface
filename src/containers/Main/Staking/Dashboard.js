@@ -88,6 +88,10 @@ const SBox = styled.div`
   @media only screen and (max-width: 768px) {
     margin-bottom: 20px;
     padding: 0 10px;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: auto auto;
+    gap: 12px 48px;
   }
 `;
 const SItemsBox = styled.div`
@@ -99,6 +103,9 @@ const STextBox = styled.div`
   line-height: 22px;
   color: #9d9fa7;
   text-align: right;
+  @media only screen and (max-width: 768px) {
+    text-align: left;
+  }
 `;
 const SValueBox = styled.div`
   color: #0b0f23;
@@ -108,6 +115,7 @@ const SValueBox = styled.div`
   text-align: right;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
+    text-align: left;
   }
 `;
 const SUSDBox = styled.div`
@@ -118,6 +126,7 @@ const SUSDBox = styled.div`
   text-align: right;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
+    text-align: left;
   }
 `;
 const SIconFlash = styled.img`

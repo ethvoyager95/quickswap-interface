@@ -1688,10 +1688,12 @@ function Staking({ settings, setSetting }) {
                       </>
                     ) : (
                       <>
-                        <ST.SIconSmall>
-                          <ST.SImgLpSmall src={IconFlashSmall} />
-                        </ST.SIconSmall>
-                        -
+                        <ST.STotalClaim>
+                          <ST.SIconSmall>
+                            <ST.SImgLpSmall src={IconFlashSmall} />
+                          </ST.SIconSmall>
+                          -
+                        </ST.STotalClaim>
                       </>
                     )}
                   </ST.SInforTextVSTRK>
