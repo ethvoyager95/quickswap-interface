@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 /* eslint-disable no-undef */
 import BigNumber from 'bignumber.js';
@@ -22,6 +23,8 @@ export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 101];
 const REQUIRED_DECIMAL = 5;
 const DASHBOARD_DECIMALS = 2;
 export const DECIMALS_INPUT = 10;
+export const DECIMALS_LP = 18;
+export const MIXIMUM_IPUT = 1e-5;
 export const MINIMUM_VALUE = 0.0000000001;
 export const MINIMUM_VALUE_FORMAT = 0.00001;
 export const MAX_APPROVE = new BigNumber(2)
@@ -380,16 +383,41 @@ export const divDecimalsBigNumber = (number, decimals) => {
   }
 };
 // eslint-disable-next-line consistent-return
-export const renderValueDecimal = value => {
+export const renderValueDecimal = (value, decimal) => {
   if (value) {
     const lstValueFormat = value?.toString().split('.');
     if (lstValueFormat.length > 1) {
       const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(
         0,
-        DECIMALS_INPUT
+        decimal
       )}`;
       return result;
     }
     return value;
   }
+};
+export const showAllNumber = number => {
+  if (Math.abs(number) < 1.0) {
+    // eslint-disable-next-line radix
+    const e = parseInt(number.toString().split('e-')[1]);
+    if (e) {
+      // eslint-disable-next-line no-param-reassign
+      // eslint-disable-next-line no-restricted-properties
+      number *= Math.pow(10, e - 1);
+      // eslint-disable-next-line no-param-reassign
+      number = `0.${new Array(e).join('0')}${number.toString().substring(2)}`;
+    }
+  } else {
+    // eslint-disable-next-line radix
+    const e = parseInt(number.toString().split('+')[1]);
+
+    if (e > 20) {
+      // eslint-disable-next-line no-const-assign
+      e -= 20;
+      // eslint-disable-next-line no-restricted-properties
+      number /= Math.pow(10, e);
+      number += new Array(e + 1).join('0');
+    }
+  }
+  return Number(number).toFixed(DECIMALS_INPUT);
 };
