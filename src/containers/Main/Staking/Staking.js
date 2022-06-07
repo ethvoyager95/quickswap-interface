@@ -446,7 +446,6 @@ function Staking({ settings, setSetting }) {
             }
 
             const dataStakeClone = _.cloneDeep(dataConvert);
-            console.log(dataStakeClone, 'dataStakeClone');
             setDataNFT(dataStakeClone);
             setIsLoading(false);
           } else {
@@ -1186,10 +1185,18 @@ function Staking({ settings, setSetting }) {
         return;
       }
       if (value && event.isTrusted) {
+        let lstBeginStakeNft;
         setiIsConfirm(true);
         setIsStakeNFT(false);
-        const lstBeginStakeNft = dataNFT?.slice(value, dataNFT.length);
-        console.log(lstBeginStakeNft, 'lstBeginStakeNft');
+        // set data begin stake nft
+        if (checked) {
+          lstBeginStakeNft = dataNFT?.slice(value, dataNFT.length);
+        } else {
+          const dataBeginDelete = _.filter(dataNFT, item => {
+            return item.id !== Number(value);
+          });
+          lstBeginStakeNft = [...dataBeginDelete];
+        }
         await methods
           .send(
             checked
@@ -1238,12 +1245,21 @@ function Staking({ settings, setSetting }) {
         return;
       }
       if (value && event.isTrusted) {
+        let lstBeginUnStakeNft;
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
-        const lstBeginUnStakeNft = dataNFTUnState?.slice(
-          0,
-          dataNFTUnState.length - value
-        );
+        // set data begin unstake nft
+        if (checked === true) {
+          lstBeginUnStakeNft = dataNFTUnState?.slice(
+            0,
+            dataNFTUnState.length - value
+          );
+        } else {
+          const dataBeginDelete = _.filter(dataNFTUnState, item => {
+            return item.id !== Number(value);
+          });
+          lstBeginUnStakeNft = [...dataBeginDelete];
+        }
         await methods
           .send(
             checked
