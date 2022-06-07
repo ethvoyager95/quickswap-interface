@@ -92,6 +92,20 @@ export const SText = styled.div`
     /* padding: 0 10px; */
   }
 `;
+
+export const STextLeft = styled.div`
+  color: #000000;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 27px;
+
+  @media only screen and (max-width: 768px) {
+    font-size: 17px;
+    padding: 0 10px;
+    align-self: flex-start;
+  }
+`;
+
 export const SDivHarvest = styled.div`
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 10px;
