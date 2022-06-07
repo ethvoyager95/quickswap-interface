@@ -304,7 +304,7 @@ function Staking({ settings, setSetting }) {
         });
       if (address) {
         await axiosInstance
-          .get('api/user/total_claim', {
+          .get('/user/total_claim', {
             params: {
               user_address: address
             }
@@ -371,7 +371,7 @@ function Staking({ settings, setSetting }) {
         address
       ]);
       await axiosInstance
-        .get('api/user/total_claim', {
+        .get('/user/total_claim', {
           params: {
             user_address: address
           }
