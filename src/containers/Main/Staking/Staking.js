@@ -219,7 +219,9 @@ function Staking({ settings, setSetting }) {
           const pendingAmountNumber = divDecimals(res.pendingAmount, decimalLp);
           const amountNumber = divDecimals(res.amount, decimalLp);
           const totalAmount = amountNumber.plus(pendingAmountNumber);
-          const totalUnStake = Number(res.pendingAmount) + Number(res.amount);
+          const totalUnStake = new BigNumber(res?.pendingAmount).plus(
+            new BigNumber(res?.amount)
+          );
           const totalAmountNumber = totalAmount.toNumber();
           const accBaseRewardBigNumber = divDecimals(
             objClaim.accBaseReward,
@@ -1326,6 +1328,17 @@ function Staking({ settings, setSetting }) {
           selectedAddress: acc[0],
           accountLoading: true
         });
+        setVal('');
+        setValUnStake('');
+        setMessErr({
+          mess: '',
+          show: false,
+          noLP: false
+        });
+        setMessErrUnStake({
+          mess: '',
+          show: false
+        });
       });
     }
   }, [window.ethereum, address]);
@@ -1343,7 +1356,6 @@ function Staking({ settings, setSetting }) {
       }
     };
   });
-
   return (
     <>
       <MainLayout>
@@ -1690,7 +1702,6 @@ function Staking({ settings, setSetting }) {
                                         >
                                           <ST.SBtnUnStakeStartNotBorder>
                                             <ST.SBtnStake
-                                              className="mg-30"
                                               onClick={handleApproveVstrk}
                                             >
                                               Approve Staking
