@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-useless-concat */
@@ -418,7 +419,7 @@ function Staking({ settings, setSetting }) {
             }
           })
           .catch(err => {
-            console.log(err);
+            // console.log(err);
           });
       }
       await axiosInstanceMoralis
@@ -695,12 +696,14 @@ function Staking({ settings, setSetting }) {
         mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
+      setDisabledBtn(true);
     }
     if (Number(number) && !+userInfo?.availableNumber) {
       setMessErr({
         mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
+      setDisabledBtn(true);
     }
     if (Number(number) < 0) {
       setVal(0);
@@ -754,12 +757,14 @@ function Staking({ settings, setSetting }) {
         mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
+      setDisabledBtnUn(true);
     }
     if (number && !+userInfo?.amountNumber) {
       setMessErrUnStake({
         mess: 'The amount has exceeded your balance. Try again!',
         show: true
       });
+      setDisabledBtnUn(true);
     }
     if (Number(number) < 0) {
       setValUnStake(0);
