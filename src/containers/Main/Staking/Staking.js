@@ -516,7 +516,7 @@ function Staking({ settings, setSetting }) {
             // check
             const dataNFTStorage = localStorage.getItem('data_nft');
             const dataNFTLocal = JSON.parse(dataNFTStorage);
-            if ((newArray.length > 0 && filterNFTStake) || txhash) {
+            if (newArray.length > 0 && !!filterNFTStake && txhash) {
               let dataNFTItem = [];
               // eslint-disable-next-line no-plusplus
               for (let i = 0; i < newArray.length; i++) {
@@ -530,6 +530,12 @@ function Staking({ settings, setSetting }) {
                   setDataNFT(dataNFTItemClone);
                 }, 5000);
               }
+            }
+            if (!filterNFTStake && txhash) {
+              setTimeout(() => {
+                const dataNFTBeginUnstakeClone = [...dataNFTLocal];
+                setDataNFT(dataNFTBeginUnstakeClone);
+              }, 10000);
             }
           } else {
             setDataNFTUnState([]);
@@ -1262,6 +1268,7 @@ function Staking({ settings, setSetting }) {
               setTextSuccess('Stake NFT successfully');
               setiIsConfirm(false);
               setIsSuccess(true);
+              setFilterNFTStake(true);
               setValueNFTStake('');
               setItemStaking([]);
             }
