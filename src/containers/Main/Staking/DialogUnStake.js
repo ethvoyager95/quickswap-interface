@@ -251,7 +251,7 @@ const SBtnUnStake = styled.button`
   align-items: center;
   text-align: center;
   color: #f84960;
-  background: #eceff9;
+  background: transparent;
   border: 1px solid #f84960;
   border-radius: 8px;
   padding: 15px 12px;
@@ -261,12 +261,14 @@ const SBtnUnStake = styled.button`
   cursor: pointer;
   margin-left: 10px;
   outline: none;
+  :hover {
+    background-color: transparent !important;
+  }
   :disabled {
     color: #fff !important;
+    cursor: not-allowed;
   }
-  &:hover {
-    background: #eceff9 !important;
-  }
+
   @media only screen and (max-width: 768px) {
     font-size: 14px;
     padding: 10px 12px;

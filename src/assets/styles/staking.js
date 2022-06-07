@@ -81,7 +81,6 @@ export const SText = styled.div`
   font-weight: 700;
   font-size: 20px;
   line-height: 27px;
-  min-width: 95px;
 
   img {
     margin-left: 10px;
@@ -925,7 +924,7 @@ export const SDetailsColor = styled.div`
   @media only screen and (max-width: 768px) {
     font-size: 13px;
     justify-content: right;
-    padding-left: 20px;
+    gap: 6px;
   }
 `;
 export const SDetailsColorBold = styled.div`
@@ -1109,12 +1108,10 @@ export const SNexSlider = styled.img`
 export const SRowFlexNFTStaking = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
   padding: 10px 10px 20px 10px;
   border-bottom: 1px solid #e5e5e5;
-  @media only screen and (max-width: 768px) {
-    flex-direction: column;
-  }
 `;
 
 export const SUnstakeCountDownWeb = styled.div`
@@ -1129,6 +1126,10 @@ export const SWrapperTitle = styled.div`
   align-items: center;
   justify-content: space-between;
   flex: 9;
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 export const SWrapperCountDownWeb = styled.div`
