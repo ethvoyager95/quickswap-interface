@@ -23,6 +23,7 @@ const REQUIRED_DECIMAL = 5;
 const DASHBOARD_DECIMALS = 2;
 export const DECIMALS_INPUT = 10;
 export const MINIMUM_VALUE = 0.0000000001;
+export const MINIMUM_VALUE_FORMAT = 0.00001;
 export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)

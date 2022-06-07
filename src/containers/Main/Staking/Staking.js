@@ -27,6 +27,7 @@ import {
   divDecimalsBigNumber,
   MAX_APPROVE,
   MINIMUM_VALUE,
+  MINIMUM_VALUE_FORMAT,
   SECOND24H,
   SECOND2DAY,
   SECOND30DAY,
@@ -219,7 +220,9 @@ function Staking({ settings, setSetting }) {
           const pendingAmountNumber = divDecimals(res.pendingAmount, decimalLp);
           const amountNumber = divDecimals(res.amount, decimalLp);
           const totalAmount = amountNumber.plus(pendingAmountNumber);
-          const totalUnStake = Number(res.pendingAmount) + Number(res.amount);
+          const totalUnStake = new BigNumber(res?.pendingAmount).plus(
+            new BigNumber(res?.amount)
+          );
           const totalAmountNumber = totalAmount.toNumber();
           const accBaseRewardBigNumber = divDecimals(
             objClaim.accBaseReward,
@@ -444,8 +447,7 @@ function Staking({ settings, setSetting }) {
             }
 
             const dataStakeClone = _.cloneDeep(dataConvert);
-            const dataStakeCloneSort = _.sortBy(dataStakeClone, 'id');
-            setDataNFT(dataStakeCloneSort);
+            setDataNFT(dataStakeClone);
             setIsLoading(false);
           } else {
             setDataNFT([]);
@@ -456,7 +458,7 @@ function Staking({ settings, setSetting }) {
       setIsLoading(false);
       throw err;
     }
-  }, [address, txhash, window.ethereum]);
+  }, [address, window.ethereum]);
 
   useMemo(async () => {
     if (!address) {
@@ -503,7 +505,7 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     setIsLoading(false);
-  }, [address, txhash, window.ethereum, dataNFT]);
+  }, [address, window.ethereum, dataNFT]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
@@ -1184,8 +1186,18 @@ function Staking({ settings, setSetting }) {
         return;
       }
       if (value && event.isTrusted) {
+        let lstBeginStakeNft;
         setiIsConfirm(true);
         setIsStakeNFT(false);
+        // set data begin stake nft
+        if (checked) {
+          lstBeginStakeNft = dataNFT?.slice(value, dataNFT.length);
+        } else {
+          const dataBeginDelete = _.filter(dataNFT, item => {
+            return item.id !== Number(value);
+          });
+          lstBeginStakeNft = [...dataBeginDelete];
+        }
         await methods
           .send(
             checked
@@ -1202,6 +1214,7 @@ function Staking({ settings, setSetting }) {
               setIsSuccess(true);
               setValueNFTStake('');
               setItemStaking([]);
+              setDataNFT(lstBeginStakeNft);
             }
           })
           .catch(err => {
@@ -1233,8 +1246,21 @@ function Staking({ settings, setSetting }) {
         return;
       }
       if (value && event.isTrusted) {
+        let lstBeginUnStakeNft;
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
+        // set data begin unstake nft
+        if (checked === true) {
+          lstBeginUnStakeNft = dataNFTUnState?.slice(
+            0,
+            dataNFTUnState.length - value
+          );
+        } else {
+          const dataBeginDelete = _.filter(dataNFTUnState, item => {
+            return item.id !== Number(value);
+          });
+          lstBeginUnStakeNft = [...dataBeginDelete];
+        }
         await methods
           .send(
             checked
@@ -1251,6 +1277,7 @@ function Staking({ settings, setSetting }) {
               setIsSuccess(true);
               setValueNFTUnStake('');
               setItemStaked([]);
+              setDataNFTUnState(lstBeginUnStakeNft);
             }
           })
           .catch(err => {
@@ -1326,6 +1353,17 @@ function Staking({ settings, setSetting }) {
           selectedAddress: acc[0],
           accountLoading: true
         });
+        setVal('');
+        setValUnStake('');
+        setMessErr({
+          mess: '',
+          show: false,
+          noLP: false
+        });
+        setMessErrUnStake({
+          mess: '',
+          show: false
+        });
       });
     }
   }, [window.ethereum, address]);
@@ -1343,7 +1381,6 @@ function Staking({ settings, setSetting }) {
       }
     };
   });
-
   return (
     <>
       <MainLayout>
@@ -1381,7 +1418,11 @@ function Staking({ settings, setSetting }) {
                             onChange={event => handleChangeValue(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
-                                setVal(Number(event.target.value));
+                                if (event.target.value < MINIMUM_VALUE_FORMAT) {
+                                  setVal(event.target.value);
+                                } else {
+                                  setVal(Number(event.target.value));
+                                }
                               } else {
                                 replaceValue(event.target.value);
                               }
@@ -1560,14 +1601,15 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            // placeholder={
-                            //   userInfo.amountNumber ? 'Enter a number' : '0.0'
-                            // }
                             placeholder="Enter a number"
                             onChange={event => handleChangeValueUnstake(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
-                                setValUnStake(Number(event.target.value));
+                                if (event.target.value < MINIMUM_VALUE_FORMAT) {
+                                  setValUnStake(event.target.value);
+                                } else {
+                                  setValUnStake(Number(event.target.value));
+                                }
                               }
                               replaceValue(event.target.value);
                             }}
@@ -1690,7 +1732,6 @@ function Staking({ settings, setSetting }) {
                                         >
                                           <ST.SBtnUnStakeStartNotBorder>
                                             <ST.SBtnStake
-                                              className="mg-30"
                                               onClick={handleApproveVstrk}
                                             >
                                               Approve Staking
@@ -1988,6 +2029,12 @@ function Staking({ settings, setSetting }) {
                             >
                               Stake
                             </ST.SSTake>
+                            <Tooltip
+                              placement="top"
+                              title="You must stake STRK-ETH LP Token before staking NFT"
+                            >
+                              <ST.SQuestionNFT src={IconQuestion} />
+                            </Tooltip>
                           </>
                         ) : (
                           <>
