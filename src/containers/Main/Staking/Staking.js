@@ -448,6 +448,7 @@ function Staking({ settings, setSetting }) {
             });
             // eslint-disable-next-line no-shadow
             const dataConvert = _.cloneDeep(dataMyContract);
+
             if (dataConvert.length > 0) {
               // eslint-disable-next-line array-callback-return
               dataConvert.map(item => {
