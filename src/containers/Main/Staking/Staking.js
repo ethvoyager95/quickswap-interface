@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 /* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
@@ -105,7 +106,6 @@ const AUDITOR_SETTING = {
   prevArrow: <SamplePrevArrow />
 };
 const abortController = new AbortController();
-
 // eslint-disable-next-line react/prop-types
 function Staking({ settings, setSetting }) {
   const address = settings.selectedAddress;
@@ -146,6 +146,7 @@ function Staking({ settings, setSetting }) {
   const [countNFT, setCounNFT] = useState(0);
   const [isUnStakeLp, setIsUnStakeLp] = useState(false);
   const [isShowCountDownUnStake, setIsShowCountDownUnStake] = useState(false);
+  const [filterNFTStake, setFilterNFTStake] = useState(true);
   const [isShowCountDownClaimBase, setIsShowCountDownClaimBase] = useState(
     false
   );
@@ -405,54 +406,7 @@ function Staking({ settings, setSetting }) {
       setUserInfo({ ...objUser });
     }
   };
-  useMemo(async () => {
-    if (!address) {
-      setIsLoading(false);
-      setDataNFTUnState([]);
-      return;
-    }
-    setIsLoading(true);
-    try {
-      await methods
-        .call(farmingContract.methods.getUserInfo, [0, address])
-        .then(res => {
-          if (res && res.boostFactors.length > 0) {
-            const lstStakedId = res.boostFactors;
-            const dataCovert = [...lstStakedId];
-            setCounNFT(dataCovert.length);
-            const newArray = dataCovert?.map(item => {
-              // eslint-disable-next-line no-return-assign
-              return (item = {
-                name: 'AnnexIronWolf ' + `#${item}`,
-                token_id: item,
-                id: +item,
-                img: fakeImgNFT || IconDuck,
-                active: false
-              });
-            });
-            const lengthArr = newArray.length;
-            if (lengthArr === 0 || lengthArr === 1) {
-              setYourBoostAPR(0);
-            } else {
-              const yourBoostAPRPer = PERCENT_APR * lengthArr;
-              setYourBoostAPR(yourBoostAPRPer);
-            }
-            setDataNFTUnState(newArray);
-            setIsLoading(false);
-          } else {
-            setDataNFTUnState([]);
-            setCounNFT(0);
-            setYourBoostAPR(0);
-          }
-        });
-    } catch (err) {
-      setIsLoading(false);
-      throw err;
-    }
-    setIsLoading(false);
-  }, [address, window.ethereum, dataNFT]);
-
-  // get data
+  // get data stake
   useMemo(async () => {
     if (!address) {
       setIsLoading(false);
@@ -508,7 +462,7 @@ function Staking({ settings, setSetting }) {
                 }
               });
             }
-
+            localStorage.setItem('data_nft', JSON.stringify(dataConvert));
             const dataStakeClone = _.cloneDeep(dataConvert);
             setDataNFT(dataStakeClone);
             setIsLoading(false);
@@ -521,7 +475,73 @@ function Staking({ settings, setSetting }) {
       setIsLoading(false);
       throw err;
     }
-  }, [address, window.ethereum]);
+  }, [address, window.ethereum, txhash]);
+  // get data staked
+  useMemo(async () => {
+    if (!address) {
+      setIsLoading(false);
+      setDataNFTUnState([]);
+      return;
+    }
+    setIsLoading(true);
+    let newArray = null;
+    try {
+      await methods
+        .call(farmingContract.methods.getUserInfo, [0, address])
+        .then(res => {
+          if (res && res.boostFactors.length > 0) {
+            const lstStakedId = res.boostFactors;
+            const dataCovert = [...lstStakedId];
+            setCounNFT(dataCovert.length);
+            newArray = dataCovert?.map(item => {
+              // eslint-disable-next-line no-return-assign
+              return (item = {
+                name: 'AnnexIronWolf ' + `#${item}`,
+                token_id: item,
+                id: +item,
+                img: fakeImgNFT || IconDuck,
+                active: false
+              });
+            });
+            const lengthArr = newArray.length;
+            if (lengthArr === 0 || lengthArr === 1) {
+              setYourBoostAPR(0);
+            } else {
+              const yourBoostAPRPer = PERCENT_APR * lengthArr;
+              setYourBoostAPR(yourBoostAPRPer);
+            }
+            setDataNFTUnState(newArray);
+            setIsLoading(false);
+            // check
+            const dataNFTStorage = localStorage.getItem('data_nft');
+            const dataNFTLocal = JSON.parse(dataNFTStorage);
+            if ((newArray.length > 0 && filterNFTStake) || txhash) {
+              let dataNFTItem = [];
+              // eslint-disable-next-line no-plusplus
+              for (let i = 0; i < newArray.length; i++) {
+                dataNFTItem = _.filter(dataNFTLocal, item => {
+                  return item.id !== Number(newArray[i].id);
+                });
+              }
+              if (dataNFTItem.length > 0) {
+                setTimeout(() => {
+                  const dataNFTItemClone = [...dataNFTItem];
+                  setDataNFT(dataNFTItemClone);
+                }, 5000);
+              }
+            }
+          } else {
+            setDataNFTUnState([]);
+            setCounNFT(0);
+            setYourBoostAPR(0);
+          }
+        });
+    } catch (err) {
+      setIsLoading(false);
+      throw err;
+    }
+    setIsLoading(false);
+  }, [address, window.ethereum, txhash, filterNFTStake]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
@@ -1225,19 +1245,8 @@ function Staking({ settings, setSetting }) {
         return;
       }
       if (value && event.isTrusted) {
-        let lstBeginStakeNft;
         setiIsConfirm(true);
         setIsStakeNFT(false);
-        // set data begin stake nft
-        if (checked) {
-          // delete 0 -> index value
-          lstBeginStakeNft = dataNFT?.slice(value, dataNFT.length);
-        } else {
-          const dataBeginDelete = _.filter(dataNFT, item => {
-            return item.id !== Number(value);
-          });
-          lstBeginStakeNft = [...dataBeginDelete];
-        }
         await methods
           .send(
             checked
@@ -1254,7 +1263,6 @@ function Staking({ settings, setSetting }) {
               setIsSuccess(true);
               setValueNFTStake('');
               setItemStaking([]);
-              setDataNFT(lstBeginStakeNft);
             }
           })
           .catch(err => {
@@ -1286,22 +1294,8 @@ function Staking({ settings, setSetting }) {
         return;
       }
       if (value && event.isTrusted) {
-        let lstBeginUnStakeNft;
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
-        // set data begin unstake nft
-        if (checked === true) {
-          // delete last list by value
-          lstBeginUnStakeNft = dataNFTUnState?.slice(
-            0,
-            dataNFTUnState.length - value
-          );
-        } else {
-          const dataBeginDelete = _.filter(dataNFTUnState, item => {
-            return item.id !== Number(value);
-          });
-          lstBeginUnStakeNft = [...dataBeginDelete];
-        }
         await methods
           .send(
             checked
@@ -1316,9 +1310,9 @@ function Staking({ settings, setSetting }) {
               setTextSuccess('Unstake NFT successfully');
               setiIsConfirm(false);
               setIsSuccess(true);
+              setFilterNFTStake(false);
               setValueNFTUnStake('');
               setItemStaked([]);
-              setDataNFTUnState(lstBeginUnStakeNft);
             }
           })
           .catch(err => {
@@ -1355,7 +1349,6 @@ function Staking({ settings, setSetting }) {
   };
   const handleCloseSuccess = () => {
     setIsSuccess(false);
-    // window.location.reload();
   };
   const handleCloseErr = () => {
     setIsShowCancel(false);
@@ -1422,6 +1415,7 @@ function Staking({ settings, setSetting }) {
       }
     };
   });
+
   return (
     <>
       <MainLayout>

@@ -263,6 +263,9 @@ const SBtnUnStake = styled.button`
   outline: none;
   :disabled {
     color: #fff !important;
+    :hover {
+      background-color: #d3d3d3 !important;
+    }
   }
   &:hover {
     background: #eceff9 !important;
