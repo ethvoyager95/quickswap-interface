@@ -27,6 +27,7 @@ import {
   divDecimalsBigNumber,
   MAX_APPROVE,
   MINIMUM_VALUE,
+  MINIMUM_VALUE_FORMAT,
   SECOND24H,
   SECOND2DAY,
   SECOND30DAY,
@@ -1417,7 +1418,11 @@ function Staking({ settings, setSetting }) {
                             onChange={event => handleChangeValue(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
-                                setVal(event.target.value);
+                                if (event.target.value < MINIMUM_VALUE_FORMAT) {
+                                  setVal(event.target.value);
+                                } else {
+                                  setVal(Number(event.target.value));
+                                }
                               } else {
                                 replaceValue(event.target.value);
                               }
@@ -1600,7 +1605,11 @@ function Staking({ settings, setSetting }) {
                             onChange={event => handleChangeValueUnstake(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
-                                setValUnStake(event.target.value);
+                                if (event.target.value < MINIMUM_VALUE_FORMAT) {
+                                  setValUnStake(event.target.value);
+                                } else {
+                                  setValUnStake(Number(event.target.value));
+                                }
                               }
                               replaceValue(event.target.value);
                             }}
