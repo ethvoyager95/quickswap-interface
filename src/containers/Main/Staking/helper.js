@@ -383,13 +383,13 @@ export const divDecimalsBigNumber = (number, decimals) => {
   }
 };
 // eslint-disable-next-line consistent-return
-export const renderValueDecimal = value => {
+export const renderValueDecimal = (value, decimal) => {
   if (value) {
     const lstValueFormat = value?.toString().split('.');
     if (lstValueFormat.length > 1) {
       const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(
         0,
-        DECIMALS_LP
+        decimal
       )}`;
       return result;
     }

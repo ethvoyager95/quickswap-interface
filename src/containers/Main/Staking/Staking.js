@@ -23,6 +23,7 @@ import * as constants from 'utilities/constants';
 import {
   DECIMALS_INPUT,
   MIXIMUM_IPUT,
+  DECIMALS_LP,
   divDecimals,
   renderValueFixed,
   renderValueDecimal,
@@ -799,7 +800,10 @@ function Staking({ settings, setSetting }) {
 
   const handleMaxValue = () => {
     setIsMaxValue(true);
-    const valueDecimals = renderValueDecimal(userInfo?.availableNumber);
+    const valueDecimals = renderValueDecimal(
+      userInfo?.availableNumber,
+      DECIMALS_LP
+    );
     if (Number(valueDecimals) <= MIXIMUM_IPUT) {
       const value_miximum = showAllNumber(valueDecimals);
       setVal(value_miximum);
@@ -811,7 +815,11 @@ function Staking({ settings, setSetting }) {
         show: true
       });
     } else if (valueDecimals > MIXIMUM_IPUT) {
-      setVal(valueDecimals);
+      const value = renderValueDecimal(
+        userInfo?.availableNumber,
+        DECIMALS_INPUT
+      );
+      setVal(value);
       setMessErr({
         mess: '',
         show: false
@@ -829,7 +837,10 @@ function Staking({ settings, setSetting }) {
   };
   const handleMaxValueStaked = () => {
     setIsMaxValueUnStake(true);
-    const valueDecimals = renderValueDecimal(userInfo?.amountNumber);
+    const valueDecimals = renderValueDecimal(
+      userInfo?.amountNumber,
+      DECIMALS_LP
+    );
     if (Number(valueDecimals) <= MIXIMUM_IPUT) {
       const value_miximum = showAllNumber(valueDecimals);
       setValUnStake(value_miximum);
@@ -841,7 +852,8 @@ function Staking({ settings, setSetting }) {
         show: true
       });
     } else if (valueDecimals > MIXIMUM_IPUT) {
-      setValUnStake(valueDecimals);
+      const value = renderValueDecimal(userInfo?.amountNumber, DECIMALS_INPUT);
+      setValUnStake(value);
       setMessErrUnStake({
         mess: '',
         show: false
