@@ -419,7 +419,7 @@ function Staking({ settings, setSetting }) {
             }
           })
           .catch(err => {
-            // console.log(err);
+            console.log(err);
           });
       }
       await axiosInstanceMoralis
