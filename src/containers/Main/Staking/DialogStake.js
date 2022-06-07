@@ -398,49 +398,41 @@ function DialogStake({
     // NFT AMOUNT CAN STAKE
     const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
     const LIST_STAKE = listStake.length;
-    const CURRENT_STAKED = listUnStake.length;
     // NFT CURREN AMOUNT
     const NUMBER_VAL = Number(val);
-    const NFT_BEGIN_STAKED = NUMBER_VAL + CURRENT_STAKED;
     if (val === '') {
       setMessErr('');
       setDisabledBtn(true);
     }
-
     if (checked) {
       if (val === '') {
         setMessErr('');
         setDisabledBtn(true);
       }
-      // nhap > 20
-      if (itemStaked === 0 && NUMBER_VAL > MAX_STAKE_NFT) {
-        setMessErr(`Invalid number. You can not stake more than 20 NFTs`);
-        setDisabledBtn(true);
-        return;
-      }
-      if (NUMBER_VAL > LIST_STAKE && NUMBER_VAL + CURRENT_STAKED > MAX_STAKE) {
-        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
-        setDisabledBtn(true);
-        return;
-      }
-      if (NUMBER_VAL && CURRENT_STAKED === MAX_STAKE_NFT) {
-        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
-        setDisabledBtn(true);
-        return;
-      }
-      // nhap input + so luong da staked > max
       if (
-        itemStaked > 0 &&
-        NFT_BEGIN_STAKED > MAX_STAKE_NFT &&
-        CURRENT_STAKED < MAX_STAKE_NFT
+        itemStaked === 0 &&
+        LIST_STAKE >= MAX_STAKE_NFT &&
+        NUMBER_VAL > MAX_STAKE_NFT
       ) {
-        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
+        setMessErr(
+          `Invalid number. You can not stake more than ${MAX_STAKE_NFT} NFTs`
+        );
         setDisabledBtn(true);
         return;
       }
-      // input > so nft hien co
-      if (NUMBER_VAL > LIST_STAKE) {
+      if (LIST_STAKE < MAX_STAKE_NFT - itemStaked && NUMBER_VAL > LIST_STAKE) {
         setMessErr(`Invalid number. You can stake only ${LIST_STAKE} NFTs`);
+        setDisabledBtn(true);
+        return;
+      }
+      if (
+        LIST_STAKE >= MAX_STAKE_NFT - itemStaked &&
+        NUMBER_VAL > MAX_STAKE_NFT - itemStaked
+      ) {
+        setMessErr(
+          `Invalid number. You can stake only ${MAX_STAKE_NFT -
+            itemStaked} NFTs`
+        );
         setDisabledBtn(true);
         return;
       }
