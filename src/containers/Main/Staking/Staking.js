@@ -22,10 +22,12 @@ import * as constants from 'utilities/constants';
 // import { checkIsValidNetwork } from 'utilities/common';
 import {
   DECIMALS_INPUT,
+  MIXIMUM_IPUT,
   divDecimals,
   renderValueFixed,
   renderValueDecimal,
   divDecimalsBigNumber,
+  showAllNumber,
   MAX_APPROVE,
   MINIMUM_VALUE,
   MINIMUM_VALUE_FORMAT,
@@ -309,7 +311,7 @@ function Staking({ settings, setSetting }) {
           .then(res => {
             const totalClaim = divDecimals(
               res.data.data.totalClaim,
-              18
+              decimalLp
             ).toNumber();
             setUserInfo({
               ...objUser,
@@ -327,6 +329,7 @@ function Staking({ settings, setSetting }) {
       let decimalStrkClaim = null;
       let sTokenBalance = null;
       let decimalLp = null;
+      let totalClaim = null;
       const objClaim = {
         accBaseReward: '',
         accBoostReward: ''
@@ -366,6 +369,18 @@ function Staking({ settings, setSetting }) {
       sTokenBalance = await methods.call(lpContract.methods.balanceOf, [
         address
       ]);
+      await axiosInstance
+        .get('api/user/total_claim', {
+          params: {
+            user_address: address
+          }
+        })
+        .then(res => {
+          totalClaim = divDecimals(
+            res?.data?.data?.totalClaim,
+            decimalLp
+          ).toNumber();
+        });
       const accBaseRewardBigNumber = divDecimals(
         objClaim.accBaseReward,
         decimalStrkClaim
@@ -378,89 +393,17 @@ function Staking({ settings, setSetting }) {
       const accBoostRewardString = accBoostRewardBigNumber.toNumber();
       const balanceBigNumber = divDecimals(sTokenBalance, decimalLp);
       const balanceBigFormat = balanceBigNumber.toNumber().toString();
-
       objUser = {
         ...userInfo,
         accBaseReward: renderValueFixed(accBaseRewardString),
         accBoostReward: renderValueFixed(accBoostRewardString),
         available: renderValueFixed(balanceBigFormat).toString(),
-        availableNumber: balanceBigNumber.toNumber()
+        availableNumber: balanceBigNumber.toNumber(),
+        totalClaim: totalClaim ? renderValueFixed(totalClaim) : '0.0'
       };
       setUserInfo({ ...objUser });
     }
   };
-
-  // get data
-  useMemo(async () => {
-    if (!address) {
-      setIsLoading(false);
-      setDataNFT([]);
-      return;
-    }
-    setIsLoading(true);
-    let tokenUri = null;
-    let imgFake = null;
-    try {
-      await methods
-        .call(nFtContract.methods.notRevealedUri, [])
-        .then(res => {
-          tokenUri = res;
-        })
-        .catch(err => {
-          throw err;
-        });
-      if (tokenUri) {
-        await axiosInstance
-          .get(`${tokenUri}`)
-          .then(res => {
-            if (res) {
-              imgFake = res?.data.image ?? '';
-              setFakeImgNFT(imgFake);
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
-      await axiosInstanceMoralis
-        .get(`/${address}/nft?chain=rinkeby&format=decimal&limit=20`)
-        .then(res => {
-          const data = res.data.result;
-          if (data && data.length > 0) {
-            const dataMyContract = _.filter(data, item => {
-              return item.token_address === constants.NFT_ADDRESS.toLowerCase();
-            });
-            // eslint-disable-next-line no-shadow
-            const dataConvert = _.cloneDeep(dataMyContract);
-            if (dataConvert.length > 0) {
-              // eslint-disable-next-line array-callback-return
-              dataConvert.map(item => {
-                item.active = false;
-                item.name = `${item.name}${' #'}${item.token_id}`;
-                item.id = +item.token_id;
-                item.metadata = JSON.parse(item.metadata);
-                if (item?.metadata?.image) {
-                  item.img = item?.metadata?.image;
-                } else {
-                  item.img = IconDuck;
-                }
-              });
-            }
-
-            const dataStakeClone = _.cloneDeep(dataConvert);
-            setDataNFT(dataStakeClone);
-            setIsLoading(false);
-          } else {
-            setDataNFT([]);
-          }
-          setIsLoading(false);
-        });
-    } catch (err) {
-      setIsLoading(false);
-      throw err;
-    }
-  }, [address, window.ethereum]);
-
   useMemo(async () => {
     if (!address) {
       setIsLoading(false);
@@ -507,6 +450,77 @@ function Staking({ settings, setSetting }) {
     }
     setIsLoading(false);
   }, [address, window.ethereum, dataNFT]);
+
+  // get data
+  useMemo(async () => {
+    if (!address) {
+      setIsLoading(false);
+      setDataNFT([]);
+      return;
+    }
+    setIsLoading(true);
+    let tokenUri = null;
+    let imgFake = null;
+    try {
+      await methods
+        .call(nFtContract.methods.notRevealedUri, [])
+        .then(res => {
+          tokenUri = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      if (tokenUri) {
+        await axiosInstance
+          .get(`${tokenUri}`)
+          .then(res => {
+            if (res) {
+              imgFake = res?.data.image ?? '';
+              setFakeImgNFT(imgFake);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+      await axiosInstanceMoralis
+        .get(`/${address}/nft?chain=rinkeby&format=decimal`)
+        .then(res => {
+          const data = res.data.result;
+          if (data && data.length > 0) {
+            const dataMyContract = _.filter(data, item => {
+              return item.token_address === constants.NFT_ADDRESS.toLowerCase();
+            });
+            // eslint-disable-next-line no-shadow
+            const dataConvert = _.cloneDeep(dataMyContract);
+            if (dataConvert.length > 0) {
+              // eslint-disable-next-line array-callback-return
+              dataConvert.map(item => {
+                item.active = false;
+                item.name = `${item.name}${' #'}${item.token_id}`;
+                item.id = +item.token_id;
+                item.metadata = JSON.parse(item.metadata);
+                if (item?.metadata?.image) {
+                  item.img = item?.metadata?.image;
+                } else {
+                  item.img = IconDuck;
+                }
+              });
+            }
+
+            const dataStakeClone = _.cloneDeep(dataConvert);
+            setDataNFT(dataStakeClone);
+            setIsLoading(false);
+          } else {
+            setDataNFT([]);
+          }
+          setIsLoading(false);
+        });
+    } catch (err) {
+      setIsLoading(false);
+      throw err;
+    }
+  }, [address, window.ethereum]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
@@ -785,14 +799,18 @@ function Staking({ settings, setSetting }) {
 
   const handleMaxValue = () => {
     setIsMaxValue(true);
-    const valueDecimals = renderValueDecimal(userInfo.availableNumber);
+    const valueDecimals = renderValueDecimal(userInfo?.availableNumber);
+    if (Number(valueDecimals) <= MIXIMUM_IPUT) {
+      const value_miximum = showAllNumber(valueDecimals);
+      setVal(value_miximum);
+    }
     if (valueDecimals < MINIMUM_VALUE) {
       setVal(0);
       setMessErr({
         mess: 'Invalid amount',
         show: true
       });
-    } else {
+    } else if (valueDecimals > MIXIMUM_IPUT) {
       setVal(valueDecimals);
       setMessErr({
         mess: '',
@@ -811,14 +829,18 @@ function Staking({ settings, setSetting }) {
   };
   const handleMaxValueStaked = () => {
     setIsMaxValueUnStake(true);
-    const valueDecimals = renderValueDecimal(userInfo.amountNumber);
+    const valueDecimals = renderValueDecimal(userInfo?.amountNumber);
+    if (Number(valueDecimals) <= MIXIMUM_IPUT) {
+      const value_miximum = showAllNumber(valueDecimals);
+      setValUnStake(value_miximum);
+    }
     if (valueDecimals < MINIMUM_VALUE) {
       setValUnStake(0);
       setMessErrUnStake({
         mess: 'Invalid amount',
         show: true
       });
-    } else {
+    } else if (valueDecimals > MIXIMUM_IPUT) {
       setValUnStake(valueDecimals);
       setMessErrUnStake({
         mess: '',
@@ -1196,6 +1218,7 @@ function Staking({ settings, setSetting }) {
         setIsStakeNFT(false);
         // set data begin stake nft
         if (checked) {
+          // delete 0 -> index value
           lstBeginStakeNft = dataNFT?.slice(value, dataNFT.length);
         } else {
           const dataBeginDelete = _.filter(dataNFT, item => {
@@ -1238,7 +1261,7 @@ function Staking({ settings, setSetting }) {
           });
       }
     },
-    [dataNFT]
+    [dataNFT, address]
   );
 
   // unStake NFT
@@ -1256,6 +1279,7 @@ function Staking({ settings, setSetting }) {
         setIsUnStakeNFT(false);
         // set data begin unstake nft
         if (checked === true) {
+          // delete last list by value
           lstBeginUnStakeNft = dataNFTUnState?.slice(
             0,
             dataNFTUnState.length - value
@@ -1301,7 +1325,7 @@ function Staking({ settings, setSetting }) {
           });
       }
     },
-    [dataNFTUnState]
+    [dataNFTUnState, address]
   );
   // handleOpen
   const handleStakeNFT = () => {
