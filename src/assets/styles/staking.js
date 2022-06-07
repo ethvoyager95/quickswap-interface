@@ -785,6 +785,17 @@ export const SQuestion = styled.img`
     margin-right: 0px !important;
   }
 `;
+export const SQuestionNFT = styled.img`
+  width: 23px;
+  height: 23px;
+  margin: 5px 0 0 10px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
+    margin-right: 0px !important;
+    margin-top: 10px;
+  }
+`;
 export const SQuestionClaimed = styled.img`
   width: 23px;
   height: 23px;

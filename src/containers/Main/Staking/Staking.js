@@ -446,8 +446,8 @@ function Staking({ settings, setSetting }) {
             }
 
             const dataStakeClone = _.cloneDeep(dataConvert);
-            const dataStakeCloneSort = _.sortBy(dataStakeClone, 'id');
-            setDataNFT(dataStakeCloneSort);
+            console.log(dataStakeClone, 'dataStakeClone');
+            setDataNFT(dataStakeClone);
             setIsLoading(false);
           } else {
             setDataNFT([]);
@@ -458,7 +458,7 @@ function Staking({ settings, setSetting }) {
       setIsLoading(false);
       throw err;
     }
-  }, [address, txhash, window.ethereum]);
+  }, [address, window.ethereum]);
 
   useMemo(async () => {
     if (!address) {
@@ -505,7 +505,7 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     setIsLoading(false);
-  }, [address, txhash, window.ethereum, dataNFT]);
+  }, [address, window.ethereum, dataNFT]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
@@ -1188,6 +1188,8 @@ function Staking({ settings, setSetting }) {
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsStakeNFT(false);
+        const lstBeginStakeNft = dataNFT?.slice(value, dataNFT.length);
+        console.log(lstBeginStakeNft, 'lstBeginStakeNft');
         await methods
           .send(
             checked
@@ -1204,6 +1206,7 @@ function Staking({ settings, setSetting }) {
               setIsSuccess(true);
               setValueNFTStake('');
               setItemStaking([]);
+              setDataNFT(lstBeginStakeNft);
             }
           })
           .catch(err => {
@@ -1237,6 +1240,10 @@ function Staking({ settings, setSetting }) {
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
+        const lstBeginUnStakeNft = dataNFTUnState?.slice(
+          0,
+          dataNFTUnState.length - value
+        );
         await methods
           .send(
             checked
@@ -1253,6 +1260,7 @@ function Staking({ settings, setSetting }) {
               setIsSuccess(true);
               setValueNFTUnStake('');
               setItemStaked([]);
+              setDataNFTUnState(lstBeginUnStakeNft);
             }
           })
           .catch(err => {
@@ -1393,7 +1401,7 @@ function Staking({ settings, setSetting }) {
                             onChange={event => handleChangeValue(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
-                                setVal(Number(event.target.value));
+                                setVal(event.target.value);
                               } else {
                                 replaceValue(event.target.value);
                               }
@@ -1572,14 +1580,11 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            // placeholder={
-                            //   userInfo.amountNumber ? 'Enter a number' : '0.0'
-                            // }
                             placeholder="Enter a number"
                             onChange={event => handleChangeValueUnstake(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
-                                setValUnStake(Number(event.target.value));
+                                setValUnStake(event.target.value);
                               }
                               replaceValue(event.target.value);
                             }}
@@ -1999,6 +2004,12 @@ function Staking({ settings, setSetting }) {
                             >
                               Stake
                             </ST.SSTake>
+                            <Tooltip
+                              placement="top"
+                              title="You must stake STRK-ETH LP Token before staking NFT"
+                            >
+                              <ST.SQuestionNFT src={IconQuestion} />
+                            </Tooltip>
                           </>
                         ) : (
                           <>
