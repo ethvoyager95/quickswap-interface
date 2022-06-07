@@ -147,7 +147,7 @@ function DashboardStaking({ amount, txh }) {
     let totalSupply = null;
     try {
       await axiosInstance
-        .get('/api/price')
+        .get('/price')
         .then(res => {
           if (res) {
             const result = res.data.data.rows;
@@ -186,7 +186,7 @@ function DashboardStaking({ amount, txh }) {
     try {
       // eslint-disable-next-line no-debugger
       await axiosInstance
-        .get(`/api/user/total_stake`)
+        .get(`/user/total_stake`)
         .then(res => {
           if (res) {
             const result = res.data.data;
