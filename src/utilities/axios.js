@@ -11,7 +11,7 @@ export const axiosInstanceMoralis = axios.create({
   }
 });
 export const axiosInstance = axios.create({
-  baseURL: `${process.env.REACT_APP_MAIN_API}`,
+  baseURL: `${process.env.REACT_APP_DEVELOPMENT_API}`,
   timeout: 20000,
   responseType: 'json',
   headers: {
