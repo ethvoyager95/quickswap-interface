@@ -38,7 +38,7 @@ import {
   NoData
 } from './style';
 
-function History({ settings }) {
+function History({ settings, setSetting }) {
   const [currentTab, setCurrentTab] = useState('all');
   const [dataTransactions, setDataTransaction] = useState([]);
   const [dataExportCSV, setDataExportCSV] = useState([]);
@@ -50,7 +50,7 @@ function History({ settings }) {
   const [filterCondition, setFilterCondition] = useState(initFilter);
   const [pagination, setPagination] = useState(initPagination);
   const [currentPage, setCurrentPage] = useState(1);
-
+  // eslint-disable-next-line consistent-return
   const getDataTransactions = async (filter, paginationQuery) => {
     const res = await axios.get(
       `${
@@ -75,9 +75,13 @@ function History({ settings }) {
   };
 
   const getDataTable = async (filter, paginationQuery = initPagination) => {
-    const res = await getDataTransactions(filter, paginationQuery);
-    setDataTransaction(formatTxn(res.rows));
-    setTotalTransactions(res.count);
+    try {
+      const res = await getDataTransactions(filter, paginationQuery);
+      setDataTransaction(formatTxn(res.rows));
+      setTotalTransactions(res.count);
+    } catch (error) {
+      setDataTransaction([]);
+    }
   };
 
   const handleVisibleBlockChange = flag => {
@@ -165,13 +169,30 @@ function History({ settings }) {
     }
     handleExportCSV(filterCondition);
     getDataTable(filterCondition);
-  }, [currentTab]);
+  }, [currentTab, settings.selectedAddress]);
+
+  useEffect(() => {
+    if (!settings.selectedAddress) {
+      return;
+    }
+    if (window.ethereum) {
+      // && checkIsValidNetwork()
+      window.ethereum.on('accountsChanged', acc => {
+        setSetting({
+          selectedAddress: acc[0],
+          accountLoading: true
+        });
+      });
+    }
+  }, [window.ethereum, settings.selectedAddress]);
 
   const blockFilter = (
     <DropdownBlock>
       <div className="item">
         <div>From</div>
         <Input
+          inputMode="decimal"
+          pattern="^[0-9]*[]?[0-9]*$"
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'from')}
         />
@@ -179,6 +200,8 @@ function History({ settings }) {
       <div className="item">
         <div>To</div>
         <Input
+          inputMode="decimal"
+          pattern="^[0-9]*[.,]?[0-9]*$"
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'to')}
         />
@@ -348,8 +371,8 @@ function History({ settings }) {
               href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.userAddress}`}
               target="_blank"
             >
-              {asset.userAddress.substr(0, 4)}...
-              {asset.userAddress.substr(asset.to.length - 4, 4)}
+              {asset.from.substr(0, 4)}...
+              {asset.from.substr(asset.to.length - 4, 4)}
             </Hash>
           )
         };
@@ -465,7 +488,8 @@ function History({ settings }) {
 }
 
 History.propTypes = {
-  settings: PropTypes.object
+  settings: PropTypes.object,
+  setSetting: PropTypes.func.isRequired
 };
 
 History.defaultProps = {
