@@ -1127,11 +1127,6 @@ export const SWrapperTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex: 9;
-  @media only screen and (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 `;
 
 export const SWrapperCountDownWeb = styled.div`
