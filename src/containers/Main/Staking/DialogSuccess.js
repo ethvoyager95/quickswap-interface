@@ -168,10 +168,19 @@ const chains = {
     builder: explorers.etherscan
   }
 };
-function DialogSuccess({ isSuccess, close, address, txh, text }) {
+function DialogSuccess({
+  isSuccess,
+  close,
+  address,
+  txh,
+  text,
+  isDisabledSuccess,
+  timeDelay
+}) {
   const classes = useStyles();
   const [copySuccess, setCopySuccess] = useState('');
   const [chainId, setChainId] = useState('');
+  const [checkDisable, setCheckDisalbe] = useState(isDisabledSuccess);
   const copyToClipBoard = () => {
     setCopySuccess('Copied!');
     setTimeout(() => {
@@ -194,6 +203,11 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
   useEffect(() => {
     getChainId();
   }, []);
+  useEffect(() => {
+    setInterval(() => {
+      setCheckDisalbe(true);
+    }, timeDelay);
+  }, [isDisabledSuccess, txh]);
   return (
     <>
       <React.Fragment>
@@ -201,7 +215,7 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
           className={classes.root}
           open={isSuccess}
           onClose={reason => {
-            if (reason === 'backdropClick') {
+            if (reason === 'backdropClick' && checkDisable) {
               close();
             }
           }}
@@ -250,7 +264,9 @@ DialogSuccess.propTypes = {
   isSuccess: PropTypes.bool,
   address: PropTypes.string,
   txh: PropTypes.string,
-  text: PropTypes.string
+  text: PropTypes.string,
+  isDisabledSuccess: PropTypes.bool,
+  timeDelay: PropTypes.number
 };
 
 DialogSuccess.defaultProps = {
@@ -258,7 +274,9 @@ DialogSuccess.defaultProps = {
   isSuccess: false,
   address: '',
   txh: '',
-  text: ''
+  text: '',
+  isDisabledSuccess: false,
+  timeDelay: 0
 };
 
 const mapStateToProps = ({ account }) => ({

@@ -36,6 +36,7 @@ import {
   SECOND24H,
   SECOND2DAY,
   SECOND30DAY,
+  TIME_UPDATE_MORALIS_API,
   PERCENT_APR,
   MAX_STAKE_NFT,
   SETTING_SLIDER,
@@ -113,6 +114,8 @@ function Staking({ settings, setSetting }) {
   const [isMaxValue, setIsMaxValue] = useState(false);
   const [isMaxValueUnStake, setIsMaxValueUnStake] = useState(false);
   const [valUnStake, setValUnStake] = useState('');
+  const [isDisabledSuccess, setIsDisabledSuccess] = useState(false);
+  const [timeDelay, setTimeDelay] = useState(0);
   const [messErr, setMessErr] = useState({
     mess: '',
     show: false,
@@ -146,7 +149,6 @@ function Staking({ settings, setSetting }) {
   const [countNFT, setCounNFT] = useState(0);
   const [isUnStakeLp, setIsUnStakeLp] = useState(false);
   const [isShowCountDownUnStake, setIsShowCountDownUnStake] = useState(false);
-  const [filterNFTStake, setFilterNFTStake] = useState(true);
   const [isShowCountDownClaimBase, setIsShowCountDownClaimBase] = useState(
     false
   );
@@ -435,48 +437,50 @@ function Staking({ settings, setSetting }) {
             }
           })
           .catch(err => {
-            console.log(err);
+            // console.log(err);
           });
       }
-      await axiosInstanceMoralis
-        .get(`/${address}/nft?chain=rinkeby&format=decimal`)
-        .then(res => {
-          const data = res.data.result;
-          if (data && data.length > 0) {
-            const dataMyContract = _.filter(data, item => {
-              return item.token_address === constants.NFT_ADDRESS.toLowerCase();
-            });
-            // eslint-disable-next-line no-shadow
-            const dataConvert = _.cloneDeep(dataMyContract);
-
-            if (dataConvert.length > 0) {
-              // eslint-disable-next-line array-callback-return
-              dataConvert.map(item => {
-                item.active = false;
-                item.name = `${item.name}${' #'}${item.token_id}`;
-                item.id = +item.token_id;
-                item.metadata = JSON.parse(item.metadata);
-                if (item?.metadata?.image) {
-                  item.img = item?.metadata?.image;
-                } else {
-                  item.img = IconDuck;
-                }
+      setTimeout(() => {
+        axiosInstanceMoralis
+          .get(`/${address}/nft?chain=rinkeby&format=decimal`)
+          .then(res => {
+            const data = res.data.result;
+            if (data && data.length > 0) {
+              const dataMyContract = _.filter(data, item => {
+                return (
+                  item.token_address === constants.NFT_ADDRESS.toLowerCase()
+                );
               });
+              // eslint-disable-next-line no-shadow
+              const dataConvert = _.cloneDeep(dataMyContract);
+              if (dataConvert.length > 0) {
+                // eslint-disable-next-line array-callback-return
+                dataConvert.map(item => {
+                  item.active = false;
+                  item.name = `${item.name}${' #'}${item.token_id}`;
+                  item.id = +item.token_id;
+                  item.metadata = JSON.parse(item.metadata);
+                  if (item?.metadata?.image) {
+                    item.img = item?.metadata?.image;
+                  } else {
+                    item.img = IconDuck;
+                  }
+                });
+              }
+              const dataStakeClone = _.cloneDeep(dataConvert);
+              setDataNFT(dataStakeClone);
+              setIsLoading(false);
+            } else {
+              setDataNFT([]);
             }
-            localStorage.setItem('data_nft', JSON.stringify(dataConvert));
-            const dataStakeClone = _.cloneDeep(dataConvert);
-            setDataNFT(dataStakeClone);
             setIsLoading(false);
-          } else {
-            setDataNFT([]);
-          }
-          setIsLoading(false);
-        });
+          });
+      }, timeDelay);
     } catch (err) {
       setIsLoading(false);
       throw err;
     }
-  }, [address, window.ethereum, txhash]);
+  }, [address, window.ethereum, txhash, timeDelay]);
   // get data staked
   useMemo(async () => {
     if (!address) {
@@ -513,30 +517,6 @@ function Staking({ settings, setSetting }) {
             }
             setDataNFTUnState(newArray);
             setIsLoading(false);
-            // check
-            const dataNFTStorage = localStorage.getItem('data_nft');
-            const dataNFTLocal = JSON.parse(dataNFTStorage);
-            if (newArray.length > 0 && !!filterNFTStake && txhash) {
-              let dataNFTItem = [];
-              // eslint-disable-next-line no-plusplus
-              for (let i = 0; i < newArray.length; i++) {
-                dataNFTItem = _.filter(dataNFTLocal, item => {
-                  return item.id !== Number(newArray[i].id);
-                });
-              }
-              if (dataNFTItem.length > 0) {
-                setTimeout(() => {
-                  const dataNFTItemClone = [...dataNFTItem];
-                  setDataNFT(dataNFTItemClone);
-                }, 5000);
-              }
-            }
-            if (!filterNFTStake && txhash) {
-              setTimeout(() => {
-                const dataNFTBeginUnstakeClone = [...dataNFTLocal];
-                setDataNFT(dataNFTBeginUnstakeClone);
-              }, 10000);
-            }
           } else {
             setDataNFTUnState([]);
             setCounNFT(0);
@@ -548,7 +528,8 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     setIsLoading(false);
-  }, [address, window.ethereum, txhash, filterNFTStake]);
+    // }, [address, window.ethereum, txhash, filterNFTStake]);
+  }, [address, window.ethereum, txhash]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
@@ -1251,9 +1232,17 @@ function Staking({ settings, setSetting }) {
       if (mess) {
         return;
       }
+
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsStakeNFT(false);
+        // 15s
+        let times = 0;
+        if (checked) {
+          times = value * TIME_UPDATE_MORALIS_API;
+        } else {
+          times = TIME_UPDATE_MORALIS_API;
+        }
         await methods
           .send(
             checked
@@ -1265,12 +1254,12 @@ function Staking({ settings, setSetting }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
+              setTimeDelay(times);
               setTextSuccess('Stake NFT successfully');
-              setiIsConfirm(false);
               setIsSuccess(true);
-              setFilterNFTStake(true);
               setValueNFTStake('');
               setItemStaking([]);
+              setiIsConfirm(false);
             }
           })
           .catch(err => {
@@ -1304,6 +1293,13 @@ function Staking({ settings, setSetting }) {
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
+        // 15s
+        let times = 0;
+        if (checked) {
+          times = value * TIME_UPDATE_MORALIS_API;
+        } else {
+          times = TIME_UPDATE_MORALIS_API;
+        }
         await methods
           .send(
             checked
@@ -1315,10 +1311,10 @@ function Staking({ settings, setSetting }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
-              setTextSuccess('Unstake NFT successfully');
               setiIsConfirm(false);
+              setTimeDelay(times);
+              setTextSuccess('Unstake NFT successfully');
               setIsSuccess(true);
-              setFilterNFTStake(false);
               setValueNFTUnStake('');
               setItemStaked([]);
             }
@@ -1356,6 +1352,19 @@ function Staking({ settings, setSetting }) {
     setiIsConfirm(false);
   };
   const handleCloseSuccess = () => {
+    let updateTimerNFT;
+    // eslint-disable-next-line prefer-const
+    if (timeDelay > 0) {
+      updateTimerNFT = setInterval(() => {
+        setIsSuccess(false);
+      }, timeDelay);
+      return function cleanup() {
+        abortController.abort();
+        if (updateTimerNFT) {
+          clearInterval(updateTimerNFT);
+        }
+      };
+    }
     setIsSuccess(false);
   };
   const handleCloseErr = () => {
@@ -2292,6 +2301,8 @@ function Staking({ settings, setSetting }) {
           address={settings?.selectedAddress}
           text={textSuccess}
           txh={txhash}
+          isDisabledSuccess={isDisabledSuccess}
+          timeDelay={timeDelay}
         />
       )}
     </>
