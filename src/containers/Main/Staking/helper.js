@@ -11,8 +11,8 @@ export const PERCENT_APR = 10;
 export const SECOND24H = 180; // 86400
 export const SECOND2DAY = 240; // 172800
 export const SECOND30DAY = 300; // 2592000
-export const FAKE_STRK = 30.07;
-export const FAKE_ETH = 0.38;
+export const FAKE_STRK = 27.154019917142357;
+export const FAKE_ETH = 0.4249681184892823;
 export const FAKE_TOTAL_SUPPLY = 582099001354;
 export const UNSTAKE = 'UNSTAKE';
 export const CLAIMBASE = 'CLAIMBASE';
@@ -27,6 +27,7 @@ export const DECIMALS_LP = 18;
 export const MIXIMUM_IPUT = 1e-5;
 export const MINIMUM_VALUE = 0.0000000001;
 export const MINIMUM_VALUE_FORMAT = 0.00001;
+export const TIME_UPDATE_MORALIS_API = 15000;
 export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)

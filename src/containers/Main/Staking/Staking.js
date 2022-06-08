@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 /* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
@@ -35,6 +36,7 @@ import {
   SECOND24H,
   SECOND2DAY,
   SECOND30DAY,
+  TIME_UPDATE_MORALIS_API,
   PERCENT_APR,
   MAX_STAKE_NFT,
   SETTING_SLIDER,
@@ -105,7 +107,6 @@ const AUDITOR_SETTING = {
   prevArrow: <SamplePrevArrow />
 };
 const abortController = new AbortController();
-
 // eslint-disable-next-line react/prop-types
 function Staking({ settings, setSetting }) {
   const address = settings.selectedAddress;
@@ -113,6 +114,7 @@ function Staking({ settings, setSetting }) {
   const [isMaxValue, setIsMaxValue] = useState(false);
   const [isMaxValueUnStake, setIsMaxValueUnStake] = useState(false);
   const [valUnStake, setValUnStake] = useState('');
+  const [timeDelay, setTimeDelay] = useState(0);
   const [messErr, setMessErr] = useState({
     mess: '',
     show: false,
@@ -123,6 +125,7 @@ function Staking({ settings, setSetting }) {
     show: false,
     noLP: false
   });
+  const [messConfirm, setMessConfirm] = useState('');
   const [txhash, setTxhash] = useState('');
   const [dataNFT, setDataNFT] = useState([]);
   const [dataNFTUnState, setDataNFTUnState] = useState([]);
@@ -405,6 +408,81 @@ function Staking({ settings, setSetting }) {
       setUserInfo({ ...objUser });
     }
   };
+  // get data stake
+  useMemo(async () => {
+    if (!address) {
+      setIsLoading(false);
+      setDataNFT([]);
+      return;
+    }
+    setIsLoading(true);
+    let tokenUri = null;
+    let imgFake = null;
+    try {
+      await methods
+        .call(nFtContract.methods.notRevealedUri, [])
+        .then(res => {
+          tokenUri = res;
+        })
+        .catch(err => {
+          throw err;
+        });
+      if (tokenUri) {
+        await axiosInstance
+          .get(`${tokenUri}`)
+          .then(res => {
+            if (res) {
+              imgFake = res?.data.image ?? '';
+              setFakeImgNFT(imgFake);
+            }
+          })
+          .catch(err => {
+            // console.log(err);
+          });
+      }
+      setTimeout(() => {
+        axiosInstanceMoralis
+          .get(`/${address}/nft?chain=rinkeby&format=decimal`)
+          .then(res => {
+            const data = res.data.result;
+            if (data && data.length > 0) {
+              const dataMyContract = _.filter(data, item => {
+                return (
+                  item.token_address === constants.NFT_ADDRESS.toLowerCase()
+                );
+              });
+              // eslint-disable-next-line no-shadow
+              const dataConvert = _.cloneDeep(dataMyContract);
+              if (dataConvert.length > 0) {
+                // eslint-disable-next-line array-callback-return
+                dataConvert.map(item => {
+                  item.active = false;
+                  item.name = `${item.name}${' #'}${item.token_id}`;
+                  item.id = +item.token_id;
+                  item.metadata = JSON.parse(item.metadata);
+                  if (item?.metadata?.image) {
+                    item.img = item?.metadata?.image;
+                  } else {
+                    item.img = IconDuck;
+                  }
+                });
+              }
+              const dataStakeClone = _.cloneDeep(dataConvert);
+              setDataNFT(dataStakeClone);
+              setIsLoading(false);
+              setTimeDelay(0);
+            } else {
+              setDataNFT([]);
+            }
+            setIsLoading(false);
+          });
+      }, timeDelay);
+    } catch (err) {
+      setIsLoading(false);
+      throw err;
+    }
+  }, [address, window.ethereum, txhash, timeDelay, isSuccess]);
+  // get data staked
   useMemo(async () => {
     if (!address) {
       setIsLoading(false);
@@ -412,6 +490,7 @@ function Staking({ settings, setSetting }) {
       return;
     }
     setIsLoading(true);
+    let newArray = null;
     try {
       await methods
         .call(farmingContract.methods.getUserInfo, [0, address])
@@ -420,7 +499,7 @@ function Staking({ settings, setSetting }) {
             const lstStakedId = res.boostFactors;
             const dataCovert = [...lstStakedId];
             setCounNFT(dataCovert.length);
-            const newArray = dataCovert?.map(item => {
+            newArray = dataCovert?.map(item => {
               // eslint-disable-next-line no-return-assign
               return (item = {
                 name: 'AnnexIronWolf ' + `#${item}`,
@@ -450,78 +529,8 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     setIsLoading(false);
-  }, [address, window.ethereum, dataNFT]);
-
-  // get data
-  useMemo(async () => {
-    if (!address) {
-      setIsLoading(false);
-      setDataNFT([]);
-      return;
-    }
-    setIsLoading(true);
-    let tokenUri = null;
-    let imgFake = null;
-    try {
-      await methods
-        .call(nFtContract.methods.notRevealedUri, [])
-        .then(res => {
-          tokenUri = res;
-        })
-        .catch(err => {
-          throw err;
-        });
-      if (tokenUri) {
-        await axiosInstance
-          .get(`${tokenUri}`)
-          .then(res => {
-            if (res) {
-              imgFake = res?.data.image ?? '';
-              setFakeImgNFT(imgFake);
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
-      await axiosInstanceMoralis
-        .get(`/${address}/nft?chain=rinkeby&format=decimal`)
-        .then(res => {
-          const data = res.data.result;
-          if (data && data.length > 0) {
-            const dataMyContract = _.filter(data, item => {
-              return item.token_address === constants.NFT_ADDRESS.toLowerCase();
-            });
-            // eslint-disable-next-line no-shadow
-            const dataConvert = _.cloneDeep(dataMyContract);
-            if (dataConvert.length > 0) {
-              // eslint-disable-next-line array-callback-return
-              dataConvert.map(item => {
-                item.active = false;
-                item.name = `${item.name}${' #'}${item.token_id}`;
-                item.id = +item.token_id;
-                item.metadata = JSON.parse(item.metadata);
-                if (item?.metadata?.image) {
-                  item.img = item?.metadata?.image;
-                } else {
-                  item.img = IconDuck;
-                }
-              });
-            }
-
-            const dataStakeClone = _.cloneDeep(dataConvert);
-            setDataNFT(dataStakeClone);
-            setIsLoading(false);
-          } else {
-            setDataNFT([]);
-          }
-          setIsLoading(false);
-        });
-    } catch (err) {
-      setIsLoading(false);
-      throw err;
-    }
-  }, [address, window.ethereum]);
+    // }, [address, window.ethereum, txhash, filterNFTStake]);
+  }, [address, window.ethereum, txhash]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
@@ -1224,20 +1233,13 @@ function Staking({ settings, setSetting }) {
       if (mess) {
         return;
       }
+
       if (value && event.isTrusted) {
-        let lstBeginStakeNft;
         setiIsConfirm(true);
         setIsStakeNFT(false);
-        // set data begin stake nft
-        if (checked) {
-          // delete 0 -> index value
-          lstBeginStakeNft = dataNFT?.slice(value, dataNFT.length);
-        } else {
-          const dataBeginDelete = _.filter(dataNFT, item => {
-            return item.id !== Number(value);
-          });
-          lstBeginStakeNft = [...dataBeginDelete];
-        }
+        setMessConfirm(
+          'Do not close the popup while the transaction is being executed'
+        );
         await methods
           .send(
             checked
@@ -1249,12 +1251,16 @@ function Staking({ settings, setSetting }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
-              setTextSuccess('Stake NFT successfully');
-              setiIsConfirm(false);
-              setIsSuccess(true);
+              setTimeDelay(TIME_UPDATE_MORALIS_API);
               setValueNFTStake('');
               setItemStaking([]);
-              setDataNFT(lstBeginStakeNft);
+              // begin time out
+              setTimeout(() => {
+                setiIsConfirm(false);
+                setIsSuccess(true);
+                setTextSuccess('Stake NFT successfully');
+                setMessConfirm('');
+              }, TIME_UPDATE_MORALIS_API);
             }
           })
           .catch(err => {
@@ -1263,11 +1269,13 @@ function Staking({ settings, setSetting }) {
               setiIsConfirm(false);
               setTextErr('Decline transaction');
               setValueNFTStake('');
+              setMessConfirm('');
             } else {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setTextErr('Some thing went wrong!');
               setValueNFTStake('');
+              setMessConfirm('');
             }
             throw err;
           });
@@ -1286,22 +1294,11 @@ function Staking({ settings, setSetting }) {
         return;
       }
       if (value && event.isTrusted) {
-        let lstBeginUnStakeNft;
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
-        // set data begin unstake nft
-        if (checked === true) {
-          // delete last list by value
-          lstBeginUnStakeNft = dataNFTUnState?.slice(
-            0,
-            dataNFTUnState.length - value
-          );
-        } else {
-          const dataBeginDelete = _.filter(dataNFTUnState, item => {
-            return item.id !== Number(value);
-          });
-          lstBeginUnStakeNft = [...dataBeginDelete];
-        }
+        setMessConfirm(
+          'Do not close the popup while the transaction is being executed'
+        );
         await methods
           .send(
             checked
@@ -1313,12 +1310,16 @@ function Staking({ settings, setSetting }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
-              setTextSuccess('Unstake NFT successfully');
-              setiIsConfirm(false);
-              setIsSuccess(true);
+              setTimeDelay(TIME_UPDATE_MORALIS_API);
               setValueNFTUnStake('');
               setItemStaked([]);
-              setDataNFTUnState(lstBeginUnStakeNft);
+              setTimeout(() => {
+                setiIsConfirm(false);
+                setTextSuccess('Unstake NFT successfully');
+                setMessConfirm('');
+
+                setIsSuccess(true);
+              }, TIME_UPDATE_MORALIS_API);
             }
           })
           .catch(err => {
@@ -1327,11 +1328,13 @@ function Staking({ settings, setSetting }) {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setTextErr('Decline transaction');
+              setMessConfirm('');
             } else {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
               setTextErr('Some thing went wrong!');
+              setMessConfirm('');
             }
             throw err;
           });
@@ -1347,6 +1350,9 @@ function Staking({ settings, setSetting }) {
     setIsStakeNFT(true);
   };
   const handleUnStakeNFT = () => {
+    if (isShowCountDownUnStakeNFT) {
+      return setIsUnStakeNFT(false);
+    }
     setIsUnStakeNFT(true);
   };
   // handle Close
@@ -1355,7 +1361,6 @@ function Staking({ settings, setSetting }) {
   };
   const handleCloseSuccess = () => {
     setIsSuccess(false);
-    // window.location.reload();
   };
   const handleCloseErr = () => {
     setIsShowCancel(false);
@@ -1422,6 +1427,7 @@ function Staking({ settings, setSetting }) {
       }
     };
   });
+
   return (
     <>
       <MainLayout>
@@ -2282,7 +2288,11 @@ function Staking({ settings, setSetting }) {
       {/* err */}
       <DialogErr isShow={isShowCancel} close={handleCloseErr} text={textErr} />
       {/* Confirm */}
-      <DialogConfirm isConfirm={isConfirm} close={handleCloseConfirm} />
+      <DialogConfirm
+        isConfirm={isConfirm}
+        close={handleCloseConfirm}
+        messConfirm={messConfirm}
+      />
       {isSuccess && (
         <DialogSuccess
           isSuccess={isSuccess}
@@ -2290,6 +2300,8 @@ function Staking({ settings, setSetting }) {
           address={settings?.selectedAddress}
           text={textSuccess}
           txh={txhash}
+          // isDisabledSuccess={isDisabledSuccess}
+          // timeDelay={timeDelay}
         />
       )}
     </>

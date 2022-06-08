@@ -267,6 +267,9 @@ const SBtnUnStake = styled.button`
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
+    :hover {
+      background-color: #d3d3d3 !important;
+    }
   }
 
   @media only screen and (max-width: 768px) {

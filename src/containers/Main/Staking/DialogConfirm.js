@@ -15,8 +15,7 @@ const useStyles = makeStyles({
       borderRadius: '20px',
       position: 'relative',
       width: '700px',
-      color: '#ffffff',
-      height: '300px'
+      color: '#ffffff'
     }
   },
   closeBtn: {
@@ -100,9 +99,8 @@ const SIcon = styled.div`
 const SIconClose = styled.img`
   cursor: pointer;
 `;
-function DialogConfirm({ isConfirm, close }) {
+function DialogConfirm({ isConfirm, close, messConfirm }) {
   const classes = useStyles();
-
   return (
     <>
       <React.Fragment>
@@ -119,11 +117,13 @@ function DialogConfirm({ isConfirm, close }) {
             <SIcon>
               <SIconClose src={IconClose} onClick={close} />
             </SIcon>
+
             <SLoading>
               <Loadding />
             </SLoading>
             <STitle>Waiting for confirmation</STitle>
             <SText>Confirming the transaction...</SText>
+            {messConfirm && <SText>{messConfirm}</SText>}
           </SMain>
         </Dialog>
       </React.Fragment>
@@ -132,12 +132,14 @@ function DialogConfirm({ isConfirm, close }) {
 }
 DialogConfirm.propTypes = {
   close: PropTypes.func,
-  isConfirm: PropTypes.bool
+  isConfirm: PropTypes.bool,
+  messConfirm: PropTypes.string
 };
 
 DialogConfirm.defaultProps = {
   close: func,
-  isConfirm: false
+  isConfirm: false,
+  messConfirm: ''
 };
 
 const mapStateToProps = ({ account }) => ({
