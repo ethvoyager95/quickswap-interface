@@ -543,6 +543,9 @@ export const SSUnTake = styled.button`
   margin-right: 15px;
   .mg-10:disabled {
     margin-top: 10px !important;
+    @media only screen and (max-width: 768px) {
+      margin-top: 0 !important;
+    }
   }
   :disabled {
     color: #fff !important;
@@ -649,7 +652,7 @@ export const SInforClaim = styled.div`
   padding-bottom: 15px;
   @media only screen and (max-width: 768px) {
     border-bottom: none;
-    margin: 0 10px;
+    margin: 10px 10px 0;
     border-bottom: 1px solid #e5e5e5;
     padding-bottom: 15px;
     width: auto;
@@ -837,6 +840,7 @@ export const SBtnClaim = styled.div`
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     justify-content: center;
+    margin-top: 0;
   }
 `;
 export const SBtnClaimStart = styled.div`
@@ -1071,7 +1075,8 @@ export const STextSelecT = styled.div`
 export const SWrapperNFTStake = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 8px;
 `;
 export const SWrapperCountDownClaim = styled.div`
   width: 100%;
@@ -1116,6 +1121,7 @@ export const SRowFlexNFTStaking = styled.div`
 
 export const SUnstakeCountDownWeb = styled.div`
   display: flex;
+  align-self: flex-end;
   @media only screen and (max-width: 768px) {
     display: none;
   }

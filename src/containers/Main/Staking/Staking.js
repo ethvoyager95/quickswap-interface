@@ -2183,34 +2183,34 @@ function Staking({ settings, setSetting }) {
                           </ST.SFlexEnd>
                         )}
                       </ST.SUnstakeCountDownWeb>
-                    </ST.SWrapperNFTStake>
 
-                    {address && (
-                      <>
-                        {expiryTimeUnstakeNFT &&
-                        isShowCountDownUnStakeNFT &&
-                        dataNFTUnState.length > 0 &&
-                        isApproveNFT ? (
-                          <ST.SWrapperCountDownMobile>
-                            <CountDownClaim
-                              times={expiryTimeUnstakeLP}
-                              address={address}
-                              type={UNSTAKENFT}
-                              handleUnStakeNFT={handleUnStakeNFT}
-                            />
-                          </ST.SWrapperCountDownMobile>
-                        ) : (
-                          <ST.SWrapperUnStake>
-                            <ST.SSUnSTakedMobile
-                              disabled={dataNFTUnState.length === 0}
-                              onClick={handleUnStakeNFT}
-                            >
-                              Unstake
-                            </ST.SSUnSTakedMobile>
-                          </ST.SWrapperUnStake>
-                        )}
-                      </>
-                    )}
+                      {address && (
+                        <>
+                          {expiryTimeUnstakeNFT &&
+                          isShowCountDownUnStakeNFT &&
+                          dataNFTUnState.length > 0 &&
+                          isApproveNFT ? (
+                            <ST.SWrapperCountDownMobile>
+                              <CountDownClaim
+                                times={expiryTimeUnstakeLP}
+                                address={address}
+                                type={UNSTAKENFT}
+                                handleUnStakeNFT={handleUnStakeNFT}
+                              />
+                            </ST.SWrapperCountDownMobile>
+                          ) : (
+                            <ST.SWrapperUnStake>
+                              <ST.SSUnSTakedMobile
+                                disabled={dataNFTUnState.length === 0}
+                                onClick={handleUnStakeNFT}
+                              >
+                                Unstake
+                              </ST.SSUnSTakedMobile>
+                            </ST.SWrapperUnStake>
+                          )}
+                        </>
+                      )}
+                    </ST.SWrapperNFTStake>
                   </ST.SRowFlexNFTStaking>
                 </Row>
 

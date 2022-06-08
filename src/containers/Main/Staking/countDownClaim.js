@@ -38,6 +38,7 @@ const SBoxTime = styled.button`
   }
   @media only screen and (max-width: 768px) {
     width: 100%;
+    margin-right: 15px;
   }
 `;
 const STimeClaim = styled.div`
@@ -163,6 +164,7 @@ const SQuestion = styled.img`
   @media only screen and (max-width: 768px) {
     width: 15px;
     height: 15px;
+    margin-right: 0;
   }
 `;
 const abortController = new AbortController();
