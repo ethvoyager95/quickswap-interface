@@ -114,7 +114,6 @@ function Staking({ settings, setSetting }) {
   const [isMaxValue, setIsMaxValue] = useState(false);
   const [isMaxValueUnStake, setIsMaxValueUnStake] = useState(false);
   const [valUnStake, setValUnStake] = useState('');
-  const [isDisabledSuccess, setIsDisabledSuccess] = useState(false);
   const [timeDelay, setTimeDelay] = useState(0);
   const [messErr, setMessErr] = useState({
     mess: '',
@@ -126,6 +125,7 @@ function Staking({ settings, setSetting }) {
     show: false,
     noLP: false
   });
+  const [messConfirm, setMessConfirm] = useState('');
   const [txhash, setTxhash] = useState('');
   const [dataNFT, setDataNFT] = useState([]);
   const [dataNFTUnState, setDataNFTUnState] = useState([]);
@@ -470,6 +470,7 @@ function Staking({ settings, setSetting }) {
               const dataStakeClone = _.cloneDeep(dataConvert);
               setDataNFT(dataStakeClone);
               setIsLoading(false);
+              setTimeDelay(0);
             } else {
               setDataNFT([]);
             }
@@ -480,7 +481,7 @@ function Staking({ settings, setSetting }) {
       setIsLoading(false);
       throw err;
     }
-  }, [address, window.ethereum, txhash, timeDelay]);
+  }, [address, window.ethereum, txhash, timeDelay, isSuccess]);
   // get data staked
   useMemo(async () => {
     if (!address) {
@@ -1236,13 +1237,9 @@ function Staking({ settings, setSetting }) {
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsStakeNFT(false);
-        // 15s
-        let times = 0;
-        if (checked) {
-          times = value * TIME_UPDATE_MORALIS_API;
-        } else {
-          times = TIME_UPDATE_MORALIS_API;
-        }
+        setMessConfirm(
+          'Do not close the popup while the transaction is being executed'
+        );
         await methods
           .send(
             checked
@@ -1254,12 +1251,16 @@ function Staking({ settings, setSetting }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
-              setTimeDelay(times);
-              setTextSuccess('Stake NFT successfully');
-              setIsSuccess(true);
+              setTimeDelay(TIME_UPDATE_MORALIS_API);
               setValueNFTStake('');
               setItemStaking([]);
-              setiIsConfirm(false);
+              // begin time out
+              setTimeout(() => {
+                setiIsConfirm(false);
+                setIsSuccess(true);
+                setTextSuccess('Stake NFT successfully');
+                setMessConfirm('');
+              }, TIME_UPDATE_MORALIS_API);
             }
           })
           .catch(err => {
@@ -1268,11 +1269,13 @@ function Staking({ settings, setSetting }) {
               setiIsConfirm(false);
               setTextErr('Decline transaction');
               setValueNFTStake('');
+              setMessConfirm('');
             } else {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setTextErr('Some thing went wrong!');
               setValueNFTStake('');
+              setMessConfirm('');
             }
             throw err;
           });
@@ -1293,13 +1296,9 @@ function Staking({ settings, setSetting }) {
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
-        // 15s
-        let times = 0;
-        if (checked) {
-          times = value * TIME_UPDATE_MORALIS_API;
-        } else {
-          times = TIME_UPDATE_MORALIS_API;
-        }
+        setMessConfirm(
+          'Do not close the popup while the transaction is being executed'
+        );
         await methods
           .send(
             checked
@@ -1311,12 +1310,16 @@ function Staking({ settings, setSetting }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
-              setiIsConfirm(false);
-              setTimeDelay(times);
-              setTextSuccess('Unstake NFT successfully');
-              setIsSuccess(true);
+              setTimeDelay(TIME_UPDATE_MORALIS_API);
               setValueNFTUnStake('');
               setItemStaked([]);
+              setTimeout(() => {
+                setiIsConfirm(false);
+                setTextSuccess('Unstake NFT successfully');
+                setMessConfirm('');
+
+                setIsSuccess(true);
+              }, TIME_UPDATE_MORALIS_API);
             }
           })
           .catch(err => {
@@ -1325,11 +1328,13 @@ function Staking({ settings, setSetting }) {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setTextErr('Decline transaction');
+              setMessConfirm('');
             } else {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
               setTextErr('Some thing went wrong!');
+              setMessConfirm('');
             }
             throw err;
           });
@@ -1352,19 +1357,6 @@ function Staking({ settings, setSetting }) {
     setiIsConfirm(false);
   };
   const handleCloseSuccess = () => {
-    let updateTimerNFT;
-    // eslint-disable-next-line prefer-const
-    if (timeDelay > 0) {
-      updateTimerNFT = setInterval(() => {
-        setIsSuccess(false);
-      }, timeDelay);
-      return function cleanup() {
-        abortController.abort();
-        if (updateTimerNFT) {
-          clearInterval(updateTimerNFT);
-        }
-      };
-    }
     setIsSuccess(false);
   };
   const handleCloseErr = () => {
@@ -2293,7 +2285,11 @@ function Staking({ settings, setSetting }) {
       {/* err */}
       <DialogErr isShow={isShowCancel} close={handleCloseErr} text={textErr} />
       {/* Confirm */}
-      <DialogConfirm isConfirm={isConfirm} close={handleCloseConfirm} />
+      <DialogConfirm
+        isConfirm={isConfirm}
+        close={handleCloseConfirm}
+        messConfirm={messConfirm}
+      />
       {isSuccess && (
         <DialogSuccess
           isSuccess={isSuccess}
@@ -2301,8 +2297,8 @@ function Staking({ settings, setSetting }) {
           address={settings?.selectedAddress}
           text={textSuccess}
           txh={txhash}
-          isDisabledSuccess={isDisabledSuccess}
-          timeDelay={timeDelay}
+          // isDisabledSuccess={isDisabledSuccess}
+          // timeDelay={timeDelay}
         />
       )}
     </>
