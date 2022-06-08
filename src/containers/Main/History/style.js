@@ -39,21 +39,18 @@ export const TabsWrapper = styled.div`
 
 export const SDivFlex = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 900;
   font-size: 16px;
   line-height: 24px;
   color: rgba(11, 15, 35, 0.5);
   margin: 0 16px 28px;
 
-  .highlight {
-    color: #000000;
-  }
-
   .text-blue {
     color: #107def;
+    font-weight: 900;
   }
 
   img {
@@ -61,8 +58,6 @@ export const SDivFlex = styled.div`
   }
 
   @media only screen and (max-width: 768px) {
-    font-style: normal;
-    font-weight: 500;
     font-size: 14px;
     line-height: 22px;
     flex-direction: column;
@@ -206,6 +201,12 @@ export const DropdownBlock = styled.div`
     width: 99px;
     height: 40px;
     color: #ffffff;
+
+    &:hover {
+      opacity: 0.8;
+      background: #107def;
+      color: #ffffff;
+    }
   }
 `;
 
@@ -226,6 +227,16 @@ export const DropdownAddress = styled.div`
     width: 140px;
     height: 40px;
     color: #ffffff;
+
+    &:hover {
+      opacity: 0.8;
+      background: #107def;
+      color: #ffffff;
+    }
+  }
+
+  .input-address {
+    width: 308px;
   }
 `;
 
@@ -247,5 +258,32 @@ export const PaginationWrapper = styled.div`
 
   .ant-pagination-item-active {
     border: 1px solid #107def;
+  }
+`;
+
+export const NoData = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 100px auto;
+  gap: 24px;
+  align-items: center;
+
+  div {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 27px;
+    color: #9d9fa7;
+  }
+
+  @media only screen and (max-width: 768px) {
+    div {
+      font-weight: 900;
+      font-size: 12px;
+      line-height: 19px;
+    }
+    img {
+      width: 108px;
+    }
   }
 `;

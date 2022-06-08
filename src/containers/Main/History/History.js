@@ -10,6 +10,7 @@ import MainLayout from 'containers/Layout/MainLayout';
 import iconLink from 'assets/img/link.svg';
 import iconInfo from 'assets/img/info.svg';
 import iconFilter from 'assets/img/filter.svg';
+import noData from 'assets/img/no_data.svg';
 import { connectAccount, accountActionCreators } from 'core';
 import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
 import dayjs from 'dayjs';
@@ -33,7 +34,8 @@ import {
   SButton,
   DropdownBlock,
   DropdownAddress,
-  PaginationWrapper
+  PaginationWrapper,
+  NoData
 } from './style';
 
 function History({ settings }) {
@@ -120,6 +122,10 @@ function History({ settings }) {
     setCurrentPage(1);
     setPagination(initFilter);
     getDataTable(filterCondition);
+    setVisibleAge(false);
+    setVisibleBlock(false);
+    setVisibleFrom(false);
+    setVisibleTo(false);
   };
 
   const handlePageChange = page => {
@@ -199,6 +205,7 @@ function History({ settings }) {
     <DropdownAddress>
       <div>
         <Input
+          className="input-address"
           placeholder="Search by address e.g 0x..."
           onChange={e => handleInputAddressChange(e.target.value, 'from')}
         />
@@ -211,6 +218,7 @@ function History({ settings }) {
     <DropdownAddress>
       <div>
         <Input
+          className="input-address"
           placeholder="Search by address e.g 0x..."
           onChange={e => handleInputAddressChange(e.target.value, 'to')}
         />
@@ -391,6 +399,15 @@ function History({ settings }) {
     }
   ];
 
+  const locale = {
+    emptyText: (
+      <NoData>
+        <img src={noData} alt="No data" />
+        <div>No record was found</div>
+      </NoData>
+    )
+  };
+
   return (
     <MainLayout>
       <TabsWrapper>
@@ -408,11 +425,6 @@ function History({ settings }) {
         ))}
       </TabsWrapper>
       <SDivFlex>
-        <div>
-          Latest <span className="highlight">{dataTransactions.length}</span>{' '}
-          from a total of <span className="highlight">{totalTransactions}</span>{' '}
-          transactions
-        </div>
         <div>
           Download{' '}
           {dataExportCSV && (
@@ -433,6 +445,7 @@ function History({ settings }) {
         </div>
       </SDivFlex>
       <STable
+        locale={locale}
         columns={columns}
         dataSource={dataTransactions}
         pagination={false}
@@ -440,6 +453,7 @@ function History({ settings }) {
       />
       <PaginationWrapper>
         <Pagination
+          defaultPageSize={LIMIT}
           defaultCurrent={1}
           current={currentPage}
           onChange={e => handlePageChange(e)}
