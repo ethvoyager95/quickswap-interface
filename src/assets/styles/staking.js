@@ -1127,7 +1127,6 @@ export const SWrapperTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex: 9;
 `;
 
 export const SWrapperCountDownWeb = styled.div`
