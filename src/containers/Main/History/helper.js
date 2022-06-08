@@ -56,6 +56,5 @@ export const formatTxn = records =>
     ...record,
     method: record.action.replace(/([A-Z])/g, ' $1').trim(),
     age: formatAge(record.blockTimestamp),
-    from: record.userAddress,
     value: formatNumber(record.amount)
   }));
