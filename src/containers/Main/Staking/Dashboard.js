@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -23,6 +24,7 @@ import {
 import {
   getFarmingContract,
   getSTRKClaimContract,
+  getSTRKContract,
   methods
 } from '../../../utilities/ContractService';
 
@@ -141,11 +143,29 @@ function DashboardStaking({ amount, txh }) {
   const [amountDeposit, setAmountDeposit] = useState(0);
   const farmingContract = getFarmingContract();
   const strkContract = getSTRKClaimContract();
+  const strkContractCustomer = getSTRKContract();
   const getRate = async () => {
     let rateStrkVsUSD = null;
     let rateStrkVsETH = null;
     let totalSupply = null;
+    let decimalTotal = null;
+    let totalETH = null;
+    let totalSTRK = null;
     try {
+      // get total supply strk customer mainet
+      await methods
+        .call(strkContractCustomer.methods.decimals, [])
+        .then(res => {
+          decimalTotal = res;
+        })
+        .catch(err => {});
+      await methods
+        .call(strkContractCustomer.methods.getReserves, [])
+        .then(res => {
+          totalSTRK = divDecimals(res[0], decimalTotal);
+          totalETH = divDecimals(res[1], decimalTotal);
+        })
+        .catch(err => {});
       await axiosInstance
         .get('/price')
         .then(res => {
@@ -162,9 +182,9 @@ function DashboardStaking({ amount, txh }) {
             totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
             const totalLiquidityBigNumber = getLiquidity(
               rateStrkVsUSD,
-              FAKE_STRK,
+              FAKE_STRK, // mainet totalSTRK
               rateStrkVsETH,
-              FAKE_ETH,
+              FAKE_ETH, // mainnet totalETH
               totalSupply
             );
             const total = renderValueFixedDashboard(

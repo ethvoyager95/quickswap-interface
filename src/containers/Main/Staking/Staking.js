@@ -1350,6 +1350,9 @@ function Staking({ settings, setSetting }) {
     setIsStakeNFT(true);
   };
   const handleUnStakeNFT = () => {
+    if (isShowCountDownUnStakeNFT) {
+      return setIsUnStakeNFT(false);
+    }
     setIsUnStakeNFT(true);
   };
   // handle Close
