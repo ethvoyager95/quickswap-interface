@@ -321,9 +321,6 @@ export const SBoxHarvest = styled.div`
     padding-bottom: 10px;
     border-bottom: 1px solid #e5e5e5;
     :last-child {
-      margin-top: 20px;
-    }
-    :last-child {
       border-bottom: none;
     }
   }
@@ -928,7 +925,6 @@ export const SDetailsColor = styled.div`
   @media only screen and (max-width: 768px) {
     font-size: 13px;
     justify-content: right;
-    gap: 6px;
   }
 `;
 export const SDetailsColorBold = styled.div`
