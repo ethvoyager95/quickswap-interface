@@ -3,7 +3,7 @@ import commaNumber from 'comma-number';
 import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
 
-export const LIMIT = 10;
+export const LIMIT = 25;
 const OFFSET = 0;
 export const initPagination = {
   limit: LIMIT,
