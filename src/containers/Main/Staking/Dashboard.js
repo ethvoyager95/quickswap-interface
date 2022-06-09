@@ -19,6 +19,8 @@ import {
   renderValueFixedDashboard,
   FAKE_ETH,
   FAKE_STRK,
+  STRK,
+  ETH,
   FAKE_TOTAL_SUPPLY
 } from './helper';
 import {
@@ -152,39 +154,66 @@ function DashboardStaking({ amount, txh }) {
     let totalETH = null;
     let totalSTRK = null;
     try {
-      // get total supply strk customer mainet
+      // get decimals
       await methods
         .call(strkContractCustomer.methods.decimals, [])
         .then(res => {
-          decimalTotal = res;
+          if (res) {
+            decimalTotal = res;
+          }
         })
         .catch(err => {});
+      // get total supply strk customer mainet
+      await methods
+        .call(strkContractCustomer.methods.totalSupply, [])
+        .then(res => {
+          if (res) {
+            totalSupply = divDecimals(res, decimalTotal);
+          }
+        })
+        .catch(err => {});
+      // get lp pool
       await methods
         .call(strkContractCustomer.methods.getReserves, [])
         .then(res => {
-          totalSTRK = divDecimals(res[0], decimalTotal);
-          totalETH = divDecimals(res[1], decimalTotal);
+          if (res.length > 0) {
+            totalSTRK = divDecimals(res[0], decimalTotal);
+            totalETH = divDecimals(res[1], decimalTotal);
+          }
         })
         .catch(err => {});
+      // get rate
       await axiosInstance
         .get('/price')
         .then(res => {
           if (res) {
             const result = res.data.data.rows;
             const objPriceStrkToUSD = _.find(result, item => {
-              return item.symbol === 'strk';
+              return item.symbol === STRK;
             });
             const objPriceStrkToEthereum = _.find(result, item => {
-              return item.symbol === 'eth';
+              return item.symbol === ETH;
             });
-            rateStrkVsUSD = objPriceStrkToUSD.amount;
-            rateStrkVsETH = objPriceStrkToEthereum.amount;
-            totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
+            rateStrkVsUSD = objPriceStrkToUSD?.amount;
+            rateStrkVsETH = objPriceStrkToEthereum?.amount;
+            // production env
+            if (process?.env?.NODE_ENV === 'prod') {
+              // eslint-disable-next-line no-self-assign
+              totalETH = totalETH.toNumber();
+              // eslint-disable-next-line no-self-assign
+              totalSTRK = totalSTRK.toNumber();
+              totalSupply = totalSupply.toNumber();
+            } else {
+              // development env
+              totalETH = FAKE_ETH;
+              totalSTRK = FAKE_STRK;
+              totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
+            }
             const totalLiquidityBigNumber = getLiquidity(
               rateStrkVsUSD,
-              FAKE_STRK, // mainet totalSTRK
+              totalSTRK,
               rateStrkVsETH,
-              FAKE_ETH, // mainnet totalETH
+              totalETH,
               totalSupply
             );
             const total = renderValueFixedDashboard(

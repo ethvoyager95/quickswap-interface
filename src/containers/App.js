@@ -16,11 +16,12 @@ import VoteOverview from 'containers/Main/VoteOverview';
 import ProposerDetail from 'containers/Main/ProposerDetail';
 import VoterLeaderboard from 'containers/Main/VoterLeaderboard';
 import Forbidden from 'containers/Main/Forbidden';
-import { MoralisProvider } from 'react-moralis';
+import History from 'containers/Main/History/History';
 import { ApolloProvider } from 'react-apollo';
+import { MoralisProvider } from 'react-moralis';
 import * as constants from 'utilities/constants';
-import Theme from './Theme';
 import { client } from '../apollo/client';
+import Theme from './Theme';
 
 import 'assets/styles/App.scss';
 import Staking from './Main/Staking/Staking';
@@ -70,6 +71,9 @@ class App extends React.Component {
                     />
                     <Route exact path="/forbidden" component={Forbidden} />
                     <Route exact path="/staking" component={Staking} />
+                    {process.env.REACT_APP_ENV === 'dev' && (
+                      <Route exact path="/history" component={History} />
+                    )}
                     <Route
                       exact
                       path="/vote/leaderboard"

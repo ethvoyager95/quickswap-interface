@@ -8,16 +8,18 @@ export const TIME_CLAIM_LP = 1;
 export const TIME_CLAIM_NFT = 30;
 export const MAX_STAKE_NFT = 20; // maximumboost count
 export const PERCENT_APR = 10;
-export const SECOND24H = 180; // 86400
-export const SECOND2DAY = 240; // 172800
-export const SECOND30DAY = 300; // 2592000
-export const FAKE_STRK = 27.154019917142357;
-export const FAKE_ETH = 0.4249681184892823;
+export const SECOND24H = process.env.NODE_ENV === 'prod' ? 86400 : 180; // 86400
+export const SECOND2DAY = process.env.NODE_ENV === 'prod' ? 172800 : 240; // 172800
+export const SECOND30DAY = process.env.NODE_ENV === 'prod' ? 2592000 : 300; // 2592000
+export const FAKE_STRK = 27.15;
+export const FAKE_ETH = 0.425;
 export const FAKE_TOTAL_SUPPLY = 582099001354;
 export const UNSTAKE = 'UNSTAKE';
 export const CLAIMBASE = 'CLAIMBASE';
 export const CLAIMBOOST = 'CLAIMBOOST';
 export const UNSTAKENFT = 'UNSTAKENFT';
+export const STRK = 'strk';
+export const ETH = 'eth';
 // chacracter -+e.0 block
 export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 101];
 const REQUIRED_DECIMAL = 5;

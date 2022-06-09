@@ -76,7 +76,7 @@ import IConNext from '../../../assets/img/arrow-next.svg';
 import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
-import IconDuck from '../../../assets/img/duck.svg';
+import LogoNFT from '../../../assets/img/nft_logo.avif';
 
 // eslint-disable-next-line import/order
 function SampleNextArrow(props) {
@@ -463,7 +463,7 @@ function Staking({ settings, setSetting }) {
                   if (item?.metadata?.image) {
                     item.img = item?.metadata?.image;
                   } else {
-                    item.img = IconDuck;
+                    item.img = LogoNFT;
                   }
                 });
               }
@@ -505,7 +505,7 @@ function Staking({ settings, setSetting }) {
                 name: 'AnnexIronWolf ' + `#${item}`,
                 token_id: item,
                 id: +item,
-                img: fakeImgNFT || IconDuck,
+                img: fakeImgNFT || LogoNFT,
                 active: false
               });
             });
