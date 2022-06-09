@@ -204,10 +204,11 @@ function DashboardStaking({ amount, txh }) {
               totalSTRK = totalSTRK.toNumber();
               totalSupply = totalSupply.toNumber();
             } else {
+              console.log('b');
               // development env
               totalETH = FAKE_ETH;
               totalSTRK = FAKE_STRK;
-              totalSupply = FAKE_TOTAL_SUPPLY;
+              totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
             }
             const totalLiquidityBigNumber = getLiquidity(
               rateStrkVsUSD,
