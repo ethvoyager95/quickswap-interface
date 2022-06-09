@@ -153,10 +153,17 @@ function DashboardStaking({ amount, txh }) {
     let totalSTRK = null;
     try {
       // get total supply strk customer mainet
+
       await methods
         .call(strkContractCustomer.methods.decimals, [])
         .then(res => {
           decimalTotal = res;
+        })
+        .catch(err => {});
+      await methods
+        .call(strkContractCustomer.methods.totalSupply, [])
+        .then(res => {
+          totalSupply = divDecimals(res, decimalTotal);
         })
         .catch(err => {});
       await methods
@@ -179,12 +186,23 @@ function DashboardStaking({ amount, txh }) {
             });
             rateStrkVsUSD = objPriceStrkToUSD.amount;
             rateStrkVsETH = objPriceStrkToEthereum.amount;
-            totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
+            // production env
+            if (process.env.NODE_ENV === 'production') {
+              // eslint-disable-next-line no-self-assign
+              totalETH = totalETH.toNumber();
+              // eslint-disable-next-line no-self-assign
+              totalSTRK = totalSTRK.toNumber();
+              totalSupply = totalSupply.toNumber();
+            } else {
+              // development env
+              totalETH = FAKE_ETH;
+              totalSTRK = FAKE_STRK;
+            }
             const totalLiquidityBigNumber = getLiquidity(
               rateStrkVsUSD,
-              FAKE_STRK, // mainet totalSTRK
+              totalSTRK,
               rateStrkVsETH,
-              FAKE_ETH, // mainnet totalETH
+              totalETH,
               totalSupply
             );
             const total = renderValueFixedDashboard(
