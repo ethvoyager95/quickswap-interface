@@ -19,6 +19,8 @@ import {
   renderValueFixedDashboard,
   FAKE_ETH,
   FAKE_STRK,
+  STRK,
+  ETH,
   FAKE_TOTAL_SUPPLY
 } from './helper';
 import {
@@ -152,42 +154,50 @@ function DashboardStaking({ amount, txh }) {
     let totalETH = null;
     let totalSTRK = null;
     try {
-      // get total supply strk customer mainet
-
+      // get decimals
       await methods
         .call(strkContractCustomer.methods.decimals, [])
         .then(res => {
-          decimalTotal = res;
+          if (res) {
+            decimalTotal = res;
+          }
         })
         .catch(err => {});
+      // get total supply strk customer mainet
       await methods
         .call(strkContractCustomer.methods.totalSupply, [])
         .then(res => {
-          totalSupply = divDecimals(res, decimalTotal);
+          if (res) {
+            totalSupply = divDecimals(res, decimalTotal);
+          }
         })
         .catch(err => {});
+      // get lp pool
       await methods
         .call(strkContractCustomer.methods.getReserves, [])
         .then(res => {
-          totalSTRK = divDecimals(res[0], decimalTotal);
-          totalETH = divDecimals(res[1], decimalTotal);
+          if (res.length > 0) {
+            totalSTRK = divDecimals(res[0], decimalTotal);
+            totalETH = divDecimals(res[1], decimalTotal);
+          }
         })
         .catch(err => {});
+      // get rate
       await axiosInstance
         .get('/price')
         .then(res => {
           if (res) {
             const result = res.data.data.rows;
             const objPriceStrkToUSD = _.find(result, item => {
-              return item.symbol === 'strk';
+              return item.symbol === STRK;
             });
             const objPriceStrkToEthereum = _.find(result, item => {
-              return item.symbol === 'eth';
+              return item.symbol === ETH;
             });
-            rateStrkVsUSD = objPriceStrkToUSD.amount;
-            rateStrkVsETH = objPriceStrkToEthereum.amount;
+            rateStrkVsUSD = objPriceStrkToUSD?.amount;
+            rateStrkVsETH = objPriceStrkToEthereum?.amount;
             // production env
-            if (process.env.NODE_ENV === 'production') {
+            if (process?.env?.NODE_ENV === 'production') {
               // eslint-disable-next-line no-self-assign
               totalETH = totalETH.toNumber();
               // eslint-disable-next-line no-self-assign
@@ -197,6 +207,7 @@ function DashboardStaking({ amount, txh }) {
               // development env
               totalETH = FAKE_ETH;
               totalSTRK = FAKE_STRK;
+              totalSupply = FAKE_TOTAL_SUPPLY;
             }
             const totalLiquidityBigNumber = getLiquidity(
               rateStrkVsUSD,

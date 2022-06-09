@@ -17,7 +17,8 @@ export const FAKE_TOTAL_SUPPLY = 582099001354;
 export const UNSTAKE = 'UNSTAKE';
 export const CLAIMBASE = 'CLAIMBASE';
 export const CLAIMBOOST = 'CLAIMBOOST';
-export const UNSTAKENFT = 'UNSTAKENFT';
+export const STRK = 'strk';
+export const ETH = 'eth';
 // chacracter -+e.0 block
 export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 101];
 const REQUIRED_DECIMAL = 5;
