@@ -26,12 +26,10 @@ const format = commaNumber.bindWith(',', '.');
 const MINUTES_TO_TIMESTAMP = 60;
 const HOUR_TO_TIMESTAMP = 60 * 60;
 const DAY_TO_TIMESTAMP = 24 * 60 * 60;
-const MONTH_TO_TIMESTAMP = 30 * 24 * 60 * 60;
-const YEAR_TO_TIMESTAMP = 12 * 30 * 24 * 60 * 60;
 
 const formatNumber = (amount, decimal) => {
   const valueEther = new BigNumber(amount).div(new BigNumber(10).pow(decimal));
-  if (valueEther.eq(0)) return '0';
+  if (valueEther.eq(0)) return '0.0';
   if (valueEther.lt(0.00001)) return '<0.00001';
   return format(new BigNumber(valueEther || 0).dp(5, 1).toString(10));
 };
@@ -50,28 +48,10 @@ const formatAge = timestamp => {
       10
     )} minutes ago`;
   }
-  if (ageTimestamp < MONTH_TO_TIMESTAMP) {
-    return `${parseInt(ageTimestamp / DAY_TO_TIMESTAMP, 10)} days ${parseInt(
-      (ageTimestamp % DAY_TO_TIMESTAMP) / HOUR_TO_TIMESTAMP,
-      10
-    )} hours ago`;
-  }
-  if (ageTimestamp < YEAR_TO_TIMESTAMP) {
-    return `${parseInt(
-      ageTimestamp / MONTH_TO_TIMESTAMP,
-      10
-    )} months ${parseInt(
-      (ageTimestamp % MONTH_TO_TIMESTAMP) / DAY_TO_TIMESTAMP,
-      10
-    )} days ago`;
-  }
-  if (ageTimestamp >= YEAR_TO_TIMESTAMP) {
-    return `${parseInt(ageTimestamp / YEAR_TO_TIMESTAMP, 10)} years ${parseInt(
-      (ageTimestamp % YEAR_TO_TIMESTAMP) / MONTH_TO_TIMESTAMP,
-      10
-    )} months ago`;
-  }
-  return `${parseInt(ageTimestamp, 10)} seconds ago`;
+  return `${parseInt(ageTimestamp / DAY_TO_TIMESTAMP, 10)} days ${parseInt(
+    (ageTimestamp % DAY_TO_TIMESTAMP) / HOUR_TO_TIMESTAMP,
+    10
+  )} hours ago`;
 };
 
 export const formatTxn = records =>
