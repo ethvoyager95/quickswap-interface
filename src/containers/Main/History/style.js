@@ -287,3 +287,65 @@ export const NoData = styled.div`
     }
   }
 `;
+// add css
+export const SDivFlexBeetWeen = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 24px;
+  color: rgba(11, 15, 35, 0.5);
+  margin: 0 16px 28px;
+
+  .text-blue {
+    color: #107def;
+    font-weight: 900;
+  }
+
+  img {
+    margin-left: 12px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    line-height: 22px;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+
+    img {
+      width: 15px;
+      height: 15px;
+    }
+  }
+`;
+export const SDownLoad = styled.div`
+  margin: 0 16px 50px;
+`;
+export const SBoxFilter = styled.div`
+  display: flex;
+  padding: 10px;
+  align-items: center;
+`;
+export const STitleFilter = styled.div`
+  marign-right: 10px;
+  color: #0b0f23;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+`;
+export const SValueFilter = styled.div`
+  margin-left: 10px;
+  background: #f9f9f9;
+  border-radius: 20px;
+  padding: 10px;
+  color: #6d6f7b;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+`;
+export const SClearFilter = styled.img`
+  marign-right: 10px;
+`;
