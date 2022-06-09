@@ -12,7 +12,7 @@ export const axiosInstanceMoralis = axios.create({
 });
 export const axiosInstance = axios.create({
   baseURL:
-    process?.env?.NODE_ENV === 'production'
+    process?.env?.NODE_ENV === 'prod'
       ? `${process.env.REACT_APP_PRODUCTION_API}`
       : `${process.env.REACT_APP_DEVELOPMENT_API}`,
   timeout: 20000,

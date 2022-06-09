@@ -197,7 +197,7 @@ function DashboardStaking({ amount, txh }) {
             rateStrkVsUSD = objPriceStrkToUSD?.amount;
             rateStrkVsETH = objPriceStrkToEthereum?.amount;
             // production env
-            if (process?.env?.NODE_ENV === 'production') {
+            if (process?.env?.NODE_ENV === 'prod') {
               // eslint-disable-next-line no-self-assign
               totalETH = totalETH.toNumber();
               // eslint-disable-next-line no-self-assign
