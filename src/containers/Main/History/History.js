@@ -14,6 +14,7 @@ import noData from 'assets/img/no_data.svg';
 import { connectAccount, accountActionCreators } from 'core';
 import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
 import dayjs from 'dayjs';
+import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import {
   formatTxn,
   initFilter,
@@ -50,7 +51,19 @@ function History({ settings, setSetting }) {
   const [filterCondition, setFilterCondition] = useState(initFilter);
   const [pagination, setPagination] = useState(initPagination);
   const [currentPage, setCurrentPage] = useState(1);
-  // eslint-disable-next-line consistent-return
+  const [showPaging, setShowPaging] = useState(true);
+  const [isDisableBtnFilterBlock, setIsDisableBtnFilterBlock] = useState(true);
+  // const [isDisableBtnFilterAge, setIsDisableBtnFilterAge] = useState(true);
+  const [
+    isDisableBtnFilterFromAddress,
+    setIsDisableBtnFilterFromAddress
+  ] = useState(true);
+  const [
+    isDisableBtnFilterToAddress,
+    setIsDisableBtnFilterToAddress
+  ] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
   const getDataTransactions = async (filter, paginationQuery) => {
     const res = await axios.get(
       `${
@@ -66,6 +79,7 @@ function History({ settings, setSetting }) {
       }
     );
     const { data } = res.data;
+
     return data;
   };
 
@@ -76,11 +90,20 @@ function History({ settings, setSetting }) {
 
   const getDataTable = async (filter, paginationQuery = initPagination) => {
     try {
+      setIsLoading(true);
       const res = await getDataTransactions(filter, paginationQuery);
       setDataTransaction(formatTxn(res.rows));
       setTotalTransactions(res.count);
+      if (res.count > LIMIT) {
+        setShowPaging(true);
+      } else {
+        setShowPaging(false);
+      }
+      setIsLoading(false);
     } catch (error) {
       setDataTransaction([]);
+      setShowPaging(false);
+      setIsLoading(false);
     }
   };
 
@@ -109,6 +132,14 @@ function History({ settings, setSetting }) {
       filterCondition.to_block = String(value);
       setFilterCondition(filterCondition);
     }
+    if (
+      filterCondition.from_block.length === 0 &&
+      filterCondition.to_block.length === 0
+    ) {
+      setIsDisableBtnFilterBlock(true);
+    } else {
+      setIsDisableBtnFilterBlock(false);
+    }
   };
 
   const handleInputAddressChange = (value, type) => {
@@ -120,11 +151,23 @@ function History({ settings, setSetting }) {
       filterCondition.to_address = value;
       setFilterCondition(filterCondition);
     }
+    if (filterCondition.from_address.length === 0) {
+      setIsDisableBtnFilterFromAddress(true);
+    } else {
+      setIsDisableBtnFilterFromAddress(false);
+    }
+    if (filterCondition.to_address.length === 0) {
+      setIsDisableBtnFilterToAddress(true);
+    } else {
+      setIsDisableBtnFilterToAddress(false);
+    }
   };
 
   const handleFilter = () => {
     setCurrentPage(1);
-    setPagination(initFilter);
+    pagination.limit = LIMIT;
+    pagination.offset = 0;
+    setPagination(pagination);
     getDataTable(filterCondition);
     setVisibleAge(false);
     setVisibleBlock(false);
@@ -134,13 +177,14 @@ function History({ settings, setSetting }) {
 
   const handlePageChange = page => {
     setCurrentPage(page);
+    pagination.limit = LIMIT;
     pagination.offset = (+page - 1) * LIMIT;
     setPagination(pagination);
     getDataTable(filterCondition, pagination);
   };
 
   const handleAgeStartChange = (_, dateString) => {
-    if (dateString !== 'NaN') {
+    if (dateString) {
       filterCondition.from_date = dayjs(dateString).unix();
       setFilterCondition(filterCondition);
     } else {
@@ -150,33 +194,51 @@ function History({ settings, setSetting }) {
   };
 
   const handleAgeEndChange = (_, dateString) => {
-    if (dateString !== 'NaN') {
-      filterCondition.to_date = dayjs(dateString).unix();
+    if (dateString) {
+      filterCondition.to_date = dayjs(dateString)
+        .endOf('day')
+        .unix();
       setFilterCondition(filterCondition);
     } else {
       delete filterCondition.to_date;
       setFilterCondition(filterCondition);
     }
   };
-
+  console.log('dataaaa', filterCondition);
   useEffect(() => {
-    if (currentTab === 'user') {
-      filterCondition.from_address = settings.selectedAddress;
-      setFilterCondition(filterCondition);
-    } else if (currentTab === 'all') {
-      delete filterCondition.from_address;
-      setFilterCondition(filterCondition);
+    Object.keys(filterCondition).forEach(key => delete filterCondition[key]);
+    setFilterCondition(filterCondition);
+    if (settings.isConnected) {
+      if (currentTab === 'user') {
+        filterCondition.user_address = settings.selectedAddress;
+        setFilterCondition(filterCondition);
+        handleExportCSV(filterCondition);
+        getDataTable(filterCondition);
+      } else if (currentTab === 'all') {
+        delete filterCondition.user_address;
+        setFilterCondition(filterCondition);
+        handleExportCSV(filterCondition);
+        getDataTable(filterCondition);
+      }
     }
-    handleExportCSV(filterCondition);
-    getDataTable(filterCondition);
-  }, [currentTab, settings.selectedAddress]);
+    if (!settings.isConnected) {
+      if (currentTab === 'user') {
+        setDataTransaction([]);
+        setShowPaging(false);
+      } else if (currentTab === 'all') {
+        delete filterCondition.user_address;
+        setFilterCondition(filterCondition);
+        handleExportCSV(filterCondition);
+        getDataTable(filterCondition);
+      }
+    }
+  }, [currentTab, settings.selectedAddress, settings.isConnected]);
 
   useEffect(() => {
     if (!settings.selectedAddress) {
       return;
     }
     if (window.ethereum) {
-      // && checkIsValidNetwork()
       window.ethereum.on('accountsChanged', acc => {
         setSetting({
           selectedAddress: acc[0],
@@ -190,6 +252,7 @@ function History({ settings, setSetting }) {
       <div className="item">
         <div>From</div>
         <Input
+          type="number"
           inputMode="decimal"
           pattern="^[0-9]*[]?[0-9]*$"
           placeholder="Block Number"
@@ -199,13 +262,16 @@ function History({ settings, setSetting }) {
       <div className="item">
         <div>To</div>
         <Input
+          type="number"
           inputMode="decimal"
           pattern="^[0-9]*[.,]?[0-9]*$"
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'to')}
         />
       </div>
-      <Button onClick={() => handleFilter()}>Filter</Button>
+      <Button disabled={isDisableBtnFilterBlock} onClick={() => handleFilter()}>
+        Filter
+      </Button>
     </DropdownBlock>
   );
 
@@ -232,7 +298,12 @@ function History({ settings, setSetting }) {
           onChange={e => handleInputAddressChange(e.target.value, 'from')}
         />
       </div>
-      <Button onClick={() => handleFilter()}>Filter</Button>
+      <Button
+        disabled={isDisableBtnFilterFromAddress}
+        onClick={() => handleFilter()}
+      >
+        Filter
+      </Button>
     </DropdownAddress>
   );
 
@@ -245,7 +316,12 @@ function History({ settings, setSetting }) {
           onChange={e => handleInputAddressChange(e.target.value, 'to')}
         />
       </div>
-      <Button onClick={() => handleFilter()}>Filter</Button>
+      <Button
+        disabled={isDisableBtnFilterToAddress}
+        onClick={() => handleFilter()}
+      >
+        Filter
+      </Button>
     </DropdownAddress>
   );
 
@@ -367,7 +443,7 @@ function History({ settings, setSetting }) {
         return {
           children: (
             <Hash
-              href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.userAddress}`}
+              href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.from}`}
               target="_blank"
             >
               {asset?.from?.substr(0, 4)}...
@@ -424,8 +500,18 @@ function History({ settings, setSetting }) {
   const locale = {
     emptyText: (
       <NoData>
-        <img src={noData} alt="No data" />
-        <div>No record was found</div>
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            <img src={noData} alt="No data" />
+            <div>
+              {settings.isConnected
+                ? 'No record was found'
+                : 'Connect your wallet to see your transaction history'}
+            </div>
+          </>
+        )}
       </NoData>
     )
   };
@@ -438,7 +524,9 @@ function History({ settings, setSetting }) {
             key={tab}
             onClick={() => {
               setCurrentTab(tab);
-              setPagination(initPagination);
+              pagination.limit = LIMIT;
+              pagination.offset = 0;
+              setPagination(pagination);
             }}
             className={currentTab === tab ? 'active' : ''}
           >
@@ -473,15 +561,17 @@ function History({ settings, setSetting }) {
         pagination={false}
         rowKey={record => record.id}
       />
-      <PaginationWrapper>
-        <Pagination
-          defaultPageSize={LIMIT}
-          defaultCurrent={1}
-          current={currentPage}
-          onChange={e => handlePageChange(e)}
-          total={totalTransactions}
-        />
-      </PaginationWrapper>
+      {showPaging && (
+        <PaginationWrapper>
+          <Pagination
+            defaultPageSize={LIMIT}
+            defaultCurrent={1}
+            current={currentPage}
+            onChange={e => handlePageChange(e)}
+            total={totalTransactions}
+          />
+        </PaginationWrapper>
+      )}
     </MainLayout>
   );
 }
