@@ -1,4 +1,3 @@
-import Web3 from 'web3';
 import commaNumber from 'comma-number';
 import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
@@ -16,7 +15,7 @@ export const tooltipContent =
 export const headers = [
   { label: 'Txn Hash', key: 'txHash' },
   { label: 'Method', key: 'method' },
-  { label: 'Block', key: 'block' },
+  { label: 'Block', key: 'blockNumber' },
   { label: 'Age', key: 'age' },
   { label: 'From', key: 'from' },
   { label: 'To', key: 'to' },
@@ -24,29 +23,53 @@ export const headers = [
 ];
 const format = commaNumber.bindWith(',', '.');
 
-const formatNumber = valueWei => {
-  const valueEther = new BigNumber(Web3.utils.fromWei(valueWei, 'ether'));
+const MINUTES_TO_TIMESTAMP = 60;
+const HOUR_TO_TIMESTAMP = 60 * 60;
+const DAY_TO_TIMESTAMP = 24 * 60 * 60;
+const MONTH_TO_TIMESTAMP = 30 * 24 * 60 * 60;
+const YEAR_TO_TIMESTAMP = 12 * 30 * 24 * 60 * 60;
+
+const formatNumber = (amount, decimal) => {
+  const valueEther = new BigNumber(amount).div(new BigNumber(10).pow(decimal));
   if (valueEther.eq(0)) return '0';
   if (valueEther.lt(0.00001)) return '<0.00001';
-  return format(new BigNumber(valueEther || 0).dp(4, 1).toString(10));
+  return format(new BigNumber(valueEther || 0).dp(5, 1).toString(10));
 };
 
 const formatAge = timestamp => {
   const ageTimestamp = +dayjs(Date.now()).unix() - +timestamp;
-  if (ageTimestamp < 60) {
+  if (ageTimestamp < MINUTES_TO_TIMESTAMP) {
     return `${ageTimestamp} seconds ago`;
   }
-  if (ageTimestamp < 60 * 60) {
-    return `${parseInt(ageTimestamp / 60, 10)} minutes ago`;
+  if (ageTimestamp < HOUR_TO_TIMESTAMP) {
+    return `${parseInt(ageTimestamp / MINUTES_TO_TIMESTAMP, 10)} minutes ago`;
   }
-  if (ageTimestamp < 60 * 60 * 24) {
-    return `${parseInt(ageTimestamp / (60 * 24), 10)} hours ago`;
+  if (ageTimestamp < DAY_TO_TIMESTAMP) {
+    return `${parseInt(ageTimestamp / HOUR_TO_TIMESTAMP, 10)} hours ${parseInt(
+      (ageTimestamp % HOUR_TO_TIMESTAMP) / MINUTES_TO_TIMESTAMP,
+      10
+    )} minutes ago`;
   }
-  if (ageTimestamp < 60 * 60 * 24 * 30) {
-    return `${parseInt(ageTimestamp / (60 * 24 * 30), 10)} days ago`;
+  if (ageTimestamp < MONTH_TO_TIMESTAMP) {
+    return `${parseInt(ageTimestamp / DAY_TO_TIMESTAMP, 10)} days ${parseInt(
+      (ageTimestamp % DAY_TO_TIMESTAMP) / HOUR_TO_TIMESTAMP,
+      10
+    )} hours ago`;
   }
-  if (ageTimestamp < 60 * 60 * 24 * 30 * 12) {
-    return `${parseInt(ageTimestamp / (60 * 24 * 30 * 12), 10)} months ago`;
+  if (ageTimestamp < YEAR_TO_TIMESTAMP) {
+    return `${parseInt(
+      ageTimestamp / MONTH_TO_TIMESTAMP,
+      10
+    )} months ${parseInt(
+      (ageTimestamp % MONTH_TO_TIMESTAMP) / DAY_TO_TIMESTAMP,
+      10
+    )} days ago`;
+  }
+  if (ageTimestamp >= YEAR_TO_TIMESTAMP) {
+    return `${parseInt(ageTimestamp / YEAR_TO_TIMESTAMP, 10)} years ${parseInt(
+      (ageTimestamp % YEAR_TO_TIMESTAMP) / MONTH_TO_TIMESTAMP,
+      10
+    )} months ago`;
   }
   return `${parseInt(ageTimestamp, 10)} seconds ago`;
 };
@@ -56,5 +79,5 @@ export const formatTxn = records =>
     ...record,
     method: record.action.replace(/([A-Z])/g, ' $1').trim(),
     age: formatAge(record.blockTimestamp),
-    value: formatNumber(record.amount)
+    value: formatNumber(record.amount, record.decimal)
   }));

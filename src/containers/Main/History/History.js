@@ -50,7 +50,8 @@ function History({ settings, setSetting }) {
   const [filterCondition, setFilterCondition] = useState(initFilter);
   const [pagination, setPagination] = useState(initPagination);
   const [currentPage, setCurrentPage] = useState(1);
-  // eslint-disable-next-line consistent-return
+  const [showPaging, setShowPaging] = useState(true);
+
   const getDataTransactions = async (filter, paginationQuery) => {
     const res = await axios.get(
       `${
@@ -66,6 +67,7 @@ function History({ settings, setSetting }) {
       }
     );
     const { data } = res.data;
+
     return data;
   };
 
@@ -79,8 +81,14 @@ function History({ settings, setSetting }) {
       const res = await getDataTransactions(filter, paginationQuery);
       setDataTransaction(formatTxn(res.rows));
       setTotalTransactions(res.count);
+      if (res.count > LIMIT) {
+        setShowPaging(true);
+      } else {
+        setShowPaging(false);
+      }
     } catch (error) {
       setDataTransaction([]);
+      setShowPaging(false);
     }
   };
 
@@ -160,23 +168,36 @@ function History({ settings, setSetting }) {
   };
 
   useEffect(() => {
-    if (currentTab === 'user') {
-      filterCondition.from_address = settings.selectedAddress;
-      setFilterCondition(filterCondition);
-    } else if (currentTab === 'all') {
-      delete filterCondition.from_address;
-      setFilterCondition(filterCondition);
+    if (settings.isConnected) {
+      if (currentTab === 'user') {
+        filterCondition.user_address = settings.selectedAddress;
+        setFilterCondition(filterCondition);
+        handleExportCSV(filterCondition);
+        getDataTable(filterCondition);
+      } else if (currentTab === 'all') {
+        delete filterCondition.user_address;
+        setFilterCondition(filterCondition);
+        handleExportCSV(filterCondition);
+        getDataTable(filterCondition);
+      }
     }
-    handleExportCSV(filterCondition);
-    getDataTable(filterCondition);
-  }, [currentTab, settings.selectedAddress]);
+    if (!settings.isConnected) {
+      if (currentTab === 'user') {
+        setDataTransaction([]);
+      } else if (currentTab === 'all') {
+        delete filterCondition.user_address;
+        setFilterCondition(filterCondition);
+        handleExportCSV(filterCondition);
+        getDataTable(filterCondition);
+      }
+    }
+  }, [currentTab, settings.selectedAddress, settings.isConnected]);
 
   useEffect(() => {
     if (!settings.selectedAddress) {
       return;
     }
     if (window.ethereum) {
-      // && checkIsValidNetwork()
       window.ethereum.on('accountsChanged', acc => {
         setSetting({
           selectedAddress: acc[0],
@@ -426,7 +447,11 @@ function History({ settings, setSetting }) {
     emptyText: (
       <NoData>
         <img src={noData} alt="No data" />
-        <div>No record was found</div>
+        <div>
+          {settings.isConnected
+            ? 'No record was found'
+            : 'Connect your wallet to see your transaction history'}
+        </div>
       </NoData>
     )
   };
@@ -474,15 +499,17 @@ function History({ settings, setSetting }) {
         pagination={false}
         rowKey={record => record.id}
       />
-      <PaginationWrapper>
-        <Pagination
-          defaultPageSize={LIMIT}
-          defaultCurrent={1}
-          current={currentPage}
-          onChange={e => handlePageChange(e)}
-          total={totalTransactions}
-        />
-      </PaginationWrapper>
+      {showPaging && (
+        <PaginationWrapper>
+          <Pagination
+            defaultPageSize={LIMIT}
+            defaultCurrent={1}
+            current={currentPage}
+            onChange={e => handlePageChange(e)}
+            total={totalTransactions}
+          />
+        </PaginationWrapper>
+      )}
     </MainLayout>
   );
 }
