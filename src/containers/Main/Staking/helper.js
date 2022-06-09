@@ -8,9 +8,9 @@ export const TIME_CLAIM_LP = 1;
 export const TIME_CLAIM_NFT = 30;
 export const MAX_STAKE_NFT = 20; // maximumboost count
 export const PERCENT_APR = 10;
-export const SECOND24H = process.env.NODE_ENV === 'prod' ? 86400 : 180; // 86400
-export const SECOND2DAY = process.env.NODE_ENV === 'prod' ? 172800 : 240; // 172800
-export const SECOND30DAY = process.env.NODE_ENV === 'prod' ? 2592000 : 300; // 2592000
+export const SECOND24H = process.env.REACT_APP_ENV === 'prod' ? 86400 : 180; // 86400
+export const SECOND2DAY = process.env.REACT_APP_ENV === 'prod' ? 172800 : 240; // 172800
+export const SECOND30DAY = process.env.REACT_APP_ENV === 'prod' ? 2592000 : 300; // 2592000
 export const FAKE_STRK = 27.15;
 export const FAKE_ETH = 0.425;
 export const FAKE_TOTAL_SUPPLY = 582099001354;
