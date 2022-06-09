@@ -185,7 +185,6 @@ function History({ settings, setSetting }) {
       });
     }
   }, [window.ethereum, settings.selectedAddress]);
-
   const blockFilter = (
     <DropdownBlock>
       <div className="item">
@@ -371,8 +370,8 @@ function History({ settings, setSetting }) {
               href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.userAddress}`}
               target="_blank"
             >
-              {asset.from.substr(0, 4)}...
-              {asset.from.substr(asset.to.length - 4, 4)}
+              {asset?.from?.substr(0, 4)}...
+              {asset?.from?.substr(asset.to.length - 4, 4)}
             </Hash>
           )
         };
@@ -403,8 +402,8 @@ function History({ settings, setSetting }) {
               href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.to}`}
               target="_blank"
             >
-              {asset.to.substr(0, 4)}...
-              {asset.to.substr(asset.to.length - 4, 4)}
+              {asset?.to?.substr(0, 4)}...
+              {asset?.to?.substr(asset.to.length - 4, 4)}
             </Hash>
           )
         };
