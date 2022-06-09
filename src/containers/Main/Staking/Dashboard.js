@@ -137,7 +137,6 @@ const SIconFlash = styled.img`
   margin-right: 10px;
 `;
 const abortController = new AbortController();
-
 function DashboardStaking({ amount, txh }) {
   const [baseAPR, setBaseAPR] = useState(0);
   const [amountStaked, setAmountStaked] = useState(0);
@@ -199,10 +198,10 @@ function DashboardStaking({ amount, txh }) {
             // production env
             if (process?.env?.REACT_APP_ENV === 'prod') {
               // eslint-disable-next-line no-self-assign
-              totalETH = totalETH.toNumber();
+              totalETH = totalETH?.toNumber();
               // eslint-disable-next-line no-self-assign
-              totalSTRK = totalSTRK.toNumber();
-              totalSupply = totalSupply.toNumber();
+              totalSTRK = totalSTRK?.toNumber();
+              totalSupply = totalSupply?.toNumber();
             } else {
               // development env
               totalETH = FAKE_ETH;
@@ -239,8 +238,8 @@ function DashboardStaking({ amount, txh }) {
         .then(res => {
           if (res) {
             const result = res.data.data;
-            const totalDepositString = divDecimals(result.totalDeposit, 18);
-            const totalDepositNumber = totalDepositString.toNumber();
+            const totalDepositString = divDecimals(result?.totalDeposit, 18);
+            const totalDepositNumber = totalDepositString?.toNumber();
             totalLiquid = totalDepositString?.toNumber();
             setAmountDeposit(renderValueFixedDashboard(totalDepositNumber));
             const totalStake = result?.totalBoost;
@@ -256,7 +255,9 @@ function DashboardStaking({ amount, txh }) {
     await methods
       .call(strkContract.methods.decimals, [])
       .then(res => {
-        decimalStrkClaim = res;
+        if (res) {
+          decimalStrkClaim = res;
+        }
       })
       .catch(err => {
         throw err;
@@ -264,12 +265,14 @@ function DashboardStaking({ amount, txh }) {
     await methods
       .call(farmingContract.methods.rewardPerBlock, [])
       .then(res => {
-        const result = divDecimals(res, decimalStrkClaim).toNumber();
-        const baseAprCaculator = getBaseApr(totalLiquid, result);
-        const baseAprPer = renderValueFixedDashboard(
-          baseAprCaculator.toNumber()
-        );
-        setBaseAPR(baseAprPer);
+        if (res) {
+          const result = divDecimals(res, decimalStrkClaim).toNumber();
+          const baseAprCaculator = getBaseApr(totalLiquid, result);
+          const baseAprPer = renderValueFixedDashboard(
+            baseAprCaculator.toNumber()
+          );
+          setBaseAPR(baseAprPer);
+        }
       })
       .catch(err => {
         throw err;

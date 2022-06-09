@@ -43,7 +43,8 @@ import {
   UNSTAKE,
   CLAIMBASE,
   CLAIMBOOST,
-  UNSTAKENFT
+  UNSTAKENFT,
+  CHAIN_MORALIS
 } from './helper';
 // eslint-disable-next-line import/named
 import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
@@ -418,15 +419,17 @@ function Staking({ settings, setSetting }) {
     setIsLoading(true);
     let tokenUri = null;
     let imgFake = null;
+    let getUrlImg = null;
+    // eslint-disable-next-line no-unused-expressions
+    getUrlImg =
+      process.env.REACT_APP_ENV === 'prod' ? 'baseTokenURI' : 'notRevealedUri';
     try {
       await methods
-        .call(nFtContract.methods.notRevealedUri, [])
+        .call(nFtContract.methods.getUrlImg, [])
         .then(res => {
           tokenUri = res;
         })
-        .catch(err => {
-          throw err;
-        });
+        .catch(err => {});
       if (tokenUri) {
         await axiosInstance
           .get(`${tokenUri}`)
@@ -442,7 +445,9 @@ function Staking({ settings, setSetting }) {
       }
       setTimeout(() => {
         axiosInstanceMoralis
-          .get(`/${address}/nft?chain=rinkeby&format=decimal`)
+          .get(
+            `/${address}/nft?chain=` + `${CHAIN_MORALIS}` + `&format=decimal`
+          )
           .then(res => {
             const data = res.data.result;
             if (data && data.length > 0) {
