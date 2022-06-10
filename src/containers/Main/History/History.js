@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-escape */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { CSVLink } from 'react-csv';
 import PropTypes from 'prop-types';
@@ -337,7 +337,13 @@ function History({ settings, setSetting }) {
       </Button>
     </DropdownBlock>
   );
-
+  // disabled btn filter age
+  const disalbedBtnFilterAge = useMemo(() => {
+    if (!toAgeDisplay && !fromAgeDisplay) {
+      return true;
+    }
+    return false;
+  }, [fromAgeDisplay, toAgeDisplay]);
   const timestampFilter = (
     <DropdownBlock>
       <div className="item">
@@ -360,7 +366,9 @@ function History({ settings, setSetting }) {
           onChange={handleAgeEndChange}
         />
       </div>
-      <Button onClick={() => handleFilter()}>Filter</Button>
+      <Button disabled={disalbedBtnFilterAge} onClick={() => handleFilter()}>
+        Filter
+      </Button>
     </DropdownBlock>
   );
 
