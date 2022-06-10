@@ -15,11 +15,13 @@ import { connectAccount, accountActionCreators } from 'core';
 import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
+import __ from 'lodash';
 import {
   formatTxn,
   initFilter,
   initPagination,
   LIMIT,
+  LIST_BLOCK_VALUE,
   tooltipContent,
   tabsTransaction,
   headers as headersCSV
@@ -38,6 +40,8 @@ import {
   PaginationWrapper,
   NoData
 } from './style';
+
+import './overide.scss';
 
 function History({ settings, setSetting }) {
   const [currentTab, setCurrentTab] = useState('all');
@@ -142,8 +146,8 @@ function History({ settings, setSetting }) {
       setFilterCondition(filterCondition);
     }
     if (
-      filterCondition.from_block.length === 0 &&
-      filterCondition.to_block.length === 0
+      filterCondition?.from_block?.length === 0 &&
+      filterCondition?.to_block?.length === 0
     ) {
       setIsDisableBtnFilterBlock(true);
     } else {
@@ -162,12 +166,12 @@ function History({ settings, setSetting }) {
       filterCondition.to_address = value;
       setFilterCondition(filterCondition);
     }
-    if (filterCondition.from_address.length === 0) {
+    if (filterCondition?.from_address?.length === 0) {
       setIsDisableBtnFilterFromAddress(true);
     } else {
       setIsDisableBtnFilterFromAddress(false);
     }
-    if (filterCondition.to_address.length === 0) {
+    if (filterCondition?.to_address?.length === 0) {
       setIsDisableBtnFilterToAddress(true);
     } else {
       setIsDisableBtnFilterToAddress(false);
@@ -281,6 +285,11 @@ function History({ settings, setSetting }) {
           maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'from')}
+          onKeyPress={event => {
+            if (__.includes(LIST_BLOCK_VALUE, event.which)) {
+              event.preventDefault();
+            }
+          }}
         />
       </div>
       <div className="item">
@@ -295,6 +304,11 @@ function History({ settings, setSetting }) {
           maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'to')}
+          onKeyPress={event => {
+            if (__.includes(LIST_BLOCK_VALUE, event.which)) {
+              event.preventDefault();
+            }
+          }}
         />
       </div>
       <Button disabled={isDisableBtnFilterBlock} onClick={() => handleFilter()}>
