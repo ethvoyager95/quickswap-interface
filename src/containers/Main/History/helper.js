@@ -10,6 +10,7 @@ export const initPagination = {
 };
 export const initFilter = {};
 export const tabsTransaction = ['all', 'user'];
+export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 101];
 export const tooltipContent =
   'Function executed based on decoded input data. For unidentified functions, method ID is displayed instead.';
 export const headers = [
