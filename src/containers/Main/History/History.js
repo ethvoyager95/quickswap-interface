@@ -15,6 +15,8 @@ import { connectAccount, accountActionCreators } from 'core';
 import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
+import './overide.scss';
+import __ from 'lodash';
 import {
   formatTxn,
   initFilter,
@@ -22,7 +24,8 @@ import {
   LIMIT,
   tooltipContent,
   tabsTransaction,
-  headers as headersCSV
+  headers as headersCSV,
+  LIST_BLOCK_VALUE
 } from './helper';
 import {
   TabsWrapper,
@@ -142,8 +145,8 @@ function History({ settings, setSetting }) {
       setFilterCondition(filterCondition);
     }
     if (
-      filterCondition.from_block.length === 0 &&
-      filterCondition.to_block.length === 0
+      filterCondition?.from_block?.length === 0 &&
+      filterCondition?.to_block?.length === 0
     ) {
       setIsDisableBtnFilterBlock(true);
     } else {
@@ -280,6 +283,11 @@ function History({ settings, setSetting }) {
           maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'from')}
+          onKeyPress={event => {
+            if (__.includes(LIST_BLOCK_VALUE, event.which)) {
+              event.preventDefault();
+            }
+          }}
         />
       </div>
       <div className="item">
@@ -294,6 +302,11 @@ function History({ settings, setSetting }) {
           maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'to')}
+          onKeyPress={event => {
+            if (__.includes(LIST_BLOCK_VALUE, event.which)) {
+              event.preventDefault();
+            }
+          }}
         />
       </div>
       <Button disabled={isDisableBtnFilterBlock} onClick={() => handleFilter()}>
