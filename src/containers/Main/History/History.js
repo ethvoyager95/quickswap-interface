@@ -40,7 +40,9 @@ import {
   DropdownBlock,
   DropdownAddress,
   PaginationWrapper,
-  NoData
+  NoData,
+  SBoxFlex,
+  SImg
 } from './style';
 
 import './overide.scss';
@@ -65,7 +67,7 @@ function History({ settings, setSetting }) {
   const [fromAddressValue, setFromAddressValue] = useState('');
   const [toAddressValue, setToAddressValue] = useState('');
 
-  const [isDisableBtnFilterBlock, setIsDisableBtnFilterBlock] = useState(true);
+  // const [isDisableBtnFilterBlock, setIsDisableBtnFilterBlock] = useState(true);
   const [
     isDisableBtnFilterFromAddress,
     setIsDisableBtnFilterFromAddress
@@ -146,14 +148,14 @@ function History({ settings, setSetting }) {
       filterCondition.to_block = String(value);
       setFilterCondition(filterCondition);
     }
-    if (
-      filterCondition?.from_block?.length === 0 &&
-      filterCondition?.to_block?.length === 0
-    ) {
-      setIsDisableBtnFilterBlock(true);
-    } else {
-      setIsDisableBtnFilterBlock(false);
-    }
+    // if (
+    //   filterCondition?.from_block?.length === 0 &&
+    //   filterCondition?.to_block?.length === 0
+    // ) {
+    //   setIsDisableBtnFilterBlock(true);
+    // } else {
+    //   setIsDisableBtnFilterBlock(false);
+    // }
   };
 
   const handleInputAddressChange = (value, type) => {
@@ -583,9 +585,14 @@ function History({ settings, setSetting }) {
       render(_, asset) {
         return {
           children: (
-            <Value uppercase>
-              {asset.value} {asset.symbol}
-            </Value>
+            <>
+              <SBoxFlex>
+                {asset.img && <SImg src={asset.img} />}
+                <Value uppercase>
+                  {asset.value} {asset.symbol}
+                </Value>
+              </SBoxFlex>
+            </>
           )
         };
       }
@@ -629,7 +636,7 @@ function History({ settings, setSetting }) {
               setToBlockValue('');
               setToAgeDisplay('');
               setToAddressValue('');
-              setIsDisableBtnFilterBlock(true);
+              // setIsDisableBtnFilterBlock(true);
               setIsDisableBtnFilterFromAddress(true);
               setIsDisableBtnFilterToAddress(true);
             }}
