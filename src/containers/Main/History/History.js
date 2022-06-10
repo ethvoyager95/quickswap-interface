@@ -286,11 +286,13 @@ function History({ settings, setSetting }) {
           maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'from')}
+          // block special character keypress
           onKeyPress={event => {
             if (__.includes(LIST_BLOCK_VALUE, event.which)) {
               event.preventDefault();
             }
           }}
+          // block special character onpaste
           onPaste={event => {
             const text = event.clipboardData.getData('text');
             if (__.includes(LIST_BLOCK_TEXT, text)) {
@@ -311,11 +313,13 @@ function History({ settings, setSetting }) {
           maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'to')}
+          // block special character keypress
           onKeyPress={event => {
             if (__.includes(LIST_BLOCK_VALUE, event.which)) {
               event.preventDefault();
             }
           }}
+          // block special character onpaste
           onPaste={event => {
             const text = event.clipboardData.getData('text');
             if (__.includes(LIST_BLOCK_TEXT, text)) {
