@@ -10,8 +10,10 @@ export const TabsWrapper = styled.div`
   font-size: 25px;
   line-height: 27px;
   color: #0b0f23;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   margin: 0 16px 20px;
+  padding-top: 44px;
 
   div {
     opacity: 0.5;
@@ -42,33 +44,11 @@ export const SDivFlex = styled.div`
   justify-content: flex-end;
   align-items: center;
   font-style: normal;
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 24px;
-  color: rgba(11, 15, 35, 0.5);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: #0b0f23;
   margin: 0 16px 28px;
-
-  .text-blue {
-    color: #107def;
-    font-weight: 900;
-  }
-
-  img {
-    margin-left: 12px;
-  }
-
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-    line-height: 22px;
-    flex-direction: column;
-    gap: 20px;
-    align-items: flex-start;
-
-    img {
-      width: 15px;
-      height: 15px;
-    }
-  }
 `;
 
 export const THeadWrapper = styled.div`
@@ -157,6 +137,7 @@ export const Value = styled.div`
   font-size: 18px;
   line-height: 28px;
   color: #000000;
+  text-transform: ${props => (props.uppercase ? 'uppercase' : 'lowercase')};
 `;
 
 export const SButton = styled.button`
@@ -241,7 +222,9 @@ export const DropdownAddress = styled.div`
 `;
 
 export const PaginationWrapper = styled.div`
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 0 16px 50px;
 
   .ant-pagination-item {
@@ -258,6 +241,26 @@ export const PaginationWrapper = styled.div`
 
   .ant-pagination-item-active {
     border: 1px solid #107def;
+  }
+  .text-blue {
+    color: #107def;
+    font-weight: 900;
+  }
+  .export-csv {
+    align-self: flex-start;
+  }
+  img {
+    margin-left: 12px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    line-height: 22px;
+
+    img {
+      width: 15px;
+      height: 15px;
+    }
   }
 `;
 
