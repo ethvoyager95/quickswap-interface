@@ -37,21 +37,21 @@ const formatNumber = (amount, decimal) => {
 const formatAge = timestamp => {
   const ageTimestamp = +dayjs(Date.now()).unix() - +timestamp;
   if (ageTimestamp < MINUTES_TO_TIMESTAMP) {
-    return `${ageTimestamp} seconds ago`;
+    return `${ageTimestamp} secs ago`;
   }
   if (ageTimestamp < HOUR_TO_TIMESTAMP) {
-    return `${parseInt(ageTimestamp / MINUTES_TO_TIMESTAMP, 10)} minutes ago`;
+    return `${parseInt(ageTimestamp / MINUTES_TO_TIMESTAMP, 10)} mins ago`;
   }
   if (ageTimestamp < DAY_TO_TIMESTAMP) {
-    return `${parseInt(ageTimestamp / HOUR_TO_TIMESTAMP, 10)} hours ${parseInt(
+    return `${parseInt(ageTimestamp / HOUR_TO_TIMESTAMP, 10)} hrs ${parseInt(
       (ageTimestamp % HOUR_TO_TIMESTAMP) / MINUTES_TO_TIMESTAMP,
       10
-    )} minutes ago`;
+    )} mins ago`;
   }
   return `${parseInt(ageTimestamp / DAY_TO_TIMESTAMP, 10)} days ${parseInt(
     (ageTimestamp % DAY_TO_TIMESTAMP) / HOUR_TO_TIMESTAMP,
     10
-  )} hours ago`;
+  )} hrs ago`;
 };
 
 export const formatTxn = records =>
