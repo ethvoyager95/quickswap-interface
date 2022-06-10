@@ -290,3 +290,13 @@ export const NoData = styled.div`
     }
   }
 `;
+export const SBoxFlex = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
+export const SImg = styled.img`
+  margin-right: 5px;
+  width: 25px;
+  height: 25px;
+`;

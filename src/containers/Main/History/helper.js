@@ -1,6 +1,9 @@
 import commaNumber from 'comma-number';
 import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
+import strk from 'assets/img/coins/strk.png';
+import uni from 'assets/img/coins/uni.png';
+import seth from 'assets/img/coins/seth.png';
 
 export const LIMIT = 25;
 const OFFSET = 0;
@@ -33,6 +36,7 @@ const formatNumber = (amount, decimal) => {
   const valueEther = new BigNumber(amount).div(new BigNumber(10).pow(decimal));
   if (valueEther.eq(0)) return '0.0';
   if (valueEther.lt(0.00001)) return '<0.00001';
+  if (valueEther.isNaN()) return '-';
   return format(new BigNumber(valueEther || 0).dp(5, 1).toString(10));
 };
 
@@ -55,11 +59,18 @@ const formatAge = timestamp => {
     10
   )} hrs ago`;
 };
-
+const renderImg = symbol => {
+  if (symbol === 'STRK') return strk;
+  if (symbol === 'UNI-V2') return uni;
+  if (symbol === 'sETH') return seth;
+  if (symbol === 'DASC') return '';
+  return '';
+};
 export const formatTxn = records =>
   records?.map(record => ({
     ...record,
     method: record.action.replace(/([A-Z])/g, ' $1').trim(),
     age: formatAge(record.blockTimestamp),
-    value: formatNumber(record.amount, record.decimal)
+    value: formatNumber(record.amount, record.decimal),
+    img: renderImg(record?.symbol)
   }));
