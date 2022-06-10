@@ -66,7 +66,6 @@ function History({ settings, setSetting }) {
   const [toAddressValue, setToAddressValue] = useState('');
 
   const [isDisableBtnFilterBlock, setIsDisableBtnFilterBlock] = useState(true);
-  // const [isDisableBtnFilterAge, setIsDisableBtnFilterAge] = useState(true);
   const [
     isDisableBtnFilterFromAddress,
     setIsDisableBtnFilterFromAddress
@@ -275,7 +274,13 @@ function History({ settings, setSetting }) {
       });
     }
   }, [window.ethereum, settings.selectedAddress]);
-
+  // disabled block
+  const disabledFilterBlock = useMemo(() => {
+    if (!toBlockValue && !fromBlockValue) {
+      return true;
+    }
+    return false;
+  }, [fromBlockValue, toBlockValue, settings.selectedAddress]);
   const blockFilter = (
     <DropdownBlock>
       <div className="item">
@@ -332,18 +337,19 @@ function History({ settings, setSetting }) {
           }}
         />
       </div>
-      <Button disabled={isDisableBtnFilterBlock} onClick={() => handleFilter()}>
+      <Button disabled={disabledFilterBlock} onClick={() => handleFilter()}>
         Filter
       </Button>
     </DropdownBlock>
   );
+
   // disabled btn filter age
   const disalbedBtnFilterAge = useMemo(() => {
     if (!toAgeDisplay && !fromAgeDisplay) {
       return true;
     }
     return false;
-  }, [fromAgeDisplay, toAgeDisplay]);
+  }, [fromAgeDisplay, toAgeDisplay, settings.selectedAddress]);
   const timestampFilter = (
     <DropdownBlock>
       <div className="item">
