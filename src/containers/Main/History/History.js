@@ -52,6 +52,13 @@ function History({ settings, setSetting }) {
   const [pagination, setPagination] = useState(initPagination);
   const [currentPage, setCurrentPage] = useState(1);
   const [showPaging, setShowPaging] = useState(true);
+  const [fromBlockValue, setFromBlockValue] = useState('');
+  const [toBlockValue, setToBlockValue] = useState('');
+  const [fromAgeValue, setFromAgeValue] = useState('');
+  const [toAgeValue, setToAgeValue] = useState('');
+  const [fromAddressValue, setFromAddressValue] = useState('');
+  const [toAddressValue, setToAddressValue] = useState('');
+
   const [isDisableBtnFilterBlock, setIsDisableBtnFilterBlock] = useState(true);
   // const [isDisableBtnFilterAge, setIsDisableBtnFilterAge] = useState(true);
   const [
@@ -125,10 +132,12 @@ function History({ settings, setSetting }) {
 
   const handleInputBlockChange = (value, type) => {
     if (type === 'from') {
+      setFromBlockValue(value);
       filterCondition.from_block = String(value);
       setFilterCondition(filterCondition);
     }
     if (type === 'to') {
+      setToBlockValue(value);
       filterCondition.to_block = String(value);
       setFilterCondition(filterCondition);
     }
@@ -144,10 +153,12 @@ function History({ settings, setSetting }) {
 
   const handleInputAddressChange = (value, type) => {
     if (type === 'from') {
+      setFromAddressValue(value);
       filterCondition.from_address = value;
       setFilterCondition(filterCondition);
     }
     if (type === 'to') {
+      setToAddressValue(value);
       filterCondition.to_address = value;
       setFilterCondition(filterCondition);
     }
@@ -185,7 +196,10 @@ function History({ settings, setSetting }) {
 
   const handleAgeStartChange = (_, dateString) => {
     if (dateString) {
-      filterCondition.from_date = dayjs(dateString).unix();
+      setFromAgeValue(dateString);
+      filterCondition.from_date = dayjs(dateString)
+        .startOf('day')
+        .unix();
       setFilterCondition(filterCondition);
     } else {
       delete filterCondition.from_date;
@@ -204,16 +218,21 @@ function History({ settings, setSetting }) {
       setFilterCondition(filterCondition);
     }
   };
-  console.log('dataaaa', filterCondition);
+
   useEffect(() => {
     Object.keys(filterCondition).forEach(key => delete filterCondition[key]);
     setFilterCondition(filterCondition);
     if (settings.isConnected) {
       if (currentTab === 'user') {
-        filterCondition.user_address = settings.selectedAddress;
-        setFilterCondition(filterCondition);
-        handleExportCSV(filterCondition);
-        getDataTable(filterCondition);
+        if (settings.selectedAddress) {
+          filterCondition.user_address = settings.selectedAddress;
+          setFilterCondition(filterCondition);
+          handleExportCSV(filterCondition);
+          getDataTable(filterCondition);
+        } else {
+          setDataTransaction([]);
+          setShowPaging(false);
+        }
       } else if (currentTab === 'all') {
         delete filterCondition.user_address;
         setFilterCondition(filterCondition);
@@ -256,6 +275,10 @@ function History({ settings, setSetting }) {
           type="number"
           inputMode="decimal"
           pattern="^[0-9]*[]?[0-9]*$"
+          value={fromBlockValue}
+          min={0}
+          minLength={1}
+          maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'from')}
         />
@@ -265,7 +288,11 @@ function History({ settings, setSetting }) {
         <Input
           type="number"
           inputMode="decimal"
-          pattern="^[0-9]*[.,]?[0-9]*$"
+          pattern="^[0-9]*[]?[0-9]*$"
+          value={toBlockValue}
+          min={0}
+          minLength={1}
+          maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'to')}
         />
@@ -280,11 +307,19 @@ function History({ settings, setSetting }) {
     <DropdownBlock>
       <div className="item">
         <div>From</div>
-        <DatePicker placeholder="mm/dd/yyyy" onChange={handleAgeStartChange} />
+        <DatePicker
+          format="MM/DD/YYYY"
+          placeholder="mm/dd/yyyy"
+          onChange={handleAgeStartChange}
+        />
       </div>
       <div className="item">
         <div>To</div>
-        <DatePicker placeholder="mm/dd/yyyy" onChange={handleAgeEndChange} />
+        <DatePicker
+          format="MM/DD/YYYY"
+          placeholder="mm/dd/yyyy"
+          onChange={handleAgeEndChange}
+        />
       </div>
       <Button onClick={() => handleFilter()}>Filter</Button>
     </DropdownBlock>
@@ -295,6 +330,7 @@ function History({ settings, setSetting }) {
       <div>
         <Input
           className="input-address"
+          value={fromAddressValue}
           placeholder="Search by address e.g 0x..."
           onChange={e => handleInputAddressChange(e.target.value, 'from')}
         />
@@ -313,6 +349,7 @@ function History({ settings, setSetting }) {
       <div>
         <Input
           className="input-address"
+          value={toAddressValue}
           placeholder="Search by address e.g 0x..."
           onChange={e => handleInputAddressChange(e.target.value, 'to')}
         />
@@ -492,7 +529,11 @@ function History({ settings, setSetting }) {
       key: 'value',
       render(_, asset) {
         return {
-          children: <Value>{asset.value}</Value>
+          children: (
+            <Value uppercase>
+              {asset.value} {asset.symbol}
+            </Value>
+          )
         };
       }
     }
@@ -528,6 +569,16 @@ function History({ settings, setSetting }) {
               pagination.limit = LIMIT;
               pagination.offset = 0;
               setPagination(pagination);
+              setCurrentPage(1);
+              setFromBlockValue('');
+              setFromAgeValue('');
+              setFromAddressValue('');
+              setToBlockValue('');
+              setToAgeValue('');
+              setToAddressValue('');
+              setIsDisableBtnFilterBlock(true);
+              setIsDisableBtnFilterFromAddress(true);
+              setIsDisableBtnFilterToAddress(true);
             }}
             className={currentTab === tab ? 'active' : ''}
           >
@@ -536,7 +587,17 @@ function History({ settings, setSetting }) {
         ))}
       </TabsWrapper>
       <SDivFlex>
-        <div>
+        <div />
+      </SDivFlex>
+      <STable
+        locale={locale}
+        columns={columns}
+        dataSource={dataTransactions}
+        pagination={false}
+        rowKey={record => record.id}
+      />
+      <PaginationWrapper>
+        <div className="export-csv">
           Download{' '}
           {dataExportCSV && (
             <CSVLink
@@ -554,16 +615,7 @@ function History({ settings, setSetting }) {
             </CSVLink>
           )}
         </div>
-      </SDivFlex>
-      <STable
-        locale={locale}
-        columns={columns}
-        dataSource={dataTransactions}
-        pagination={false}
-        rowKey={record => record.id}
-      />
-      {showPaging && (
-        <PaginationWrapper>
+        {showPaging && (
           <Pagination
             defaultPageSize={LIMIT}
             defaultCurrent={1}
@@ -571,8 +623,8 @@ function History({ settings, setSetting }) {
             onChange={e => handlePageChange(e)}
             total={totalTransactions}
           />
-        </PaginationWrapper>
-      )}
+        )}
+      </PaginationWrapper>
     </MainLayout>
   );
 }
