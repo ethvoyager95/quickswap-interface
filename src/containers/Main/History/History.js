@@ -14,6 +14,7 @@ import noData from 'assets/img/no_data.svg';
 import { connectAccount, accountActionCreators } from 'core';
 import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
 import dayjs from 'dayjs';
+import moment from 'moment';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import {
   formatTxn,
@@ -54,8 +55,8 @@ function History({ settings, setSetting }) {
   const [showPaging, setShowPaging] = useState(true);
   const [fromBlockValue, setFromBlockValue] = useState('');
   const [toBlockValue, setToBlockValue] = useState('');
-  const [fromAgeValue, setFromAgeValue] = useState('');
-  const [toAgeValue, setToAgeValue] = useState('');
+  const [fromAgeDisplay, setFromAgeDisplay] = useState('');
+  const [toAgeDisplay, setToAgeDisplay] = useState('');
   const [fromAddressValue, setFromAddressValue] = useState('');
   const [toAddressValue, setToAddressValue] = useState('');
 
@@ -194,9 +195,9 @@ function History({ settings, setSetting }) {
     getDataTable(filterCondition, pagination);
   };
 
-  const handleAgeStartChange = (_, dateString) => {
-    if (dateString) {
-      setFromAgeValue(dateString);
+  const handleAgeStartChange = (date, dateString) => {
+    if (date && dateString) {
+      setFromAgeDisplay(date);
       filterCondition.from_date = dayjs(dateString)
         .startOf('day')
         .unix();
@@ -204,11 +205,13 @@ function History({ settings, setSetting }) {
     } else {
       delete filterCondition.from_date;
       setFilterCondition(filterCondition);
+      setFromAgeDisplay('');
     }
   };
 
-  const handleAgeEndChange = (_, dateString) => {
-    if (dateString) {
+  const handleAgeEndChange = (date, dateString) => {
+    if (date && dateString) {
+      setToAgeDisplay(date);
       filterCondition.to_date = dayjs(dateString)
         .endOf('day')
         .unix();
@@ -216,6 +219,7 @@ function History({ settings, setSetting }) {
     } else {
       delete filterCondition.to_date;
       setFilterCondition(filterCondition);
+      setToAgeDisplay('');
     }
   };
 
@@ -308,6 +312,8 @@ function History({ settings, setSetting }) {
       <div className="item">
         <div>From</div>
         <DatePicker
+          defaultPickerValue={moment(fromAgeDisplay, 'MM/DD/YYYY')}
+          value={fromAgeDisplay !== '' ? moment(fromAgeDisplay) : null}
           format="MM/DD/YYYY"
           placeholder="mm/dd/yyyy"
           onChange={handleAgeStartChange}
@@ -316,6 +322,8 @@ function History({ settings, setSetting }) {
       <div className="item">
         <div>To</div>
         <DatePicker
+          defaultPickerValue={moment(toAgeDisplay, 'MM/DD/YYYY')}
+          value={toAgeDisplay !== '' ? moment(toAgeDisplay) : null}
           format="MM/DD/YYYY"
           placeholder="mm/dd/yyyy"
           onChange={handleAgeEndChange}
@@ -548,7 +556,7 @@ function History({ settings, setSetting }) {
           <>
             <img src={noData} alt="No data" />
             <div>
-              {settings.isConnected
+              {settings.isConnected && settings.selectedAddress
                 ? 'No record was found'
                 : 'Connect your wallet to see your transaction history'}
             </div>
@@ -571,10 +579,10 @@ function History({ settings, setSetting }) {
               setPagination(pagination);
               setCurrentPage(1);
               setFromBlockValue('');
-              setFromAgeValue('');
+              setFromAgeDisplay('');
               setFromAddressValue('');
               setToBlockValue('');
-              setToAgeValue('');
+              setToAgeDisplay('');
               setToAddressValue('');
               setIsDisableBtnFilterBlock(true);
               setIsDisableBtnFilterFromAddress(true);
