@@ -42,8 +42,7 @@ import {
   PaginationWrapper,
   NoData,
   SBoxFlex,
-  SImg,
-  CustomInput
+  SImg
 } from './style';
 
 import './overide.scss';
@@ -63,6 +62,8 @@ function History({ settings, setSetting }) {
   const [showPaging, setShowPaging] = useState(true);
   const [fromBlockValue, setFromBlockValue] = useState('');
   const [toBlockValue, setToBlockValue] = useState('');
+  const [fromAgeValue, setFromAgeValue] = useState('');
+  const [toAgeValue, setToAgeValue] = useState('');
   const [fromAgeDisplay, setFromAgeDisplay] = useState('');
   const [toAgeDisplay, setToAgeDisplay] = useState('');
   const [fromAddressValue, setFromAddressValue] = useState('');
@@ -115,7 +116,7 @@ function History({ settings, setSetting }) {
         setShowPaging(false);
       }
       setIsLoading(false);
-    } catch (error) {
+    } catch (e) {
       setDataTransaction([]);
       setShowPaging(false);
       setIsLoading(false);
@@ -141,13 +142,9 @@ function History({ settings, setSetting }) {
   const handleInputBlockChange = (value, type) => {
     if (type === 'from') {
       setFromBlockValue(value);
-      filterCondition.from_block = String(value);
-      setFilterCondition(filterCondition);
     }
     if (type === 'to') {
       setToBlockValue(value);
-      filterCondition.to_block = String(value);
-      setFilterCondition(filterCondition);
     }
     // if (
     //   filterCondition?.from_block?.length === 0 &&
@@ -162,13 +159,9 @@ function History({ settings, setSetting }) {
   const handleInputAddressChange = (value, type) => {
     if (type === 'from') {
       setFromAddressValue(value);
-      filterCondition.from_address = value;
-      setFilterCondition(filterCondition);
     }
     if (type === 'to') {
       setToAddressValue(value);
-      filterCondition.to_address = value;
-      setFilterCondition(filterCondition);
     }
     if (filterCondition?.from_address?.length === 0) {
       setIsDisableBtnFilterFromAddress(true);
@@ -184,6 +177,13 @@ function History({ settings, setSetting }) {
 
   const handleFilter = () => {
     setCurrentPage(1);
+    filterCondition.from_block = fromBlockValue;
+    filterCondition.to_block = toBlockValue;
+    filterCondition.from_address = fromAddressValue;
+    filterCondition.to_address = toAddressValue;
+    filterCondition.from_date = fromAgeValue;
+    filterCondition.to_date = toAgeValue;
+    setFilterCondition(filterCondition);
     pagination.limit = LIMIT;
     pagination.offset = 0;
     setPagination(pagination);
@@ -205,10 +205,11 @@ function History({ settings, setSetting }) {
   const handleAgeStartChange = (date, dateString) => {
     if (date && dateString) {
       setFromAgeDisplay(date);
-      filterCondition.from_date = dayjs(dateString)
-        .startOf('day')
-        .unix();
-      setFilterCondition(filterCondition);
+      setFromAgeValue(
+        dayjs(dateString)
+          .startOf('day')
+          .unix()
+      );
     } else {
       delete filterCondition.from_date;
       setFilterCondition(filterCondition);
@@ -219,10 +220,11 @@ function History({ settings, setSetting }) {
   const handleAgeEndChange = (date, dateString) => {
     if (date && dateString) {
       setToAgeDisplay(date);
-      filterCondition.to_date = dayjs(dateString)
-        .endOf('day')
-        .unix();
-      setFilterCondition(filterCondition);
+      setToAgeValue(
+        dayjs(dateString)
+          .endOf('day')
+          .unix()
+      );
     } else {
       delete filterCondition.to_date;
       setFilterCondition(filterCondition);
@@ -288,7 +290,7 @@ function History({ settings, setSetting }) {
     <DropdownBlock>
       <div className="item">
         <div>From</div>
-        <CustomInput
+        <input
           type="number"
           inputMode="decimal"
           pattern="^[0-9]*[]?[0-9]*$"
@@ -305,17 +307,21 @@ function History({ settings, setSetting }) {
             }
           }}
           // block special character onpaste
-          onPaste={event => {
-            const text = event.clipboardData.getData('text');
-            if (__.includes(LIST_BLOCK_TEXT, text)) {
-              event.preventDefault();
-            }
-          }}
+          onPaste={event =>
+            window.setTimeout(() => {
+              const characters = event.target.value;
+              window.setTimeout(() => {
+                if (!/^\d+$/.test(characters)) {
+                  event.target.value = event.target.value.replace(/\D/g, '');
+                }
+              });
+            })
+          }
         />
       </div>
       <div className="item">
         <div>To</div>
-        <CustomInput
+        <input
           type="number"
           inputMode="decimal"
           pattern="^[0-9]*[]?[0-9]*$"
@@ -332,12 +338,16 @@ function History({ settings, setSetting }) {
             }
           }}
           // block special character onpaste
-          onPaste={event => {
-            const text = event.clipboardData.getData('text');
-            if (__.includes(LIST_BLOCK_TEXT, text)) {
-              event.preventDefault();
-            }
-          }}
+          onPaste={event =>
+            window.setTimeout(() => {
+              const characters = event.target.value;
+              window.setTimeout(() => {
+                if (!/^\d+$/.test(characters)) {
+                  event.target.value = event.target.value.replace(/\D/g, '');
+                }
+              });
+            })
+          }
         />
       </div>
       <Button disabled={disabledFilterBlock} onClick={() => handleFilter()}>
@@ -347,7 +357,7 @@ function History({ settings, setSetting }) {
   );
 
   // disabled btn filter age
-  const disalbedBtnFilterAge = useMemo(() => {
+  const disabledBtnFilterAge = useMemo(() => {
     if (!toAgeDisplay && !fromAgeDisplay) {
       return true;
     }
@@ -375,7 +385,7 @@ function History({ settings, setSetting }) {
           onChange={handleAgeEndChange}
         />
       </div>
-      <Button disabled={disalbedBtnFilterAge} onClick={() => handleFilter()}>
+      <Button disabled={disabledBtnFilterAge} onClick={() => handleFilter()}>
         Filter
       </Button>
     </DropdownBlock>
