@@ -66,23 +66,36 @@ const formatNumber = (amount, decimal) => {
 const formatAge = timestamp => {
   const ageTimestamp = +dayjs(Date.now()).unix() - +timestamp;
   if (ageTimestamp < MINUTES_TO_TIMESTAMP) {
-    return `${ageTimestamp} secs ago`;
+    return `${ageTimestamp} sec${ageTimestamp <= 1 ? '' : 's'} ago`;
   }
   if (ageTimestamp < HOUR_TO_TIMESTAMP) {
-    return `${parseInt(ageTimestamp / MINUTES_TO_TIMESTAMP, 10)} mins ago`;
+    return `${parseInt(ageTimestamp / MINUTES_TO_TIMESTAMP, 10)} min${
+      parseInt(ageTimestamp / MINUTES_TO_TIMESTAMP, 10) <= 1 ? '' : 's'
+    } ago`;
   }
   if (ageTimestamp < DAY_TO_TIMESTAMP) {
-    return `${parseInt(ageTimestamp / HOUR_TO_TIMESTAMP, 10)} hrs ${parseInt(
+    return `${parseInt(ageTimestamp / HOUR_TO_TIMESTAMP, 10)} hr${
+      parseInt(ageTimestamp / HOUR_TO_TIMESTAMP, 10) <= 1 ? '' : 's'
+    } ${parseInt(
       (ageTimestamp % HOUR_TO_TIMESTAMP) / MINUTES_TO_TIMESTAMP,
       10
-    )} mins ago`;
+    )} min${
+      parseInt((ageTimestamp % HOUR_TO_TIMESTAMP) / MINUTES_TO_TIMESTAMP, 10) <=
+      1
+        ? ''
+        : 's'
+    } ago`;
   }
-  return `${parseInt(ageTimestamp / DAY_TO_TIMESTAMP, 10)} days ${parseInt(
-    (ageTimestamp % DAY_TO_TIMESTAMP) / HOUR_TO_TIMESTAMP,
-    10
-  )} hrs ago`;
+  return `${parseInt(ageTimestamp / DAY_TO_TIMESTAMP, 10)} day${
+    parseInt(ageTimestamp / DAY_TO_TIMESTAMP, 10) <= 1 ? '' : 's'
+  } ${parseInt((ageTimestamp % DAY_TO_TIMESTAMP) / HOUR_TO_TIMESTAMP, 10)} hr${
+    parseInt((ageTimestamp % DAY_TO_TIMESTAMP) / HOUR_TO_TIMESTAMP, 10) <= 1
+      ? ''
+      : 's'
+  } ago`;
 };
 const renderImg = symbol => {
+  if (symbol === null) return '';
   if (symbol.toLowerCase() === 'usdc') return usdc;
   if (symbol.toLowerCase() === 'usdt') return usdt;
   if (symbol.toLowerCase() === 'busd') return busd;
@@ -92,6 +105,7 @@ const renderImg = symbol => {
   if (symbol.toLowerCase() === 'eth') return eth;
   if (symbol.toLowerCase() === 'link') return link;
   if (symbol.toLowerCase() === 'comp') return comp;
+  if (symbol.toLowerCase() === 'uni') return uni;
   if (symbol.toLowerCase() === 'uni-v2') return uni;
   if (symbol.toLowerCase() === 'ape') return ape;
   if (symbol.toLowerCase() === 'ust') return ust;
