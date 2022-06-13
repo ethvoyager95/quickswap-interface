@@ -300,3 +300,39 @@ export const SImg = styled.img`
   width: 25px;
   height: 25px;
 `;
+
+export const CustomInput = styled.input`
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  touch-action: manipulation;
+  outline: none;
+  box-sizing: border-box;
+  margin: 0;
+  font-variant: tabular-nums;
+  list-style: none;
+  font-feature-settings: 'tnum', 'tnum';
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 32px;
+  padding: 4px 11px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  transition: all 0.3s;
+
+  &:focus {
+    border-color: #40a9ff;
+    border-right-width: 1px !important;
+    outline: 0;
+    box-shadow: 0 0 0 2px rgb(24 144 255 / 20%);
+  }
+
+  &:hover {
+    border-color: #40a9ff;
+    border-right-width: 1px !important;
+  }
+`;
