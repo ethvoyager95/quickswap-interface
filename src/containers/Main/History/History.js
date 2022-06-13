@@ -42,7 +42,8 @@ import {
   PaginationWrapper,
   NoData,
   SBoxFlex,
-  SImg
+  SImg,
+  CustomInput
 } from './style';
 
 import './overide.scss';
@@ -287,7 +288,7 @@ function History({ settings, setSetting }) {
     <DropdownBlock>
       <div className="item">
         <div>From</div>
-        <Input
+        <CustomInput
           type="number"
           inputMode="decimal"
           pattern="^[0-9]*[]?[0-9]*$"
@@ -314,7 +315,7 @@ function History({ settings, setSetting }) {
       </div>
       <div className="item">
         <div>To</div>
-        <Input
+        <CustomInput
           type="number"
           inputMode="decimal"
           pattern="^[0-9]*[]?[0-9]*$"
