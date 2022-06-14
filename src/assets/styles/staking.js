@@ -798,6 +798,15 @@ export const SQuestion = styled.img`
     margin-right: 0px !important;
   }
 `;
+export const SHrefNft = styled.a`
+  font-size: 16px;
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+`;
 export const SQuestionNFT = styled.img`
   width: 23px;
   height: 23px;

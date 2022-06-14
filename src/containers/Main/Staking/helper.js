@@ -36,6 +36,7 @@ export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)
   .toString(10);
+
 export const SETTING_SLIDER = {
   dots: false,
   infinite: false,

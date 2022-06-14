@@ -467,9 +467,11 @@ function Staking({ settings, setSetting }) {
                   item.metadata = JSON.parse(item.metadata);
                   if (item?.metadata?.image) {
                     item.img = item?.metadata?.image;
-                  } else {
-                    item.img = LogoNFT;
                   }
+                  item.img =
+                    process.env.REACT_APP_ENV === 'prod'
+                      ? LogoNFT
+                      : `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
                 });
               }
               const dataStakeClone = _.cloneDeep(dataConvert);
@@ -510,8 +512,11 @@ function Staking({ settings, setSetting }) {
                 name: 'AnnexIronWolf ' + `#${item}`,
                 token_id: item,
                 id: +item,
-                img: fakeImgNFT || LogoNFT,
-                active: false
+                active: false,
+                img:
+                  process.env.REACT_APP_ENV === 'prod'
+                    ? LogoNFT
+                    : `${constants.URL_LOGO_NFT}/${item}.png`
               });
             });
             const lengthArr = newArray.length;
@@ -2080,6 +2085,12 @@ function Staking({ settings, setSetting }) {
                         >
                           <ST.SQuestion src={IconQuestion} />
                         </Tooltip>
+                        <ST.SHrefNft
+                          target="_blank"
+                          href="https://www.degenapestrike.org/"
+                        >
+                          Get Strike NFTs
+                        </ST.SHrefNft>
                       </ST.SText>
                     </ST.SFlex>
                     {address ? (
