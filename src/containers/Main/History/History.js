@@ -292,6 +292,7 @@ function History({ settings, setSetting }) {
               const characters = event.target.value;
               window.setTimeout(() => {
                 if (!/^\d+$/.test(characters)) {
+                  // eslint-disable-next-line no-param-reassign
                   event.target.value = event.target.value.replace(/\D/g, '');
                 }
               });
@@ -323,6 +324,7 @@ function History({ settings, setSetting }) {
               const characters = event.target.value;
               window.setTimeout(() => {
                 if (!/^\d+$/.test(characters)) {
+                  // eslint-disable-next-line no-param-reassign
                   event.target.value = event.target.value.replace(/\D/g, '');
                 }
               });
@@ -343,6 +345,7 @@ function History({ settings, setSetting }) {
     }
     return false;
   }, [fromAgeDisplay, toAgeDisplay, settings.selectedAddress]);
+
   const timestampFilter = (
     <DropdownBlock>
       <div className="item">
