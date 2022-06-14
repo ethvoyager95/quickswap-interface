@@ -969,7 +969,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -999,7 +999,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1029,7 +1029,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1102,7 +1102,7 @@ function Staking({ settings, setSetting }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingBtn(false);
-            setTextErr('Some thing went wrong!');
+            setTextErr('Something went wrong!');
           }
           throw err;
         });
@@ -1172,7 +1172,7 @@ function Staking({ settings, setSetting }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingUnStake(false);
-            setTextErr('Some thing went wrong!');
+            setTextErr('Something went wrong!');
           }
           throw err;
         });
@@ -1208,7 +1208,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1238,7 +1238,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1293,7 +1293,7 @@ function Staking({ settings, setSetting }) {
             } else {
               setIsShowCancel(true);
               setiIsConfirm(false);
-              setTextErr('Some thing went wrong!');
+              setTextErr('Something went wrong!');
               setValueNFTStake('');
               setMessConfirm('');
             }
@@ -1353,7 +1353,7 @@ function Staking({ settings, setSetting }) {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
-              setTextErr('Some thing went wrong!');
+              setTextErr('Something went wrong!');
               setMessConfirm('');
             }
             throw err;
