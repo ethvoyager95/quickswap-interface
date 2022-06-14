@@ -238,8 +238,7 @@ function ConnectModal({
       }
     }
   }, [window.ethereum, settings.selectedAddress]);
-  // console.log(isBitkeepWallet, 'isBitkeepWallet');
-  // console.log(isMetaMask, 'isMetaMask');
+
   return (
     <Modal
       className="connect-modal"
