@@ -233,11 +233,13 @@ function ConnectModal({
         setisMetaMask(window?.ethereum?.isMetaMask);
       }
       if (window?.ethereum?.isMetaMask === true && window.isBitKeep === true) {
-        setisMetaMask(true);
-        setIsBitKeepWallet(false);
+        setisMetaMask(false);
+        setIsBitKeepWallet(true);
       }
     }
   }, [window.ethereum, settings.selectedAddress]);
+  // console.log(isBitkeepWallet, 'isBitkeepWallet');
+  // console.log(isMetaMask, 'isMetaMask');
   return (
     <Modal
       className="connect-modal"
