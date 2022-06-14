@@ -23,7 +23,6 @@ import {
   initPagination,
   LIMIT,
   LIST_BLOCK_VALUE,
-  LIST_BLOCK_TEXT,
   tooltipContent,
   tabsTransaction,
   headers as headersCSV
@@ -68,16 +67,6 @@ function History({ settings, setSetting }) {
   const [toAgeDisplay, setToAgeDisplay] = useState('');
   const [fromAddressValue, setFromAddressValue] = useState('');
   const [toAddressValue, setToAddressValue] = useState('');
-
-  // const [isDisableBtnFilterBlock, setIsDisableBtnFilterBlock] = useState(true);
-  const [
-    isDisableBtnFilterFromAddress,
-    setIsDisableBtnFilterFromAddress
-  ] = useState(true);
-  const [
-    isDisableBtnFilterToAddress,
-    setIsDisableBtnFilterToAddress
-  ] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   const getDataTransactions = async (filter, paginationQuery) => {
@@ -162,16 +151,6 @@ function History({ settings, setSetting }) {
     }
     if (type === 'to') {
       setToAddressValue(value);
-    }
-    if (filterCondition?.from_address?.length === 0) {
-      setIsDisableBtnFilterFromAddress(true);
-    } else {
-      setIsDisableBtnFilterFromAddress(false);
-    }
-    if (filterCondition?.to_address?.length === 0) {
-      setIsDisableBtnFilterToAddress(true);
-    } else {
-      setIsDisableBtnFilterToAddress(false);
     }
   };
 
@@ -286,6 +265,7 @@ function History({ settings, setSetting }) {
     }
     return false;
   }, [fromBlockValue, toBlockValue, settings.selectedAddress]);
+
   const blockFilter = (
     <DropdownBlock>
       <div className="item">
@@ -391,6 +371,13 @@ function History({ settings, setSetting }) {
     </DropdownBlock>
   );
 
+  const disabledFilterFromAddress = useMemo(() => {
+    if (!fromAddressValue) {
+      return true;
+    }
+    return false;
+  }, [fromAddressValue, settings.selectedAddress]);
+
   const addressFromFilter = (
     <DropdownAddress>
       <div>
@@ -402,13 +389,20 @@ function History({ settings, setSetting }) {
         />
       </div>
       <Button
-        disabled={isDisableBtnFilterFromAddress}
+        disabled={disabledFilterFromAddress}
         onClick={() => handleFilter()}
       >
         Filter
       </Button>
     </DropdownAddress>
   );
+
+  const disabledFilterToAddress = useMemo(() => {
+    if (!toAddressValue) {
+      return true;
+    }
+    return false;
+  }, [toAddressValue, settings.selectedAddress]);
 
   const addressToFilter = (
     <DropdownAddress>
@@ -420,10 +414,7 @@ function History({ settings, setSetting }) {
           onChange={e => handleInputAddressChange(e.target.value, 'to')}
         />
       </div>
-      <Button
-        disabled={isDisableBtnFilterToAddress}
-        onClick={() => handleFilter()}
-      >
+      <Button disabled={disabledFilterToAddress} onClick={() => handleFilter()}>
         Filter
       </Button>
     </DropdownAddress>
@@ -647,9 +638,6 @@ function History({ settings, setSetting }) {
               setToBlockValue('');
               setToAgeDisplay('');
               setToAddressValue('');
-              // setIsDisableBtnFilterBlock(true);
-              setIsDisableBtnFilterFromAddress(true);
-              setIsDisableBtnFilterToAddress(true);
             }}
             className={currentTab === tab ? 'active' : ''}
           >
