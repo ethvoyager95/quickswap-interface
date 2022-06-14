@@ -233,8 +233,8 @@ function ConnectModal({
         setisMetaMask(window?.ethereum?.isMetaMask);
       }
       if (window?.ethereum?.isMetaMask === true && window.isBitKeep === true) {
-        setisMetaMask(false);
-        setIsBitKeepWallet(true);
+        setisMetaMask(true);
+        setIsBitKeepWallet(false);
       }
     }
   }, [window.ethereum, settings.selectedAddress]);
