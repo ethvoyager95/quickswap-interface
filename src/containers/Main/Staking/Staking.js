@@ -469,7 +469,7 @@ function Staking({ settings, setSetting }) {
                     item.img = item?.metadata?.image;
                   }
                   item.img =
-                    process.env.REACT_APP_ENV === 'prod'
+                    process.env.REACT_APP_ENV === 'dev'
                       ? LogoNFT
                       : `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
                 });
@@ -514,7 +514,7 @@ function Staking({ settings, setSetting }) {
                 id: +item,
                 active: false,
                 img:
-                  process.env.REACT_APP_ENV === 'prod'
+                  process.env.REACT_APP_ENV === 'dev'
                     ? LogoNFT
                     : `${constants.URL_LOGO_NFT}/${item}.png`
               });
