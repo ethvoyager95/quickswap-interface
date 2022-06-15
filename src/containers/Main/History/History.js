@@ -117,17 +117,33 @@ function History({ settings, setSetting }) {
 
   const handleVisibleBlockChange = flag => {
     setVisibleBlock(flag);
+    setFromBlockValue(filterCondition.from_block || fromBlockValue || '');
+    setToBlockValue(filterCondition.to_block || toBlockValue || '');
   };
 
   const handleVisibleAgeChange = flag => {
+    setFromAgeDisplay(
+      filterCondition.from_date
+        ? moment.unix(filterCondition.from_date)
+        : fromAgeDisplay || ''
+    );
+    setToAgeDisplay(
+      filterCondition.to_date
+        ? moment.unix(filterCondition.to_date)
+        : toAgeDisplay || ''
+    );
+    setFromAgeValue(filterCondition.from_date || '');
+    setToAgeValue(filterCondition.to_date || '');
     setVisibleAge(flag);
   };
 
   const handleVisibleFromChange = flag => {
+    setFromAddressValue(filterCondition.from_address || fromAddressValue || '');
     setVisibleFrom(flag);
   };
 
   const handleVisibleToChange = flag => {
+    setToAddressValue(filterCondition.to_address || toAddressValue || '');
     setVisibleTo(flag);
   };
 
@@ -668,14 +684,10 @@ function History({ settings, setSetting }) {
             <SButton
               onClick={e => {
                 e.preventDefault();
-                if (!visibleBlock) {
-                  setFromBlockValue(
-                    filterCondition.from_block || fromBlockValue || ''
-                  );
-                  setToBlockValue(
-                    filterCondition.to_block || toBlockValue || ''
-                  );
-                }
+                setFromBlockValue(
+                  filterCondition.from_block || fromBlockValue || ''
+                );
+                setToBlockValue(filterCondition.to_block || toBlockValue || '');
               }}
             >
               <img src={iconFilter} alt="" />
@@ -711,18 +723,18 @@ function History({ settings, setSetting }) {
             <SButton
               onClick={e => {
                 e.preventDefault();
-                if (!visibleAge) {
-                  setFromAgeDisplay(
-                    filterCondition.from_date
-                      ? moment.unix(filterCondition.from_date)
-                      : fromAgeDisplay || ''
-                  );
-                  setToAgeDisplay(
-                    filterCondition.to_date
-                      ? moment.unix(filterCondition.to_date)
-                      : toAgeDisplay || ''
-                  );
-                }
+                setFromAgeDisplay(
+                  filterCondition.from_date
+                    ? moment.unix(filterCondition.from_date)
+                    : fromAgeDisplay || ''
+                );
+                setToAgeDisplay(
+                  filterCondition.to_date
+                    ? moment.unix(filterCondition.to_date)
+                    : toAgeDisplay || ''
+                );
+                setFromAgeValue(filterCondition.from_date || '');
+                setToAgeValue(filterCondition.to_date || '');
               }}
             >
               <img src={iconFilter} alt="" />
@@ -751,11 +763,9 @@ function History({ settings, setSetting }) {
             <SButton
               onClick={e => {
                 e.preventDefault();
-                if (!visibleFrom) {
-                  setFromAddressValue(
-                    filterCondition.from_address || fromAddressValue || ''
-                  );
-                }
+                setFromAddressValue(
+                  filterCondition.from_address || fromAddressValue || ''
+                );
               }}
             >
               <img src={iconFilter} alt="" />
@@ -792,11 +802,9 @@ function History({ settings, setSetting }) {
             <SButton
               onClick={e => {
                 e.preventDefault();
-                if (!visibleTo) {
-                  setToAddressValue(
-                    filterCondition.to_address || toAddressValue || ''
-                  );
-                }
+                setToAddressValue(
+                  filterCondition.to_address || toAddressValue || ''
+                );
               }}
             >
               <img src={iconFilter} alt="" />
