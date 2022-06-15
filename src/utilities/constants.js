@@ -41,8 +41,6 @@ export const SUPPORT_URL =
 export const URL_LOGO_NFT =
   'https://gateway.pinata.cloud/ipfs/QmZNFcvCDB5oxwRW1T7HbBh4NgtZRBmfNAph1kpkJss6V5';
 // Contract ABI
-export const URL_LOGO_NFT =
-  'https://gateway.pinata.cloud/ipfs/QmZNFcvCDB5oxwRW1T7HbBh4NgtZRBmfNAph1kpkJss6V5';
 export const CONTRACT_TOKEN_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
     ? {
