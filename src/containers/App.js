@@ -48,10 +48,7 @@ class App extends React.Component {
       <Theme>
         <ApolloProvider client={client}>
           <IntlProvider locale={lang} messages={message}>
-            <MoralisProvider
-              serverUrl={constants.MORALIS_URL}
-              appId={constants.MORALIS_ID}
-            >
+            <MoralisProvider>
               <Provider store={store}>
                 <BrowserRouter>
                   <Switch
