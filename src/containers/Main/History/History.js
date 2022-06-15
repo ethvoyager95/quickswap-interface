@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-escape */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { CSVLink } from 'react-csv';
 import PropTypes from 'prop-types';
@@ -14,11 +14,15 @@ import noData from 'assets/img/no_data.svg';
 import { connectAccount, accountActionCreators } from 'core';
 import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
 import dayjs from 'dayjs';
+import moment from 'moment';
+import LoadingSpinner from 'components/Basic/LoadingSpinner';
+import __ from 'lodash';
 import {
   formatTxn,
   initFilter,
   initPagination,
   LIMIT,
+  LIST_BLOCK_VALUE,
   tooltipContent,
   tabsTransaction,
   headers as headersCSV
@@ -35,8 +39,12 @@ import {
   DropdownBlock,
   DropdownAddress,
   PaginationWrapper,
-  NoData
+  NoData,
+  SBoxFlex,
+  SImg
 } from './style';
+
+import './overide.scss';
 
 function History({ settings, setSetting }) {
   const [currentTab, setCurrentTab] = useState('all');
@@ -50,7 +58,17 @@ function History({ settings, setSetting }) {
   const [filterCondition, setFilterCondition] = useState(initFilter);
   const [pagination, setPagination] = useState(initPagination);
   const [currentPage, setCurrentPage] = useState(1);
-  // eslint-disable-next-line consistent-return
+  const [showPaging, setShowPaging] = useState(true);
+  const [fromBlockValue, setFromBlockValue] = useState('');
+  const [toBlockValue, setToBlockValue] = useState('');
+  const [fromAgeValue, setFromAgeValue] = useState('');
+  const [toAgeValue, setToAgeValue] = useState('');
+  const [fromAgeDisplay, setFromAgeDisplay] = useState('');
+  const [toAgeDisplay, setToAgeDisplay] = useState('');
+  const [fromAddressValue, setFromAddressValue] = useState('');
+  const [toAddressValue, setToAddressValue] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
   const getDataTransactions = async (filter, paginationQuery) => {
     const res = await axios.get(
       `${
@@ -66,6 +84,7 @@ function History({ settings, setSetting }) {
       }
     );
     const { data } = res.data;
+
     return data;
   };
 
@@ -76,11 +95,20 @@ function History({ settings, setSetting }) {
 
   const getDataTable = async (filter, paginationQuery = initPagination) => {
     try {
+      setIsLoading(true);
       const res = await getDataTransactions(filter, paginationQuery);
       setDataTransaction(formatTxn(res.rows));
       setTotalTransactions(res.count);
-    } catch (error) {
+      if (res.count > LIMIT) {
+        setShowPaging(true);
+      } else {
+        setShowPaging(false);
+      }
+      setIsLoading(false);
+    } catch (e) {
       setDataTransaction([]);
+      setShowPaging(false);
+      setIsLoading(false);
     }
   };
 
@@ -102,29 +130,42 @@ function History({ settings, setSetting }) {
 
   const handleInputBlockChange = (value, type) => {
     if (type === 'from') {
-      filterCondition.from_block = String(value);
-      setFilterCondition(filterCondition);
+      setFromBlockValue(value);
     }
     if (type === 'to') {
-      filterCondition.to_block = String(value);
-      setFilterCondition(filterCondition);
+      setToBlockValue(value);
     }
+    // if (
+    //   filterCondition?.from_block?.length === 0 &&
+    //   filterCondition?.to_block?.length === 0
+    // ) {
+    //   setIsDisableBtnFilterBlock(true);
+    // } else {
+    //   setIsDisableBtnFilterBlock(false);
+    // }
   };
 
   const handleInputAddressChange = (value, type) => {
     if (type === 'from') {
-      filterCondition.from_address = value;
-      setFilterCondition(filterCondition);
+      setFromAddressValue(value);
     }
     if (type === 'to') {
-      filterCondition.to_address = value;
-      setFilterCondition(filterCondition);
+      setToAddressValue(value);
     }
   };
 
   const handleFilter = () => {
     setCurrentPage(1);
-    setPagination(initFilter);
+    filterCondition.from_block = fromBlockValue;
+    filterCondition.to_block = toBlockValue;
+    filterCondition.from_address = fromAddressValue;
+    filterCondition.to_address = toAddressValue;
+    filterCondition.from_date = fromAgeValue;
+    filterCondition.to_date = toAgeValue;
+    setFilterCondition(filterCondition);
+    pagination.limit = LIMIT;
+    pagination.offset = 0;
+    setPagination(pagination);
     getDataTable(filterCondition);
     setVisibleAge(false);
     setVisibleBlock(false);
@@ -134,49 +175,81 @@ function History({ settings, setSetting }) {
 
   const handlePageChange = page => {
     setCurrentPage(page);
+    pagination.limit = LIMIT;
     pagination.offset = (+page - 1) * LIMIT;
     setPagination(pagination);
     getDataTable(filterCondition, pagination);
   };
 
-  const handleAgeStartChange = (_, dateString) => {
-    if (dateString !== 'NaN') {
-      filterCondition.from_date = dayjs(dateString).unix();
-      setFilterCondition(filterCondition);
+  const handleAgeStartChange = (date, dateString) => {
+    if (date && dateString) {
+      setFromAgeDisplay(date);
+      setFromAgeValue(
+        dayjs(dateString)
+          .startOf('day')
+          .unix()
+      );
     } else {
       delete filterCondition.from_date;
       setFilterCondition(filterCondition);
+      setFromAgeDisplay('');
     }
   };
 
-  const handleAgeEndChange = (_, dateString) => {
-    if (dateString !== 'NaN') {
-      filterCondition.to_date = dayjs(dateString).unix();
-      setFilterCondition(filterCondition);
+  const handleAgeEndChange = (date, dateString) => {
+    if (date && dateString) {
+      setToAgeDisplay(date);
+      setToAgeValue(
+        dayjs(dateString)
+          .endOf('day')
+          .unix()
+      );
     } else {
       delete filterCondition.to_date;
       setFilterCondition(filterCondition);
+      setToAgeDisplay('');
     }
   };
 
   useEffect(() => {
-    if (currentTab === 'user') {
-      filterCondition.from_address = settings.selectedAddress;
-      setFilterCondition(filterCondition);
-    } else if (currentTab === 'all') {
-      delete filterCondition.from_address;
-      setFilterCondition(filterCondition);
+    Object.keys(filterCondition).forEach(key => delete filterCondition[key]);
+    setFilterCondition(filterCondition);
+    if (settings.isConnected) {
+      if (currentTab === 'user') {
+        if (settings.selectedAddress) {
+          filterCondition.user_address = settings.selectedAddress;
+          setFilterCondition(filterCondition);
+          handleExportCSV(filterCondition);
+          getDataTable(filterCondition);
+        } else {
+          setDataTransaction([]);
+          setShowPaging(false);
+        }
+      } else if (currentTab === 'all') {
+        delete filterCondition.user_address;
+        setFilterCondition(filterCondition);
+        handleExportCSV(filterCondition);
+        getDataTable(filterCondition);
+      }
     }
-    handleExportCSV(filterCondition);
-    getDataTable(filterCondition);
-  }, [currentTab, settings.selectedAddress]);
+    if (!settings.isConnected) {
+      if (currentTab === 'user') {
+        setDataTransaction([]);
+        setShowPaging(false);
+      } else if (currentTab === 'all') {
+        delete filterCondition.user_address;
+        setFilterCondition(filterCondition);
+        handleExportCSV(filterCondition);
+        getDataTable(filterCondition);
+      }
+    }
+  }, [currentTab, settings.selectedAddress, settings.isConnected]);
 
   useEffect(() => {
     if (!settings.selectedAddress) {
       return;
     }
     if (window.ethereum) {
-      // && checkIsValidNetwork()
       window.ethereum.on('accountsChanged', acc => {
         setSetting({
           selectedAddress: acc[0],
@@ -185,67 +258,168 @@ function History({ settings, setSetting }) {
       });
     }
   }, [window.ethereum, settings.selectedAddress]);
+  // disabled block
+  const disabledFilterBlock = useMemo(() => {
+    if (!toBlockValue && !fromBlockValue) {
+      return true;
+    }
+    return false;
+  }, [fromBlockValue, toBlockValue, settings.selectedAddress]);
+
   const blockFilter = (
     <DropdownBlock>
       <div className="item">
         <div>From</div>
-        <Input
+        <input
+          type="number"
           inputMode="decimal"
           pattern="^[0-9]*[]?[0-9]*$"
+          value={fromBlockValue}
+          min={0}
+          minLength={1}
+          maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'from')}
+          // block special character keypress
+          onKeyPress={event => {
+            if (__.includes(LIST_BLOCK_VALUE, event.which)) {
+              event.preventDefault();
+            }
+          }}
+          // block special character onpaste
+          onPaste={event =>
+            window.setTimeout(() => {
+              const characters = event.target.value;
+              window.setTimeout(() => {
+                if (!/^\d+$/.test(characters)) {
+                  // eslint-disable-next-line no-param-reassign
+                  event.target.value = event.target.value.replace(/\D/g, '');
+                }
+              });
+            })
+          }
         />
       </div>
       <div className="item">
         <div>To</div>
-        <Input
+        <input
+          type="number"
           inputMode="decimal"
-          pattern="^[0-9]*[.,]?[0-9]*$"
+          pattern="^[0-9]*[]?[0-9]*$"
+          value={toBlockValue}
+          min={0}
+          minLength={1}
+          maxLength={79}
           placeholder="Block Number"
           onChange={e => handleInputBlockChange(e.target.value, 'to')}
+          // block special character keypress
+          onKeyPress={event => {
+            if (__.includes(LIST_BLOCK_VALUE, event.which)) {
+              event.preventDefault();
+            }
+          }}
+          // block special character onpaste
+          onPaste={event =>
+            window.setTimeout(() => {
+              const characters = event.target.value;
+              window.setTimeout(() => {
+                if (!/^\d+$/.test(characters)) {
+                  // eslint-disable-next-line no-param-reassign
+                  event.target.value = event.target.value.replace(/\D/g, '');
+                }
+              });
+            })
+          }
         />
       </div>
-      <Button onClick={() => handleFilter()}>Filter</Button>
+      <Button disabled={disabledFilterBlock} onClick={() => handleFilter()}>
+        Filter
+      </Button>
     </DropdownBlock>
   );
+
+  // disabled btn filter age
+  const disabledBtnFilterAge = useMemo(() => {
+    if (!toAgeDisplay && !fromAgeDisplay) {
+      return true;
+    }
+    return false;
+  }, [fromAgeDisplay, toAgeDisplay, settings.selectedAddress]);
 
   const timestampFilter = (
     <DropdownBlock>
       <div className="item">
         <div>From</div>
-        <DatePicker placeholder="mm/dd/yyyy" onChange={handleAgeStartChange} />
+        <DatePicker
+          defaultPickerValue={moment(fromAgeDisplay, 'MM/DD/YYYY')}
+          value={fromAgeDisplay !== '' ? moment(fromAgeDisplay) : null}
+          format="MM/DD/YYYY"
+          placeholder="mm/dd/yyyy"
+          onChange={handleAgeStartChange}
+        />
       </div>
       <div className="item">
         <div>To</div>
-        <DatePicker placeholder="mm/dd/yyyy" onChange={handleAgeEndChange} />
+        <DatePicker
+          defaultPickerValue={moment(toAgeDisplay, 'MM/DD/YYYY')}
+          value={toAgeDisplay !== '' ? moment(toAgeDisplay) : null}
+          format="MM/DD/YYYY"
+          placeholder="mm/dd/yyyy"
+          onChange={handleAgeEndChange}
+        />
       </div>
-      <Button onClick={() => handleFilter()}>Filter</Button>
+      <Button disabled={disabledBtnFilterAge} onClick={() => handleFilter()}>
+        Filter
+      </Button>
     </DropdownBlock>
   );
+
+  const disabledFilterFromAddress = useMemo(() => {
+    if (!fromAddressValue) {
+      return true;
+    }
+    return false;
+  }, [fromAddressValue, settings.selectedAddress]);
 
   const addressFromFilter = (
     <DropdownAddress>
       <div>
         <Input
           className="input-address"
+          value={fromAddressValue}
           placeholder="Search by address e.g 0x..."
           onChange={e => handleInputAddressChange(e.target.value, 'from')}
         />
       </div>
-      <Button onClick={() => handleFilter()}>Filter</Button>
+      <Button
+        disabled={disabledFilterFromAddress}
+        onClick={() => handleFilter()}
+      >
+        Filter
+      </Button>
     </DropdownAddress>
   );
+
+  const disabledFilterToAddress = useMemo(() => {
+    if (!toAddressValue) {
+      return true;
+    }
+    return false;
+  }, [toAddressValue, settings.selectedAddress]);
 
   const addressToFilter = (
     <DropdownAddress>
       <div>
         <Input
           className="input-address"
+          value={toAddressValue}
           placeholder="Search by address e.g 0x..."
           onChange={e => handleInputAddressChange(e.target.value, 'to')}
         />
       </div>
-      <Button onClick={() => handleFilter()}>Filter</Button>
+      <Button disabled={disabledFilterToAddress} onClick={() => handleFilter()}>
+        Filter
+      </Button>
     </DropdownAddress>
   );
 
@@ -367,7 +541,7 @@ function History({ settings, setSetting }) {
         return {
           children: (
             <Hash
-              href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.userAddress}`}
+              href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.from}`}
               target="_blank"
             >
               {asset?.from?.substr(0, 4)}...
@@ -415,7 +589,16 @@ function History({ settings, setSetting }) {
       key: 'value',
       render(_, asset) {
         return {
-          children: <Value>{asset.value}</Value>
+          children: (
+            <>
+              <SBoxFlex>
+                {asset.img && <SImg src={asset.img} />}
+                <Value uppercase>
+                  {asset.value} {asset.symbol}
+                </Value>
+              </SBoxFlex>
+            </>
+          )
         };
       }
     }
@@ -424,8 +607,18 @@ function History({ settings, setSetting }) {
   const locale = {
     emptyText: (
       <NoData>
-        <img src={noData} alt="No data" />
-        <div>No record was found</div>
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            <img src={noData} alt="No data" />
+            <div>
+              {settings.isConnected && settings.selectedAddress
+                ? 'No record was found'
+                : 'Connect your wallet to see your transaction history'}
+            </div>
+          </>
+        )}
       </NoData>
     )
   };
@@ -438,7 +631,16 @@ function History({ settings, setSetting }) {
             key={tab}
             onClick={() => {
               setCurrentTab(tab);
-              setPagination(initPagination);
+              pagination.limit = LIMIT;
+              pagination.offset = 0;
+              setPagination(pagination);
+              setCurrentPage(1);
+              setFromBlockValue('');
+              setFromAgeDisplay('');
+              setFromAddressValue('');
+              setToBlockValue('');
+              setToAgeDisplay('');
+              setToAddressValue('');
             }}
             className={currentTab === tab ? 'active' : ''}
           >
@@ -447,7 +649,17 @@ function History({ settings, setSetting }) {
         ))}
       </TabsWrapper>
       <SDivFlex>
-        <div>
+        <div />
+      </SDivFlex>
+      <STable
+        locale={locale}
+        columns={columns}
+        dataSource={dataTransactions}
+        pagination={false}
+        rowKey={record => record.id}
+      />
+      <PaginationWrapper>
+        <div className="export-csv">
           Download{' '}
           {dataExportCSV && (
             <CSVLink
@@ -465,22 +677,15 @@ function History({ settings, setSetting }) {
             </CSVLink>
           )}
         </div>
-      </SDivFlex>
-      <STable
-        locale={locale}
-        columns={columns}
-        dataSource={dataTransactions}
-        pagination={false}
-        rowKey={record => record.id}
-      />
-      <PaginationWrapper>
-        <Pagination
-          defaultPageSize={LIMIT}
-          defaultCurrent={1}
-          current={currentPage}
-          onChange={e => handlePageChange(e)}
-          total={totalTransactions}
-        />
+        {showPaging && (
+          <Pagination
+            defaultPageSize={LIMIT}
+            defaultCurrent={1}
+            current={currentPage}
+            onChange={e => handlePageChange(e)}
+            total={totalTransactions}
+          />
+        )}
       </PaginationWrapper>
     </MainLayout>
   );

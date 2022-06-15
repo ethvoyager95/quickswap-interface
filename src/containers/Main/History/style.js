@@ -10,8 +10,10 @@ export const TabsWrapper = styled.div`
   font-size: 25px;
   line-height: 27px;
   color: #0b0f23;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   margin: 0 16px 20px;
+  padding-top: 44px;
 
   div {
     opacity: 0.5;
@@ -42,33 +44,11 @@ export const SDivFlex = styled.div`
   justify-content: flex-end;
   align-items: center;
   font-style: normal;
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 24px;
-  color: rgba(11, 15, 35, 0.5);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: #0b0f23;
   margin: 0 16px 28px;
-
-  .text-blue {
-    color: #107def;
-    font-weight: 900;
-  }
-
-  img {
-    margin-left: 12px;
-  }
-
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-    line-height: 22px;
-    flex-direction: column;
-    gap: 20px;
-    align-items: flex-start;
-
-    img {
-      width: 15px;
-      height: 15px;
-    }
-  }
 `;
 
 export const THeadWrapper = styled.div`
@@ -157,6 +137,7 @@ export const Value = styled.div`
   font-size: 18px;
   line-height: 28px;
   color: #000000;
+  text-transform: ${props => (props.uppercase ? 'uppercase' : 'lowercase')};
 `;
 
 export const SButton = styled.button`
@@ -208,6 +189,41 @@ export const DropdownBlock = styled.div`
       color: #ffffff;
     }
   }
+  input {
+    line-height: 1.5;
+    text-overflow: ellipsis;
+    touch-action: manipulation;
+    outline: none;
+    box-sizing: border-box;
+    margin: 0;
+    font-variant: tabular-nums;
+    list-style: none;
+    font-feature-settings: 'tnum', 'tnum';
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 32px;
+    padding: 4px 11px;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    transition: all 0.3s;
+
+    &:focus {
+      border-color: #40a9ff;
+      border-right-width: 1px !important;
+      outline: 0;
+      box-shadow: 0 0 0 2px rgb(24 144 255 / 20%);
+    }
+
+    &:hover {
+      border-color: #40a9ff;
+      border-right-width: 1px !important;
+    }
+  }
 `;
 
 export const DropdownAddress = styled.div`
@@ -241,7 +257,9 @@ export const DropdownAddress = styled.div`
 `;
 
 export const PaginationWrapper = styled.div`
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 0 16px 50px;
 
   .ant-pagination-item {
@@ -258,6 +276,26 @@ export const PaginationWrapper = styled.div`
 
   .ant-pagination-item-active {
     border: 1px solid #107def;
+  }
+  .text-blue {
+    color: #107def;
+    font-weight: 900;
+  }
+  .export-csv {
+    align-self: flex-start;
+  }
+  img {
+    margin-left: 12px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    line-height: 22px;
+
+    img {
+      width: 15px;
+      height: 15px;
+    }
   }
 `;
 
@@ -286,4 +324,14 @@ export const NoData = styled.div`
       width: 108px;
     }
   }
+`;
+export const SBoxFlex = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
+export const SImg = styled.img`
+  margin-right: 5px;
+  width: 25px;
+  height: 25px;
 `;
