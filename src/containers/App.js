@@ -19,7 +19,6 @@ import Forbidden from 'containers/Main/Forbidden';
 import History from 'containers/Main/History/History';
 import { ApolloProvider } from 'react-apollo';
 import { MoralisProvider } from 'react-moralis';
-import * as constants from 'utilities/constants';
 import { client } from '../apollo/client';
 import Theme from './Theme';
 
@@ -48,10 +47,7 @@ class App extends React.Component {
       <Theme>
         <ApolloProvider client={client}>
           <IntlProvider locale={lang} messages={message}>
-            <MoralisProvider
-              serverUrl={constants.MORALIS_URL}
-              appId={constants.MORALIS_ID}
-            >
+            <MoralisProvider>
               <Provider store={store}>
                 <BrowserRouter>
                   <Switch
