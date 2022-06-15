@@ -467,9 +467,11 @@ function Staking({ settings, setSetting }) {
                   item.metadata = JSON.parse(item.metadata);
                   if (item?.metadata?.image) {
                     item.img = item?.metadata?.image;
-                  } else {
-                    item.img = LogoNFT;
                   }
+                  item.img =
+                    process.env.REACT_APP_ENV === 'dev'
+                      ? LogoNFT
+                      : `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
                 });
               }
               const dataStakeClone = _.cloneDeep(dataConvert);
@@ -510,8 +512,11 @@ function Staking({ settings, setSetting }) {
                 name: 'AnnexIronWolf ' + `#${item}`,
                 token_id: item,
                 id: +item,
-                img: fakeImgNFT || LogoNFT,
-                active: false
+                active: false,
+                img:
+                  process.env.REACT_APP_ENV === 'dev'
+                    ? LogoNFT
+                    : `${constants.URL_LOGO_NFT}/${item}.png`
               });
             });
             const lengthArr = newArray.length;
@@ -969,7 +974,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -999,7 +1004,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1029,7 +1034,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1102,7 +1107,7 @@ function Staking({ settings, setSetting }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingBtn(false);
-            setTextErr('Some thing went wrong!');
+            setTextErr('Something went wrong!');
           }
           throw err;
         });
@@ -1172,7 +1177,7 @@ function Staking({ settings, setSetting }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingUnStake(false);
-            setTextErr('Some thing went wrong!');
+            setTextErr('Something went wrong!');
           }
           throw err;
         });
@@ -1208,7 +1213,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1238,7 +1243,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1293,7 +1298,7 @@ function Staking({ settings, setSetting }) {
             } else {
               setIsShowCancel(true);
               setiIsConfirm(false);
-              setTextErr('Some thing went wrong!');
+              setTextErr('Something went wrong!');
               setValueNFTStake('');
               setMessConfirm('');
             }
@@ -1353,7 +1358,7 @@ function Staking({ settings, setSetting }) {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
-              setTextErr('Some thing went wrong!');
+              setTextErr('Something went wrong!');
               setMessConfirm('');
             }
             throw err;
@@ -2080,6 +2085,12 @@ function Staking({ settings, setSetting }) {
                         >
                           <ST.SQuestion src={IconQuestion} />
                         </Tooltip>
+                        <ST.SHrefNft
+                          target="_blank"
+                          href="https://www.degenapestrike.org/"
+                        >
+                          Get Strike NFTs
+                        </ST.SHrefNft>
                       </ST.SText>
                     </ST.SFlex>
                     {address ? (
