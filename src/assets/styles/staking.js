@@ -800,11 +800,13 @@ export const SQuestion = styled.img`
 `;
 export const SHrefNft = styled.a`
   font-size: 16px;
+  margin-left: 20px;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
     position: absolute;
     bottom: 10px;
     left: 10px;
+    margin-left: 0px;
   }
 `;
 export const SQuestionNFT = styled.img`
