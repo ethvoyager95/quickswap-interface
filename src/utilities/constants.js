@@ -39,6 +39,8 @@ export const MORALIS_API = process.env.REACT_APP_MORALIS_API;
 export const SUPPORT_URL =
   'https://app.uniswap.org/#/add/0x74232704659ef37c08995e386a2e26cc27a8d7b1/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/10000?chain=mainnet';
 // Contract ABI
+export const URL_LOGO_NFT =
+  'https://gateway.pinata.cloud/ipfs/QmZNFcvCDB5oxwRW1T7HbBh4NgtZRBmfNAph1kpkJss6V5';
 export const CONTRACT_TOKEN_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
     ? {
