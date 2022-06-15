@@ -468,10 +468,7 @@ function Staking({ settings, setSetting }) {
                   if (item?.metadata?.image) {
                     item.img = item?.metadata?.image;
                   }
-                  item.img =
-                    process.env.REACT_APP_ENV === 'prod'
-                      ? LogoNFT
-                      : `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
+                  item.img = `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
                 });
               }
               const dataStakeClone = _.cloneDeep(dataConvert);
@@ -513,10 +510,7 @@ function Staking({ settings, setSetting }) {
                 token_id: item,
                 id: +item,
                 active: false,
-                img:
-                  process.env.REACT_APP_ENV === 'prod'
-                    ? LogoNFT
-                    : `${constants.URL_LOGO_NFT}/${item}.png`
+                img: `${constants.URL_LOGO_NFT}/${item}.png`
               });
             });
             const lengthArr = newArray.length;
@@ -1455,22 +1449,20 @@ function Staking({ settings, setSetting }) {
   // check loadding nft
   useEffect(() => {
     // eslint-disable-next-line no-plusplus
-    if (process.env.REACT_APP_ENV === 'dev') {
-      if (dataNFT.length > 0) {
-        // eslint-disable-next-line no-plusplus
-        for (let i = 0; i < dataNFT.length; i++) {
-          fetch(dataNFT[i].img, { method: 'HEAD', mode: 'cors' })
-            .then(res => {
-              if (res.ok) {
-                dataNFT[i].loaded = true;
-              } else {
-                dataNFT[i].loaded = false;
-              }
-            })
-            .catch(err => {
+    if (dataNFT.length > 0) {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < dataNFT.length; i++) {
+        fetch(dataNFT[i].img, { method: 'HEAD', mode: 'cors' })
+          .then(res => {
+            if (res.ok) {
+              dataNFT[i].loaded = true;
+            } else {
               dataNFT[i].loaded = false;
-            });
-        }
+            }
+          })
+          .catch(err => {
+            dataNFT[i].loaded = false;
+          });
       }
     }
   }, [dataNFT]);
@@ -1478,22 +1470,20 @@ function Staking({ settings, setSetting }) {
 
   useEffect(() => {
     // eslint-disable-next-line no-plusplus
-    if (process.env.REACT_APP_ENV === 'dev') {
-      if (dataNFTUnState.length > 0) {
-        // eslint-disable-next-line no-plusplus
-        for (let i = 0; i < dataNFTUnState.length; i++) {
-          fetch(dataNFTUnState[i].img, { method: 'HEAD', mode: 'cors' })
-            .then(res => {
-              if (res.ok) {
-                dataNFTUnState[i].loaded = true;
-              } else {
-                dataNFTUnState[i].loaded = false;
-              }
-            })
-            .catch(err => {
+    if (dataNFTUnState.length > 0) {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < dataNFTUnState.length; i++) {
+        fetch(dataNFTUnState[i].img, { method: 'HEAD', mode: 'cors' })
+          .then(res => {
+            if (res.ok) {
+              dataNFTUnState[i].loaded = true;
+            } else {
               dataNFTUnState[i].loaded = false;
-            });
-        }
+            }
+          })
+          .catch(err => {
+            dataNFTUnState[i].loaded = false;
+          });
       }
     }
   }, [dataNFTUnState]);
@@ -2328,7 +2318,6 @@ function Staking({ settings, setSetting }) {
                               <ST.SItemSlider key={item.id}>
                                 {item.loaded ? (
                                   <>
-                                    {' '}
                                     <ST.SImgSlider src={item.img} />
                                   </>
                                 ) : (
