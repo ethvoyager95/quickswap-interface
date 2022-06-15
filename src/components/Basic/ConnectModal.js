@@ -236,6 +236,13 @@ function ConnectModal({
         setisMetaMask(true);
         setIsBitKeepWallet(false);
       }
+      if (
+        window?.ethereum?.isMetaMask === undefined &&
+        window.isBitKeep === undefined
+      ) {
+        setisMetaMask(false);
+        setIsBitKeepWallet(false);
+      }
     }
   }, [window.ethereum, settings.selectedAddress]);
 
