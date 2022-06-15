@@ -2187,7 +2187,10 @@ function Staking({ settings, setSetting }) {
                               <ST.SItemSlider key={item.id}>
                                 {item.loaded ? (
                                   <>
-                                    <ST.SImgSlider src={item.img} />
+                                    <ST.SImgSlider
+                                      src={item.img}
+                                      alt={item.name}
+                                    />
                                   </>
                                 ) : (
                                   <ST.SLoadingNFT>
@@ -2318,7 +2321,10 @@ function Staking({ settings, setSetting }) {
                               <ST.SItemSlider key={item.id}>
                                 {item.loaded ? (
                                   <>
-                                    <ST.SImgSlider src={item.img} />
+                                    <ST.SImgSlider
+                                      src={item.img}
+                                      alt={item.name}
+                                    />
                                   </>
                                 ) : (
                                   <>
