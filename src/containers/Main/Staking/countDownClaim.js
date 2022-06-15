@@ -182,7 +182,6 @@ function CountDownClaim({
   isAprroveVstrk,
   handleApproveVstrk
 }) {
-  // console.log({ isClaimBaseReward, isClaimBootReward, valUnStake }, 'infor');
   const [expiryTime, setExpiryTime] = useState(times);
   const [isLoadding, setIsLoading] = useState(false);
   const [countdownTime, setCountdownTime] = useState({

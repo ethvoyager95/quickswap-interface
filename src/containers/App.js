@@ -17,12 +17,11 @@ import ProposerDetail from 'containers/Main/ProposerDetail';
 import VoterLeaderboard from 'containers/Main/VoterLeaderboard';
 import Forbidden from 'containers/Main/Forbidden';
 import History from 'containers/Main/History/History';
+import Staking from 'containers/Main/Staking/Staking';
 import { ApolloProvider } from 'react-apollo';
 import { client } from '../apollo/client';
 import Theme from './Theme';
-
 import 'assets/styles/App.scss';
-import Staking from './Main/Staking/Staking';
 
 addLocaleData([...en]);
 const initialLang = 'en';
@@ -46,6 +45,7 @@ class App extends React.Component {
       <Theme>
         <ApolloProvider client={client}>
           <IntlProvider locale={lang} messages={message}>
+            {/* <MoralisProvider> */}
             <Provider store={store}>
               <BrowserRouter>
                 <Switch
@@ -86,6 +86,7 @@ class App extends React.Component {
                 </Switch>
               </BrowserRouter>
             </Provider>
+            {/* </MoralisProvider> */}
           </IntlProvider>
         </ApolloProvider>
       </Theme>
