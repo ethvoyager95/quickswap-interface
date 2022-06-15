@@ -797,13 +797,16 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         >
           <Label>Market</Label>
         </NavLink>
-        <NavLink
-          className="flex flex-start align-center"
-          to="/history"
-          activeClassName="active"
-        >
-          <Label>History</Label>
-        </NavLink>
+        {process.env.REACT_APP_ENV === 'dev' && (
+          <NavLink
+            className="flex flex-start align-center"
+            to="/history"
+            activeClassName="active"
+          >
+            <Label>History</Label>
+          </NavLink>
+        )}
+
         {process.env.REACT_APP_ENV === 'dev' && (
           <NavLink
             className="flex flex-start align-center"

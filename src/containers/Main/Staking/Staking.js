@@ -43,7 +43,8 @@ import {
   UNSTAKE,
   CLAIMBASE,
   CLAIMBOOST,
-  UNSTAKENFT
+  UNSTAKENFT,
+  CHAIN_MORALIS
 } from './helper';
 // eslint-disable-next-line import/named
 import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
@@ -76,7 +77,7 @@ import IConNext from '../../../assets/img/arrow-next.svg';
 import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
-import IconDuck from '../../../assets/img/duck.svg';
+import LogoNFT from '../../../assets/img/nft_logo.avif';
 
 // eslint-disable-next-line import/order
 function SampleNextArrow(props) {
@@ -418,15 +419,17 @@ function Staking({ settings, setSetting }) {
     setIsLoading(true);
     let tokenUri = null;
     let imgFake = null;
+    let getUrlImg = null;
+    // eslint-disable-next-line no-unused-expressions
+    getUrlImg =
+      process.env.REACT_APP_ENV === 'prod' ? 'baseTokenURI' : 'notRevealedUri';
     try {
       await methods
-        .call(nFtContract.methods.notRevealedUri, [])
+        .call(nFtContract.methods.getUrlImg, [])
         .then(res => {
           tokenUri = res;
         })
-        .catch(err => {
-          throw err;
-        });
+        .catch(err => {});
       if (tokenUri) {
         await axiosInstance
           .get(`${tokenUri}`)
@@ -442,7 +445,9 @@ function Staking({ settings, setSetting }) {
       }
       setTimeout(() => {
         axiosInstanceMoralis
-          .get(`/${address}/nft?chain=rinkeby&format=decimal`)
+          .get(
+            `/${address}/nft?chain=` + `${CHAIN_MORALIS}` + `&format=decimal`
+          )
           .then(res => {
             const data = res.data.result;
             if (data && data.length > 0) {
@@ -463,7 +468,7 @@ function Staking({ settings, setSetting }) {
                   if (item?.metadata?.image) {
                     item.img = item?.metadata?.image;
                   } else {
-                    item.img = IconDuck;
+                    item.img = LogoNFT;
                   }
                 });
               }
@@ -505,7 +510,7 @@ function Staking({ settings, setSetting }) {
                 name: 'AnnexIronWolf ' + `#${item}`,
                 token_id: item,
                 id: +item,
-                img: fakeImgNFT || IconDuck,
+                img: fakeImgNFT || LogoNFT,
                 active: false
               });
             });
@@ -529,14 +534,17 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     setIsLoading(false);
-    // }, [address, window.ethereum, txhash, filterNFTStake]);
   }, [address, window.ethereum, txhash]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      const result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 2); // 2 days
+      let result = null;
+      if (process.env.REACT_APP_ENV === 'prod') {
+        result = overOneDate.setDate(overOneDate.getDate() + 2); // 2 day
+      } else {
+        result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
+      }
       const currentDateTime = new Date();
       const resultInSecondsCurrent = Math.floor(
         currentDateTime.getTime() / 1000
@@ -563,8 +571,12 @@ function Staking({ settings, setSetting }) {
   const expiryTimeBase = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      const result = overOneDate.setMinutes(overOneDate.getMinutes() + 3); // 3 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
+      let result = null;
+      if (process.env.REACT_APP_ENV === 'prod') {
+        result = overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
+      } else {
+        result = overOneDate.setMinutes(overOneDate.getMinutes() + 3); // 3 minute
+      }
       const currentDateTime = new Date();
       const resultInSecondsCurrent = Math.floor(
         currentDateTime.getTime() / 1000
@@ -590,9 +602,13 @@ function Staking({ settings, setSetting }) {
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
+      let result = null;
       const over30days = new Date(userInfo.boostedDate * 1000);
-      const result = over30days.setMinutes(over30days.getMinutes() + 5); // 3 minute
-      // return over30days.setDate(over30days.getDate() + 30); // 30 days
+      if (process.env.REACT_APP_ENV === 'prod') {
+        result = over30days.setDate(over30days.getDate() + 30); // 30 days
+      } else {
+        result = over30days.setMinutes(over30days.getMinutes() + 5); // 3 minute
+      }
       const currentDateTime = new Date();
       const resultInSecondsCurrent = Math.floor(
         currentDateTime.getTime() / 1000
@@ -617,9 +633,13 @@ function Staking({ settings, setSetting }) {
 
   const expiryTimeUnstakeNFT = useMemo(() => {
     if (userInfo) {
+      let result = null;
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      const result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 2); // 2 days
+      if (process.env.REACT_APP_ENV === 'prod') {
+        result = overOneDate.setDate(overOneDate.getDate() + 2); // 2 days
+      } else {
+        result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
+      }
       const currentDateTime = new Date();
       const resultInSecondsCurrent = Math.floor(
         currentDateTime.getTime() / 1000

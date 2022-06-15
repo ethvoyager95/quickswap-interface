@@ -19,6 +19,8 @@ import {
   renderValueFixedDashboard,
   FAKE_ETH,
   FAKE_STRK,
+  STRK,
+  ETH,
   FAKE_TOTAL_SUPPLY
 } from './helper';
 import {
@@ -135,7 +137,6 @@ const SIconFlash = styled.img`
   margin-right: 10px;
 `;
 const abortController = new AbortController();
-
 function DashboardStaking({ amount, txh }) {
   const [baseAPR, setBaseAPR] = useState(0);
   const [amountStaked, setAmountStaked] = useState(0);
@@ -152,39 +153,66 @@ function DashboardStaking({ amount, txh }) {
     let totalETH = null;
     let totalSTRK = null;
     try {
-      // get total supply strk customer mainet
+      // get decimals
       await methods
         .call(strkContractCustomer.methods.decimals, [])
         .then(res => {
-          decimalTotal = res;
+          if (res) {
+            decimalTotal = res;
+          }
         })
         .catch(err => {});
+      // get total supply strk customer mainet
+      await methods
+        .call(strkContractCustomer.methods.totalSupply, [])
+        .then(res => {
+          if (res) {
+            totalSupply = divDecimals(res, decimalTotal);
+          }
+        })
+        .catch(err => {});
+      // get lp pool
       await methods
         .call(strkContractCustomer.methods.getReserves, [])
         .then(res => {
-          totalSTRK = divDecimals(res[0], decimalTotal);
-          totalETH = divDecimals(res[1], decimalTotal);
+          if (res.length > 0) {
+            totalSTRK = divDecimals(res[0], decimalTotal);
+            totalETH = divDecimals(res[1], decimalTotal);
+          }
         })
         .catch(err => {});
+      // get rate
       await axiosInstance
         .get('/price')
         .then(res => {
           if (res) {
             const result = res.data.data.rows;
             const objPriceStrkToUSD = _.find(result, item => {
-              return item.symbol === 'strk';
+              return item.symbol === STRK;
             });
             const objPriceStrkToEthereum = _.find(result, item => {
-              return item.symbol === 'eth';
+              return item.symbol === ETH;
             });
-            rateStrkVsUSD = objPriceStrkToUSD.amount;
-            rateStrkVsETH = objPriceStrkToEthereum.amount;
-            totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
+            rateStrkVsUSD = objPriceStrkToUSD?.amount;
+            rateStrkVsETH = objPriceStrkToEthereum?.amount;
+            // production env
+            if (process?.env?.REACT_APP_ENV === 'prod') {
+              // eslint-disable-next-line no-self-assign
+              totalETH = totalETH?.toNumber();
+              // eslint-disable-next-line no-self-assign
+              totalSTRK = totalSTRK?.toNumber();
+              totalSupply = totalSupply?.toNumber();
+            } else {
+              // development env
+              totalETH = FAKE_ETH;
+              totalSTRK = FAKE_STRK;
+              totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
+            }
             const totalLiquidityBigNumber = getLiquidity(
               rateStrkVsUSD,
-              FAKE_STRK, // mainet totalSTRK
+              totalSTRK,
               rateStrkVsETH,
-              FAKE_ETH, // mainnet totalETH
+              totalETH,
               totalSupply
             );
             const total = renderValueFixedDashboard(
@@ -210,8 +238,8 @@ function DashboardStaking({ amount, txh }) {
         .then(res => {
           if (res) {
             const result = res.data.data;
-            const totalDepositString = divDecimals(result.totalDeposit, 18);
-            const totalDepositNumber = totalDepositString.toNumber();
+            const totalDepositString = divDecimals(result?.totalDeposit, 18);
+            const totalDepositNumber = totalDepositString?.toNumber();
             totalLiquid = totalDepositString?.toNumber();
             setAmountDeposit(renderValueFixedDashboard(totalDepositNumber));
             const totalStake = result?.totalBoost;
@@ -227,7 +255,9 @@ function DashboardStaking({ amount, txh }) {
     await methods
       .call(strkContract.methods.decimals, [])
       .then(res => {
-        decimalStrkClaim = res;
+        if (res) {
+          decimalStrkClaim = res;
+        }
       })
       .catch(err => {
         throw err;
@@ -235,12 +265,14 @@ function DashboardStaking({ amount, txh }) {
     await methods
       .call(farmingContract.methods.rewardPerBlock, [])
       .then(res => {
-        const result = divDecimals(res, decimalStrkClaim).toNumber();
-        const baseAprCaculator = getBaseApr(totalLiquid, result);
-        const baseAprPer = renderValueFixedDashboard(
-          baseAprCaculator.toNumber()
-        );
-        setBaseAPR(baseAprPer);
+        if (res) {
+          const result = divDecimals(res, decimalStrkClaim).toNumber();
+          const baseAprCaculator = getBaseApr(totalLiquid, result);
+          const baseAprPer = renderValueFixedDashboard(
+            baseAprCaculator.toNumber()
+          );
+          setBaseAPR(baseAprPer);
+        }
       })
       .catch(err => {
         throw err;

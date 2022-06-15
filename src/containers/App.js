@@ -71,7 +71,9 @@ class App extends React.Component {
                     />
                     <Route exact path="/forbidden" component={Forbidden} />
                     <Route exact path="/staking" component={Staking} />
-                    <Route exact path="/history" component={History} />
+                    {process.env.REACT_APP_ENV === 'dev' && (
+                      <Route exact path="/history" component={History} />
+                    )}
                     <Route
                       exact
                       path="/vote/leaderboard"
