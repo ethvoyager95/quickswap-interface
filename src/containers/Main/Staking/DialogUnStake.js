@@ -404,8 +404,15 @@ function DialogUnStake({
           `Invalid number. You can only unstake upto ${CURRENT_STAKED} NFTs`
         );
         setDisabledBtn(true);
-      } else if (NUMBER_VAL > MAX_STAKE_NFT) {
+        return;
+      }
+      if (NUMBER_VAL > MAX_STAKE_NFT) {
         setMessErr(`Invalid number. You can not unstake more than 20 NFTs`);
+        setDisabledBtn(true);
+        return;
+      }
+      if (!val) {
+        setMessErr('');
         setDisabledBtn(true);
       } else {
         setMessErr('');
@@ -426,6 +433,7 @@ function DialogUnStake({
       }
     }
   }, [val, isUnStakeNFT, list, checked, address]);
+
   useEffect(() => {
     setValue(valueNFTUnStake);
     setCurrentNFTAmount(currentNFT);
