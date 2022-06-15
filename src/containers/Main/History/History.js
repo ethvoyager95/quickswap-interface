@@ -11,6 +11,7 @@ import iconLink from 'assets/img/link.svg';
 import iconInfo from 'assets/img/info.svg';
 import iconFilter from 'assets/img/filter.svg';
 import noData from 'assets/img/no_data.svg';
+import iconClose from 'assets/img/close-tag-filter.svg';
 import { connectAccount, accountActionCreators } from 'core';
 import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
 import dayjs from 'dayjs';
@@ -41,7 +42,9 @@ import {
   PaginationWrapper,
   NoData,
   SBoxFlex,
-  SImg
+  SImg,
+  DivFlexBetween,
+  TagFilterWrapper
 } from './style';
 
 import './overide.scss';
@@ -332,9 +335,27 @@ function History({ settings, setSetting }) {
           }
         />
       </div>
-      <Button disabled={disabledFilterBlock} onClick={() => handleFilter()}>
-        Filter
-      </Button>
+      <DivFlexBetween>
+        <Button
+          className="button-filter"
+          disabled={disabledFilterBlock}
+          onClick={() => handleFilter()}
+        >
+          Filter
+        </Button>
+        <Button
+          className="button-clear"
+          danger
+          ghost
+          disabled={disabledFilterBlock}
+          onClick={() => {
+            setFromBlockValue('');
+            setToBlockValue('');
+          }}
+        >
+          Clear
+        </Button>
+      </DivFlexBetween>
     </DropdownBlock>
   );
 
@@ -368,9 +389,29 @@ function History({ settings, setSetting }) {
           onChange={handleAgeEndChange}
         />
       </div>
-      <Button disabled={disabledBtnFilterAge} onClick={() => handleFilter()}>
-        Filter
-      </Button>
+      <DivFlexBetween>
+        <Button
+          className="button-filter"
+          disabled={disabledBtnFilterAge}
+          onClick={() => handleFilter()}
+        >
+          Filter
+        </Button>
+        <Button
+          className="button-clear"
+          danger
+          ghost
+          disabled={disabledBtnFilterAge}
+          onClick={() => {
+            setFromAgeValue('');
+            setToAgeValue('');
+            setFromAgeDisplay('');
+            setToAgeDisplay('');
+          }}
+        >
+          Clear
+        </Button>
+      </DivFlexBetween>
     </DropdownBlock>
   );
 
@@ -391,12 +432,26 @@ function History({ settings, setSetting }) {
           onChange={e => handleInputAddressChange(e.target.value, 'from')}
         />
       </div>
-      <Button
-        disabled={disabledFilterFromAddress}
-        onClick={() => handleFilter()}
-      >
-        Filter
-      </Button>
+      <DivFlexBetween>
+        <Button
+          className="button-filter"
+          disabled={disabledFilterFromAddress}
+          onClick={() => handleFilter()}
+        >
+          Filter
+        </Button>
+        <Button
+          className="button-clear"
+          danger
+          ghost
+          disabled={disabledFilterFromAddress}
+          onClick={() => {
+            setFromAddressValue('');
+          }}
+        >
+          Clear
+        </Button>
+      </DivFlexBetween>
     </DropdownAddress>
   );
 
@@ -417,10 +472,148 @@ function History({ settings, setSetting }) {
           onChange={e => handleInputAddressChange(e.target.value, 'to')}
         />
       </div>
-      <Button disabled={disabledFilterToAddress} onClick={() => handleFilter()}>
-        Filter
-      </Button>
+      <DivFlexBetween>
+        <Button
+          className="button-filter"
+          disabled={disabledFilterToAddress}
+          onClick={() => handleFilter()}
+        >
+          Filter
+        </Button>
+        <Button
+          className="button-clear"
+          danger
+          ghost
+          disabled={disabledFilterToAddress}
+          onClick={() => {
+            setToAddressValue('');
+          }}
+        >
+          Clear
+        </Button>
+      </DivFlexBetween>
     </DropdownAddress>
+  );
+
+  const renderTagFilterByBlock = (
+    <TagFilterWrapper>
+      <div>
+        Block:{' '}
+        {filterCondition.from_block
+          ? `From ${filterCondition.from_block} `
+          : ''}
+        {filterCondition.to_block ? `To ${filterCondition.to_block}` : ''}
+      </div>
+      <img
+        src={iconClose}
+        alt=""
+        onClick={() => {
+          setFromBlockValue('');
+          setToBlockValue('');
+          filterCondition.from_block = '';
+          filterCondition.to_block = '';
+          setFilterCondition(filterCondition);
+          pagination.offset = 0;
+          setPagination(pagination);
+          setCurrentPage(1);
+          getDataTable(filterCondition);
+        }}
+      />
+    </TagFilterWrapper>
+  );
+
+  const renderTagFilterByAge = (
+    <TagFilterWrapper>
+      <div>
+        Age:{' '}
+        {filterCondition.from_date
+          ? `From ${dayjs
+              .unix(filterCondition.from_date)
+              .format('MM/DD/YYYY')} `
+          : ''}
+        {filterCondition.to_date
+          ? `To ${dayjs.unix(filterCondition.to_date).format('MM/DD/YYYY')}`
+          : ''}
+      </div>
+      <img
+        src={iconClose}
+        alt=""
+        onClick={() => {
+          setFromAgeValue('');
+          setToAgeValue('');
+          setFromAgeDisplay('');
+          setToAgeDisplay('');
+          filterCondition.from_date = '';
+          filterCondition.to_date = '';
+          setFilterCondition(filterCondition);
+          pagination.offset = 0;
+          setPagination(pagination);
+          setCurrentPage(1);
+          getDataTable(filterCondition);
+        }}
+      />
+    </TagFilterWrapper>
+  );
+
+  const renderTagFilterByFromAddress = (
+    <TagFilterWrapper>
+      <div>
+        From{' '}
+        {filterCondition.from_address
+          ? `${filterCondition.from_address.substr(
+              0,
+              4
+            )}...${filterCondition.from_address.substr(
+              filterCondition.from_address.length - 4,
+              4
+            )} `
+          : ''}
+      </div>
+
+      <img
+        src={iconClose}
+        alt=""
+        onClick={() => {
+          setFromAddressValue('');
+          filterCondition.from_address = '';
+          setFilterCondition(filterCondition);
+          pagination.offset = 0;
+          setPagination(pagination);
+          setCurrentPage(1);
+          getDataTable(filterCondition);
+        }}
+      />
+    </TagFilterWrapper>
+  );
+
+  const renderTagFilterByToAddress = (
+    <TagFilterWrapper>
+      <div>
+        To{' '}
+        {filterCondition.to_address
+          ? `${filterCondition.to_address.substr(
+              0,
+              4
+            )}...${filterCondition.to_address.substr(
+              filterCondition.to_address.length - 4,
+              4
+            )} `
+          : ''}
+      </div>
+      <img
+        src={iconClose}
+        alt=""
+        onClick={() => {
+          setToAddressValue('');
+          filterCondition.to_address = '';
+          setFilterCondition(filterCondition);
+          pagination.offset = 0;
+          setPagination(pagination);
+          setCurrentPage(1);
+          getDataTable(filterCondition);
+        }}
+      />
+    </TagFilterWrapper>
   );
 
   const columns = [
@@ -544,8 +737,8 @@ function History({ settings, setSetting }) {
               href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.from}`}
               target="_blank"
             >
-              {asset?.from?.substr(0, 4)}...
-              {asset?.from?.substr(asset.to.length - 4, 4)}
+              {asset.from.substr(0, 4)}...
+              {asset.from.substr(asset.from.length - 4, 4)}
             </Hash>
           )
         };
@@ -649,7 +842,26 @@ function History({ settings, setSetting }) {
         ))}
       </TabsWrapper>
       <SDivFlex>
-        <div />
+        {filterCondition.from_block ||
+        filterCondition.to_block ||
+        filterCondition.from_date ||
+        filterCondition.to_date ||
+        filterCondition.from_address ||
+        filterCondition.to_address ? (
+          <>
+            <div className="title">Filtered by: </div>
+            {filterCondition.from_block || filterCondition.to_block
+              ? renderTagFilterByBlock
+              : null}
+            {filterCondition.from_date || filterCondition.to_date
+              ? renderTagFilterByAge
+              : null}
+            {filterCondition.from_address ? renderTagFilterByFromAddress : null}
+            {filterCondition.to_address ? renderTagFilterByToAddress : null}
+          </>
+        ) : (
+          <></>
+        )}
       </SDivFlex>
       <STable
         locale={locale}
