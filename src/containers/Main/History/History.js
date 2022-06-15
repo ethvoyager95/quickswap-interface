@@ -138,14 +138,6 @@ function History({ settings, setSetting }) {
     if (type === 'to') {
       setToBlockValue(value);
     }
-    // if (
-    //   filterCondition?.from_block?.length === 0 &&
-    //   filterCondition?.to_block?.length === 0
-    // ) {
-    //   setIsDisableBtnFilterBlock(true);
-    // } else {
-    //   setIsDisableBtnFilterBlock(false);
-    // }
   };
 
   const handleInputAddressChange = (value, type) => {
@@ -193,8 +185,7 @@ function History({ settings, setSetting }) {
           .unix()
       );
     } else {
-      delete filterCondition.from_date;
-      setFilterCondition(filterCondition);
+      setFromAgeValue('');
       setFromAgeDisplay('');
     }
   };
@@ -208,8 +199,7 @@ function History({ settings, setSetting }) {
           .unix()
       );
     } else {
-      delete filterCondition.to_date;
-      setFilterCondition(filterCondition);
+      setToAgeValue('');
       setToAgeDisplay('');
     }
   };
@@ -560,13 +550,17 @@ function History({ settings, setSetting }) {
       <div>
         From{' '}
         {filterCondition.from_address
-          ? `${filterCondition.from_address.substr(
-              0,
-              4
-            )}...${filterCondition.from_address.substr(
-              filterCondition.from_address.length - 4,
-              4
-            )} `
+          ? `${
+              filterCondition.from_address.length > 8
+                ? `${filterCondition.from_address.substr(
+                    0,
+                    4
+                  )}...${filterCondition.from_address.substr(
+                    filterCondition.from_address.length - 4,
+                    4
+                  )}`
+                : filterCondition.from_address
+            } `
           : ''}
       </div>
 
@@ -591,13 +585,17 @@ function History({ settings, setSetting }) {
       <div>
         To{' '}
         {filterCondition.to_address
-          ? `${filterCondition.to_address.substr(
-              0,
-              4
-            )}...${filterCondition.to_address.substr(
-              filterCondition.to_address.length - 4,
-              4
-            )} `
+          ? `${
+              filterCondition.to_address.length > 8
+                ? `${filterCondition.to_address.substr(
+                    0,
+                    4
+                  )}...${filterCondition.to_address.substr(
+                    filterCondition.to_address.length - 4,
+                    4
+                  )}`
+                : filterCondition.to_address
+            } `
           : ''}
       </div>
       <img
@@ -667,7 +665,19 @@ function History({ settings, setSetting }) {
             onVisibleChange={handleVisibleBlockChange}
             visible={visibleBlock}
           >
-            <SButton onClick={e => e.preventDefault()}>
+            <SButton
+              onClick={e => {
+                e.preventDefault();
+                if (!visibleBlock) {
+                  setFromBlockValue(
+                    filterCondition.from_block || fromBlockValue || ''
+                  );
+                  setToBlockValue(
+                    filterCondition.to_block || toBlockValue || ''
+                  );
+                }
+              }}
+            >
               <img src={iconFilter} alt="" />
             </SButton>
           </Dropdown>
@@ -698,7 +708,23 @@ function History({ settings, setSetting }) {
             onVisibleChange={handleVisibleAgeChange}
             visible={visibleAge}
           >
-            <SButton onClick={e => e.preventDefault()}>
+            <SButton
+              onClick={e => {
+                e.preventDefault();
+                if (!visibleAge) {
+                  setFromAgeDisplay(
+                    filterCondition.from_date
+                      ? moment.unix(filterCondition.from_date)
+                      : fromAgeDisplay || ''
+                  );
+                  setToAgeDisplay(
+                    filterCondition.to_date
+                      ? moment.unix(filterCondition.to_date)
+                      : toAgeDisplay || ''
+                  );
+                }
+              }}
+            >
               <img src={iconFilter} alt="" />
             </SButton>
           </Dropdown>
@@ -722,7 +748,16 @@ function History({ settings, setSetting }) {
             onVisibleChange={handleVisibleFromChange}
             visible={visibleFrom}
           >
-            <SButton onClick={e => e.preventDefault()}>
+            <SButton
+              onClick={e => {
+                e.preventDefault();
+                if (!visibleFrom) {
+                  setFromAddressValue(
+                    filterCondition.from_address || fromAddressValue || ''
+                  );
+                }
+              }}
+            >
               <img src={iconFilter} alt="" />
             </SButton>
           </Dropdown>
@@ -754,7 +789,16 @@ function History({ settings, setSetting }) {
             onVisibleChange={handleVisibleToChange}
             visible={visibleTo}
           >
-            <SButton onClick={e => e.preventDefault()}>
+            <SButton
+              onClick={e => {
+                e.preventDefault();
+                if (!visibleTo) {
+                  setToAddressValue(
+                    filterCondition.to_address || toAddressValue || ''
+                  );
+                }
+              }}
+            >
               <img src={iconFilter} alt="" />
             </SButton>
           </Dropdown>
@@ -830,9 +874,11 @@ function History({ settings, setSetting }) {
               setCurrentPage(1);
               setFromBlockValue('');
               setFromAgeDisplay('');
+              setFromAgeValue('');
               setFromAddressValue('');
               setToBlockValue('');
               setToAgeDisplay('');
+              setToAgeValue('');
               setToAddressValue('');
             }}
             className={currentTab === tab ? 'active' : ''}
