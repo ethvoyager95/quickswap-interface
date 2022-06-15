@@ -50,6 +50,7 @@ export const SDivFlex = styled.div`
   color: #0b0f23;
   margin: 0 16px 28px;
   gap: 16px;
+  flex-wrap: wrap;
 
   .title {
     font-style: normal;
