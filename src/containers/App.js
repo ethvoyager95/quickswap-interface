@@ -19,7 +19,6 @@ import Forbidden from 'containers/Main/Forbidden';
 import History from 'containers/Main/History/History';
 import { ApolloProvider } from 'react-apollo';
 import { MoralisProvider } from 'react-moralis';
-import * as constants from 'utilities/constants';
 import { client } from '../apollo/client';
 import Theme from './Theme';
 
