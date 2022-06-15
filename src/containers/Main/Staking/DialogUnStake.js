@@ -407,6 +407,10 @@ function DialogUnStake({
       } else if (NUMBER_VAL > MAX_STAKE_NFT) {
         setMessErr(`Invalid number. You can not unstake more than 20 NFTs`);
         setDisabledBtn(true);
+      }
+      if (!val) {
+        setMessErr('');
+        setDisabledBtn(true);
       } else {
         setMessErr('');
         setDisabledBtn(false);
