@@ -18,7 +18,7 @@ import MainLayout from 'containers/Layout/MainLayout';
 import { Row, Col, Tooltip } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
 import BigNumber from 'bignumber.js';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import * as constants from 'utilities/constants';
 // import { checkIsValidNetwork } from 'utilities/common';
 import {
@@ -468,10 +468,7 @@ function Staking({ settings, setSetting }) {
                   if (item?.metadata?.image) {
                     item.img = item?.metadata?.image;
                   }
-                  item.img =
-                    process.env.REACT_APP_ENV === 'dev'
-                      ? LogoNFT
-                      : `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
+                  item.img = `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
                 });
               }
               const dataStakeClone = _.cloneDeep(dataConvert);
@@ -513,10 +510,7 @@ function Staking({ settings, setSetting }) {
                 token_id: item,
                 id: +item,
                 active: false,
-                img:
-                  process.env.REACT_APP_ENV === 'dev'
-                    ? LogoNFT
-                    : `${constants.URL_LOGO_NFT}/${item}.png`
+                img: `${constants.URL_LOGO_NFT}/${item}.png`
               });
             });
             const lengthArr = newArray.length;
@@ -1452,7 +1446,47 @@ function Staking({ settings, setSetting }) {
       }
     };
   });
+  // check loadding nft
+  useEffect(() => {
+    // eslint-disable-next-line no-plusplus
+    if (dataNFT.length > 0) {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < dataNFT.length; i++) {
+        fetch(dataNFT[i].img, { method: 'HEAD', mode: 'cors' })
+          .then(res => {
+            if (res.ok) {
+              dataNFT[i].loaded = true;
+            } else {
+              dataNFT[i].loaded = false;
+            }
+          })
+          .catch(err => {
+            dataNFT[i].loaded = false;
+          });
+      }
+    }
+  }, [dataNFT]);
+  // check loadding nft
 
+  useEffect(() => {
+    // eslint-disable-next-line no-plusplus
+    if (dataNFTUnState.length > 0) {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < dataNFTUnState.length; i++) {
+        fetch(dataNFTUnState[i].img, { method: 'HEAD', mode: 'cors' })
+          .then(res => {
+            if (res.ok) {
+              dataNFTUnState[i].loaded = true;
+            } else {
+              dataNFTUnState[i].loaded = false;
+            }
+          })
+          .catch(err => {
+            dataNFTUnState[i].loaded = false;
+          });
+      }
+    }
+  }, [dataNFTUnState]);
   return (
     <>
       <MainLayout>
@@ -2090,6 +2124,7 @@ function Staking({ settings, setSetting }) {
                           href="https://www.degenapestrike.org/"
                         >
                           Get Strike NFTs
+                          <img style={{ width: '14px' }} src={IconLinkBlue} />
                         </ST.SHrefNft>
                       </ST.SText>
                     </ST.SFlex>
@@ -2150,7 +2185,18 @@ function Staking({ settings, setSetting }) {
                           dataNFT?.map(item => {
                             return (
                               <ST.SItemSlider key={item.id}>
-                                <ST.SImgSlider src={item.img} />
+                                {item.loaded ? (
+                                  <>
+                                    <ST.SImgSlider
+                                      src={item.img}
+                                      alt={item.name}
+                                    />
+                                  </>
+                                ) : (
+                                  <ST.SLoadingNFT>
+                                    <Loadding />
+                                  </ST.SLoadingNFT>
+                                )}
                                 <ST.SBoxSlider>
                                   <ST.STitleSlider>{item.name}</ST.STitleSlider>
                                   <ST.SDescriptionSlider>
@@ -2273,7 +2319,20 @@ function Staking({ settings, setSetting }) {
                           dataNFTUnState?.map(item => {
                             return (
                               <ST.SItemSlider key={item.id}>
-                                <ST.SImgSlider src={item.img} />
+                                {item.loaded ? (
+                                  <>
+                                    <ST.SImgSlider
+                                      src={item.img}
+                                      alt={item.name}
+                                    />
+                                  </>
+                                ) : (
+                                  <>
+                                    <ST.SLoadingNFT>
+                                      <Loadding />
+                                    </ST.SLoadingNFT>
+                                  </>
+                                )}
                                 <ST.SBoxSlider>
                                   <ST.STitleSlider>{item.name}</ST.STitleSlider>
                                   <ST.SDescriptionSlider>

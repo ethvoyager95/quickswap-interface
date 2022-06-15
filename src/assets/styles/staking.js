@@ -1026,7 +1026,48 @@ export const SItemSlider = styled.div`
   padding: 10px;
   position: relative;
 `;
-export const SImgSlider = styled.img``;
+export const SImgSlider = styled.img`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  algin-items: center;
+  @media only screen and (max-width: 3840px) {
+    height: 567px;
+  }
+  @media only screen and (max-width: 1920px) {
+    height: 375px;
+    display: flex;
+    justify-content: center;
+    algin-items: center;
+  }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    algin-items: center;
+    height: 149px;
+  }
+`;
+export const SLoadingNFT = styled.div`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  algin-items: center;
+  @media only screen and (max-width: 3840px) {
+    height: 567px;
+  }
+  @media only screen and (max-width: 1920px) {
+    height: 375px;
+    display: flex;
+    justify-content: center;
+    algin-items: center;
+  }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    algin-items: center;
+    height: 149px;
+  }
+`;
 export const SBoxSlider = styled.div`
   width: 100%;
   background: #3e3f4d;

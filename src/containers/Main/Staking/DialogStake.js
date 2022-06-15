@@ -397,6 +397,7 @@ function DialogStake({
   useEffect(() => {
     // NFT AMOUNT CAN STAKE
     const LIST_STAKE = listStake.length;
+    const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
     // NFT CURREN AMOUNT
     const NUMBER_VAL = Number(val);
     if (val === '') {
@@ -452,10 +453,10 @@ function DialogStake({
       if (val && !_.includes(listIds, val)) {
         setMessErr('Invalid tokenID');
         setDisabledBtn(true);
-      } else if (val && itemStaked > 0 && TOTAL_STAKE >= MAX_STAKE_NFT) {
-        setMessErr(`Invalid number. You can stake only ${MAX_STAKE_NFT} NFTs`);
+      } else if (val && itemStaked > 0 && TOTAL_STAKE > MAX_STAKE_NFT) {
+        setMessErr(`Invalid number. You can stake only ${MAX_STAKE} NFTs`);
         setDisabledBtn(true);
-      } else if (val && TOTAL_STAKE < MAX_STAKE_NFT) {
+      } else if (val && TOTAL_STAKE <= MAX_STAKE_NFT) {
         setMessErr('');
         setDisabledBtn(false);
       }
