@@ -396,8 +396,8 @@ function DialogStake({
 
   useEffect(() => {
     // NFT AMOUNT CAN STAKE
-    const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
     const LIST_STAKE = listStake.length;
+    const MAX_STAKE = MAX_STAKE_NFT - listUnStake.length;
     // NFT CURREN AMOUNT
     const NUMBER_VAL = Number(val);
     if (val === '') {

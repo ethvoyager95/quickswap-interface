@@ -433,6 +433,7 @@ function DialogUnStake({
       }
     }
   }, [val, isUnStakeNFT, list, checked, address]);
+
   useEffect(() => {
     setValue(valueNFTUnStake);
     setCurrentNFTAmount(currentNFT);
