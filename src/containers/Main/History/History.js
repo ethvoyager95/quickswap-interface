@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-useless-escape */
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
@@ -860,6 +861,8 @@ function History({ settings, setSetting }) {
             <div>
               {settings.isConnected && settings.selectedAddress
                 ? 'No record was found'
+                : currentTab === 'all'
+                ? 'No record was found'
                 : 'Connect your wallet to see your transaction history'}
             </div>
           </>
@@ -925,7 +928,7 @@ function History({ settings, setSetting }) {
         rowKey={record => record.id}
       />
       <PaginationWrapper>
-        <div className="export-csv">
+        {/* <div className="export-csv">
           Download{' '}
           {dataExportCSV && (
             <CSVLink
@@ -942,7 +945,8 @@ function History({ settings, setSetting }) {
               </SButton>
             </CSVLink>
           )}
-        </div>
+        </div> */}
+        <div />
         {showPaging && (
           <Pagination
             defaultPageSize={LIMIT}
