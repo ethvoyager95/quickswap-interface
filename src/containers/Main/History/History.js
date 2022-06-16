@@ -49,6 +49,7 @@ import {
 } from './style';
 
 import './overide.scss';
+import { FaSadCry } from 'react-icons/fa';
 
 function History({ settings, setSetting }) {
   const [currentTab, setCurrentTab] = useState('all');
@@ -165,15 +166,48 @@ function History({ settings, setSetting }) {
       setToAddressValue(value);
     }
   };
+  console.log('dataa', filterCondition);
 
-  const handleFilter = () => {
+  const handleFilter = type => {
     setCurrentPage(1);
-    filterCondition.from_block = fromBlockValue;
-    filterCondition.to_block = toBlockValue;
-    filterCondition.from_address = fromAddressValue;
-    filterCondition.to_address = toAddressValue;
-    filterCondition.from_date = fromAgeValue;
-    filterCondition.to_date = toAgeValue;
+    if (type === 'block') {
+      filterCondition.from_block = fromBlockValue;
+      filterCondition.to_block = toBlockValue;
+      setFromAgeDisplay('');
+      setToAgeDisplay('');
+      setFromAgeValue('');
+      setToAgeValue('');
+      setFromAddressValue('');
+      setToAddressValue('');
+    }
+    if (type === 'age') {
+      filterCondition.from_date = fromAgeValue;
+      filterCondition.to_date = toAgeValue;
+      setFromBlockValue('');
+      setToBlockValue('');
+      setFromAddressValue('');
+      setToAddressValue('');
+    }
+    if (type === 'from') {
+      filterCondition.from_address = fromAddressValue;
+      setFromBlockValue('');
+      setToBlockValue('');
+      setFromAgeDisplay('');
+      setToAgeDisplay('');
+      setFromAgeValue('');
+      setToAgeValue('');
+      setToAddressValue('');
+    }
+    if (type === 'to') {
+      filterCondition.to_address = toAddressValue;
+      setFromBlockValue('');
+      setToBlockValue('');
+      setFromAgeDisplay('');
+      setToAgeDisplay('');
+      setFromAgeValue('');
+      setToAgeValue('');
+      setFromAddressValue('');
+    }
     setFilterCondition(filterCondition);
     pagination.limit = LIMIT;
     pagination.offset = 0;
@@ -222,16 +256,15 @@ function History({ settings, setSetting }) {
   };
 
   useEffect(() => {
+    setCurrentPage(1);
+    pagination.limit = LIMIT;
+    pagination.offset = 0;
+    setPagination(pagination);
+    Object.keys(filterCondition).forEach(key => delete filterCondition[key]);
+    setFilterCondition(filterCondition);
     if (settings.isConnected) {
       if (currentTab === 'user') {
         if (settings.selectedAddress) {
-          setCurrentPage(1);
-          pagination.limit = LIMIT;
-          pagination.offset = 0;
-          setPagination(pagination);
-          Object.keys(filterCondition).forEach(
-            key => delete filterCondition[key]
-          );
           filterCondition.user_address = settings.selectedAddress;
           setFilterCondition(filterCondition);
           handleExportCSV(filterCondition);
@@ -259,16 +292,6 @@ function History({ settings, setSetting }) {
       }
     }
   }, [currentTab, settings.selectedAddress, settings.isConnected]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-    pagination.limit = LIMIT;
-    pagination.offset = 0;
-    setPagination(pagination);
-    Object.keys(filterCondition).forEach(key => delete filterCondition[key]);
-    setFilterCondition(filterCondition);
-    getDataTable(filterCondition, pagination);
-  }, []);
 
   useEffect(() => {
     if (currentTab === 'user') {
@@ -374,7 +397,7 @@ function History({ settings, setSetting }) {
         <Button
           className="button-filter"
           disabled={disabledFilterBlock}
-          onClick={() => handleFilter()}
+          onClick={() => handleFilter('block')}
         >
           Filter
         </Button>
@@ -428,7 +451,7 @@ function History({ settings, setSetting }) {
         <Button
           className="button-filter"
           disabled={disabledBtnFilterAge}
-          onClick={() => handleFilter()}
+          onClick={() => handleFilter('age')}
         >
           Filter
         </Button>
@@ -471,7 +494,7 @@ function History({ settings, setSetting }) {
         <Button
           className="button-filter"
           disabled={disabledFilterFromAddress}
-          onClick={() => handleFilter()}
+          onClick={() => handleFilter('from')}
         >
           Filter
         </Button>
@@ -511,7 +534,7 @@ function History({ settings, setSetting }) {
         <Button
           className="button-filter"
           disabled={disabledFilterToAddress}
-          onClick={() => handleFilter()}
+          onClick={() => handleFilter('to')}
         >
           Filter
         </Button>
@@ -552,7 +575,14 @@ function History({ settings, setSetting }) {
           pagination.offset = 0;
           setPagination(pagination);
           setCurrentPage(1);
-          getDataTable(filterCondition);
+          if (
+            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.selectedAddress)
+          ) {
+            setDataTransaction([]);
+          } else {
+            getDataTable(filterCondition);
+          }
         }}
       />
     </TagFilterWrapper>
@@ -586,7 +616,14 @@ function History({ settings, setSetting }) {
           pagination.offset = 0;
           setPagination(pagination);
           setCurrentPage(1);
-          getDataTable(filterCondition);
+          if (
+            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.selectedAddress)
+          ) {
+            setDataTransaction([]);
+          } else {
+            getDataTable(filterCondition);
+          }
         }}
       />
     </TagFilterWrapper>
@@ -622,7 +659,14 @@ function History({ settings, setSetting }) {
           pagination.offset = 0;
           setPagination(pagination);
           setCurrentPage(1);
-          getDataTable(filterCondition);
+          if (
+            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.selectedAddress)
+          ) {
+            setDataTransaction([]);
+          } else {
+            getDataTable(filterCondition);
+          }
         }}
       />
     </TagFilterWrapper>
@@ -657,7 +701,14 @@ function History({ settings, setSetting }) {
           pagination.offset = 0;
           setPagination(pagination);
           setCurrentPage(1);
-          getDataTable(filterCondition);
+          if (
+            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.selectedAddress)
+          ) {
+            setDataTransaction([]);
+          } else {
+            getDataTable(filterCondition);
+          }
         }}
       />
     </TagFilterWrapper>
@@ -706,13 +757,14 @@ function History({ settings, setSetting }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper id="th-block">
           Block{' '}
           <Dropdown
             overlay={blockFilter}
             trigger={['click']}
             onVisibleChange={handleVisibleBlockChange}
             visible={visibleBlock}
+            getPopupContainer={() => document.getElementById('th-block')}
           >
             <SButton
               onClick={e => {
@@ -745,13 +797,14 @@ function History({ settings, setSetting }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper id="th-age">
           Age{' '}
           <Dropdown
             overlay={timestampFilter}
             trigger={['click']}
             onVisibleChange={handleVisibleAgeChange}
             visible={visibleAge}
+            getPopupContainer={() => document.getElementById('th-age')}
           >
             <SButton
               onClick={e => {
@@ -785,13 +838,14 @@ function History({ settings, setSetting }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper id="th-from">
           From{' '}
           <Dropdown
             overlay={addressFromFilter}
             trigger={['click']}
             onVisibleChange={handleVisibleFromChange}
             visible={visibleFrom}
+            getPopupContainer={() => document.getElementById('th-from')}
           >
             <SButton
               onClick={e => {
@@ -824,13 +878,14 @@ function History({ settings, setSetting }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper id="th-to">
           To{' '}
           <Dropdown
             overlay={addressToFilter}
             trigger={['click']}
             onVisibleChange={handleVisibleToChange}
             visible={visibleTo}
+            getPopupContainer={() => document.getElementById('th-to')}
           >
             <SButton
               onClick={e => {

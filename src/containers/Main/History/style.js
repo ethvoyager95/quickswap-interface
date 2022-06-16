@@ -72,6 +72,7 @@ export const THeadWrapper = styled.div`
   font-size: 16px;
   line-height: 24px;
   color: #9d9fa7;
+  position: relative;
 `;
 
 export const STable = styled(Table)`
@@ -251,6 +252,7 @@ export const DropdownBlock = styled.div`
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     transition: all 0.3s;
+    width: 215px;
 
     &:focus {
       border-color: #40a9ff;
