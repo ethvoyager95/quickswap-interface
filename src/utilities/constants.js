@@ -37,7 +37,7 @@ export const STRK_CLAIM_ADDRESS = process.env.REACT_APP_MAIN_STRK_CLAIM_ADDRESS;
 export const MORALIS_KEY = process.env.REACT_APP_MAIN_MORALIS_KEY;
 export const MORALIS_API = process.env.REACT_APP_MORALIS_API;
 export const SUPPORT_URL =
-  'https://app.uniswap.org/#/add/0x74232704659ef37c08995e386a2e26cc27a8d7b1/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/10000?chain=mainnet';
+  'https://app.uniswap.org/#/add/v2/ETH/0x74232704659ef37c08995e386A2E26cc27a8d7B1?chain=mainnet';
 // Contract ABI
 export const CONTRACT_TOKEN_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
