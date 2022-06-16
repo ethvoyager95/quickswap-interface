@@ -166,7 +166,6 @@ function History({ settings, setSetting }) {
       setToAddressValue(value);
     }
   };
-  console.log('dataa', filterCondition);
 
   const handleFilter = type => {
     setCurrentPage(1);

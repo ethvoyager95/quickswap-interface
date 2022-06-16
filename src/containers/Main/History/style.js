@@ -72,7 +72,6 @@ export const THeadWrapper = styled.div`
   font-size: 16px;
   line-height: 24px;
   color: #9d9fa7;
-  position: relative;
 `;
 
 export const STable = styled(Table)`
