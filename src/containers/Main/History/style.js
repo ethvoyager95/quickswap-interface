@@ -41,7 +41,7 @@ export const TabsWrapper = styled.div`
 
 export const SDivFlex = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   font-style: normal;
   font-weight: 500;
@@ -49,6 +49,18 @@ export const SDivFlex = styled.div`
   line-height: 22px;
   color: #0b0f23;
   margin: 0 16px 28px;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  .title {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    color: #0b0f23;
+  }
 `;
 
 export const THeadWrapper = styled.div`
@@ -177,18 +189,46 @@ export const DropdownBlock = styled.div`
   }
 
   button {
-    background: #107def;
     border-radius: 8px;
-    width: 99px;
+    width: 100%;
     height: 40px;
-    color: #ffffff;
 
     &:hover {
       opacity: 0.8;
+    }
+  }
+
+  .button-filter {
+    background: #107def;
+    color: #ffffff;
+
+    &:hover {
       background: #107def;
       color: #ffffff;
     }
   }
+
+  .button-clear {
+    background: #ffffff;
+    color: #f84960;
+    border: 2px solid #f84960;
+
+    &:hover,
+    &:active,
+    &:visited,
+    &:focus {
+      background: #ffffff !important;
+      color: #f84960;
+      border: 2px solid #f84960 !important;
+    }
+
+    &:disabled {
+      color: rgba(0, 0, 0, 0.25) !important;
+      background-color: #d3d3d3 !important;
+      border: none !important;
+    }
+  }
+
   input {
     line-height: 1.5;
     text-overflow: ellipsis;
@@ -211,6 +251,7 @@ export const DropdownBlock = styled.div`
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     transition: all 0.3s;
+    width: 215px;
 
     &:focus {
       border-color: #40a9ff;
@@ -238,16 +279,43 @@ export const DropdownAddress = styled.div`
   padding: 30px;
 
   button {
-    background: #107def;
     border-radius: 8px;
-    width: 140px;
+    width: 100%;
     height: 40px;
-    color: #ffffff;
 
     &:hover {
       opacity: 0.8;
+    }
+  }
+
+  .button-filter {
+    background: #107def;
+    color: #ffffff;
+
+    &:hover {
       background: #107def;
       color: #ffffff;
+    }
+  }
+
+  .button-clear {
+    background: #ffffff;
+    color: #f84960;
+    border: 2px solid #f84960;
+
+    &:hover,
+    &:active,
+    &:visited,
+    &:focus {
+      background: #ffffff !important;
+      color: #f84960;
+      border: 2px solid #f84960 !important;
+    }
+
+    &:disabled {
+      color: rgba(0, 0, 0, 0.25) !important;
+      background-color: #d3d3d3 !important;
+      border: none !important;
     }
   }
 
@@ -325,13 +393,44 @@ export const NoData = styled.div`
     }
   }
 `;
+
 export const SBoxFlex = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
 `;
+
 export const SImg = styled.img`
   margin-right: 5px;
   width: 25px;
   height: 25px;
+`;
+
+export const DivFlexBetween = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+`;
+
+export const TagFilterWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 12px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  color: #6d6f7b;
+  background: #f9f9f9;
+  border-radius: 20px;
+
+  img {
+    cursor: pointer;
+  }
 `;

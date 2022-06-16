@@ -18,8 +18,6 @@ import VoterLeaderboard from 'containers/Main/VoterLeaderboard';
 import Forbidden from 'containers/Main/Forbidden';
 import History from 'containers/Main/History/History';
 import { ApolloProvider } from 'react-apollo';
-import { MoralisProvider } from 'react-moralis';
-import * as constants from 'utilities/constants';
 import { client } from '../apollo/client';
 import Theme from './Theme';
 
@@ -48,53 +46,46 @@ class App extends React.Component {
       <Theme>
         <ApolloProvider client={client}>
           <IntlProvider locale={lang} messages={message}>
-            <MoralisProvider
-              serverUrl={constants.MORALIS_URL}
-              appId={constants.MORALIS_ID}
-            >
-              <Provider store={store}>
-                <BrowserRouter>
-                  <Switch
-                    atEnter={{ opacity: 0 }}
-                    atLeave={{ opacity: 0.5 }}
-                    atActive={{ opacity: 1 }}
-                    className="switch-wrapper"
-                  >
-                    <Route exact path="/dashboard" component={Dashboard} />
-                    <Route exact path="/vote" component={Vote} />
-                    <Route exact path="/strk" component={STRK} />
-                    <Route exact path="/market" component={Market} />
-                    <Route
-                      exact
-                      path="/market/:asset"
-                      component={MarketDetail}
-                    />
-                    <Route exact path="/forbidden" component={Forbidden} />
-                    <Route exact path="/staking" component={Staking} />
+            <Provider store={store}>
+              <BrowserRouter>
+                <Switch
+                  atEnter={{ opacity: 0 }}
+                  atLeave={{ opacity: 0.5 }}
+                  atActive={{ opacity: 1 }}
+                  className="switch-wrapper"
+                >
+                  <Route exact path="/dashboard" component={Dashboard} />
+                  <Route exact path="/vote" component={Vote} />
+                  <Route exact path="/strk" component={STRK} />
+                  <Route exact path="/market" component={Market} />
+                  <Route exact path="/market/:asset" component={MarketDetail} />
+                  <Route exact path="/forbidden" component={Forbidden} />
+                  <Route exact path="/staking" component={Staking} />
+                  {process.env.REACT_APP_ENV === 'dev' && (
                     <Route exact path="/history" component={History} />
-                    <Route
-                      exact
-                      path="/vote/leaderboard"
-                      component={VoterLeaderboard}
-                    />
-                    <Route
-                      exact
-                      path="/vote/proposal/:id"
-                      component={VoteOverview}
-                    />
-                    <Route
-                      exact
-                      path="/vote/address/:address"
-                      component={ProposerDetail}
-                    />
-                    {process.env.REACT_APP_ENV === 'dev' && (
-                      <Route exact path="/faucet" component={Faucet} />
-                    )}
-                    <Redirect from="/" to="/dashboard" />
-                  </Switch>
-                </BrowserRouter>
-              </Provider>
-            </MoralisProvider>
+                  )}
+                  <Route
+                    exact
+                    path="/vote/leaderboard"
+                    component={VoterLeaderboard}
+                  />
+                  <Route
+                    exact
+                    path="/vote/proposal/:id"
+                    component={VoteOverview}
+                  />
+                  <Route
+                    exact
+                    path="/vote/address/:address"
+                    component={ProposerDetail}
+                  />
+                  {process.env.REACT_APP_ENV === 'dev' && (
+                    <Route exact path="/faucet" component={Faucet} />
+                  )}
+                  <Redirect from="/" to="/dashboard" />
+                </Switch>
+              </BrowserRouter>
+            </Provider>
           </IntlProvider>
         </ApolloProvider>
       </Theme>

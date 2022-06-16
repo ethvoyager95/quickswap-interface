@@ -18,7 +18,7 @@ import MainLayout from 'containers/Layout/MainLayout';
 import { Row, Col, Tooltip } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
 import BigNumber from 'bignumber.js';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import * as constants from 'utilities/constants';
 // import { checkIsValidNetwork } from 'utilities/common';
 import {
@@ -43,7 +43,8 @@ import {
   UNSTAKE,
   CLAIMBASE,
   CLAIMBOOST,
-  UNSTAKENFT
+  UNSTAKENFT,
+  CHAIN_MORALIS
 } from './helper';
 // eslint-disable-next-line import/named
 import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
@@ -76,7 +77,7 @@ import IConNext from '../../../assets/img/arrow-next.svg';
 import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
-import IconDuck from '../../../assets/img/duck.svg';
+import LogoNFT from '../../../assets/img/nft_logo.avif';
 
 // eslint-disable-next-line import/order
 function SampleNextArrow(props) {
@@ -418,15 +419,17 @@ function Staking({ settings, setSetting }) {
     setIsLoading(true);
     let tokenUri = null;
     let imgFake = null;
+    let getUrlImg = null;
+    // eslint-disable-next-line no-unused-expressions
+    getUrlImg =
+      process.env.REACT_APP_ENV === 'prod' ? 'baseTokenURI' : 'notRevealedUri';
     try {
       await methods
-        .call(nFtContract.methods.notRevealedUri, [])
+        .call(nFtContract.methods.getUrlImg, [])
         .then(res => {
           tokenUri = res;
         })
-        .catch(err => {
-          throw err;
-        });
+        .catch(err => {});
       if (tokenUri) {
         await axiosInstance
           .get(`${tokenUri}`)
@@ -442,7 +445,9 @@ function Staking({ settings, setSetting }) {
       }
       setTimeout(() => {
         axiosInstanceMoralis
-          .get(`/${address}/nft?chain=rinkeby&format=decimal`)
+          .get(
+            `/${address}/nft?chain=` + `${CHAIN_MORALIS}` + `&format=decimal`
+          )
           .then(res => {
             const data = res.data.result;
             if (data && data.length > 0) {
@@ -462,9 +467,8 @@ function Staking({ settings, setSetting }) {
                   item.metadata = JSON.parse(item.metadata);
                   if (item?.metadata?.image) {
                     item.img = item?.metadata?.image;
-                  } else {
-                    item.img = IconDuck;
                   }
+                  item.img = `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
                 });
               }
               const dataStakeClone = _.cloneDeep(dataConvert);
@@ -505,8 +509,8 @@ function Staking({ settings, setSetting }) {
                 name: 'AnnexIronWolf ' + `#${item}`,
                 token_id: item,
                 id: +item,
-                img: fakeImgNFT || IconDuck,
-                active: false
+                active: false,
+                img: `${constants.URL_LOGO_NFT}/${item}.png`
               });
             });
             const lengthArr = newArray.length;
@@ -529,14 +533,17 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     setIsLoading(false);
-    // }, [address, window.ethereum, txhash, filterNFTStake]);
   }, [address, window.ethereum, txhash]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      const result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 2); // 2 days
+      let result = null;
+      if (process.env.REACT_APP_ENV === 'prod') {
+        result = overOneDate.setDate(overOneDate.getDate() + 2); // 2 day
+      } else {
+        result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
+      }
       const currentDateTime = new Date();
       const resultInSecondsCurrent = Math.floor(
         currentDateTime.getTime() / 1000
@@ -563,8 +570,12 @@ function Staking({ settings, setSetting }) {
   const expiryTimeBase = useMemo(() => {
     if (userInfo) {
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      const result = overOneDate.setMinutes(overOneDate.getMinutes() + 3); // 3 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
+      let result = null;
+      if (process.env.REACT_APP_ENV === 'prod') {
+        result = overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
+      } else {
+        result = overOneDate.setMinutes(overOneDate.getMinutes() + 3); // 3 minute
+      }
       const currentDateTime = new Date();
       const resultInSecondsCurrent = Math.floor(
         currentDateTime.getTime() / 1000
@@ -590,9 +601,13 @@ function Staking({ settings, setSetting }) {
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
     if (userInfo) {
+      let result = null;
       const over30days = new Date(userInfo.boostedDate * 1000);
-      const result = over30days.setMinutes(over30days.getMinutes() + 5); // 3 minute
-      // return over30days.setDate(over30days.getDate() + 30); // 30 days
+      if (process.env.REACT_APP_ENV === 'prod') {
+        result = over30days.setDate(over30days.getDate() + 30); // 30 days
+      } else {
+        result = over30days.setMinutes(over30days.getMinutes() + 5); // 3 minute
+      }
       const currentDateTime = new Date();
       const resultInSecondsCurrent = Math.floor(
         currentDateTime.getTime() / 1000
@@ -617,9 +632,13 @@ function Staking({ settings, setSetting }) {
 
   const expiryTimeUnstakeNFT = useMemo(() => {
     if (userInfo) {
+      let result = null;
       const overOneDate = new Date(userInfo.depositedDate * 1000);
-      const result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
-      // return overOneDate.setDate(overOneDate.getDate() + 2); // 2 days
+      if (process.env.REACT_APP_ENV === 'prod') {
+        result = overOneDate.setDate(overOneDate.getDate() + 2); // 2 days
+      } else {
+        result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
+      }
       const currentDateTime = new Date();
       const resultInSecondsCurrent = Math.floor(
         currentDateTime.getTime() / 1000
@@ -949,7 +968,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -979,7 +998,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1009,7 +1028,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1082,7 +1101,7 @@ function Staking({ settings, setSetting }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingBtn(false);
-            setTextErr('Some thing went wrong!');
+            setTextErr('Something went wrong!');
           }
           throw err;
         });
@@ -1152,7 +1171,7 @@ function Staking({ settings, setSetting }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingUnStake(false);
-            setTextErr('Some thing went wrong!');
+            setTextErr('Something went wrong!');
           }
           throw err;
         });
@@ -1188,7 +1207,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1218,7 +1237,7 @@ function Staking({ settings, setSetting }) {
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Some thing went wrong!');
+          setTextErr('Something went wrong!');
         }
         throw err;
       });
@@ -1273,7 +1292,7 @@ function Staking({ settings, setSetting }) {
             } else {
               setIsShowCancel(true);
               setiIsConfirm(false);
-              setTextErr('Some thing went wrong!');
+              setTextErr('Something went wrong!');
               setValueNFTStake('');
               setMessConfirm('');
             }
@@ -1333,7 +1352,7 @@ function Staking({ settings, setSetting }) {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
-              setTextErr('Some thing went wrong!');
+              setTextErr('Something went wrong!');
               setMessConfirm('');
             }
             throw err;
@@ -1427,7 +1446,47 @@ function Staking({ settings, setSetting }) {
       }
     };
   });
+  // check loadding nft
+  useEffect(() => {
+    // eslint-disable-next-line no-plusplus
+    if (dataNFT.length > 0) {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < dataNFT.length; i++) {
+        fetch(dataNFT[i].img, { method: 'HEAD', mode: 'cors' })
+          .then(res => {
+            if (res.ok) {
+              dataNFT[i].loaded = true;
+            } else {
+              dataNFT[i].loaded = false;
+            }
+          })
+          .catch(err => {
+            dataNFT[i].loaded = false;
+          });
+      }
+    }
+  }, [dataNFT]);
+  // check loadding nft
 
+  useEffect(() => {
+    // eslint-disable-next-line no-plusplus
+    if (dataNFTUnState.length > 0) {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < dataNFTUnState.length; i++) {
+        fetch(dataNFTUnState[i].img, { method: 'HEAD', mode: 'cors' })
+          .then(res => {
+            if (res.ok) {
+              dataNFTUnState[i].loaded = true;
+            } else {
+              dataNFTUnState[i].loaded = false;
+            }
+          })
+          .catch(err => {
+            dataNFTUnState[i].loaded = false;
+          });
+      }
+    }
+  }, [dataNFTUnState]);
   return (
     <>
       <MainLayout>
@@ -2060,6 +2119,13 @@ function Staking({ settings, setSetting }) {
                         >
                           <ST.SQuestion src={IconQuestion} />
                         </Tooltip>
+                        <ST.SHrefNft
+                          target="_blank"
+                          href="https://www.degenapestrike.org/"
+                        >
+                          Get Strike NFTs
+                          <img style={{ width: '14px' }} src={IconLinkBlue} />
+                        </ST.SHrefNft>
                       </ST.SText>
                     </ST.SFlex>
                     {address ? (
@@ -2119,7 +2185,18 @@ function Staking({ settings, setSetting }) {
                           dataNFT?.map(item => {
                             return (
                               <ST.SItemSlider key={item.id}>
-                                <ST.SImgSlider src={item.img} />
+                                {item.loaded ? (
+                                  <>
+                                    <ST.SImgSlider
+                                      src={item.img}
+                                      alt={item.name}
+                                    />
+                                  </>
+                                ) : (
+                                  <ST.SLoadingNFT>
+                                    <Loadding />
+                                  </ST.SLoadingNFT>
+                                )}
                                 <ST.SBoxSlider>
                                   <ST.STitleSlider>{item.name}</ST.STitleSlider>
                                   <ST.SDescriptionSlider>
@@ -2242,7 +2319,20 @@ function Staking({ settings, setSetting }) {
                           dataNFTUnState?.map(item => {
                             return (
                               <ST.SItemSlider key={item.id}>
-                                <ST.SImgSlider src={item.img} />
+                                {item.loaded ? (
+                                  <>
+                                    <ST.SImgSlider
+                                      src={item.img}
+                                      alt={item.name}
+                                    />
+                                  </>
+                                ) : (
+                                  <>
+                                    <ST.SLoadingNFT>
+                                      <Loadding />
+                                    </ST.SLoadingNFT>
+                                  </>
+                                )}
                                 <ST.SBoxSlider>
                                   <ST.STitleSlider>{item.name}</ST.STitleSlider>
                                   <ST.SDescriptionSlider>

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-useless-escape */
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
@@ -11,6 +12,7 @@ import iconLink from 'assets/img/link.svg';
 import iconInfo from 'assets/img/info.svg';
 import iconFilter from 'assets/img/filter.svg';
 import noData from 'assets/img/no_data.svg';
+import iconClose from 'assets/img/close-tag-filter.svg';
 import { connectAccount, accountActionCreators } from 'core';
 import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
 import dayjs from 'dayjs';
@@ -41,10 +43,13 @@ import {
   PaginationWrapper,
   NoData,
   SBoxFlex,
-  SImg
+  SImg,
+  DivFlexBetween,
+  TagFilterWrapper
 } from './style';
 
 import './overide.scss';
+import { FaSadCry } from 'react-icons/fa';
 
 function History({ settings, setSetting }) {
   const [currentTab, setCurrentTab] = useState('all');
@@ -114,17 +119,33 @@ function History({ settings, setSetting }) {
 
   const handleVisibleBlockChange = flag => {
     setVisibleBlock(flag);
+    setFromBlockValue(filterCondition.from_block || fromBlockValue || '');
+    setToBlockValue(filterCondition.to_block || toBlockValue || '');
   };
 
   const handleVisibleAgeChange = flag => {
+    setFromAgeDisplay(
+      filterCondition.from_date
+        ? moment.unix(filterCondition.from_date)
+        : fromAgeDisplay || ''
+    );
+    setToAgeDisplay(
+      filterCondition.to_date
+        ? moment.unix(filterCondition.to_date)
+        : toAgeDisplay || ''
+    );
+    setFromAgeValue(filterCondition.from_date || '');
+    setToAgeValue(filterCondition.to_date || '');
     setVisibleAge(flag);
   };
 
   const handleVisibleFromChange = flag => {
+    setFromAddressValue(filterCondition.from_address || fromAddressValue || '');
     setVisibleFrom(flag);
   };
 
   const handleVisibleToChange = flag => {
+    setToAddressValue(filterCondition.to_address || toAddressValue || '');
     setVisibleTo(flag);
   };
 
@@ -135,14 +156,6 @@ function History({ settings, setSetting }) {
     if (type === 'to') {
       setToBlockValue(value);
     }
-    // if (
-    //   filterCondition?.from_block?.length === 0 &&
-    //   filterCondition?.to_block?.length === 0
-    // ) {
-    //   setIsDisableBtnFilterBlock(true);
-    // } else {
-    //   setIsDisableBtnFilterBlock(false);
-    // }
   };
 
   const handleInputAddressChange = (value, type) => {
@@ -154,14 +167,46 @@ function History({ settings, setSetting }) {
     }
   };
 
-  const handleFilter = () => {
+  const handleFilter = type => {
     setCurrentPage(1);
-    filterCondition.from_block = fromBlockValue;
-    filterCondition.to_block = toBlockValue;
-    filterCondition.from_address = fromAddressValue;
-    filterCondition.to_address = toAddressValue;
-    filterCondition.from_date = fromAgeValue;
-    filterCondition.to_date = toAgeValue;
+    if (type === 'block') {
+      filterCondition.from_block = fromBlockValue;
+      filterCondition.to_block = toBlockValue;
+      setFromAgeDisplay('');
+      setToAgeDisplay('');
+      setFromAgeValue('');
+      setToAgeValue('');
+      setFromAddressValue('');
+      setToAddressValue('');
+    }
+    if (type === 'age') {
+      filterCondition.from_date = fromAgeValue;
+      filterCondition.to_date = toAgeValue;
+      setFromBlockValue('');
+      setToBlockValue('');
+      setFromAddressValue('');
+      setToAddressValue('');
+    }
+    if (type === 'from') {
+      filterCondition.from_address = fromAddressValue;
+      setFromBlockValue('');
+      setToBlockValue('');
+      setFromAgeDisplay('');
+      setToAgeDisplay('');
+      setFromAgeValue('');
+      setToAgeValue('');
+      setToAddressValue('');
+    }
+    if (type === 'to') {
+      filterCondition.to_address = toAddressValue;
+      setFromBlockValue('');
+      setToBlockValue('');
+      setFromAgeDisplay('');
+      setToAgeDisplay('');
+      setFromAgeValue('');
+      setToAgeValue('');
+      setFromAddressValue('');
+    }
     setFilterCondition(filterCondition);
     pagination.limit = LIMIT;
     pagination.offset = 0;
@@ -190,8 +235,7 @@ function History({ settings, setSetting }) {
           .unix()
       );
     } else {
-      delete filterCondition.from_date;
-      setFilterCondition(filterCondition);
+      setFromAgeValue('');
       setFromAgeDisplay('');
     }
   };
@@ -205,13 +249,16 @@ function History({ settings, setSetting }) {
           .unix()
       );
     } else {
-      delete filterCondition.to_date;
-      setFilterCondition(filterCondition);
+      setToAgeValue('');
       setToAgeDisplay('');
     }
   };
 
   useEffect(() => {
+    setCurrentPage(1);
+    pagination.limit = LIMIT;
+    pagination.offset = 0;
+    setPagination(pagination);
     Object.keys(filterCondition).forEach(key => delete filterCondition[key]);
     setFilterCondition(filterCondition);
     if (settings.isConnected) {
@@ -244,6 +291,19 @@ function History({ settings, setSetting }) {
       }
     }
   }, [currentTab, settings.selectedAddress, settings.isConnected]);
+
+  useEffect(() => {
+    if (currentTab === 'user') {
+      setFromBlockValue('');
+      setFromAgeDisplay('');
+      setFromAgeValue('');
+      setFromAddressValue('');
+      setToBlockValue('');
+      setToAgeDisplay('');
+      setToAgeValue('');
+      setToAddressValue('');
+    }
+  }, [settings.selectedAddress, settings.isConnected]);
 
   useEffect(() => {
     if (!settings.selectedAddress) {
@@ -332,9 +392,27 @@ function History({ settings, setSetting }) {
           }
         />
       </div>
-      <Button disabled={disabledFilterBlock} onClick={() => handleFilter()}>
-        Filter
-      </Button>
+      <DivFlexBetween>
+        <Button
+          className="button-filter"
+          disabled={disabledFilterBlock}
+          onClick={() => handleFilter('block')}
+        >
+          Filter
+        </Button>
+        <Button
+          className="button-clear"
+          danger
+          ghost
+          disabled={disabledFilterBlock}
+          onClick={() => {
+            setFromBlockValue('');
+            setToBlockValue('');
+          }}
+        >
+          Clear
+        </Button>
+      </DivFlexBetween>
     </DropdownBlock>
   );
 
@@ -368,9 +446,29 @@ function History({ settings, setSetting }) {
           onChange={handleAgeEndChange}
         />
       </div>
-      <Button disabled={disabledBtnFilterAge} onClick={() => handleFilter()}>
-        Filter
-      </Button>
+      <DivFlexBetween>
+        <Button
+          className="button-filter"
+          disabled={disabledBtnFilterAge}
+          onClick={() => handleFilter('age')}
+        >
+          Filter
+        </Button>
+        <Button
+          className="button-clear"
+          danger
+          ghost
+          disabled={disabledBtnFilterAge}
+          onClick={() => {
+            setFromAgeValue('');
+            setToAgeValue('');
+            setFromAgeDisplay('');
+            setToAgeDisplay('');
+          }}
+        >
+          Clear
+        </Button>
+      </DivFlexBetween>
     </DropdownBlock>
   );
 
@@ -391,12 +489,26 @@ function History({ settings, setSetting }) {
           onChange={e => handleInputAddressChange(e.target.value, 'from')}
         />
       </div>
-      <Button
-        disabled={disabledFilterFromAddress}
-        onClick={() => handleFilter()}
-      >
-        Filter
-      </Button>
+      <DivFlexBetween>
+        <Button
+          className="button-filter"
+          disabled={disabledFilterFromAddress}
+          onClick={() => handleFilter('from')}
+        >
+          Filter
+        </Button>
+        <Button
+          className="button-clear"
+          danger
+          ghost
+          disabled={disabledFilterFromAddress}
+          onClick={() => {
+            setFromAddressValue('');
+          }}
+        >
+          Clear
+        </Button>
+      </DivFlexBetween>
     </DropdownAddress>
   );
 
@@ -417,10 +529,188 @@ function History({ settings, setSetting }) {
           onChange={e => handleInputAddressChange(e.target.value, 'to')}
         />
       </div>
-      <Button disabled={disabledFilterToAddress} onClick={() => handleFilter()}>
-        Filter
-      </Button>
+      <DivFlexBetween>
+        <Button
+          className="button-filter"
+          disabled={disabledFilterToAddress}
+          onClick={() => handleFilter('to')}
+        >
+          Filter
+        </Button>
+        <Button
+          className="button-clear"
+          danger
+          ghost
+          disabled={disabledFilterToAddress}
+          onClick={() => {
+            setToAddressValue('');
+          }}
+        >
+          Clear
+        </Button>
+      </DivFlexBetween>
     </DropdownAddress>
+  );
+
+  const renderTagFilterByBlock = (
+    <TagFilterWrapper>
+      <div>
+        Block:{' '}
+        {filterCondition.from_block
+          ? `From ${filterCondition.from_block} `
+          : ''}
+        {filterCondition.to_block ? `To ${filterCondition.to_block}` : ''}
+      </div>
+      <img
+        src={iconClose}
+        alt=""
+        onClick={() => {
+          setFromBlockValue('');
+          setToBlockValue('');
+          filterCondition.from_block = '';
+          filterCondition.to_block = '';
+          setFilterCondition(filterCondition);
+          pagination.limit = LIMIT;
+          pagination.offset = 0;
+          setPagination(pagination);
+          setCurrentPage(1);
+          if (
+            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.selectedAddress)
+          ) {
+            setDataTransaction([]);
+          } else {
+            getDataTable(filterCondition);
+          }
+        }}
+      />
+    </TagFilterWrapper>
+  );
+
+  const renderTagFilterByAge = (
+    <TagFilterWrapper>
+      <div>
+        Age:{' '}
+        {filterCondition.from_date
+          ? `From ${dayjs
+              .unix(filterCondition.from_date)
+              .format('MM/DD/YYYY')} `
+          : ''}
+        {filterCondition.to_date
+          ? `To ${dayjs.unix(filterCondition.to_date).format('MM/DD/YYYY')}`
+          : ''}
+      </div>
+      <img
+        src={iconClose}
+        alt=""
+        onClick={() => {
+          setFromAgeValue('');
+          setToAgeValue('');
+          setFromAgeDisplay('');
+          setToAgeDisplay('');
+          filterCondition.from_date = '';
+          filterCondition.to_date = '';
+          setFilterCondition(filterCondition);
+          pagination.limit = LIMIT;
+          pagination.offset = 0;
+          setPagination(pagination);
+          setCurrentPage(1);
+          if (
+            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.selectedAddress)
+          ) {
+            setDataTransaction([]);
+          } else {
+            getDataTable(filterCondition);
+          }
+        }}
+      />
+    </TagFilterWrapper>
+  );
+
+  const renderTagFilterByFromAddress = (
+    <TagFilterWrapper>
+      <div>
+        From{' '}
+        {filterCondition.from_address
+          ? `${
+              filterCondition.from_address.length > 8
+                ? `${filterCondition.from_address.substr(
+                    0,
+                    4
+                  )}...${filterCondition.from_address.substr(
+                    filterCondition.from_address.length - 4,
+                    4
+                  )}`
+                : filterCondition.from_address
+            } `
+          : ''}
+      </div>
+
+      <img
+        src={iconClose}
+        alt=""
+        onClick={() => {
+          setFromAddressValue('');
+          filterCondition.from_address = '';
+          setFilterCondition(filterCondition);
+          pagination.limit = LIMIT;
+          pagination.offset = 0;
+          setPagination(pagination);
+          setCurrentPage(1);
+          if (
+            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.selectedAddress)
+          ) {
+            setDataTransaction([]);
+          } else {
+            getDataTable(filterCondition);
+          }
+        }}
+      />
+    </TagFilterWrapper>
+  );
+
+  const renderTagFilterByToAddress = (
+    <TagFilterWrapper>
+      <div>
+        To{' '}
+        {filterCondition.to_address
+          ? `${
+              filterCondition.to_address.length > 8
+                ? `${filterCondition.to_address.substr(
+                    0,
+                    4
+                  )}...${filterCondition.to_address.substr(
+                    filterCondition.to_address.length - 4,
+                    4
+                  )}`
+                : filterCondition.to_address
+            } `
+          : ''}
+      </div>
+      <img
+        src={iconClose}
+        alt=""
+        onClick={() => {
+          setToAddressValue('');
+          filterCondition.to_address = '';
+          setFilterCondition(filterCondition);
+          pagination.limit = LIMIT;
+          pagination.offset = 0;
+          setPagination(pagination);
+          setCurrentPage(1);
+          if (
+            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.selectedAddress)
+          ) {
+            setDataTransaction([]);
+          } else {
+            getDataTable(filterCondition);
+          }
+        }}
+      />
+    </TagFilterWrapper>
   );
 
   const columns = [
@@ -466,15 +756,24 @@ function History({ settings, setSetting }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper id="th-block">
           Block{' '}
           <Dropdown
             overlay={blockFilter}
             trigger={['click']}
             onVisibleChange={handleVisibleBlockChange}
             visible={visibleBlock}
+            getPopupContainer={() => document.getElementById('th-block')}
           >
-            <SButton onClick={e => e.preventDefault()}>
+            <SButton
+              onClick={e => {
+                e.preventDefault();
+                setFromBlockValue(
+                  filterCondition.from_block || fromBlockValue || ''
+                );
+                setToBlockValue(filterCondition.to_block || toBlockValue || '');
+              }}
+            >
               <img src={iconFilter} alt="" />
             </SButton>
           </Dropdown>
@@ -497,15 +796,32 @@ function History({ settings, setSetting }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper id="th-age">
           Age{' '}
           <Dropdown
             overlay={timestampFilter}
             trigger={['click']}
             onVisibleChange={handleVisibleAgeChange}
             visible={visibleAge}
+            getPopupContainer={() => document.getElementById('th-age')}
           >
-            <SButton onClick={e => e.preventDefault()}>
+            <SButton
+              onClick={e => {
+                e.preventDefault();
+                setFromAgeDisplay(
+                  filterCondition.from_date
+                    ? moment.unix(filterCondition.from_date)
+                    : fromAgeDisplay || ''
+                );
+                setToAgeDisplay(
+                  filterCondition.to_date
+                    ? moment.unix(filterCondition.to_date)
+                    : toAgeDisplay || ''
+                );
+                setFromAgeValue(filterCondition.from_date || '');
+                setToAgeValue(filterCondition.to_date || '');
+              }}
+            >
               <img src={iconFilter} alt="" />
             </SButton>
           </Dropdown>
@@ -521,15 +837,23 @@ function History({ settings, setSetting }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper id="th-from">
           From{' '}
           <Dropdown
             overlay={addressFromFilter}
             trigger={['click']}
             onVisibleChange={handleVisibleFromChange}
             visible={visibleFrom}
+            getPopupContainer={() => document.getElementById('th-from')}
           >
-            <SButton onClick={e => e.preventDefault()}>
+            <SButton
+              onClick={e => {
+                e.preventDefault();
+                setFromAddressValue(
+                  filterCondition.from_address || fromAddressValue || ''
+                );
+              }}
+            >
               <img src={iconFilter} alt="" />
             </SButton>
           </Dropdown>
@@ -545,7 +869,7 @@ function History({ settings, setSetting }) {
               target="_blank"
             >
               {asset.from.substr(0, 4)}...
-              {asset.from.substr(asset.to.length - 4, 4)}
+              {asset.from.substr(asset.from.length - 4, 4)}
             </Hash>
           )
         };
@@ -553,15 +877,23 @@ function History({ settings, setSetting }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper id="th-to">
           To{' '}
           <Dropdown
             overlay={addressToFilter}
             trigger={['click']}
             onVisibleChange={handleVisibleToChange}
             visible={visibleTo}
+            getPopupContainer={() => document.getElementById('th-to')}
           >
-            <SButton onClick={e => e.preventDefault()}>
+            <SButton
+              onClick={e => {
+                e.preventDefault();
+                setToAddressValue(
+                  filterCondition.to_address || toAddressValue || ''
+                );
+              }}
+            >
               <img src={iconFilter} alt="" />
             </SButton>
           </Dropdown>
@@ -576,8 +908,8 @@ function History({ settings, setSetting }) {
               href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.to}`}
               target="_blank"
             >
-              {asset.to.substr(0, 4)}...
-              {asset.to.substr(asset.to.length - 4, 4)}
+              {asset?.to?.substr(0, 4)}...
+              {asset?.to?.substr(asset.to.length - 4, 4)}
             </Hash>
           )
         };
@@ -615,6 +947,8 @@ function History({ settings, setSetting }) {
             <div>
               {settings.isConnected && settings.selectedAddress
                 ? 'No record was found'
+                : currentTab === 'all'
+                ? 'No record was found'
                 : 'Connect your wallet to see your transaction history'}
             </div>
           </>
@@ -637,9 +971,11 @@ function History({ settings, setSetting }) {
               setCurrentPage(1);
               setFromBlockValue('');
               setFromAgeDisplay('');
+              setFromAgeValue('');
               setFromAddressValue('');
               setToBlockValue('');
               setToAgeDisplay('');
+              setToAgeValue('');
               setToAddressValue('');
             }}
             className={currentTab === tab ? 'active' : ''}
@@ -649,7 +985,26 @@ function History({ settings, setSetting }) {
         ))}
       </TabsWrapper>
       <SDivFlex>
-        <div />
+        {filterCondition.from_block ||
+        filterCondition.to_block ||
+        filterCondition.from_date ||
+        filterCondition.to_date ||
+        filterCondition.from_address ||
+        filterCondition.to_address ? (
+          <>
+            <div className="title">Filtered by: </div>
+            {filterCondition.from_block || filterCondition.to_block
+              ? renderTagFilterByBlock
+              : null}
+            {filterCondition.from_date || filterCondition.to_date
+              ? renderTagFilterByAge
+              : null}
+            {filterCondition.from_address ? renderTagFilterByFromAddress : null}
+            {filterCondition.to_address ? renderTagFilterByToAddress : null}
+          </>
+        ) : (
+          <></>
+        )}
       </SDivFlex>
       <STable
         locale={locale}
@@ -659,7 +1014,7 @@ function History({ settings, setSetting }) {
         rowKey={record => record.id}
       />
       <PaginationWrapper>
-        <div className="export-csv">
+        {/* <div className="export-csv">
           Download{' '}
           {dataExportCSV && (
             <CSVLink
@@ -676,7 +1031,8 @@ function History({ settings, setSetting }) {
               </SButton>
             </CSVLink>
           )}
-        </div>
+        </div> */}
+        <div />
         {showPaging && (
           <Pagination
             defaultPageSize={LIMIT}
