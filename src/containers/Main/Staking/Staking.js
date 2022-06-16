@@ -2143,7 +2143,7 @@ function Staking({ settings, setSetting }) {
                               Stake
                             </ST.SSTake>
                             <Tooltip
-                              placement="top"
+                              placement="left"
                               title="You must stake STRK-ETH LP Token before staking NFT"
                             >
                               <ST.SQuestionNFT src={IconQuestion} />

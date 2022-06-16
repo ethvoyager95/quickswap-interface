@@ -360,6 +360,7 @@ export const SBtnUn = styled.div`
   }
 `;
 export const SBtnStake = styled.button`
+  font-weight: 900;
   cursor: pointer;
   background: #107def;
   color: #fff;
@@ -387,6 +388,7 @@ export const SBtnStake = styled.button`
   }
 `;
 export const SBtnApprove = styled.button`
+  font-weight: 900;
   cursor: pointer;
   background: #107def;
   color: #fff;
@@ -435,6 +437,7 @@ export const SBtnLoadding = styled.button`
 `;
 export const SBtnUnstake = styled.button`
   cursor: pointer;
+  font-weight: 900;
   color: #f84960;
   background: #fff;
   border-radius: 5px;
@@ -461,6 +464,7 @@ export const SBtnUnstake = styled.button`
   }
 `;
 export const SSTake = styled.button`
+  font-weight: 900;
   cursor: pointer;
   background: #107def;
   color: #fff;
@@ -504,6 +508,7 @@ export const SSTaked = styled.button`
   }
 `;
 export const SSUnSTakedWeb = styled.button`
+  font-weight: 900;
   cursor: pointer;
   color: #f84960;
   background: #fff;
@@ -513,6 +518,7 @@ export const SSUnSTakedWeb = styled.button`
   text-align: center;
   border: 1px solid #f84960;
   outline: none;
+  font-weight: 900;
   :hover {
     background-color: #fff !important;
   }
@@ -528,6 +534,7 @@ export const SSUnSTakedWeb = styled.button`
   }
 `;
 export const SSUnTake = styled.button`
+  font-weight: 900;
   cursor: pointer;
   background: #fff;
   color: #f84960;
@@ -861,6 +868,7 @@ export const SBtnClaimStart = styled.div`
   }
 `;
 export const SClaim = styled.button`
+  font-weight: 900;
   cursor: pointer;
   background: #107def;
   color: #fff;
@@ -1197,6 +1205,7 @@ export const SWrapperCountDownMobile = styled.div`
 export const SSUnSTakedMobile = styled.button`
   display: none;
   @media only screen and (max-width: 768px) {
+    font-weight: 900;
     display: flex;
     justify-content: center;
     align-items: center;
