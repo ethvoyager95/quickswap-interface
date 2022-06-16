@@ -222,11 +222,16 @@ function History({ settings, setSetting }) {
   };
 
   useEffect(() => {
-    Object.keys(filterCondition).forEach(key => delete filterCondition[key]);
-    setFilterCondition(filterCondition);
     if (settings.isConnected) {
       if (currentTab === 'user') {
         if (settings.selectedAddress) {
+          setCurrentPage(1);
+          pagination.limit = LIMIT;
+          pagination.offset = 0;
+          setPagination(pagination);
+          Object.keys(filterCondition).forEach(
+            key => delete filterCondition[key]
+          );
           filterCondition.user_address = settings.selectedAddress;
           setFilterCondition(filterCondition);
           handleExportCSV(filterCondition);
@@ -254,6 +259,29 @@ function History({ settings, setSetting }) {
       }
     }
   }, [currentTab, settings.selectedAddress, settings.isConnected]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    pagination.limit = LIMIT;
+    pagination.offset = 0;
+    setPagination(pagination);
+    Object.keys(filterCondition).forEach(key => delete filterCondition[key]);
+    setFilterCondition(filterCondition);
+    getDataTable(filterCondition, pagination);
+  }, []);
+
+  useEffect(() => {
+    if (currentTab === 'user') {
+      setFromBlockValue('');
+      setFromAgeDisplay('');
+      setFromAgeValue('');
+      setFromAddressValue('');
+      setToBlockValue('');
+      setToAgeDisplay('');
+      setToAgeValue('');
+      setToAddressValue('');
+    }
+  }, [settings.selectedAddress, settings.isConnected]);
 
   useEffect(() => {
     if (!settings.selectedAddress) {
@@ -520,6 +548,7 @@ function History({ settings, setSetting }) {
           filterCondition.from_block = '';
           filterCondition.to_block = '';
           setFilterCondition(filterCondition);
+          pagination.limit = LIMIT;
           pagination.offset = 0;
           setPagination(pagination);
           setCurrentPage(1);
@@ -553,6 +582,7 @@ function History({ settings, setSetting }) {
           filterCondition.from_date = '';
           filterCondition.to_date = '';
           setFilterCondition(filterCondition);
+          pagination.limit = LIMIT;
           pagination.offset = 0;
           setPagination(pagination);
           setCurrentPage(1);
@@ -588,6 +618,7 @@ function History({ settings, setSetting }) {
           setFromAddressValue('');
           filterCondition.from_address = '';
           setFilterCondition(filterCondition);
+          pagination.limit = LIMIT;
           pagination.offset = 0;
           setPagination(pagination);
           setCurrentPage(1);
@@ -622,6 +653,7 @@ function History({ settings, setSetting }) {
           setToAddressValue('');
           filterCondition.to_address = '';
           setFilterCondition(filterCondition);
+          pagination.limit = LIMIT;
           pagination.offset = 0;
           setPagination(pagination);
           setCurrentPage(1);
