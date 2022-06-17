@@ -105,6 +105,7 @@ export const STable = styled(Table)`
       td {
         font-weight: normal;
         text-align: right;
+        white-space: nowrap;
 
         &:nth-child(1) {
           text-align: left;

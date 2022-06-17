@@ -49,7 +49,6 @@ import {
 } from './style';
 
 import './overide.scss';
-import { FaSadCry } from 'react-icons/fa';
 
 function History({ settings, setSetting }) {
   const [currentTab, setCurrentTab] = useState('all');
@@ -261,6 +260,14 @@ function History({ settings, setSetting }) {
     setPagination(pagination);
     Object.keys(filterCondition).forEach(key => delete filterCondition[key]);
     setFilterCondition(filterCondition);
+    setFromBlockValue('');
+    setFromAgeDisplay('');
+    setFromAgeValue('');
+    setFromAddressValue('');
+    setToBlockValue('');
+    setToAgeDisplay('');
+    setToAgeValue('');
+    setToAddressValue('');
     if (settings.isConnected) {
       if (currentTab === 'user') {
         if (settings.selectedAddress) {
@@ -291,19 +298,6 @@ function History({ settings, setSetting }) {
       }
     }
   }, [currentTab, settings.selectedAddress, settings.isConnected]);
-
-  useEffect(() => {
-    if (currentTab === 'user') {
-      setFromBlockValue('');
-      setFromAgeDisplay('');
-      setFromAgeValue('');
-      setFromAddressValue('');
-      setToBlockValue('');
-      setToAgeDisplay('');
-      setToAgeValue('');
-      setToAddressValue('');
-    }
-  }, [settings.selectedAddress, settings.isConnected]);
 
   useEffect(() => {
     if (!settings.selectedAddress) {
@@ -869,8 +863,10 @@ function History({ settings, setSetting }) {
               target="_blank"
             >
               {asset.from
-                ? `${asset.from.substr(0, 4)}...
-              ${asset.from.substr(asset.from.length - 4, 4)}`
+                ? `${asset.from.substr(0, 4)}...${asset.from.substr(
+                    asset.from.length - 4,
+                    4
+                  )}`
                 : '-'}
             </Hash>
           )
@@ -911,8 +907,10 @@ function History({ settings, setSetting }) {
               target="_blank"
             >
               {asset.to
-                ? `${asset.to.substr(0, 4)}...
-              ${asset.to.substr(asset.to.length - 4, 4)}`
+                ? `${asset.to.substr(0, 4)}...${asset.to.substr(
+                    asset.to.length - 4,
+                    4
+                  )}`
                 : '-'}
             </Hash>
           )
