@@ -65,6 +65,7 @@ export const SDivFlex = styled.div`
 
 export const THeadWrapper = styled.div`
   display: flex;
+  justify-content: ${props => (props.txHash ? 'flex-start' : 'flex-end')};
   align-items: center;
   gap: 6px;
   font-style: normal;
