@@ -126,7 +126,7 @@ const renderImg = symbol => {
 export const formatTxn = records =>
   records?.map(record => ({
     ...record,
-    method: record.action.replace(/([A-Z])/g, ' $1').trim(),
+    method: record.action.replace(/([A-Z])/g, ' $1').trim() || '-',
     age: formatAge(record.blockTimestamp),
     value: formatNumber(record.amount, record.decimal),
     img: renderImg(record?.symbol)
