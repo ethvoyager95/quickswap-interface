@@ -725,7 +725,7 @@ function History({ settings, setSetting }) {
               href={`${process.env.REACT_APP_ETH_EXPLORER}/tx/${asset.txHash}`}
               target="_blank"
             >
-              {`${asset.txHash.substr(0, 6)}...`}
+              {asset.txHash ? `${asset.txHash.substr(0, 6)}...` : '-'}
             </Hash>
           )
         };
@@ -748,7 +748,7 @@ function History({ settings, setSetting }) {
         return {
           children: (
             <Method>
-              <div>{asset.method}</div>
+              <div>{asset.method ? asset.method : '-'}</div>
             </Method>
           )
         };
@@ -788,7 +788,7 @@ function History({ settings, setSetting }) {
               href={`${process.env.REACT_APP_ETH_EXPLORER}/block/${asset.blockNumber}`}
               target="_blank"
             >
-              {asset.blockNumber}
+              {asset.blockNumber || '-'}
             </Hash>
           )
         };
@@ -831,7 +831,7 @@ function History({ settings, setSetting }) {
       key: 'age',
       render(_, asset) {
         return {
-          children: <Value>{asset.age}</Value>
+          children: <Value>{asset.age || '-'}</Value>
         };
       }
     },
@@ -868,8 +868,10 @@ function History({ settings, setSetting }) {
               href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.from}`}
               target="_blank"
             >
-              {asset.from.substr(0, 4)}...
-              {asset.from.substr(asset.from.length - 4, 4)}
+              {asset.from
+                ? `${asset.from.substr(0, 4)}...
+              ${asset.from.substr(asset.from.length - 4, 4)}`
+                : '-'}
             </Hash>
           )
         };
@@ -908,8 +910,10 @@ function History({ settings, setSetting }) {
               href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.to}`}
               target="_blank"
             >
-              {asset?.to?.substr(0, 4)}...
-              {asset?.to?.substr(asset.to.length - 4, 4)}
+              {asset.to
+                ? `${asset.to.substr(0, 4)}...
+              ${asset.to.substr(asset.to.length - 4, 4)}`
+                : '-'}
             </Hash>
           )
         };
