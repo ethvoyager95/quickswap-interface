@@ -210,11 +210,18 @@ function History({ settings, setSetting }) {
     pagination.limit = LIMIT;
     pagination.offset = 0;
     setPagination(pagination);
-    getDataTable(filterCondition);
     setVisibleAge(false);
     setVisibleBlock(false);
     setVisibleFrom(false);
     setVisibleTo(false);
+    if (
+      (currentTab === 'user' && !settings.isConnected) ||
+      (currentTab === 'user' && !settings.selectedAddress)
+    ) {
+      setDataTransaction([]);
+    } else {
+      getDataTable(filterCondition);
+    }
   };
 
   const handlePageChange = page => {
@@ -1008,7 +1015,13 @@ function History({ settings, setSetting }) {
           <></>
         )}
       </SDivFlex>
+
       <STable
+        dropdownOpen={
+          dataTransactions.length <= 4
+            ? visibleBlock || visibleAge || visibleFrom || visibleTo
+            : false
+        }
         locale={locale}
         columns={columns}
         dataSource={dataTransactions}
