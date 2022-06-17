@@ -81,7 +81,11 @@ export const STable = styled(Table)`
   padding-left: 40px;
   padding-right: 40px;
   margin: 0 16px 20px;
-  overflow-x: auto;
+  overflow-x: ${props => (props.dropdownOpen ? 'visible' : 'auto')};
+
+  @media only screen and (max-width: 768px) {
+    margin-right: ${props => (props.dropdownOpen ? '0' : '16px')};
+  }
 
   .ant-table-thead {
     tr {
