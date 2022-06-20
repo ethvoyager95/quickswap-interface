@@ -99,6 +99,11 @@ export const STable = styled(Table)`
 
         &:nth-child(1) {
           text-align: left;
+          padding-left: 0;
+        }
+
+        &:last-child {
+          padding-right: 0;
         }
       }
     }
@@ -113,6 +118,11 @@ export const STable = styled(Table)`
 
         &:nth-child(1) {
           text-align: left;
+          padding-left: 0;
+        }
+
+        &:last-child {
+          padding-right: 0;
         }
       }
     }
@@ -399,7 +409,7 @@ export const NoData = styled.div`
       line-height: 19px;
     }
     img {
-      width: 108px;
+      width: 200px;
     }
   }
 `;
