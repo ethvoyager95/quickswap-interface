@@ -632,7 +632,7 @@ function History({ settings, setSetting }) {
   const renderTagFilterByFromAddress = (
     <TagFilterWrapper>
       <div>
-        From{' '}
+        From:{' '}
         {filterCondition.from_address
           ? `${
               filterCondition.from_address.length > 8
@@ -675,7 +675,7 @@ function History({ settings, setSetting }) {
   const renderTagFilterByToAddress = (
     <TagFilterWrapper>
       <div>
-        To{' '}
+        To:{' '}
         {filterCondition.to_address
           ? `${
               filterCondition.to_address.length > 8
