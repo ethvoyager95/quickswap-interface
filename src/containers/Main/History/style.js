@@ -54,7 +54,7 @@ export const SDivFlex = styled.div`
 
   .title {
     font-style: normal;
-    font-weight: 500;
+    font-weight: 900;
     font-size: 14px;
     line-height: 22px;
     display: flex;
@@ -207,6 +207,7 @@ export const DropdownBlock = styled.div`
   .button-filter {
     background: #107def;
     color: #ffffff;
+    font-weight: 900;
 
     &:hover {
       background: #107def;
@@ -218,6 +219,7 @@ export const DropdownBlock = styled.div`
     background: #ffffff;
     color: #f84960;
     border: 2px solid #f84960;
+    font-weight: 900;
 
     &:hover,
     &:active,
@@ -297,6 +299,7 @@ export const DropdownAddress = styled.div`
   .button-filter {
     background: #107def;
     color: #ffffff;
+    font-weight: 900;
 
     &:hover {
       background: #107def;
@@ -308,6 +311,7 @@ export const DropdownAddress = styled.div`
     background: #ffffff;
     color: #f84960;
     border: 2px solid #f84960;
+    font-weight: 900;
 
     &:hover,
     &:active,
