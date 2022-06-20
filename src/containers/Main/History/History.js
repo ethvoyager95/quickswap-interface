@@ -25,6 +25,7 @@ import {
   initPagination,
   LIMIT,
   LIST_BLOCK_VALUE,
+  LIST_BLOCK_TEXT,
   tooltipContent,
   tabsTransaction,
   headers as headersCSV
@@ -348,17 +349,12 @@ function History({ settings, setSetting }) {
             }
           }}
           // block special character onpaste
-          onPaste={event =>
-            window.setTimeout(() => {
-              const characters = event.target.value;
-              window.setTimeout(() => {
-                if (!/^\d+$/.test(characters)) {
-                  // eslint-disable-next-line no-param-reassign
-                  event.target.value = event.target.value.replace(/\D/g, '');
-                }
-              });
-            })
-          }
+          onPaste={event => {
+            const text = event.clipboardData.getData('text');
+            if (__.includes(LIST_BLOCK_TEXT, text)) {
+              event.preventDefault();
+            }
+          }}
         />
       </div>
       <div className="item">
@@ -380,17 +376,12 @@ function History({ settings, setSetting }) {
             }
           }}
           // block special character onpaste
-          onPaste={event =>
-            window.setTimeout(() => {
-              const characters = event.target.value;
-              window.setTimeout(() => {
-                if (!/^\d+$/.test(characters)) {
-                  // eslint-disable-next-line no-param-reassign
-                  event.target.value = event.target.value.replace(/\D/g, '');
-                }
-              });
-            })
-          }
+          onPaste={event => {
+            const text = event.clipboardData.getData('text');
+            if (__.includes(LIST_BLOCK_TEXT, text)) {
+              event.preventDefault();
+            }
+          }}
         />
       </div>
       <DivFlexBetween>
