@@ -324,7 +324,6 @@ const SIconClose = styled.img`
   cursor: pointer;
 `;
 const PERCENT = 10;
-
 function DialogUnStake({
   isUnStakeNFT,
   close,

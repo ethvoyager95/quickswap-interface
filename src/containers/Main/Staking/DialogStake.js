@@ -398,7 +398,6 @@ function DialogStake({
   );
   useEffect(() => {
     setItemSelect(itemStaking.length);
-    // setTotalSelect(listStake.length);
     setItemStaked(listUnStake.length);
     const listIds = _.map(listStake, 'token_id');
     if (checked) {
