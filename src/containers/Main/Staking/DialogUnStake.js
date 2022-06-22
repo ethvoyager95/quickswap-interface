@@ -455,7 +455,7 @@ function DialogUnStake({
     if (checked) {
       setValue(list.length);
     }
-  }, [checked, address, isUnStakeNFT]);
+  }, [checked, address, isUnStakeNFT, list]);
   const classes = useStyles();
   return (
     <>

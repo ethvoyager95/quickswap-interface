@@ -503,7 +503,7 @@ function DialogStake({
       const value_staked = MAX_STAKE_NFT - itemStaked;
       setValue(value_staked);
     }
-  }, [checked, address, isStakeNFT]);
+  }, [checked, address, isStakeNFT, listStake]);
   return (
     <>
       <React.Fragment>
