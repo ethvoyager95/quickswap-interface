@@ -297,6 +297,9 @@ const SInput = styled.div`
       border: 1px solid #ccc !important;
       outline: none;
     }
+    &:disabled {
+      background: #c4c4c4;
+    }
   }
 
   @media only screen and (max-width: 768px) {
@@ -339,9 +342,10 @@ function DialogUnStake({
   const [beforeUnStake, setBeforeUnStake] = useState(0);
   const [afterUnStake, setAfterUnStake] = useState(0);
   const [currentNFTAmount, setCurrentNFTAmount] = useState(0);
+  const [lstAllIds, setLstAllIds] = useState([]);
   const [checked, setChecked] = useState(false);
   const [disabledBtn, setDisabledBtn] = useState(false);
-
+  const [disableStake, setDisableStake] = useState(false);
   const handleChangeValueUnStakeNft = useCallback(
     event => {
       if (event.isTrusted) {
@@ -357,10 +361,20 @@ function DialogUnStake({
     },
     [val]
   );
-  const onChangeSwitch = check => {
-    setChecked(check);
-    setValue('');
-  };
+  const onChangeSwitch = useCallback(
+    check => {
+      setChecked(check);
+      if (check) {
+        setValue(list.length);
+        setDisableStake(true);
+        setLstAllIds(list);
+      } else {
+        setValue('');
+        setDisableStake(false);
+      }
+    },
+    [list, address]
+  );
   useEffect(() => {
     setItemSelect(itemStaked.length);
     const ITEM_STAKE = list.length;
@@ -438,6 +452,11 @@ function DialogUnStake({
     setValue(valueNFTUnStake);
     setCurrentNFTAmount(currentNFT);
   }, [valueNFTUnStake, isUnStakeNFT, currentNFT, address]);
+  useEffect(() => {
+    if (checked) {
+      setValue(list.length);
+    }
+  }, [checked, address, isUnStakeNFT]);
   const classes = useStyles();
   return (
     <>
@@ -460,20 +479,21 @@ function DialogUnStake({
               <SRowText>
                 {checked ? (
                   <STitleInput>
-                    Please input total number NFTs you want to unstake
+                    Maximum NFTs to unstake: {val}/{list.length}
                   </STitleInput>
                 ) : (
                   <STitleInput>Please input your NFT ID</STitleInput>
                 )}
                 <STack>
                   <Switch checked={checked} onChange={onChangeSwitch} />
-                  Stack
+                  Stack All
                 </STack>
               </SRowText>
               <SInput>
                 <input
                   type="number"
                   value={val}
+                  disabled={disableStake}
                   inputMode="decimal"
                   pattern="^[0-9]*[]?[0-9]*$"
                   min={0}
@@ -542,7 +562,13 @@ function DialogUnStake({
                       <SBtnUnStake
                         disabled={disabledBtn}
                         onClick={event =>
-                          handleUnStakeDialog(val, event, checked, messErr)
+                          handleUnStakeDialog(
+                            val,
+                            event,
+                            checked,
+                            messErr,
+                            lstAllIds
+                          )
                         }
                       >
                         Unstake

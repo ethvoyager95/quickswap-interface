@@ -298,6 +298,9 @@ const SInput = styled.div`
       border: 1px solid #ccc !important;
       outline: none;
     }
+    &:disabled {
+      background: #c4c4c4;
+    }
   }
 
   @media only screen and (max-width: 768px) {
@@ -344,7 +347,9 @@ function DialogStake({
   const [itemStaked, setItemStaked] = useState(listUnStake?.length);
   const [beforeStake, setBeforeStaking] = useState(0);
   const [afterStake, setAfterStake] = useState(0);
+  const [lstAllIds, setLstAllIds] = useState([]);
   const [checked, setChecked] = useState(false);
+  const [disableStake, setDisableStake] = useState(false);
   const handleChangeValueStakeNft = useCallback(
     event => {
       if (event.isTrusted) {
@@ -361,10 +366,36 @@ function DialogStake({
     [val]
   );
 
-  const onChangeSwitch = check => {
-    setChecked(check);
-    setValue('');
-  };
+  const onChangeSwitch = useCallback(
+    // eslint-disable-next-line no-shadow
+    check => {
+      setChecked(check);
+      // check lst stake > max
+      if (check) {
+        setDisableStake(true);
+        const value_staked = MAX_STAKE_NFT - itemStaked;
+        setValue(value_staked);
+        // morethan 20 nft
+        if (listStake.length > MAX_STAKE_NFT) {
+          const lstStakeClone = _.cloneDeep(listStake);
+          const lstIdAlls = lstStakeClone?.splice(0, MAX_STAKE_NFT);
+          setLstAllIds(lstIdAlls);
+          return;
+        }
+        // lessthan 20 nft
+        if (listStake.length <= MAX_STAKE_NFT) {
+          const lstStakeClone = _.cloneDeep(listStake);
+          const lstIdAlls = lstStakeClone?.splice(0, value_staked);
+          setLstAllIds(lstIdAlls);
+          return;
+        }
+      } else {
+        setValue('');
+        setDisableStake(false);
+      }
+    },
+    [listStake, address]
+  );
   useEffect(() => {
     setItemSelect(itemStaking.length);
     // setTotalSelect(listStake.length);
@@ -408,6 +439,7 @@ function DialogStake({
       if (val === '') {
         setMessErr('');
         setDisabledBtn(true);
+        setValue(0);
       }
       if (
         itemStaked === 0 &&
@@ -467,6 +499,12 @@ function DialogStake({
     setCurrentNFTAmount(currentNFT);
     setValue(valueNFTStake);
   }, [valueNFTStake, isStakeNFT, currentNFT, address]);
+  useEffect(() => {
+    if (checked) {
+      const value_staked = MAX_STAKE_NFT - itemStaked;
+      setValue(value_staked);
+    }
+  }, [checked, address, isStakeNFT]);
   return (
     <>
       <React.Fragment>
@@ -488,14 +526,14 @@ function DialogStake({
               <SRowText>
                 {checked ? (
                   <STitleInput>
-                    Please input total number NFTs you want to stake
+                    Maximum NFTs to stake: {val}/{listStake.length}
                   </STitleInput>
                 ) : (
                   <STitleInput>Please input your NFT ID</STitleInput>
                 )}
                 <STack>
                   <Switch checked={checked} onChange={onChangeSwitch} />
-                  Stack
+                  Stack All
                 </STack>
               </SRowText>
 
@@ -510,6 +548,7 @@ function DialogStake({
                   minLength={1}
                   maxLength={79}
                   placeholder="Enter a number"
+                  disabled={disableStake}
                   onChange={event => handleChangeValueStakeNft(event)}
                   onKeyPress={event => {
                     if (_.includes(LIST_BLOCK_VALUE, event.which)) {
@@ -567,7 +606,13 @@ function DialogStake({
                       <SBtnStake
                         disabled={disabledBtn}
                         onClick={event =>
-                          handleStakeDialog(val, event, checked, messErr)
+                          handleStakeDialog(
+                            val,
+                            event,
+                            checked,
+                            messErr,
+                            lstAllIds
+                          )
                         }
                       >
                         Stake
