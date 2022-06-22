@@ -816,13 +816,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             <Label>Faucet</Label>
           </NavLink>
         )}
-        <NavLink
-          className="flex flex-start align-center"
-          to="/staking"
-          activeClassName="active"
-        >
-          <Label>DeFi Vault 3.0</Label>
-        </NavLink>
         {settings.selectedAddress && (
           <UserInfoButton>
             <Button

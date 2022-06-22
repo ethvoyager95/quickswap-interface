@@ -23,7 +23,6 @@ import { client } from '../apollo/client';
 import Theme from './Theme';
 
 import 'assets/styles/App.scss';
-import Staking from './Main/Staking/Staking';
 
 addLocaleData([...en]);
 const initialLang = 'en';
@@ -66,7 +65,6 @@ class App extends React.Component {
                       component={MarketDetail}
                     />
                     <Route exact path="/forbidden" component={Forbidden} />
-                    <Route exact path="/staking" component={Staking} />
                     {process.env.REACT_APP_ENV === 'dev' && (
                       <Route exact path="/history" component={History} />
                     )}
