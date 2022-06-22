@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import * as constants from 'utilities/constants';
 import metamaskImg from 'assets/img/metamask.png';
+import bitkeepImg from 'assets/img/bitkeep.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
@@ -70,6 +71,14 @@ const ModalContent = styled.div`
       }
     }
   }
+  .disconnect-btn {
+    background-color: #d01f36;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 17px;
+    height: 40px;
+    border-radius: 20px;
+  }
 `;
 
 function ConnectModal({
@@ -85,7 +94,8 @@ function ConnectModal({
 }) {
   const [web3Library, setWeb3Library] = React.useState();
   const [web3Account, setWeb3Account] = React.useState();
-
+  const [isBitkeepWallet, setIsBitKeepWallet] = React.useState(false);
+  const [isMetaMask, setisMetaMask] = React.useState(false);
   const MetaMaskStatus = () => {
     if (error && error.message === constants.NOT_INSTALLED) {
       return (
@@ -106,7 +116,6 @@ function ConnectModal({
           >
             Download Coinbase here.
           </a>
-          
         </p>
       );
     }
@@ -121,7 +130,40 @@ function ConnectModal({
     }
     return null;
   };
-
+  const BitkeepStatus = () => {
+    if (error && error.message === constants.NOT_INSTALLED) {
+      return (
+        <p className="center">
+          We could not locate a supported web3 browser extension. We recommend
+          using Bitkeep or Coinbase.
+          <a
+            href="https://bitkeep.com/download"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download Bitkeep here.
+          </a>
+          <a
+            href="https://www.coinbase.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download Coinbase here.
+          </a>
+        </p>
+      );
+    }
+    if (error) {
+      return <span>{error.message}</span>;
+    }
+    if (!web3 && awaiting) {
+      return <span>BitkeppStatus loading...</span>;
+    }
+    if (!web3) {
+      return <span>Please open and allow Bitkeep</span>;
+    }
+    return null;
+  };
   const connectCoinbase = async () => {
     try {
       // Initialize WalletLink
@@ -180,6 +222,30 @@ function ConnectModal({
     }
   }, [window.ethereum, settings.selectedAddress]);
 
+  // check install meta bitkeep
+  useEffect(() => {
+    if (window) {
+      if (!window.isBitKeep) {
+        setIsBitKeepWallet(false);
+      }
+      setIsBitKeepWallet(window.isBitKeep);
+      if (window?.ethereum?.isMetaMask) {
+        setisMetaMask(window?.ethereum?.isMetaMask);
+      }
+      if (window?.ethereum?.isMetaMask === true && window.isBitKeep === true) {
+        setisMetaMask(false);
+        setIsBitKeepWallet(true);
+      }
+      if (
+        window?.ethereum?.isMetaMask === undefined &&
+        window.isBitKeep === undefined
+      ) {
+        setisMetaMask(false);
+        setIsBitKeepWallet(false);
+      }
+    }
+  }, [window.ethereum, settings.selectedAddress]);
+
   return (
     <Modal
       className="connect-modal"
@@ -203,20 +269,76 @@ function ConnectModal({
           <p className="title">Connect to start using Strike</p>
         </div>
         <div className="connect-wallet-content">
-          <div
-            className="flex align-center just-between metamask-connect-btn"
-            onClick={onConnectMetaMask}
-          >
-            <div className="flex align-center">
-              <img src={metamaskImg} alt="metamask" />
-              <span>MetaMask</span>
-            </div>
-            <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
-          </div>
-          {(error || !web3) && (
-            <div className="metamask-status">
-              <MetaMaskStatus />
-            </div>
+          {isMetaMask ? (
+            <>
+              <div
+                className="flex align-center just-between metamask-connect-btn"
+                onClick={onConnectMetaMask}
+              >
+                <div className="flex align-center">
+                  <img src={metamaskImg} alt="metamask" />
+                  <span>MetaMask</span>
+                </div>
+                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+              </div>
+              {(error || !web3) && (
+                <div className="metamask-status">
+                  <MetaMaskStatus />
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="flex align-center just-between metamask-connect-btn">
+                <div className="flex align-center">
+                  <img src={metamaskImg} alt="metamask" />
+                  <span>MetaMask</span>
+                </div>
+                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+              </div>
+              {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
+                <div className="metamask-status">
+                  <MetaMaskStatus />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="connect-wallet-content">
+          {isBitkeepWallet ? (
+            <>
+              <div
+                className="flex align-center just-between metamask-connect-btn"
+                onClick={onConnectMetaMask}
+              >
+                <div className="flex align-center">
+                  <img className="bitkeep-img" src={bitkeepImg} alt="bitkeep" />
+                  <span>Bitkeep</span>
+                </div>
+                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+              </div>
+              {(error || !web3) && (
+                <div className="metamask-status">
+                  <BitkeepStatus />
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="flex align-center just-between metamask-connect-btn">
+                <div className="flex align-center">
+                  <img className="bitkeep-img" src={bitkeepImg} alt="bitkeep" />
+                  <span>Bitkeep</span>
+                </div>
+                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+              </div>
+              {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
+                <div className="metamask-status">
+                  <BitkeepStatus />
+                </div>
+              )}
+            </>
           )}
         </div>
         <div className="connect-wallet-content">
@@ -230,11 +352,6 @@ function ConnectModal({
             </div>
             <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
           </div>
-          {/* {(error || !web3) && (
-          <div className="metamask-status">
-            <MetaMaskStatus />
-          </div>
-        )} */}
         </div>
       </ModalContent>
     </Modal>
@@ -247,7 +364,9 @@ ConnectModal.propTypes = {
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   awaiting: PropTypes.bool,
   onCancel: PropTypes.func,
-  onConnectMetaMask: PropTypes.func.isRequired
+  onConnectMetaMask: PropTypes.func.isRequired,
+  settings: PropTypes.object,
+  setSetting: PropTypes.func.isRequired
 };
 
 ConnectModal.defaultProps = {
@@ -255,6 +374,7 @@ ConnectModal.defaultProps = {
   web3: {},
   error: '',
   awaiting: false,
+  settings: {},
   onCancel: () => {}
 };
 
