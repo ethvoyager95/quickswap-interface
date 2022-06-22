@@ -4,9 +4,12 @@ import * as constants from './constants';
 
 export default class MetaMask {
   static async initialize({ maxListeners } = { maxListeners: 300 }) {
+    const { isBitKeep } = window;
     const instance = await MetaMask.getWeb3();
     const provider = instance.currentProvider;
-    provider.setMaxListeners(maxListeners);
+    if (!isBitKeep || isBitKeep === undefined) {
+      provider.setMaxListeners(maxListeners);
+    }
     return new MetaMask(provider);
   }
 
