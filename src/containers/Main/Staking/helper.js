@@ -26,6 +26,7 @@ export const ETH = 'eth';
 export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 101];
 const REQUIRED_DECIMAL = 5;
 const DASHBOARD_DECIMALS = 2;
+export const ZERO = 0;
 export const DECIMALS_INPUT = 10;
 export const DECIMALS_LP = 18;
 export const MIXIMUM_IPUT = 1e-5;

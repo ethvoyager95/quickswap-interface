@@ -1245,8 +1245,11 @@ function Staking({ settings, setSetting }) {
 
   // Stake NFT
   const handleStakeDialog = useCallback(
-    async (value, event, checked, mess) => {
+    async (value, event, checked, mess, lstAllIds) => {
       if (!value) {
+        return;
+      }
+      if (!lstAllIds) {
         return;
       }
       if (mess) {
@@ -1259,12 +1262,13 @@ function Staking({ settings, setSetting }) {
         setMessConfirm(
           'Do not close the popup while the transaction is being executed'
         );
+        const lstAllIdsStake = _.map(lstAllIds, 'token_id');
         await methods
           .send(
             checked
-              ? farmingContract.methods.boostPartially
+              ? farmingContract.methods.boostAll
               : farmingContract.methods.boost,
-            [0, value.toString(10)],
+            [0, checked ? lstAllIdsStake : value.toString(10)],
             address
           )
           .then(res => {
@@ -1321,9 +1325,9 @@ function Staking({ settings, setSetting }) {
         await methods
           .send(
             checked
-              ? farmingContract.methods.unBoostPartially
+              ? farmingContract.methods.unBoostAll
               : farmingContract.methods.unBoost,
-            [0, value.toString(10)],
+            checked ? [0] : [0, value.toString(10)],
             address
           )
           .then(res => {

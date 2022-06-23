@@ -192,7 +192,6 @@ function CountDownClaim({
   });
 
   const countdownTimer = () => {
-    setIsLoading(false);
     if (!address) {
       setCountdownTime({
         countdownDays: '',
@@ -221,8 +220,9 @@ function CountDownClaim({
       countdownMinutes: totalMinutes ?? '',
       countdownSeconds: totalSeconds ?? ''
     };
+    // setIsLoading(true);
+
     setCountdownTime(runningCountdownTime);
-    setIsLoading(true);
   };
   useEffect(() => {
     if (times <= new Date().getTime()) {
@@ -238,8 +238,10 @@ function CountDownClaim({
     }
     return function cleanup() {
       abortController.abort();
+      setIsLoading(false);
       if (updateTimer) {
         clearInterval(updateTimer);
+        setIsLoading(true);
       }
     };
   }, [times, countdownTime]);
