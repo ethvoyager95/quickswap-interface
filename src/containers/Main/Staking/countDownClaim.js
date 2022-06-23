@@ -311,7 +311,7 @@ function CountDownClaim({
                       disabled={valUnStake === 0 || valUnStake === ''}
                       onClick={handleUnStake}
                     >
-                      Untake1
+                      Unstake
                     </SBtnUnstake>
                     <Tooltip
                       placement="right"
