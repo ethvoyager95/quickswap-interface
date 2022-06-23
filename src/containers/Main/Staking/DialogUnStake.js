@@ -477,9 +477,7 @@ function DialogUnStake({
               <STitle>Unstake NFT</STitle>
               <SRowText>
                 {checked ? (
-                  <STitleInput>
-                    Maximum NFTs to unstake: {val}/{list.length}
-                  </STitleInput>
+                  <STitleInput>Maximum NFTs to unstake: {val}</STitleInput>
                 ) : (
                   <STitleInput>Please input your NFT ID</STitleInput>
                 )}

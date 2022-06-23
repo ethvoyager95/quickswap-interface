@@ -9,7 +9,7 @@ import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
 import { Row, Col, Switch } from 'antd';
 import _ from 'lodash';
-import { MAX_STAKE_NFT, LIST_BLOCK_VALUE } from './helper';
+import { MAX_STAKE_NFT, LIST_BLOCK_VALUE, ZERO } from './helper';
 import IconClose from '../../../assets/img/close.svg';
 
 const useStyles = makeStyles({
@@ -524,9 +524,7 @@ function DialogStake({
               <STitle>Stake NFT</STitle>
               <SRowText>
                 {checked ? (
-                  <STitleInput>
-                    Maximum NFTs to stake: {val}/{listStake.length}
-                  </STitleInput>
+                  <STitleInput>Maximum NFTs to stake: {val}</STitleInput>
                 ) : (
                   <STitleInput>Please input your NFT ID</STitleInput>
                 )}
@@ -584,7 +582,9 @@ function DialogStake({
                           Before staking
                         </STextBox>
                         <SValueBox>
-                          {beforeStake === PERCENT ? '-' : `${beforeStake}%`}
+                          {beforeStake === PERCENT || beforeStake === ZERO
+                            ? '-'
+                            : `${beforeStake}%`}
                         </SValueBox>
                       </SRowBox>
 
@@ -594,7 +594,9 @@ function DialogStake({
                           After staking
                         </STextBox>
                         <SValueBox>
-                          {afterStake === PERCENT ? '-' : `${afterStake}%`}
+                          {afterStake === PERCENT || afterStake === ZERO
+                            ? '-'
+                            : `${afterStake}%`}
                         </SValueBox>
                       </SRowBox>
                     </SUl>
