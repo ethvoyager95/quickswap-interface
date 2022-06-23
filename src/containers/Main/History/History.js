@@ -2,7 +2,6 @@
 /* eslint-disable no-useless-escape */
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import { CSVLink } from 'react-csv';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -27,8 +26,7 @@ import {
   LIST_BLOCK_VALUE,
   LIST_BLOCK_TEXT,
   tooltipContent,
-  tabsTransaction,
-  headers as headersCSV
+  tabsTransaction
 } from './helper';
 import {
   TabsWrapper,
@@ -739,8 +737,11 @@ function History({ settings, setSetting }) {
       render(_, asset) {
         return {
           children: (
-            <Method>
-              <div>{asset.method ? asset.method : '-'}</div>
+            <Method action={asset.action}>
+              <div>
+                {asset.iconMethod && <img src={asset.iconMethod} alt="" />}
+                <span>{asset.method ? asset.method : '-'}</span>
+              </div>
             </Method>
           )
         };

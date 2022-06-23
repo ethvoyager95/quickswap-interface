@@ -1,5 +1,6 @@
 import { Table } from 'antd';
 import styled from 'styled-components';
+import { renderBgColor, renderColor } from './helper';
 
 export const TabsWrapper = styled.div`
   display: flex;
@@ -147,7 +148,11 @@ export const Method = styled.div`
   align-items: center;
 
   div {
-    background: #e0effa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: ${props => renderBgColor(props.action)};
     border-radius: 5px;
     padding: 4px 14px;
     text-align: center;
@@ -155,7 +160,11 @@ export const Method = styled.div`
     font-weight: 900;
     font-size: 12px;
     line-height: 19px;
-    color: #107def;
+    color: ${props => renderColor(props.action)};
+
+    img {
+      height: 16px;
+    }
   }
 `;
 
@@ -421,9 +430,9 @@ export const SBoxFlex = styled.div`
 `;
 
 export const SImg = styled.img`
-  margin-right: 5px;
-  width: 25px;
-  height: 25px;
+  margin-right: 6px;
+  width: 36px;
+  height: 36px;
 `;
 
 export const DivFlexBetween = styled.div`

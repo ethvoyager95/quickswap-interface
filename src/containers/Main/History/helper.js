@@ -28,6 +28,18 @@ import suni from 'assets/img/coins/suni.png';
 import sape from 'assets/img/coins/sape.png';
 import sust from 'assets/img/coins/sust.png';
 
+import iconSupplier from 'assets/img/methods/supplier.svg';
+import iconWithdraw from 'assets/img/methods/withdraw.svg';
+import iconBorrow from 'assets/img/methods/borrow.svg';
+import iconRepayBorrow from 'assets/img/methods/repay-borrow.svg';
+import iconLiquidateBorrow from 'assets/img/methods/liquidate-borrow.svg';
+import iconBoost from 'assets/img/methods/boost.png';
+import iconDeposit from 'assets/img/methods/deposit.svg';
+import iconUnBoost from 'assets/img/methods/un-boost.svg';
+import iconClaimBase from 'assets/img/methods/claim-base-reward.svg';
+import iconClaimBoost from 'assets/img/methods/claim-boost-reward.svg';
+import iconRedeem from 'assets/img/methods/redeem.svg';
+
 export const LIMIT = 25;
 const OFFSET = 0;
 export const initPagination = {
@@ -40,20 +52,24 @@ export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 69, 101];
 export const LIST_BLOCK_TEXT = ['E', 'e', '-', '+', '.'];
 export const tooltipContent =
   'Function executed based on decoded input data. For unidentified functions, method ID is displayed instead.';
-export const headers = [
-  { label: 'Txn Hash', key: 'txHash' },
-  { label: 'Method', key: 'method' },
-  { label: 'Block', key: 'blockNumber' },
-  { label: 'Age', key: 'age' },
-  { label: 'From', key: 'from' },
-  { label: 'To', key: 'to' },
-  { label: 'Value', key: 'value' }
-];
-const format = commaNumber.bindWith(',', '.');
 
 const MINUTES_TO_TIMESTAMP = 60;
 const HOUR_TO_TIMESTAMP = 60 * 60;
 const DAY_TO_TIMESTAMP = 24 * 60 * 60;
+
+const SUPPLY = 'Supplier';
+const REDEEM = 'Redeem';
+const BORROW = 'Borrow';
+const REPAY_BORROW = 'RepayBorrow';
+const LIQUIDATE_BORROW = 'LiquidateBorrow';
+const BOOST = 'Boost';
+const DEPOSIT = 'Deposit';
+const UN_BOOST = 'UnBoost';
+const WITHDRAW = 'Withdraw';
+const CLAIM_BASE_REWARD = 'ClaimBaseRewards';
+const CLAIM_BOOST_REWARD = 'ClaimBoostRewards';
+
+const format = commaNumber.bindWith(',', '.');
 
 const formatNumber = (amount, decimal) => {
   const valueEther = new BigNumber(amount).div(new BigNumber(10).pow(decimal));
@@ -123,11 +139,61 @@ const renderImg = symbol => {
   if (symbol.toLowerCase() === 'sust') return sust;
   return '';
 };
+
+const renderIconMethod = action => {
+  if (action === null) return '';
+  if (action === SUPPLY) return iconSupplier;
+  if (action === REDEEM) return iconRedeem;
+  if (action === BORROW) return iconBorrow;
+  if (action === REPAY_BORROW) return iconRepayBorrow;
+  if (action === LIQUIDATE_BORROW) return iconLiquidateBorrow;
+  if (action === BOOST) return iconBoost;
+  if (action === DEPOSIT) return iconDeposit;
+  if (action === UN_BOOST) return iconUnBoost;
+  if (action === WITHDRAW) return iconWithdraw;
+  if (action === CLAIM_BASE_REWARD) return iconClaimBase;
+  if (action === CLAIM_BOOST_REWARD) return iconClaimBoost;
+  return '';
+};
+
+export const renderBgColor = action => {
+  if (action === null) return '#E0EFFA';
+  if (action === SUPPLY) return '#E0EFFA';
+  if (action === REDEEM) return '#E9F7FA';
+  if (action === BORROW) return '#FEE9EC';
+  if (action === REPAY_BORROW) return '#FEF4E9';
+  if (action === LIQUIDATE_BORROW) return '#F4E9FA';
+  if (action === BOOST) return '#EEFAE9';
+  if (action === DEPOSIT) return '#FAF7E9';
+  if (action === UN_BOOST) return '#E9FAFA';
+  if (action === WITHDRAW) return '#E1F7ED';
+  if (action === CLAIM_BASE_REWARD) return '#FFE6F8';
+  if (action === CLAIM_BOOST_REWARD) return '##E9EDFA';
+  return '#E0EFFA';
+};
+
+export const renderColor = action => {
+  if (action === null) return '#107DEF';
+  if (action === SUPPLY) return '#107DEF';
+  if (action === REDEEM) return '#00B2D9';
+  if (action === BORROW) return '#F84960';
+  if (action === REPAY_BORROW) return '#F8A749';
+  if (action === LIQUIDATE_BORROW) return '#A64EDB';
+  if (action === BOOST) return '#3DC903';
+  if (action === DEPOSIT) return '#EFC500';
+  if (action === UN_BOOST) return '#00D1D1';
+  if (action === WITHDRAW) return '#06C270';
+  if (action === CLAIM_BASE_REWARD) return '#DB4EB4';
+  if (action === CLAIM_BOOST_REWARD) return '#2F55D1';
+  return '#107DEF';
+};
+
 export const formatTxn = records =>
   records?.map(record => ({
     ...record,
     method: record.action.replace(/([A-Z])/g, ' $1').trim() || '-',
     age: formatAge(record.blockTimestamp),
     value: formatNumber(record.amount, record.decimal),
-    img: renderImg(record?.symbol)
+    img: renderImg(record?.symbol),
+    iconMethod: renderIconMethod(record.action)
   }));
