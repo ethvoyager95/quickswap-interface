@@ -532,22 +532,22 @@ function DialogUnStake({
                           <SCircle />
                           Before unstaking
                         </STextBox>
-                        <SValueBox>{beforeUnStake}%</SValueBox>
+                        <SValueBox>
+                          {beforeUnStake === PERCENT
+                            ? '-'
+                            : `${beforeUnStake}%`}
+                        </SValueBox>
                       </SRowBox>
                       <SRowBox>
                         <STextBox>
                           <SCircle />
                           After unstaking
                         </STextBox>
-                        {afterUnStake && afterUnStake <= 0 ? (
-                          <>
-                            <SValueBox>-</SValueBox>
-                          </>
-                        ) : (
-                          <>
-                            <SValueBox>{afterUnStake}%</SValueBox>
-                          </>
-                        )}
+                        <SValueBox>
+                          {afterUnStake === PERCENT || afterUnStake === 0
+                            ? '-'
+                            : `${afterUnStake}%`}
+                        </SValueBox>
                       </SRowBox>
                     </SUl>
                   </Col>

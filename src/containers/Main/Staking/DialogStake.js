@@ -583,7 +583,9 @@ function DialogStake({
                           <SCircle />
                           Before staking
                         </STextBox>
-                        <SValueBox>{beforeStake}%</SValueBox>
+                        <SValueBox>
+                          {beforeStake === PERCENT ? '-' : `${beforeStake}%`}
+                        </SValueBox>
                       </SRowBox>
 
                       <SRowBox>
@@ -591,7 +593,9 @@ function DialogStake({
                           <SCircle />
                           After staking
                         </STextBox>
-                        <SValueBox>{afterStake}%</SValueBox>
+                        <SValueBox>
+                          {afterStake === PERCENT ? '-' : `${afterStake}%`}
+                        </SValueBox>
                       </SRowBox>
                     </SUl>
                   </Col>
