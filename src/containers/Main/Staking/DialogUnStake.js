@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { Row, Col, Switch } from 'antd';
 import _ from 'lodash';
 import IconClose from '../../../assets/img/close.svg';
-import { MAX_STAKE_NFT, LIST_BLOCK_VALUE } from './helper';
+import { MAX_STAKE_NFT, LIST_BLOCK_VALUE, ZERO } from './helper';
 
 const useStyles = makeStyles({
   root: {
@@ -531,7 +531,7 @@ function DialogUnStake({
                           Before unstaking
                         </STextBox>
                         <SValueBox>
-                          {beforeUnStake === PERCENT
+                          {beforeUnStake === PERCENT || beforeUnStake === ZERO
                             ? '-'
                             : `${beforeUnStake}%`}
                         </SValueBox>
@@ -542,7 +542,7 @@ function DialogUnStake({
                           After unstaking
                         </STextBox>
                         <SValueBox>
-                          {afterUnStake === PERCENT || afterUnStake === 0
+                          {afterUnStake === PERCENT || afterUnStake === ZERO
                             ? '-'
                             : `${afterUnStake}%`}
                         </SValueBox>
