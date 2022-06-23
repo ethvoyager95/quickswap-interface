@@ -245,7 +245,6 @@ function CountDownClaim({
       }
     };
   }, [times, countdownTime]);
-
   return (
     <>
       {expiryTime !== false ? (
@@ -312,7 +311,7 @@ function CountDownClaim({
                       disabled={valUnStake === 0 || valUnStake === ''}
                       onClick={handleUnStake}
                     >
-                      Untake
+                      Unstake
                     </SBtnUnstake>
                     <Tooltip
                       placement="right"
