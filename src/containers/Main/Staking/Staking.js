@@ -420,6 +420,7 @@ function Staking({ settings, setSetting }) {
     let tokenUri = null;
     let imgFake = null;
     let getUrlImg = null;
+    let nameNFT = null;
     // eslint-disable-next-line no-unused-expressions
     getUrlImg =
       process.env.REACT_APP_ENV === 'prod' ? 'baseTokenURI' : 'notRevealedUri';
@@ -443,43 +444,75 @@ function Staking({ settings, setSetting }) {
             // console.log(err);
           });
       }
+      await methods
+        .call(nFtContract.methods.name, [])
+        .then(res => {
+          if (res) {
+            nameNFT = res;
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
       setTimeout(() => {
-        axiosInstanceMoralis
-          .get(
-            `/${address}/nft?chain=` + `${CHAIN_MORALIS}` + `&format=decimal`
-          )
-          .then(res => {
-            const data = res.data.result;
-            if (data && data.length > 0) {
-              const dataMyContract = _.filter(data, item => {
-                return (
-                  item.token_address === constants.NFT_ADDRESS.toLowerCase()
-                );
+        axiosInstance.get(`token?user_address=${address}`).then(res => {
+          const result = res?.data?.data?.rows;
+          if (result && result.length > 0) {
+            const dataConvert = _.cloneDeep(result);
+            if (dataConvert.length > 0) {
+              // eslint-disable-next-line array-callback-return
+              dataConvert.map(item => {
+                item.active = false;
+                item.name = `${nameNFT}${' #'}${item.tokenId}`;
+                item.id = +item.tokenId;
+                item.img = `${constants.URL_LOGO_NFT}/${item.tokenId}.png`;
+                item.token_id = item.tokenId;
               });
-              // eslint-disable-next-line no-shadow
-              const dataConvert = _.cloneDeep(dataMyContract);
-              if (dataConvert.length > 0) {
-                // eslint-disable-next-line array-callback-return
-                dataConvert.map(item => {
-                  item.active = false;
-                  item.name = `${item.name}${' #'}${item.token_id}`;
-                  item.id = +item.token_id;
-                  item.metadata = JSON.parse(item.metadata);
-                  if (item?.metadata?.image) {
-                    item.img = item?.metadata?.image;
-                  }
-                  item.img = `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
-                });
-              }
               const dataStakeClone = _.cloneDeep(dataConvert);
               setDataNFT(dataStakeClone);
-              setIsLoading(false);
               setTimeDelay(0);
-            } else {
-              setDataNFT([]);
             }
             setIsLoading(false);
-          });
+          } else {
+            setDataNFT([]);
+          }
+        });
+        // axiosInstanceMoralis
+        //   .get(
+        //     `/${address}/nft?chain=` + `${CHAIN_MORALIS}` + `&format=decimal`
+        //   )
+        //   .then(res => {
+        //     const data = res.data.result;
+        //     if (data && data.length > 0) {
+        //       const dataMyContract = _.filter(data, item => {
+        //         return (
+        //           item.token_address === constants.NFT_ADDRESS.toLowerCase()
+        //         );
+        //       });
+        //       // eslint-disable-next-line no-shadow
+        //       const dataConvert = _.cloneDeep(dataMyContract);
+        //       if (dataConvert.length > 0) {
+        //         // eslint-disable-next-line array-callback-return
+        //         dataConvert.map(item => {
+        //           item.active = false;
+        //           item.name = `${item.name}${' #'}${item.token_id}`;
+        //           item.id = +item.token_id;
+        //           item.metadata = JSON.parse(item.metadata);
+        //           if (item?.metadata?.image) {
+        //             item.img = item?.metadata?.image;
+        //           }
+        //           item.img = `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
+        //         });
+        //       }
+        //       const dataStakeClone = _.cloneDeep(dataConvert);
+        //       setDataNFT(dataStakeClone);
+        //       setIsLoading(false);
+        //       setTimeDelay(0);
+        //     } else {
+        //       setDataNFT([]);
+        //     }
+        //     setIsLoading(false);
+        //   });
       }, timeDelay);
     } catch (err) {
       setIsLoading(false);
@@ -495,7 +528,18 @@ function Staking({ settings, setSetting }) {
     }
     setIsLoading(true);
     let newArray = null;
+    let nameNFT = null;
     try {
+      await methods
+        .call(nFtContract.methods.name, [])
+        .then(res => {
+          if (res) {
+            nameNFT = res;
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
       await methods
         .call(farmingContract.methods.getUserInfo, [0, address])
         .then(res => {
@@ -506,7 +550,7 @@ function Staking({ settings, setSetting }) {
             newArray = dataCovert?.map(item => {
               // eslint-disable-next-line no-return-assign
               return (item = {
-                name: 'AnnexIronWolf ' + `#${item}`,
+                name: `${nameNFT} ` + `#${item}`,
                 token_id: item,
                 id: +item,
                 active: false,
@@ -1879,26 +1923,40 @@ function Staking({ settings, setSetting }) {
                                         </>
                                       ) : (
                                         <>
-                                          <ST.SBtnUnStakeStartNotBorder>
-                                            <ST.SSUnTake
-                                              className="mg-10"
-                                              disabled={
-                                                isShowCountDownUnStake ||
-                                                !valUnStake
-                                              }
-                                              onClick={handleUnStake}
-                                            >
-                                              Unstake
-                                            </ST.SSUnTake>
-                                            <Tooltip
-                                              placement="right"
-                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                            >
-                                              <ST.SQuestion
-                                                src={IconQuestion}
-                                              />
-                                            </Tooltip>
-                                          </ST.SBtnUnStakeStartNotBorder>
+                                          {isAprroveVstrk ? (
+                                            <ST.SBtnUnStakeStartNotBorder>
+                                              <ST.SSUnTake
+                                                className="mg-10"
+                                                disabled={
+                                                  isShowCountDownUnStake ||
+                                                  !valUnStake
+                                                }
+                                                onClick={handleUnStake}
+                                              >
+                                                Unstake
+                                              </ST.SSUnTake>
+                                              <Tooltip
+                                                placement="right"
+                                                title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                              >
+                                                <ST.SQuestion
+                                                  src={IconQuestion}
+                                                />
+                                              </Tooltip>
+                                            </ST.SBtnUnStakeStartNotBorder>
+                                          ) : (
+                                            <>
+                                              {!isLoading && (
+                                                <ST.SBtnUnStakeStartNotBorder>
+                                                  <ST.SBtnStake
+                                                    onClick={handleApproveVstrk}
+                                                  >
+                                                    Approve Staking
+                                                  </ST.SBtnStake>
+                                                </ST.SBtnUnStakeStartNotBorder>
+                                              )}
+                                            </>
+                                          )}
                                         </>
                                       )}
                                     </Col>

@@ -414,7 +414,7 @@ function DialogStake({
       }
     } else {
       // eslint-disable-next-line no-lonely-if
-      if (val === '' || (val && !_.includes(listIds, val))) {
+      if (val === '' || (val && !_.includes(listIds, Number(val)))) {
         setBeforeStaking(itemStaked * PERCENT);
         setAfterStake(itemStaked * PERCENT);
       } else {
@@ -481,7 +481,7 @@ function DialogStake({
     } else {
       const listIds = _.map(listStake, 'token_id');
       const TOTAL_STAKE = 1 + itemStaked;
-      if (val && !_.includes(listIds, val)) {
+      if (val && !_.includes(listIds, Number(val))) {
         setMessErr('Invalid tokenID');
         setDisabledBtn(true);
       } else if (val && itemStaked > 0 && TOTAL_STAKE > MAX_STAKE_NFT) {

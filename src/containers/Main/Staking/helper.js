@@ -32,7 +32,7 @@ export const DECIMALS_LP = 18;
 export const MIXIMUM_IPUT = 1e-5;
 export const MINIMUM_VALUE = 0.0000000001;
 export const MINIMUM_VALUE_FORMAT = 0.00001;
-export const TIME_UPDATE_MORALIS_API = 15000;
+export const TIME_UPDATE_MORALIS_API = 20000;
 export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)
