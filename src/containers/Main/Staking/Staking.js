@@ -1443,6 +1443,8 @@ function Staking({ settings, setSetting }) {
           mess: '',
           show: false
         });
+        setIsStakeNFT(false);
+        setIsUnStakeNFT(false);
       });
     }
   }, [window.ethereum, address]);
