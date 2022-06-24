@@ -452,19 +452,21 @@ function DialogStake({
         return;
       }
       if (LIST_STAKE < MAX_STAKE_NFT - itemStaked && NUMBER_VAL > LIST_STAKE) {
-        setMessErr(`Invalid number. You can stake only ${LIST_STAKE} NFTs`);
+        // setMessErr(`Invalid number. You can stake only ${LIST_STAKE} NFTs`);
         setDisabledBtn(true);
+        setValue(LIST_STAKE);
         return;
       }
       if (
         LIST_STAKE >= MAX_STAKE_NFT - itemStaked &&
         NUMBER_VAL > MAX_STAKE_NFT - itemStaked
       ) {
-        setMessErr(
-          `Invalid number. You can stake only ${MAX_STAKE_NFT -
-            itemStaked} NFTs`
-        );
+        // setMessErr(
+        //   `Invalid number. You can stake only ${MAX_STAKE_NFT -
+        //     itemStaked} NFTs`
+        // );
         setDisabledBtn(true);
+        setValue(MAX_STAKE_NFT - itemStaked);
         return;
       }
       if (!val) {
@@ -498,12 +500,6 @@ function DialogStake({
     setCurrentNFTAmount(currentNFT);
     setValue(valueNFTStake);
   }, [valueNFTStake, isStakeNFT, currentNFT, address]);
-  useEffect(() => {
-    if (checked) {
-      const value_staked = MAX_STAKE_NFT - itemStaked;
-      setValue(value_staked);
-    }
-  }, [checked, address, isStakeNFT, listStake]);
 
   return (
     <>
