@@ -139,6 +139,10 @@ function Staking({ settings, setSetting }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const [isLoadingUnStake, setIsLoadingUnStake] = useState(false);
+  const [isDisableStakeNFTDialog, setIsDisableStakeNFTDialog] = useState(false);
+  const [isDisableUnStakeNFTDialog, setIsDisableUnStakeNFTDialog] = useState(
+    false
+  );
   const [isApproveLP, setIsApproveLP] = useState(true);
   const [isApproveNFT, setIsApproveNFT] = useState(false);
   const [isAprroveVstrk, setIsAprroveVstrk] = useState(false);
@@ -1257,6 +1261,7 @@ function Staking({ settings, setSetting }) {
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsStakeNFT(false);
+        setIsDisableStakeNFTDialog(true);
         setMessConfirm(
           'Do not close the popup while the transaction is being executed'
         );
@@ -1278,6 +1283,7 @@ function Staking({ settings, setSetting }) {
               // begin time out
               setTimeout(() => {
                 setiIsConfirm(false);
+                setIsDisableStakeNFTDialog(false);
                 setIsSuccess(true);
                 setTextSuccess('Stake NFT successfully');
                 setMessConfirm('');
@@ -1288,12 +1294,14 @@ function Staking({ settings, setSetting }) {
             if (err.code === 4001 || err.message.includes('User denied')) {
               setIsShowCancel(true);
               setiIsConfirm(false);
+              setIsDisableStakeNFTDialog(false);
               setTextErr('Decline transaction');
               setValueNFTStake('');
               setMessConfirm('');
             } else {
               setIsShowCancel(true);
               setiIsConfirm(false);
+              setIsDisableStakeNFTDialog(false);
               setTextErr('Something went wrong!');
               setValueNFTStake('');
               setMessConfirm('');
@@ -1317,6 +1325,7 @@ function Staking({ settings, setSetting }) {
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
+        setIsDisableUnStakeNFTDialog(true);
         setMessConfirm(
           'Do not close the popup while the transaction is being executed'
         );
@@ -1336,6 +1345,7 @@ function Staking({ settings, setSetting }) {
               setItemStaked([]);
               setTimeout(() => {
                 setiIsConfirm(false);
+                setIsDisableUnStakeNFTDialog(false);
                 setTextSuccess('Unstake NFT successfully');
                 setMessConfirm('');
 
@@ -1348,12 +1358,14 @@ function Staking({ settings, setSetting }) {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
+              setIsDisableUnStakeNFTDialog(false);
               setTextErr('Decline transaction');
               setMessConfirm('');
             } else {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
+              setIsDisableUnStakeNFTDialog(false);
               setTextErr('Something went wrong!');
               setMessConfirm('');
             }
@@ -2378,6 +2390,7 @@ function Staking({ settings, setSetting }) {
         currentNFT={countNFT}
         handleStakeDialog={handleStakeDialog}
         address={address}
+        isDisableStakeNFTDialog={isDisableStakeNFTDialog}
       />
 
       {/* UnStake */}
@@ -2390,6 +2403,7 @@ function Staking({ settings, setSetting }) {
         currentNFT={countNFT}
         handleUnStakeDialog={handleUnStakeDialog}
         address={address}
+        isDisableUnStakeNFTDialog={isDisableUnStakeNFTDialog}
       />
       {/* err */}
       <DialogErr isShow={isShowCancel} close={handleCloseErr} text={textErr} />

@@ -332,7 +332,8 @@ function DialogUnStake({
   valueNFTUnStake,
   currentNFT,
   handleUnStakeDialog,
-  address
+  address,
+  isDisableUnStakeNFTDialog
 }) {
   const [val, setValue] = useState(valueNFTUnStake);
   const [messErr, setMessErr] = useState();
@@ -456,6 +457,9 @@ function DialogUnStake({
       setValue(list.length);
     }
   }, [checked, address, isUnStakeNFT, list]);
+  useEffect(() => {
+    setDisabledBtn(isDisableUnStakeNFTDialog);
+  }, [isDisableUnStakeNFTDialog, val, checked]);
   const classes = useStyles();
   return (
     <>
@@ -589,7 +593,8 @@ DialogUnStake.propTypes = {
   valueNFTUnStake: PropTypes.string,
   currentNFT: PropTypes.number,
   handleUnStakeDialog: PropTypes.func,
-  address: PropTypes.string
+  address: PropTypes.string,
+  isDisableUnStakeNFTDialog: PropTypes.bool
 };
 
 DialogUnStake.defaultProps = {
@@ -600,7 +605,8 @@ DialogUnStake.defaultProps = {
   valueNFTUnStake: '',
   currentNFT: 0,
   handleUnStakeDialog: func,
-  address: ''
+  address: '',
+  isDisableUnStakeNFTDialog: false
 };
 
 const mapStateToProps = ({ account }) => ({
