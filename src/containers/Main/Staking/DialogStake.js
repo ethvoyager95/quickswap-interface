@@ -394,7 +394,7 @@ function DialogStake({
         setDisableStake(false);
       }
     },
-    [listStake, address]
+    [listStake, address, isStakeNFT]
   );
   useEffect(() => {
     setItemSelect(itemStaking.length);
@@ -454,7 +454,6 @@ function DialogStake({
       if (LIST_STAKE < MAX_STAKE_NFT - itemStaked && NUMBER_VAL > LIST_STAKE) {
         // setMessErr(`Invalid number. You can stake only ${LIST_STAKE} NFTs`);
         setDisabledBtn(true);
-        setValue(LIST_STAKE);
         return;
       }
       if (
@@ -466,7 +465,6 @@ function DialogStake({
         //     itemStaked} NFTs`
         // );
         setDisabledBtn(true);
-        setValue(MAX_STAKE_NFT - itemStaked);
         return;
       }
       if (!val) {
@@ -494,13 +492,38 @@ function DialogStake({
         setDisabledBtn(false);
       }
     }
-  }, [val, isStakeNFT, listStake, checked, address]);
+  }, [val, isStakeNFT, listStake, checked, address, listUnStake]);
 
   useEffect(() => {
     setCurrentNFTAmount(currentNFT);
     setValue(valueNFTStake);
   }, [valueNFTStake, isStakeNFT, currentNFT, address]);
-
+  // set value staked
+  useEffect(() => {
+    if (checked) {
+      const LIST_STAKE = listStake.length;
+      const NUMBER_VAL = Number(val);
+      if (LIST_STAKE < MAX_STAKE_NFT - itemStaked && NUMBER_VAL > LIST_STAKE) {
+        setValue(LIST_STAKE);
+        return;
+      }
+      if (LIST_STAKE < MAX_STAKE_NFT - itemStaked) {
+        setValue(LIST_STAKE);
+        return;
+      }
+      if (LIST_STAKE >= MAX_STAKE_NFT - itemStaked) {
+        setValue(MAX_STAKE_NFT - itemStaked);
+        return;
+      }
+      if (
+        LIST_STAKE >= MAX_STAKE_NFT - itemStaked &&
+        NUMBER_VAL > MAX_STAKE_NFT - itemStaked
+      ) {
+        setValue(MAX_STAKE_NFT - itemStaked);
+        return;
+      }
+    }
+  }, [checked, address, isStakeNFT, listStake, val, itemStaked]);
   return (
     <>
       <React.Fragment>
