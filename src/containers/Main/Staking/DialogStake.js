@@ -504,6 +504,7 @@ function DialogStake({
       setValue(value_staked);
     }
   }, [checked, address, isStakeNFT, listStake]);
+
   return (
     <>
       <React.Fragment>
