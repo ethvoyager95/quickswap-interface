@@ -408,7 +408,7 @@ function Staking({ settings, setSetting }) {
       setUserInfo({ ...objUser });
     }
   };
-  // get data stake
+  // get data NFT stake
   useMemo(async () => {
     if (!address) {
       setIsLoading(false);
@@ -416,33 +416,8 @@ function Staking({ settings, setSetting }) {
       return;
     }
     setIsLoading(true);
-    let tokenUri = null;
-    let imgFake = null;
-    let getUrlImg = null;
     let nameNFT = null;
-    // eslint-disable-next-line no-unused-expressions
-    getUrlImg =
-      process.env.REACT_APP_ENV === 'prod' ? 'baseTokenURI' : 'notRevealedUri';
     try {
-      await methods
-        .call(nFtContract.methods.getUrlImg, [])
-        .then(res => {
-          tokenUri = res;
-        })
-        .catch(err => {});
-      if (tokenUri) {
-        await axiosInstance
-          .get(`${tokenUri}`)
-          .then(res => {
-            if (res) {
-              imgFake = res?.data.image ?? '';
-              setFakeImgNFT(imgFake);
-            }
-          })
-          .catch(err => {
-            // console.log(err);
-          });
-      }
       await methods
         .call(nFtContract.methods.name, [])
         .then(res => {
@@ -498,7 +473,7 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
   }, [address, window.ethereum, txhash, timeDelay, isSuccess]);
-  // get data staked
+  // get data NFT staked
   useMemo(async () => {
     if (!address) {
       setIsLoading(false);
