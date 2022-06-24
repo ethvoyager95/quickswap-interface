@@ -88,7 +88,7 @@ const MainMenu = styled.div`
     transition: all 0.5s ease;
     background-color: #090d27;
     padding-top: 20px;
-    z-index: 1;
+    z-index: 10;
   }
 
   a {
@@ -796,6 +796,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           activeClassName="active"
         >
           <Label>Market</Label>
+        </NavLink>
+        <NavLink
+          className="flex flex-start align-center"
+          to="/history"
+          activeClassName="active"
+        >
+          <Label>History</Label>
         </NavLink>
         {process.env.REACT_APP_ENV === 'dev' && (
           <NavLink

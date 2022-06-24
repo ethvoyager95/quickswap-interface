@@ -1,0 +1,119 @@
+/* override */
+.slick-arrow.slick-prev,
+.slick-arrow.slick-next {
+  &::after {
+    content: none !important;
+  }
+  &::before {
+    content: none !important;
+  }
+}
+.slick-track {
+  margin: auto !important;
+
+  img {
+    margin: auto !important;
+    width: 100%;
+  }
+}
+button:focus {
+  outline: none !important;
+}
+
+.slick-next,
+.slick-prev {
+  opacity: 1 !important;
+}
+iframe {
+  display: none !important;
+}
+@media only screen and (max-width: 768px) {
+  .slick-prev {
+    left: 0px;
+    z-index: 999;
+    background-image: url('../img/arrow-prev-mobile.svg');
+  }
+  .slick-next {
+    right: 0px;
+    z-index: 999;
+    background-image: url('../img/arrow-next-mobile.svg');
+  }
+}
+.ant-tooltip-inner {
+  background-color: #fff !important;
+  border-radius: 2px;
+  color: #0b0f23 !important;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19px;
+  padding: 10px 15px !important;
+}
+// overide switch antd
+.ant-tooltip-arrow::before {
+  background-color: #fff !important;
+}
+button.ant-switch {
+  background: #dfdfdf;
+}
+.ant-switch::after {
+  background: #b8b8b8;
+}
+
+.ant-switch::after {
+  background: #b8b8b8 !important;
+}
+.ant-switch-checked::after {
+  background: #06c270 !important;
+}
+button.ant-switch.ant-switch-checked:hover {
+  background: #dfdfdf !important;
+}
+button.ant-switch:hover {
+  background: #dfdfdf !important;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.margin-0 {
+  margin-right: 0px !important;
+}
+.margin-0 button {
+  margin-right: 0px !important;
+}
+.slick-disabled {
+  display: none;
+}
+.slick-disabled {
+  opacity: 0;
+  pointer-events: none;
+  display: none !important;
+}
+.slick-arrow.slick-next {
+  background-image: url('../img/arrow-next.svg');
+  background-position: center;
+  border: 1px solid #107def;
+  border-radius: 50%;
+  padding: 15px;
+  z-index: 99;
+}
+.slick-arrow.slick-prev {
+  background-image: url('../img/arrow-prev.svg');
+  background-position: center;
+  border: 1px solid #107def;
+  border-radius: 50%;
+  padding: 15px;
+  z-index: 99;
+}
+.mg-30 {
+  margin-top: 30px !important;
+}
+
+.mg-10 {
+  margin-top: 10px !important;
+  @media only screen and (max-width: 768px) {
+    margin-top: 0 !important;
+  }
+}
