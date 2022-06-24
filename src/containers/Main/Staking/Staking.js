@@ -18,7 +18,8 @@ import MainLayout from 'containers/Layout/MainLayout';
 import { Row, Col, Tooltip } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
 import BigNumber from 'bignumber.js';
-import _, { isEmpty } from 'lodash';
+import _ from 'lodash';
+import axios from 'axios';
 import * as constants from 'utilities/constants';
 // import { checkIsValidNetwork } from 'utilities/common';
 import {
@@ -43,11 +44,10 @@ import {
   UNSTAKE,
   CLAIMBASE,
   CLAIMBOOST,
-  UNSTAKENFT,
-  CHAIN_MORALIS
+  UNSTAKENFT
 } from './helper';
 // eslint-disable-next-line import/named
-import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
+import { axiosInstance } from '../../../utilities/axios';
 import '../../../assets/styles/slick.scss';
 import * as ST from '../../../assets/styles/staking.js';
 // eslint-disable-next-line import/no-duplicates
@@ -77,8 +77,7 @@ import IConNext from '../../../assets/img/arrow-next.svg';
 import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
-import LogoNFT from '../../../assets/img/nft_logo.avif';
-
+import { THE_GRAPH, HEADER } from '../../../utilities/constants';
 // eslint-disable-next-line import/order
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
@@ -455,28 +454,68 @@ function Staking({ settings, setSetting }) {
           throw err;
         });
       setTimeout(() => {
-        axiosInstance.get(`token?user_address=${address}`).then(res => {
-          const result = res?.data?.data?.rows;
-          if (result && result.length > 0) {
-            const dataConvert = _.cloneDeep(result);
-            if (dataConvert.length > 0) {
-              // eslint-disable-next-line array-callback-return
-              dataConvert.map(item => {
-                item.active = false;
-                item.name = `${nameNFT}${' #'}${item.tokenId}`;
-                item.id = +item.tokenId;
-                item.img = `${constants.URL_LOGO_NFT}/${item.tokenId}.png`;
-                item.token_id = item.tokenId;
-              });
-              const dataStakeClone = _.cloneDeep(dataConvert);
-              setDataNFT(dataStakeClone);
-              setTimeDelay(0);
+        axios
+          .post(
+            THE_GRAPH,
+            {
+              query: `{
+                  tokens(first: 1000, orderBy: id, orderDirection:desc , where:{user:"${address?.toLowerCase()}"})  {
+                    id
+                    tokenId
+                    user
+                  }
+                }`
+            },
+            {
+              headers: HEADER
             }
-            setIsLoading(false);
-          } else {
-            setDataNFT([]);
-          }
-        });
+          )
+          .then(res => {
+            const result = res?.data?.data?.tokens;
+            console.log(result, 'rs');
+            if (result && result.length > 0) {
+              const dataConvert = _.cloneDeep(result);
+              if (dataConvert.length > 0) {
+                // eslint-disable-next-line array-callback-return
+                dataConvert.map(item => {
+                  item.active = false;
+                  item.name = `${nameNFT}${' #'}${item.id}`;
+                  item.id = +item.id;
+                  item.img = `${constants.URL_LOGO_NFT}/${item.id}.png`;
+                  item.token_id = item.id;
+                });
+                const dataStakeClone = _.cloneDeep(dataConvert);
+                setDataNFT(dataStakeClone);
+                setTimeDelay(0);
+              }
+              setIsLoading(false);
+            } else {
+              setDataNFT([]);
+            }
+          });
+        // axiosInstance.get(`token?user_address=${address}`).then(res => {
+        //   const result = res?.data?.data?.rows;
+        //   if (result && result.length > 0) {
+        //     const dataConvert = _.cloneDeep(result);
+        //     if (dataConvert.length > 0) {
+        //       // eslint-disable-next-line array-callback-return
+        //       dataConvert.map(item => {
+        //         item.active = false;
+        //         item.name = `${nameNFT}${' #'}${item.tokenId}`;
+        //         item.id = +item.tokenId;
+        //         item.img = `${constants.URL_LOGO_NFT}/${item.tokenId}.png`;
+        //         item.token_id = item.tokenId;
+        //       });
+        //       const dataStakeClone = _.cloneDeep(dataConvert);
+        //       setDataNFT(dataStakeClone);
+        //       setTimeDelay(0);
+        //     }
+        //     setIsLoading(false);
+        //   } else {
+        //     setDataNFT([]);
+        //   }
+        // });
+
         // axiosInstanceMoralis
         //   .get(
         //     `/${address}/nft?chain=` + `${CHAIN_MORALIS}` + `&format=decimal`
