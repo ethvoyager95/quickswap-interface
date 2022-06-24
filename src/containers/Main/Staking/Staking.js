@@ -472,7 +472,6 @@ function Staking({ settings, setSetting }) {
           )
           .then(res => {
             const result = res?.data?.data?.tokens;
-            console.log(result, 'rs');
             if (result && result.length > 0) {
               const dataConvert = _.cloneDeep(result);
               if (dataConvert.length > 0) {
@@ -493,65 +492,6 @@ function Staking({ settings, setSetting }) {
               setDataNFT([]);
             }
           });
-        // axiosInstance.get(`token?user_address=${address}`).then(res => {
-        //   const result = res?.data?.data?.rows;
-        //   if (result && result.length > 0) {
-        //     const dataConvert = _.cloneDeep(result);
-        //     if (dataConvert.length > 0) {
-        //       // eslint-disable-next-line array-callback-return
-        //       dataConvert.map(item => {
-        //         item.active = false;
-        //         item.name = `${nameNFT}${' #'}${item.tokenId}`;
-        //         item.id = +item.tokenId;
-        //         item.img = `${constants.URL_LOGO_NFT}/${item.tokenId}.png`;
-        //         item.token_id = item.tokenId;
-        //       });
-        //       const dataStakeClone = _.cloneDeep(dataConvert);
-        //       setDataNFT(dataStakeClone);
-        //       setTimeDelay(0);
-        //     }
-        //     setIsLoading(false);
-        //   } else {
-        //     setDataNFT([]);
-        //   }
-        // });
-
-        // axiosInstanceMoralis
-        //   .get(
-        //     `/${address}/nft?chain=` + `${CHAIN_MORALIS}` + `&format=decimal`
-        //   )
-        //   .then(res => {
-        //     const data = res.data.result;
-        //     if (data && data.length > 0) {
-        //       const dataMyContract = _.filter(data, item => {
-        //         return (
-        //           item.token_address === constants.NFT_ADDRESS.toLowerCase()
-        //         );
-        //       });
-        //       // eslint-disable-next-line no-shadow
-        //       const dataConvert = _.cloneDeep(dataMyContract);
-        //       if (dataConvert.length > 0) {
-        //         // eslint-disable-next-line array-callback-return
-        //         dataConvert.map(item => {
-        //           item.active = false;
-        //           item.name = `${item.name}${' #'}${item.token_id}`;
-        //           item.id = +item.token_id;
-        //           item.metadata = JSON.parse(item.metadata);
-        //           if (item?.metadata?.image) {
-        //             item.img = item?.metadata?.image;
-        //           }
-        //           item.img = `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
-        //         });
-        //       }
-        //       const dataStakeClone = _.cloneDeep(dataConvert);
-        //       setDataNFT(dataStakeClone);
-        //       setIsLoading(false);
-        //       setTimeDelay(0);
-        //     } else {
-        //       setDataNFT([]);
-        //     }
-        //     setIsLoading(false);
-        //   });
       }, timeDelay);
     } catch (err) {
       setIsLoading(false);
