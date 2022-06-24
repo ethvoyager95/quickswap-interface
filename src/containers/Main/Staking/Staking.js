@@ -2164,7 +2164,8 @@ function Staking({ settings, setSetting }) {
                               disabled={
                                 itemStaking.length === MAX_STAKE_NFT ||
                                 dataNFT.length === 0 ||
-                                userInfo.amountNumber === 0
+                                userInfo.amountNumber === 0 ||
+                                isDisableStakeNFTDialog
                               }
                               onClick={handleStakeNFT}
                             >
@@ -2284,7 +2285,10 @@ function Staking({ settings, setSetting }) {
                             ) : (
                               <>
                                 <ST.SSUnSTakedWeb
-                                  disabled={dataNFTUnState.length === 0}
+                                  disabled={
+                                    dataNFTUnState.length === 0 ||
+                                    isDisableUnStakeNFTDialog
+                                  }
                                   onClick={handleUnStakeNFT}
                                 >
                                   Unstake
@@ -2390,7 +2394,6 @@ function Staking({ settings, setSetting }) {
         currentNFT={countNFT}
         handleStakeDialog={handleStakeDialog}
         address={address}
-        isDisableStakeNFTDialog={isDisableStakeNFTDialog}
       />
 
       {/* UnStake */}
@@ -2403,7 +2406,6 @@ function Staking({ settings, setSetting }) {
         currentNFT={countNFT}
         handleUnStakeDialog={handleUnStakeDialog}
         address={address}
-        isDisableUnStakeNFTDialog={isDisableUnStakeNFTDialog}
       />
       {/* err */}
       <DialogErr isShow={isShowCancel} close={handleCloseErr} text={textErr} />
