@@ -192,7 +192,6 @@ function CountDownClaim({
   });
 
   const countdownTimer = () => {
-    setIsLoading(false);
     if (!address) {
       setCountdownTime({
         countdownDays: '',
@@ -221,8 +220,9 @@ function CountDownClaim({
       countdownMinutes: totalMinutes ?? '',
       countdownSeconds: totalSeconds ?? ''
     };
+    // setIsLoading(true);
+
     setCountdownTime(runningCountdownTime);
-    setIsLoading(true);
   };
   useEffect(() => {
     if (times <= new Date().getTime()) {
@@ -238,12 +238,13 @@ function CountDownClaim({
     }
     return function cleanup() {
       abortController.abort();
+      setIsLoading(false);
       if (updateTimer) {
         clearInterval(updateTimer);
+        setIsLoading(true);
       }
     };
   }, [times, countdownTime]);
-
   return (
     <>
       {expiryTime !== false ? (
@@ -310,7 +311,7 @@ function CountDownClaim({
                       disabled={valUnStake === 0 || valUnStake === ''}
                       onClick={handleUnStake}
                     >
-                      Untake
+                      Unstake
                     </SBtnUnstake>
                     <Tooltip
                       placement="right"
@@ -333,12 +334,7 @@ function CountDownClaim({
           )}
           {type === CLAIMBASE && (
             <SUntake>
-              <SClaim
-                // disabled={!isClaimBaseReward}
-                onClick={handleClainBaseReward}
-              >
-                Claim
-              </SClaim>
+              <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
               <Tooltip
                 placement="right"
                 title="You can only claim reward once daily"
@@ -349,12 +345,7 @@ function CountDownClaim({
           )}
           {type === CLAIMBOOST && (
             <SUntake>
-              <SClaim
-                // disabled={!isClaimBootReward}
-                onClick={handleClainBootReward}
-              >
-                Claim
-              </SClaim>
+              <SClaim onClick={handleClainBootReward}>Claim</SClaim>
               <Tooltip
                 placement="right"
                 title="You can only claim reward once monthly"

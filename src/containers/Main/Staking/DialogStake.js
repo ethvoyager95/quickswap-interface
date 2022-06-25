@@ -9,7 +9,7 @@ import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
 import { Row, Col, Switch } from 'antd';
 import _ from 'lodash';
-import { MAX_STAKE_NFT, LIST_BLOCK_VALUE } from './helper';
+import { MAX_STAKE_NFT, LIST_BLOCK_VALUE, ZERO } from './helper';
 import IconClose from '../../../assets/img/close.svg';
 
 const useStyles = makeStyles({
@@ -298,6 +298,9 @@ const SInput = styled.div`
       border: 1px solid #ccc !important;
       outline: none;
     }
+    &:disabled {
+      background: #c4c4c4;
+    }
   }
 
   @media only screen and (max-width: 768px) {
@@ -344,7 +347,9 @@ function DialogStake({
   const [itemStaked, setItemStaked] = useState(listUnStake?.length);
   const [beforeStake, setBeforeStaking] = useState(0);
   const [afterStake, setAfterStake] = useState(0);
+  const [lstAllIds, setLstAllIds] = useState([]);
   const [checked, setChecked] = useState(false);
+  const [disableStake, setDisableStake] = useState(false);
   const handleChangeValueStakeNft = useCallback(
     event => {
       if (event.isTrusted) {
@@ -361,13 +366,38 @@ function DialogStake({
     [val]
   );
 
-  const onChangeSwitch = check => {
-    setChecked(check);
-    setValue('');
-  };
+  const onChangeSwitch = useCallback(
+    // eslint-disable-next-line no-shadow
+    check => {
+      setChecked(check);
+      // check lst stake > max
+      if (check) {
+        setDisableStake(true);
+        const value_staked = MAX_STAKE_NFT - itemStaked;
+        setValue(value_staked);
+        // morethan 20 nft
+        if (listStake.length > MAX_STAKE_NFT) {
+          const lstStakeClone = _.cloneDeep(listStake);
+          const lstIdAlls = lstStakeClone?.splice(0, MAX_STAKE_NFT);
+          setLstAllIds(lstIdAlls);
+          return;
+        }
+        // lessthan 20 nft
+        if (listStake.length <= MAX_STAKE_NFT) {
+          const lstStakeClone = _.cloneDeep(listStake);
+          const lstIdAlls = lstStakeClone?.splice(0, value_staked);
+          setLstAllIds(lstIdAlls);
+          return;
+        }
+      } else {
+        setValue('');
+        setDisableStake(false);
+      }
+    },
+    [listStake, address, isStakeNFT]
+  );
   useEffect(() => {
     setItemSelect(itemStaking.length);
-    // setTotalSelect(listStake.length);
     setItemStaked(listUnStake.length);
     const listIds = _.map(listStake, 'token_id');
     if (checked) {
@@ -384,7 +414,7 @@ function DialogStake({
       }
     } else {
       // eslint-disable-next-line no-lonely-if
-      if (val === '' || (val && !_.includes(listIds, val))) {
+      if (val === '' || (val && !_.includes(listIds, Number(val)))) {
         setBeforeStaking(itemStaked * PERCENT);
         setAfterStake(itemStaked * PERCENT);
       } else {
@@ -408,6 +438,7 @@ function DialogStake({
       if (val === '') {
         setMessErr('');
         setDisabledBtn(true);
+        setValue(0);
       }
       if (
         itemStaked === 0 &&
@@ -421,7 +452,7 @@ function DialogStake({
         return;
       }
       if (LIST_STAKE < MAX_STAKE_NFT - itemStaked && NUMBER_VAL > LIST_STAKE) {
-        setMessErr(`Invalid number. You can stake only ${LIST_STAKE} NFTs`);
+        // setMessErr(`Invalid number. You can stake only ${LIST_STAKE} NFTs`);
         setDisabledBtn(true);
         return;
       }
@@ -429,10 +460,10 @@ function DialogStake({
         LIST_STAKE >= MAX_STAKE_NFT - itemStaked &&
         NUMBER_VAL > MAX_STAKE_NFT - itemStaked
       ) {
-        setMessErr(
-          `Invalid number. You can stake only ${MAX_STAKE_NFT -
-            itemStaked} NFTs`
-        );
+        // setMessErr(
+        //   `Invalid number. You can stake only ${MAX_STAKE_NFT -
+        //     itemStaked} NFTs`
+        // );
         setDisabledBtn(true);
         return;
       }
@@ -450,7 +481,7 @@ function DialogStake({
     } else {
       const listIds = _.map(listStake, 'token_id');
       const TOTAL_STAKE = 1 + itemStaked;
-      if (val && !_.includes(listIds, val)) {
+      if (val && !_.includes(listIds, Number(val))) {
         setMessErr('Invalid tokenID');
         setDisabledBtn(true);
       } else if (val && itemStaked > 0 && TOTAL_STAKE > MAX_STAKE_NFT) {
@@ -461,12 +492,38 @@ function DialogStake({
         setDisabledBtn(false);
       }
     }
-  }, [val, isStakeNFT, listStake, checked, address]);
+  }, [val, isStakeNFT, listStake, checked, address, listUnStake]);
 
   useEffect(() => {
     setCurrentNFTAmount(currentNFT);
     setValue(valueNFTStake);
   }, [valueNFTStake, isStakeNFT, currentNFT, address]);
+  // set value staked
+  useEffect(() => {
+    if (checked) {
+      const LIST_STAKE = listStake.length;
+      const NUMBER_VAL = Number(val);
+      if (LIST_STAKE < MAX_STAKE_NFT - itemStaked && NUMBER_VAL > LIST_STAKE) {
+        setValue(LIST_STAKE);
+        return;
+      }
+      if (LIST_STAKE < MAX_STAKE_NFT - itemStaked) {
+        setValue(LIST_STAKE);
+        return;
+      }
+      if (LIST_STAKE >= MAX_STAKE_NFT - itemStaked) {
+        setValue(MAX_STAKE_NFT - itemStaked);
+        return;
+      }
+      if (
+        LIST_STAKE >= MAX_STAKE_NFT - itemStaked &&
+        NUMBER_VAL > MAX_STAKE_NFT - itemStaked
+      ) {
+        setValue(MAX_STAKE_NFT - itemStaked);
+        return;
+      }
+    }
+  }, [checked, address, isStakeNFT, listStake, val, itemStaked]);
   return (
     <>
       <React.Fragment>
@@ -487,15 +544,13 @@ function DialogStake({
               <STitle>Stake NFT</STitle>
               <SRowText>
                 {checked ? (
-                  <STitleInput>
-                    Please input total number NFTs you want to stake
-                  </STitleInput>
+                  <STitleInput>Maximum NFTs to stake: {val}</STitleInput>
                 ) : (
                   <STitleInput>Please input your NFT ID</STitleInput>
                 )}
                 <STack>
                   <Switch checked={checked} onChange={onChangeSwitch} />
-                  Stack
+                  Stack All
                 </STack>
               </SRowText>
 
@@ -510,6 +565,7 @@ function DialogStake({
                   minLength={1}
                   maxLength={79}
                   placeholder="Enter a number"
+                  disabled={disableStake}
                   onChange={event => handleChangeValueStakeNft(event)}
                   onKeyPress={event => {
                     if (_.includes(LIST_BLOCK_VALUE, event.which)) {
@@ -545,7 +601,11 @@ function DialogStake({
                           <SCircle />
                           Before staking
                         </STextBox>
-                        <SValueBox>{beforeStake}%</SValueBox>
+                        <SValueBox>
+                          {beforeStake === PERCENT || beforeStake === ZERO
+                            ? '-'
+                            : `${beforeStake}%`}
+                        </SValueBox>
                       </SRowBox>
 
                       <SRowBox>
@@ -553,7 +613,11 @@ function DialogStake({
                           <SCircle />
                           After staking
                         </STextBox>
-                        <SValueBox>{afterStake}%</SValueBox>
+                        <SValueBox>
+                          {afterStake === PERCENT || afterStake === ZERO
+                            ? '-'
+                            : `${afterStake}%`}
+                        </SValueBox>
                       </SRowBox>
                     </SUl>
                   </Col>
@@ -567,7 +631,13 @@ function DialogStake({
                       <SBtnStake
                         disabled={disabledBtn}
                         onClick={event =>
-                          handleStakeDialog(val, event, checked, messErr)
+                          handleStakeDialog(
+                            val,
+                            event,
+                            checked,
+                            messErr,
+                            lstAllIds
+                          )
                         }
                       >
                         Stake

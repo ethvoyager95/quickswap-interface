@@ -18,7 +18,8 @@ import MainLayout from 'containers/Layout/MainLayout';
 import { Row, Col, Tooltip } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
 import BigNumber from 'bignumber.js';
-import _, { isEmpty } from 'lodash';
+import _ from 'lodash';
+import axios from 'axios';
 import * as constants from 'utilities/constants';
 // import { checkIsValidNetwork } from 'utilities/common';
 import {
@@ -43,11 +44,10 @@ import {
   UNSTAKE,
   CLAIMBASE,
   CLAIMBOOST,
-  UNSTAKENFT,
-  CHAIN_MORALIS
+  UNSTAKENFT
 } from './helper';
 // eslint-disable-next-line import/named
-import { axiosInstance, axiosInstanceMoralis } from '../../../utilities/axios';
+import { axiosInstance } from '../../../utilities/axios';
 import '../../../assets/styles/slick.scss';
 import * as ST from '../../../assets/styles/staking.js';
 // eslint-disable-next-line import/no-duplicates
@@ -77,8 +77,7 @@ import IConNext from '../../../assets/img/arrow-next.svg';
 import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
-import LogoNFT from '../../../assets/img/nft_logo.avif';
-
+import { THE_GRAPH, HEADER } from '../../../utilities/constants';
 // eslint-disable-next-line import/order
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
@@ -140,6 +139,10 @@ function Staking({ settings, setSetting }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const [isLoadingUnStake, setIsLoadingUnStake] = useState(false);
+  const [isDisableStakeNFTDialog, setIsDisableStakeNFTDialog] = useState(false);
+  const [isDisableUnStakeNFTDialog, setIsDisableUnStakeNFTDialog] = useState(
+    false
+  );
   const [isApproveLP, setIsApproveLP] = useState(true);
   const [isApproveNFT, setIsApproveNFT] = useState(false);
   const [isAprroveVstrk, setIsAprroveVstrk] = useState(false);
@@ -409,7 +412,7 @@ function Staking({ settings, setSetting }) {
       setUserInfo({ ...objUser });
     }
   };
-  // get data stake
+  // get data NFT stake
   useMemo(async () => {
     if (!address) {
       setIsLoading(false);
@@ -417,68 +420,56 @@ function Staking({ settings, setSetting }) {
       return;
     }
     setIsLoading(true);
-    let tokenUri = null;
-    let imgFake = null;
-    let getUrlImg = null;
-    // eslint-disable-next-line no-unused-expressions
-    getUrlImg =
-      process.env.REACT_APP_ENV === 'prod' ? 'baseTokenURI' : 'notRevealedUri';
+    let nameNFT = null;
     try {
       await methods
-        .call(nFtContract.methods.getUrlImg, [])
+        .call(nFtContract.methods.name, [])
         .then(res => {
-          tokenUri = res;
+          if (res) {
+            nameNFT = res;
+          }
         })
-        .catch(err => {});
-      if (tokenUri) {
-        await axiosInstance
-          .get(`${tokenUri}`)
-          .then(res => {
-            if (res) {
-              imgFake = res?.data.image ?? '';
-              setFakeImgNFT(imgFake);
-            }
-          })
-          .catch(err => {
-            // console.log(err);
-          });
-      }
+        .catch(err => {
+          throw err;
+        });
       setTimeout(() => {
-        axiosInstanceMoralis
-          .get(
-            `/${address}/nft?chain=` + `${CHAIN_MORALIS}` + `&format=decimal`
+        axios
+          .post(
+            THE_GRAPH,
+            {
+              query: `{
+                  tokens(first: 1000, orderBy: id, orderDirection:desc , where:{user:"${address?.toLowerCase()}"})  {
+                    id
+                    tokenId
+                    user
+                  }
+                }`
+            },
+            {
+              headers: HEADER
+            }
           )
           .then(res => {
-            const data = res.data.result;
-            if (data && data.length > 0) {
-              const dataMyContract = _.filter(data, item => {
-                return (
-                  item.token_address === constants.NFT_ADDRESS.toLowerCase()
-                );
-              });
-              // eslint-disable-next-line no-shadow
-              const dataConvert = _.cloneDeep(dataMyContract);
+            const result = res?.data?.data?.tokens;
+            if (result && result.length > 0) {
+              const dataConvert = _.cloneDeep(result);
               if (dataConvert.length > 0) {
                 // eslint-disable-next-line array-callback-return
                 dataConvert.map(item => {
                   item.active = false;
-                  item.name = `${item.name}${' #'}${item.token_id}`;
-                  item.id = +item.token_id;
-                  item.metadata = JSON.parse(item.metadata);
-                  if (item?.metadata?.image) {
-                    item.img = item?.metadata?.image;
-                  }
-                  item.img = `${constants.URL_LOGO_NFT}/${item.token_id}.png`;
+                  item.name = `${nameNFT}${' #'}${item.id}`;
+                  item.id = +item.id;
+                  item.img = `${constants.URL_LOGO_NFT}/${item.id}.png`;
+                  item.token_id = item.id;
                 });
+                const dataStakeClone = _.cloneDeep(dataConvert);
+                setDataNFT(dataStakeClone);
+                setTimeDelay(0);
               }
-              const dataStakeClone = _.cloneDeep(dataConvert);
-              setDataNFT(dataStakeClone);
               setIsLoading(false);
-              setTimeDelay(0);
             } else {
               setDataNFT([]);
             }
-            setIsLoading(false);
           });
       }, timeDelay);
     } catch (err) {
@@ -486,7 +477,7 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
   }, [address, window.ethereum, txhash, timeDelay, isSuccess]);
-  // get data staked
+  // get data NFT staked
   useMemo(async () => {
     if (!address) {
       setIsLoading(false);
@@ -495,7 +486,18 @@ function Staking({ settings, setSetting }) {
     }
     setIsLoading(true);
     let newArray = null;
+    let nameNFT = null;
     try {
+      await methods
+        .call(nFtContract.methods.name, [])
+        .then(res => {
+          if (res) {
+            nameNFT = res;
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
       await methods
         .call(farmingContract.methods.getUserInfo, [0, address])
         .then(res => {
@@ -506,7 +508,7 @@ function Staking({ settings, setSetting }) {
             newArray = dataCovert?.map(item => {
               // eslint-disable-next-line no-return-assign
               return (item = {
-                name: 'AnnexIronWolf ' + `#${item}`,
+                name: `${nameNFT} ` + `#${item}`,
                 token_id: item,
                 id: +item,
                 active: false,
@@ -1245,8 +1247,11 @@ function Staking({ settings, setSetting }) {
 
   // Stake NFT
   const handleStakeDialog = useCallback(
-    async (value, event, checked, mess) => {
+    async (value, event, checked, mess, lstAllIds) => {
       if (!value) {
+        return;
+      }
+      if (!lstAllIds) {
         return;
       }
       if (mess) {
@@ -1256,15 +1261,17 @@ function Staking({ settings, setSetting }) {
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsStakeNFT(false);
+        setIsDisableStakeNFTDialog(true);
         setMessConfirm(
           'Do not close the popup while the transaction is being executed'
         );
+        const lstAllIdsStake = _.map(lstAllIds, 'token_id');
         await methods
           .send(
             checked
-              ? farmingContract.methods.boostPartially
+              ? farmingContract.methods.boostAll
               : farmingContract.methods.boost,
-            [0, value.toString(10)],
+            [0, checked ? lstAllIdsStake : value.toString(10)],
             address
           )
           .then(res => {
@@ -1276,6 +1283,7 @@ function Staking({ settings, setSetting }) {
               // begin time out
               setTimeout(() => {
                 setiIsConfirm(false);
+                setIsDisableStakeNFTDialog(false);
                 setIsSuccess(true);
                 setTextSuccess('Stake NFT successfully');
                 setMessConfirm('');
@@ -1286,12 +1294,14 @@ function Staking({ settings, setSetting }) {
             if (err.code === 4001 || err.message.includes('User denied')) {
               setIsShowCancel(true);
               setiIsConfirm(false);
+              setIsDisableStakeNFTDialog(false);
               setTextErr('Decline transaction');
               setValueNFTStake('');
               setMessConfirm('');
             } else {
               setIsShowCancel(true);
               setiIsConfirm(false);
+              setIsDisableStakeNFTDialog(false);
               setTextErr('Something went wrong!');
               setValueNFTStake('');
               setMessConfirm('');
@@ -1315,15 +1325,16 @@ function Staking({ settings, setSetting }) {
       if (value && event.isTrusted) {
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
+        setIsDisableUnStakeNFTDialog(true);
         setMessConfirm(
           'Do not close the popup while the transaction is being executed'
         );
         await methods
           .send(
             checked
-              ? farmingContract.methods.unBoostPartially
+              ? farmingContract.methods.unBoostAll
               : farmingContract.methods.unBoost,
-            [0, value.toString(10)],
+            checked ? [0] : [0, value.toString(10)],
             address
           )
           .then(res => {
@@ -1334,6 +1345,7 @@ function Staking({ settings, setSetting }) {
               setItemStaked([]);
               setTimeout(() => {
                 setiIsConfirm(false);
+                setIsDisableUnStakeNFTDialog(false);
                 setTextSuccess('Unstake NFT successfully');
                 setMessConfirm('');
 
@@ -1346,12 +1358,14 @@ function Staking({ settings, setSetting }) {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
+              setIsDisableUnStakeNFTDialog(false);
               setTextErr('Decline transaction');
               setMessConfirm('');
             } else {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
+              setIsDisableUnStakeNFTDialog(false);
               setTextErr('Something went wrong!');
               setMessConfirm('');
             }
@@ -1429,6 +1443,8 @@ function Staking({ settings, setSetting }) {
           mess: '',
           show: false
         });
+        setIsStakeNFT(false);
+        setIsUnStakeNFT(false);
       });
     }
   }, [window.ethereum, address]);
@@ -1875,26 +1891,40 @@ function Staking({ settings, setSetting }) {
                                         </>
                                       ) : (
                                         <>
-                                          <ST.SBtnUnStakeStartNotBorder>
-                                            <ST.SSUnTake
-                                              className="mg-10"
-                                              disabled={
-                                                isShowCountDownUnStake ||
-                                                !valUnStake
-                                              }
-                                              onClick={handleUnStake}
-                                            >
-                                              Unstake
-                                            </ST.SSUnTake>
-                                            <Tooltip
-                                              placement="right"
-                                              title="Countdown time will be reset if you unstake a part without claiming the rewards"
-                                            >
-                                              <ST.SQuestion
-                                                src={IconQuestion}
-                                              />
-                                            </Tooltip>
-                                          </ST.SBtnUnStakeStartNotBorder>
+                                          {isAprroveVstrk ? (
+                                            <ST.SBtnUnStakeStartNotBorder>
+                                              <ST.SSUnTake
+                                                className="mg-10"
+                                                disabled={
+                                                  isShowCountDownUnStake ||
+                                                  !valUnStake
+                                                }
+                                                onClick={handleUnStake}
+                                              >
+                                                Unstake
+                                              </ST.SSUnTake>
+                                              <Tooltip
+                                                placement="right"
+                                                title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                              >
+                                                <ST.SQuestion
+                                                  src={IconQuestion}
+                                                />
+                                              </Tooltip>
+                                            </ST.SBtnUnStakeStartNotBorder>
+                                          ) : (
+                                            <>
+                                              {!isLoading && (
+                                                <ST.SBtnUnStakeStartNotBorder>
+                                                  <ST.SBtnStake
+                                                    onClick={handleApproveVstrk}
+                                                  >
+                                                    Approve Staking
+                                                  </ST.SBtnStake>
+                                                </ST.SBtnUnStakeStartNotBorder>
+                                              )}
+                                            </>
+                                          )}
                                         </>
                                       )}
                                     </Col>
@@ -2136,7 +2166,8 @@ function Staking({ settings, setSetting }) {
                               disabled={
                                 itemStaking.length === MAX_STAKE_NFT ||
                                 dataNFT.length === 0 ||
-                                userInfo.amountNumber === 0
+                                userInfo.amountNumber === 0 ||
+                                isDisableStakeNFTDialog
                               }
                               onClick={handleStakeNFT}
                             >
@@ -2256,7 +2287,10 @@ function Staking({ settings, setSetting }) {
                             ) : (
                               <>
                                 <ST.SSUnSTakedWeb
-                                  disabled={dataNFTUnState.length === 0}
+                                  disabled={
+                                    dataNFTUnState.length === 0 ||
+                                    isDisableUnStakeNFTDialog
+                                  }
                                   onClick={handleUnStakeNFT}
                                 >
                                   Unstake
