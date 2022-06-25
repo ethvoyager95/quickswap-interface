@@ -36,6 +36,10 @@ export const STRK_ADDRESS = process.env.REACT_APP_MAIN_STRK_ADDRESS;
 export const STRK_CLAIM_ADDRESS = process.env.REACT_APP_MAIN_STRK_CLAIM_ADDRESS;
 export const MORALIS_KEY = process.env.REACT_APP_MAIN_MORALIS_KEY;
 export const MORALIS_API = process.env.REACT_APP_MORALIS_API;
+export const THE_GRAPH = process.env.REACT_APP_MAIN_THE_GRAPH;
+export const HEADER = {
+  'Content-Type': 'application/json'
+};
 export const SUPPORT_URL =
   'https://app.uniswap.org/#/add/v2/ETH/0x74232704659ef37c08995e386A2E26cc27a8d7B1?chain=mainnet';
 export const URL_LOGO_NFT =
