@@ -21,6 +21,7 @@ import { ApolloProvider } from 'react-apollo';
 import { client } from '../apollo/client';
 import Theme from './Theme';
 import 'assets/styles/App.scss';
+import History from './Main/History/History';
 
 addLocaleData([...en]);
 const initialLang = 'en';
@@ -59,6 +60,7 @@ class App extends React.Component {
                   <Route exact path="/market" component={Market} />
                   <Route exact path="/market/:asset" component={MarketDetail} />
                   <Route exact path="/forbidden" component={Forbidden} />
+                  <Route exact path="/history" component={History} />
                   <Route exact path="/staking" component={Staking} />
                   <Route
                     exact

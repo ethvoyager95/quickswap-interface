@@ -334,12 +334,7 @@ function CountDownClaim({
           )}
           {type === CLAIMBASE && (
             <SUntake>
-              <SClaim
-                // disabled={!isClaimBaseReward}
-                onClick={handleClainBaseReward}
-              >
-                Claim
-              </SClaim>
+              <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
               <Tooltip
                 placement="right"
                 title="You can only claim reward once daily"
@@ -350,12 +345,7 @@ function CountDownClaim({
           )}
           {type === CLAIMBOOST && (
             <SUntake>
-              <SClaim
-                // disabled={!isClaimBootReward}
-                onClick={handleClainBootReward}
-              >
-                Claim
-              </SClaim>
+              <SClaim onClick={handleClainBootReward}>Claim</SClaim>
               <Tooltip
                 placement="right"
                 title="You can only claim reward once monthly"
