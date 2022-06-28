@@ -43,7 +43,7 @@ export const HEADER = {
 export const SUPPORT_URL =
   'https://app.uniswap.org/#/add/v2/ETH/0x74232704659ef37c08995e386A2E26cc27a8d7B1?chain=mainnet';
 export const URL_LOGO_NFT =
-  'https://gateway.pinata.cloud/ipfs/QmZNFcvCDB5oxwRW1T7HbBh4NgtZRBmfNAph1kpkJss6V5';
+  'https://assets.strike.org/ipfs/QmZNFcvCDB5oxwRW1T7HbBh4NgtZRBmfNAph1kpkJss6V5';
 // Contract ABI
 export const CONTRACT_TOKEN_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
