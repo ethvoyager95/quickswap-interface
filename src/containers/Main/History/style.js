@@ -431,8 +431,8 @@ export const SBoxFlex = styled.div`
 
 export const SImg = styled.img`
   margin-right: 6px;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
 `;
 
 export const DivFlexBetween = styled.div`

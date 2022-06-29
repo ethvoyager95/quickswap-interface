@@ -74,6 +74,7 @@ const Logo = styled.div`
 const MainMenu = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 
   @media only screen and (max-width: 768px) {
     display: flex;
@@ -88,7 +89,10 @@ const MainMenu = styled.div`
     transition: all 0.5s ease;
     background-color: #090d27;
     padding-top: 20px;
+    padding-bottom: 20px;
     z-index: 10;
+    overflow-y: auto;
+    flex-wrap: nowrap;
   }
 
   a {

@@ -36,7 +36,7 @@ import iconLiquidateBorrow from 'assets/img/methods/liquidate-borrow.svg';
 import iconBoost from 'assets/img/methods/boost.png';
 import iconDeposit from 'assets/img/methods/deposit.svg';
 import iconUnBoost from 'assets/img/methods/un-boost.svg';
-import iconClaimBase from 'assets/img/methods/claim-base-reward.svg';
+import iconClaimBase from 'assets/img/methods/claim-base-reward.png';
 import iconClaimBoost from 'assets/img/methods/claim-boost-reward.svg';
 import iconRedeem from 'assets/img/methods/redeem.svg';
 
@@ -168,7 +168,7 @@ export const renderBgColor = action => {
   if (action === UN_BOOST) return '#E9FAFA';
   if (action === WITHDRAW) return '#E1F7ED';
   if (action === CLAIM_BASE_REWARD) return '#FFE6F8';
-  if (action === CLAIM_BOOST_REWARD) return '##E9EDFA';
+  if (action === CLAIM_BOOST_REWARD) return '#E9EDFA';
   return '#E0EFFA';
 };
 
