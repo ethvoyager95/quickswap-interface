@@ -57,17 +57,17 @@ const MINUTES_TO_TIMESTAMP = 60;
 const HOUR_TO_TIMESTAMP = 60 * 60;
 const DAY_TO_TIMESTAMP = 24 * 60 * 60;
 
-const SUPPLY = 'Supplier';
+const SUPPLY = 'Supply';
 const REDEEM = 'Redeem';
 const BORROW = 'Borrow';
-const REPAY_BORROW = 'RepayBorrow';
-const LIQUIDATE_BORROW = 'LiquidateBorrow';
+const REPAY_BORROW = 'Repay & Borrow';
+const LIQUIDATE_BORROW = 'Liquidate borrow';
 const BOOST = 'Boost';
 const DEPOSIT = 'Deposit';
-const UN_BOOST = 'UnBoost';
+const UN_BOOST = 'Unboost';
 const WITHDRAW = 'Withdraw';
-const CLAIM_BASE_REWARD = 'ClaimBaseRewards';
-const CLAIM_BOOST_REWARD = 'ClaimBoostRewards';
+const CLAIM_BASE_REWARD = 'Claim Base Reward';
+const CLAIM_BOOST_REWARD = 'Claim Boost Reward';
 
 const format = commaNumber.bindWith(',', '.');
 
