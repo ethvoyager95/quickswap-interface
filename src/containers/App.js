@@ -17,6 +17,7 @@ import ProposerDetail from 'containers/Main/ProposerDetail';
 import VoterLeaderboard from 'containers/Main/VoterLeaderboard';
 import Forbidden from 'containers/Main/Forbidden';
 import History from 'containers/Main/History/History';
+import Liquidator from 'containers/Main/Liquidator/Liquidator';
 import { ApolloProvider } from 'react-apollo';
 import { MoralisProvider } from 'react-moralis';
 import { client } from '../apollo/client';
@@ -66,6 +67,7 @@ class App extends React.Component {
                     />
                     <Route exact path="/forbidden" component={Forbidden} />
                     <Route exact path="/history" component={History} />
+                    <Route exact path="/liquidator" component={Liquidator} />
                     <Route
                       exact
                       path="/vote/leaderboard"

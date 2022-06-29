@@ -804,6 +804,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         >
           <Label>History</Label>
         </NavLink>
+        <NavLink
+          className="flex flex-start align-center"
+          to="/liquidator"
+          activeClassName="active"
+        >
+          <Label>Liquidator</Label>
+        </NavLink>
         {process.env.REACT_APP_ENV === 'dev' && (
           <NavLink
             className="flex flex-start align-center"
