@@ -1408,9 +1408,11 @@ function Staking({ settings, setSetting }) {
   };
   // check approve lp
   useEffect(() => {
-    checkApproveLP();
-    checkApproveNFT();
-    checkApproveVstrk();
+    if (address) {
+      checkApproveLP();
+      checkApproveNFT();
+      checkApproveVstrk();
+    }
   }, [
     val,
     handleMaxValue,
