@@ -88,6 +88,12 @@ export const STable = styled(Table)`
     margin-right: ${props => (props.dropdownOpen ? '0' : '16px')};
   }
 
+  @media only screen and (max-width: 1295px) {
+    table {
+      padding-right: 40px;
+    }
+  }
+
   .ant-table-thead {
     tr {
       th {
