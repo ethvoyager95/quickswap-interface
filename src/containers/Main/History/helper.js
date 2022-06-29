@@ -33,10 +33,10 @@ import iconWithdraw from 'assets/img/methods/withdraw.svg';
 import iconBorrow from 'assets/img/methods/borrow.svg';
 import iconRepayBorrow from 'assets/img/methods/repay-borrow.svg';
 import iconLiquidateBorrow from 'assets/img/methods/liquidate-borrow.svg';
-import iconBoost from 'assets/img/methods/boost.png';
+import iconBoost from 'assets/img/methods/boost.svg';
 import iconDeposit from 'assets/img/methods/deposit.svg';
 import iconUnBoost from 'assets/img/methods/un-boost.svg';
-import iconClaimBase from 'assets/img/methods/claim-base-reward.png';
+import iconClaimBase from 'assets/img/methods/claim-base-reward.svg';
 import iconClaimBoost from 'assets/img/methods/claim-boost-reward.svg';
 import iconRedeem from 'assets/img/methods/redeem.svg';
 
@@ -61,13 +61,13 @@ const SUPPLY = 'Supply';
 const REDEEM = 'Redeem';
 const BORROW = 'Borrow';
 const REPAY_BORROW = 'Repay & Borrow';
-const LIQUIDATE_BORROW = 'Liquidate borrow';
+const LIQUIDATE_BORROW = 'Liquidate Borrow';
 const BOOST = 'Boost';
 const DEPOSIT = 'Deposit';
 const UN_BOOST = 'Unboost';
 const WITHDRAW = 'Withdraw';
-const CLAIM_BASE_REWARD = 'Claim Base Reward';
-const CLAIM_BOOST_REWARD = 'Claim Boost Reward';
+const CLAIM_BASE_REWARD = 'Claim Base Rewards';
+const CLAIM_BOOST_REWARD = 'Claim Boost Rewards';
 
 const format = commaNumber.bindWith(',', '.');
 
