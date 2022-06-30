@@ -45,7 +45,6 @@ class App extends React.Component {
       <Theme>
         <ApolloProvider client={client}>
           <IntlProvider locale={lang} messages={message}>
-            {/* <MoralisProvider> */}
             <Provider store={store}>
               <BrowserRouter>
                 <Switch
@@ -84,7 +83,6 @@ class App extends React.Component {
                 </Switch>
               </BrowserRouter>
             </Provider>
-            {/* </MoralisProvider> */}
           </IntlProvider>
         </ApolloProvider>
       </Theme>
