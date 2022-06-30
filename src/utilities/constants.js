@@ -28,14 +28,10 @@ export const NOT_INSTALLED = 'MetaMask not installed';
 export const MISSING_PROVIDER = 'Missing provider';
 export const LOCKED = 'MetaMask is locked';
 export const TIMEOUT = 'Timeout';
-export const MORALIS_URL = process.env.REACT_APP_MAIN_MORALIS_URL;
-export const MORALIS_ID = process.env.REACT_APP_MAIN_MORALIS_ID;
 export const NFT_ADDRESS = process.env.REACT_APP_MAIN_NFT_ADDRESS;
 export const VSTRK_ADDRESS = process.env.REACT_APP_MAIN_VSTRK_ADDRESS;
 export const STRK_ADDRESS = process.env.REACT_APP_MAIN_STRK_ADDRESS;
 export const STRK_CLAIM_ADDRESS = process.env.REACT_APP_MAIN_STRK_CLAIM_ADDRESS;
-export const MORALIS_KEY = process.env.REACT_APP_MAIN_MORALIS_KEY;
-export const MORALIS_API = process.env.REACT_APP_MORALIS_API;
 export const THE_GRAPH = process.env.REACT_APP_MAIN_THE_GRAPH;
 export const HEADER = {
   'Content-Type': 'application/json'

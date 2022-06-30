@@ -11,8 +11,6 @@ export const PERCENT_APR = 10;
 export const SECOND24H = process.env.REACT_APP_ENV === 'prod' ? 86400 : 180; // 86400
 export const SECOND2DAY = process.env.REACT_APP_ENV === 'prod' ? 172800 : 240; // 172800
 export const SECOND30DAY = process.env.REACT_APP_ENV === 'prod' ? 2592000 : 300; // 2592000
-export const CHAIN_MORALIS =
-  process.env.REACT_APP_ENV === 'prod' ? 'eth' : 'rinkeby';
 export const FAKE_STRK = 27.15;
 export const FAKE_ETH = 0.425;
 export const FAKE_TOTAL_SUPPLY = 582099001354;
@@ -32,7 +30,7 @@ export const DECIMALS_LP = 18;
 export const MIXIMUM_IPUT = 1e-5;
 export const MINIMUM_VALUE = 0.0000000001;
 export const MINIMUM_VALUE_FORMAT = 0.00001;
-export const TIME_UPDATE_MORALIS_API = 20000;
+export const TIME_UPDATE_NFT = 20000;
 export const MAX_APPROVE = new BigNumber(2)
   .pow(256)
   .minus(1)
