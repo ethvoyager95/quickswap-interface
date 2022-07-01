@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import MainLayout from 'containers/Layout/MainLayout';
 import { connectAccount, accountActionCreators } from 'core';
-import { Input, Button } from 'antd';
+import { Input, Button, Dropdown } from 'antd';
 import iconSearch from 'assets/img/liquidator-search.svg';
 import iconFilter from 'assets/img/liquidator-filter.svg';
 import usdt from 'assets/img/coins/usdt.png';
@@ -19,11 +19,15 @@ import {
   TdWithImg,
   SearchBar,
   WalletInfo,
-  BlockLabel
+  BlockLabel,
+  DropdownAsset,
+  SButton
 } from './style';
 
 function Liquidator() {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [visibleDropdownRepay, setVisibleDropdownRepay] = useState(false);
+  const [visibleDropdownSeize, setVisibleDropdownSeize] = useState(false);
 
   const handleCancel = () => {
     setIsOpenModal(false);
@@ -103,6 +107,31 @@ function Liquidator() {
       maxSeize: 500
     }
   ];
+
+  const handleVisibleDropdownRepayChange = flag => {
+    setVisibleDropdownRepay(flag);
+  };
+
+  const handleVisibleDropdownSeizeChange = flag => {
+    setVisibleDropdownSeize(flag);
+  };
+
+  const dropdownAsset = (
+    <DropdownAsset>
+      <div>
+        <img src={usdt} alt="" />
+        <span>USDT</span>
+      </div>
+      <div>
+        <img src={usdt} alt="" />
+        <span>USDT</span>
+      </div>
+      <div>
+        <img src={usdt} alt="" />
+        <span>USDT</span>
+      </div>
+    </DropdownAsset>
+  );
 
   const columns = [
     {
@@ -219,19 +248,49 @@ function Liquidator() {
           </div>
           <div className="item">
             <div>Asset to Repay</div>
-            <div className="black-value flex-gap6">
-              <img src={usdt} alt="" />
-              <div>USDT</div>
-              <img src={iconDropdown} alt="" />
-            </div>
+            <Dropdown
+              overlay={dropdownAsset}
+              trigger={['click']}
+              onVisibleChange={handleVisibleDropdownRepayChange}
+              visible={visibleDropdownRepay}
+              getPopupContainer={() => document.getElementById('repay')}
+              placement="bottomRight"
+            >
+              <SButton
+                onClick={e => {
+                  e.preventDefault();
+                }}
+              >
+                <div className="black-value flex-gap6" id="repay">
+                  <img src={usdt} alt="" />
+                  <div>USDT</div>
+                  <img src={iconDropdown} alt="" className="dropdown" />
+                </div>
+              </SButton>
+            </Dropdown>
           </div>
           <div className="item">
             <div>Asset to Seize</div>
-            <div className="black-value flex-gap6">
-              <img src={usdt} alt="" />
-              <div>USDT</div>
-              <img src={iconDropdown} alt="" />
-            </div>
+            <Dropdown
+              overlay={dropdownAsset}
+              trigger={['click']}
+              onVisibleChange={handleVisibleDropdownSeizeChange}
+              visible={visibleDropdownSeize}
+              getPopupContainer={() => document.getElementById('seize')}
+              placement="bottomRight"
+            >
+              <SButton
+                onClick={e => {
+                  e.preventDefault();
+                }}
+              >
+                <div className="black-value flex-gap6" id="seize">
+                  <img src={usdt} alt="" />
+                  <div>USDT</div>
+                  <img src={iconDropdown} alt="" className="dropdown" />
+                </div>
+              </SButton>
+            </Dropdown>
           </div>
           <div className="item">
             <div>Max Repay Amount</div>

@@ -40,7 +40,8 @@ export const STable = styled(Table)`
         font-weight: normal;
         text-align: left;
         white-space: nowrap;
-        padding: ${props => (props.liquidatorTable ? '10px' : '20px')};
+        padding: ${props =>
+          props.liquidatorTable ? '10px 14px' : '20px 14px'};
 
         &:nth-child(1) {
           padding-left: 0;
@@ -207,12 +208,12 @@ export const WalletInfo = styled.div`
         align-items: center;
         gap: 6px;
 
-        img:nth-child(1) {
+        img {
           width: 32px;
           height: 32px;
         }
 
-        img:last-child {
+        .dropdown {
           width: 11px;
         }
       }
@@ -517,5 +518,46 @@ export const SeizedAndRepay = styled.div`
     span:last-child {
       color: #6d6f7b;
     }
+  }
+`;
+
+export const DropdownAsset = styled.div`
+  background: #ffffff;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 16px;
+    padding-right: 40px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    img {
+      width: 32px;
+    }
+
+    span {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 28px;
+      color: #000000;
+    }
+  }
+`;
+
+export const SButton = styled.button`
+  background-color: transparent;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: transparent !important;
   }
 `;
