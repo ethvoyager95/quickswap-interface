@@ -1,20 +1,31 @@
 import styled from 'styled-components';
 import { Table, Modal } from 'antd';
 
+export const STableWrapper = styled.div`
+  @media only screen and (max-width: 768px) {
+    margin: 0 12px;
+  }
+`;
+
 export const STable = styled(Table)`
   background: #ffffff;
   border-radius: 5px;
-  padding-left: 40px;
-  padding-right: 40px;
   overflow-x: auto;
   overflow-y: auto;
   width: 100%;
   max-height: ${props => (props.liquidatorTable ? '430px' : 'unset')};
   margin-bottom: ${props => (props.liquidatorTable ? 'unset' : '60px')};
 
+  table {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
   .ant-table-thead {
     tr {
       th {
+        position: sticky;
+        top: 0;
         color: var(--color-text-secondary);
         font-size: 16px;
         line-height: 24px;
@@ -22,6 +33,7 @@ export const STable = styled(Table)`
         background: var(--color-bg-primary);
         text-align: left;
         padding: 14px;
+        white-space: nowrap;
 
         &:nth-child(1) {
           padding-left: 0;
@@ -158,6 +170,7 @@ export const SearchBar = styled.div`
         border-left: 0;
       }
     }
+
     .recent-btn {
       width: 228px;
       height: 50px;
@@ -172,7 +185,48 @@ export const SearchBar = styled.div`
       align-items: center;
       justify-content: center;
 
-      &:hover {
+      &:hover,
+      &:active,
+      &:visited,
+      &:focus {
+        background: #3b54b5 !important;
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .recent-btn-mob {
+    display: none;
+  }
+
+  @media only screen and (max-width: 768px) {
+    padding: 24px 0 0;
+    margin: 0 12px 32px;
+
+    .address {
+      .recent-btn {
+        display: none;
+      }
+    }
+
+    .recent-btn-mob {
+      display: flex;
+      width: 100%;
+      height: 50px;
+      background: #3b54b5;
+      border-radius: 8px;
+      font-style: normal;
+      font-weight: 900;
+      font-size: 18px;
+      line-height: 25px;
+      color: #ffffff;
+      align-items: center;
+      justify-content: center;
+
+      &:hover,
+      &:active,
+      &:visited,
+      &:focus {
         background: #3b54b5 !important;
         opacity: 0.8;
       }
@@ -368,6 +422,40 @@ export const WalletInfo = styled.div`
       }
     }
   }
+
+  @media only screen and (max-width: 768px) {
+    padding: 0 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    .details {
+      padding: 28px 20px;
+      width: 100%;
+    }
+
+    .liquidate-wrapper {
+      .liquidate {
+        padding: 24px 20px;
+
+        .title {
+          margin-bottom: 16px;
+        }
+
+        .balance {
+          margin-bottom: 24px;
+        }
+
+        .liquidate-btn-wrapper {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 20px;
+          margin-bottom: 20px;
+        }
+      }
+    }
+  }
 `;
 
 export const BlockLabel = styled.div`
@@ -377,6 +465,11 @@ export const BlockLabel = styled.div`
   line-height: 24px;
   color: #6d6f7b;
   margin-bottom: 14px;
+
+  @media only screen and (max-width: 768px) {
+    padding: 0 12px;
+    margin-bottom: 8px;
+  }
 `;
 
 export const Address = styled.div`
@@ -415,8 +508,15 @@ export const CustomModal = styled(Modal)`
     padding: 70px 60px;
     background: #eceff9;
   }
+
   .ant-modal-close:hover {
     background-color: transparent !important;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .ant-modal-body {
+      padding: 70px 16px;
+    }
   }
 `;
 
@@ -472,6 +572,22 @@ export const ModalContent = styled.div`
       background: #107def;
       border-radius: 0px 8px 8px 0px;
       border-left: 0;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .title {
+      font-size: 20px;
+      line-height: 120%;
+      margin-bottom: 24px;
+    }
+
+    .search-label {
+      margin-bottom: 16px;
+    }
+
+    .search-input {
+      margin-bottom: 21px;
     }
   }
 `;

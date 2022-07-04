@@ -21,7 +21,8 @@ import {
   WalletInfo,
   BlockLabel,
   DropdownAsset,
-  SButton
+  SButton,
+  STableWrapper
 } from './style';
 
 function Liquidator() {
@@ -231,7 +232,13 @@ function Liquidator() {
               <img src={iconSearch} alt="" />
             </Button>
           </div>
-          <Button className="recent-btn" onClick={() => setIsOpenModal(true)}>
+          <Button
+            className="recent-btn"
+            onClick={e => {
+              e.currentTarget.blur();
+              setIsOpenModal(true);
+            }}
+          >
             Recent Liquidations
           </Button>
         </div>
@@ -239,6 +246,15 @@ function Liquidator() {
           <div className="message">This account can be liquidated</div>
           <div className="refresh">Refresh</div>
         </div>
+        <Button
+          className="recent-btn-mob"
+          onClick={e => {
+            e.currentTarget.blur();
+            setIsOpenModal(true);
+          }}
+        >
+          Recent Liquidations
+        </Button>
       </SearchBar>
       <WalletInfo>
         <div className="details">
@@ -336,12 +352,14 @@ function Liquidator() {
         </div>
       </WalletInfo>
       <BlockLabel>block# 18964980</BlockLabel>
-      <STable
-        columns={columns}
-        dataSource={dataAddressTable}
-        pagination={false}
-        // rowKey={record => record.id}
-      />
+      <STableWrapper>
+        <STable
+          columns={columns}
+          dataSource={dataAddressTable}
+          pagination={false}
+          // rowKey={record => record.id}
+        />
+      </STableWrapper>
       <ModalLiquidations isOpenModal={isOpenModal} onCancel={handleCancel} />
     </MainLayout>
   );
