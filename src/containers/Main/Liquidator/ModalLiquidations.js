@@ -230,12 +230,13 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       visible={isOpenModal}
       onCancel={onCancel}
       footer={null}
+      maskClosable={false}
     >
       <ModalContent>
         <div className="title">Recent Liquidations</div>
         <div className="search-label">Search by borrower address</div>
         <div className="search-input">
-          <Input placeholder="Search items, collections..." />
+          <Input placeholder="Search by borrower's address" />
           <Button className="search-btn">
             <img src={iconSearch} alt="" />
           </Button>

@@ -164,7 +164,7 @@ function Liquidator() {
           children: (
             <TdWithImg>
               <img src={asset.fakeLogo} alt="" />
-              <div>{asset.repay} USDT</div>
+              <div>USDT</div>
             </TdWithImg>
           )
         };
@@ -198,7 +198,7 @@ function Liquidator() {
           children: (
             <TdWithImg>
               <img src={asset.fakeLogo} alt="" />
-              <div>{asset.seize} USDT</div>
+              <div>USDT</div>
             </TdWithImg>
           )
         };
@@ -338,7 +338,7 @@ function Liquidator() {
             <div className="liquidate-btn-wrapper">
               <div>
                 You will repay <span className="text-blue">0.06 BUSD</span>{' '}
-                <span className="text-gray">$0.06</span> and reize{' '}
+                <span className="text-gray">$0.06</span> and seize{' '}
                 <span className="text-blue">0.06 USDT</span>{' '}
                 <span className="text-gray">$0.06</span>
               </div>
@@ -346,7 +346,7 @@ function Liquidator() {
             </div>
             <div className="gas-price">
               <div>Account health is updated every 2 seconds</div>
-              <img src={iconFilter} alt="" />
+              {/* <img src={iconFilter} alt="" /> */}
             </div>
           </div>
         </div>

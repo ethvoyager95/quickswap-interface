@@ -413,7 +413,7 @@ export const WalletInfo = styled.div`
       .gas-price {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         font-style: normal;
         font-weight: 500;
         font-size: 16px;
