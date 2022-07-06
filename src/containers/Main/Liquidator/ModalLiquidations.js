@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
-import { Input, Button } from 'antd';
+import { Input, Button, DatePicker } from 'antd';
 import iconSearch from 'assets/img/liquidator-search.svg';
 import usdt from 'assets/img/coins/usdt.png';
 import iconSort from 'assets/img/icon-sort.svg';
@@ -226,7 +226,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
   return (
     <CustomModal
       centered
-      width="1200px"
+      width="1350px"
       visible={isOpenModal}
       onCancel={onCancel}
       footer={null}
@@ -235,11 +235,23 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       <ModalContent>
         <div className="title">Recent Liquidations</div>
         <div className="search-label">Search by borrower address</div>
-        <div className="search-input">
-          <Input placeholder="Search by borrower's address" />
-          <Button className="search-btn">
-            <img src={iconSearch} alt="" />
-          </Button>
+        <div className="input-wrapper">
+          <div className="search-input">
+            <Input placeholder="Search by borrower's address" />
+            <Button className="search-btn">
+              <img src={iconSearch} alt="" />
+            </Button>
+          </div>
+          <div className="date-picker-wrapper">
+            <div className="date-picker">
+              <span className="date-picker-label">From</span>
+              <DatePicker format="MM/DD/YYYY" placeholder="mm/dd/yyyy" />
+            </div>
+            <div className="date-picker">
+              <span className="date-picker-label">To</span>
+              <DatePicker format="MM/DD/YYYY" placeholder="mm/dd/yyyy" />
+            </div>
+          </div>
         </div>
         <STable
           liquidatorTable

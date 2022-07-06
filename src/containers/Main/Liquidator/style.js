@@ -544,38 +544,80 @@ export const ModalContent = styled.div`
     align-self: flex-start;
   }
 
-  .search-input {
+  .input-wrapper {
     display: flex;
     align-items: center;
-    height: 50px;
     width: 100%;
+    gap: 24px;
     margin-bottom: 32px;
 
-    input {
-      padding-left: 20px;
+    .search-input {
+      display: flex;
+      align-items: center;
       height: 50px;
-      background: #ffffff;
-      border: 1px solid #e5e5e5;
-      box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
-      border-radius: 8px 0 0 8px;
-      font-style: normal;
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
-      color: #6d6f7b;
-      border-right: 0;
+      width: 100%;
+      flex: 1;
+
+      input {
+        padding-left: 20px;
+        height: 50px;
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
+        border-radius: 8px 0 0 8px;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        color: #6d6f7b;
+        border-right: 0;
+      }
+
+      .search-btn {
+        width: 50px;
+        height: 50px;
+        background: #107def;
+        border-radius: 0px 8px 8px 0px;
+        border-left: 0;
+      }
     }
 
-    .search-btn {
-      width: 50px;
-      height: 50px;
-      background: #107def;
-      border-radius: 0px 8px 8px 0px;
-      border-left: 0;
+    .date-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex: 1;
+      width: 100%;
+
+      .date-picker {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+
+        .date-picker-label {
+          font-style: normal;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 24px;
+          color: #0b0f23;
+        }
+
+        .ant-calendar-picker {
+          width: 100%;
+        }
+
+        input {
+          height: 50px;
+          border: 1px solid #e5e5e5;
+          box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
+          border-radius: 8px;
+        }
+      }
     }
   }
 
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 992px) {
     .title {
       font-size: 20px;
       line-height: 120%;
@@ -586,8 +628,20 @@ export const ModalContent = styled.div`
       margin-bottom: 16px;
     }
 
-    .search-input {
-      margin-bottom: 21px;
+    .input-wrapper {
+      flex-direction: column;
+      gap: 25px;
+      margin-bottom: 24px;
+
+      .date-picker-wrapper {
+        gap: 16px;
+
+        .date-picker {
+          flex-direction: column;
+          gap: 6px;
+          align-items: flex-start;
+        }
+      }
     }
   }
 `;
