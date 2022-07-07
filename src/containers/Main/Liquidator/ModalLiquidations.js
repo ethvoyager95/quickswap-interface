@@ -87,6 +87,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
   };
 
   const handleSearchByBorrower = () => {
+    setOrderBy('');
     setCurrentSortTimestamp('');
     setCurrentSortSeize('');
     setCurrentSortRepay('');
@@ -112,7 +113,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       setToDateDisplay(date);
       setToDateValue(
         dayjs(dateString)
-          .startOf('day')
+          .endOf('day')
           .unix()
       );
     } else {
@@ -158,6 +159,10 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       setCurrentSortSeize('');
       setCurrentSortTimestamp('');
     }
+  };
+
+  const handleLink = txHash => {
+    window.open(`${process.env.REACT_APP_ETH_EXPLORER}/tx/${txHash}`, '_blank');
   };
 
   const columns = [
@@ -251,10 +256,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       render(_, asset) {
         return {
           children: (
-            <BorrowerAndLiquidator
-              href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.borrower}`}
-              target="_blank"
-            >
+            <BorrowerAndLiquidator>
               {asset.borrower
                 ? `${asset.borrower.substr(0, 4)}...${asset.borrower.substr(
                     asset.borrower.length - 4,
@@ -273,10 +275,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       render(_, asset) {
         return {
           children: (
-            <BorrowerAndLiquidator
-              href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.liquidator}`}
-              target="_blank"
-            >
+            <BorrowerAndLiquidator>
               {asset.liquidator
                 ? `${asset.liquidator.substr(0, 4)}...${asset.liquidator.substr(
                     asset.liquidator.length - 4,
@@ -354,31 +353,25 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
             <div className="date-picker">
               <span className="date-picker-label">From</span>
               <DatePicker
-                defaultPickerValue={moment(fromDateDisplay, 'MM/DD/YYYY')}
+                defaultPickerValue={moment(fromDateDisplay, 'DD/MM/YYYY')}
                 value={fromDateDisplay !== '' ? moment(fromDateDisplay) : null}
-                format="MM/DD/YYYY"
-                placeholder="mm/dd/yyyy"
+                format="DD/MM/YYYY"
+                placeholder="dd/mm/yyyy"
                 onChange={handleFromDateChange}
               />
             </div>
             <div className="date-picker">
               <span className="date-picker-label">To</span>
               <DatePicker
-                defaultPickerValue={moment(toDateDisplay, 'MM/DD/YYYY')}
+                defaultPickerValue={moment(toDateDisplay, 'DD/MM/YYYY')}
                 value={toDateDisplay !== '' ? moment(toDateDisplay) : null}
-                format="MM/DD/YYYY"
-                placeholder="mm/dd/yyyy"
+                format="DD/MM/YYYY"
+                placeholder="dd/mm/yyyy"
                 onChange={handleToDateChange}
               />
             </div>
           </div>
-          <Button
-            className="search-btn"
-            disabled={
-              errorMess || (!borrower && !fromDateValue && !toDateValue)
-            }
-            onClick={handleSearchByBorrower}
-          >
+          <Button className="search-btn" onClick={handleSearchByBorrower}>
             Search
           </Button>
         </div>
@@ -389,7 +382,12 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
           columns={columns}
           dataSource={dataRecentTable}
           pagination={false}
-          // rowKey={record => record.id}
+          rowKey={record => record.id}
+          onRow={record => {
+            return {
+              onClick: () => handleLink(record.txHash) // click row
+            };
+          }}
         />
       </ModalContent>
     </CustomModal>

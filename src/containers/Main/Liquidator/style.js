@@ -48,6 +48,7 @@ export const STable = styled(Table)`
 
   .ant-table-tbody {
     tr {
+      cursor: ${props => (props.liquidatorTable ? 'pointer' : 'unset')};
       td {
         font-weight: normal;
         text-align: left;
@@ -680,7 +681,7 @@ export const Timestamp = styled.div`
   color: #0b0f23;
 `;
 
-export const BorrowerAndLiquidator = styled.a`
+export const BorrowerAndLiquidator = styled.div`
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
