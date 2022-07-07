@@ -98,7 +98,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     if (date && dateString) {
       setFromDateDisplay(date);
       setFromDateValue(
-        dayjs(dateString)
+        moment(date)
           .startOf('day')
           .unix()
       );
@@ -112,7 +112,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     if (date && dateString) {
       setToDateDisplay(date);
       setToDateValue(
-        dayjs(dateString)
+        moment(date)
           .endOf('day')
           .unix()
       );
