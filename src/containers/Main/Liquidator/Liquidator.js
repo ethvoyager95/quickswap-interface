@@ -360,7 +360,9 @@ function Liquidator() {
           // rowKey={record => record.id}
         />
       </STableWrapper>
-      <ModalLiquidations isOpenModal={isOpenModal} onCancel={handleCancel} />
+      {isOpenModal && (
+        <ModalLiquidations isOpenModal={isOpenModal} onCancel={handleCancel} />
+      )}
     </MainLayout>
   );
 }

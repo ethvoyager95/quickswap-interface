@@ -100,6 +100,17 @@ export const THeadWrapper = styled.div`
   align-items: center;
   gap: 6px;
   color: #9d9fa7;
+  cursor: ${props => (props.sorted ? 'pointer' : 'unset')};
+
+  .desc {
+    align-self: flex-end;
+    margin-bottom: 4px;
+  }
+
+  .asc {
+    align-self: flex-start;
+    margin-top: 4px;
+  }
 `;
 
 export const SearchBar = styled.div`
@@ -505,7 +516,7 @@ export const TdWithImg = styled.div`
 
 export const CustomModal = styled(Modal)`
   .ant-modal-body {
-    padding: 70px 60px;
+    padding: 70px 24px;
     background: #eceff9;
   }
 
@@ -544,6 +555,17 @@ export const ModalContent = styled.div`
     align-self: flex-start;
   }
 
+  .error-mess {
+    color: #f84960;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    margin-bottom: 16px;
+    margin-top: -16px;
+    align-self: flex-start;
+  }
+
   .input-wrapper {
     display: flex;
     align-items: center;
@@ -564,21 +586,12 @@ export const ModalContent = styled.div`
         background: #ffffff;
         border: 1px solid #e5e5e5;
         box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
-        border-radius: 8px 0 0 8px;
+        border-radius: 8px;
         font-style: normal;
         font-weight: 500;
         font-size: 16px;
         line-height: 24px;
         color: #6d6f7b;
-        border-right: 0;
-      }
-
-      .search-btn {
-        width: 50px;
-        height: 50px;
-        background: #107def;
-        border-radius: 0px 8px 8px 0px;
-        border-left: 0;
       }
     }
 
@@ -614,6 +627,19 @@ export const ModalContent = styled.div`
           border-radius: 8px;
         }
       }
+    }
+
+    .search-btn {
+      width: 120px;
+      height: 50px;
+      background: #1272ec;
+      box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
+      border-radius: 8px;
+      color: #ffffff;
+      font-style: normal;
+      font-weight: 900;
+      font-size: 18px;
+      line-height: 25px;
     }
   }
 
@@ -654,7 +680,7 @@ export const Timestamp = styled.div`
   color: #0b0f23;
 `;
 
-export const BorrowerAndLiquidator = styled.div`
+export const BorrowerAndLiquidator = styled.a`
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
@@ -729,5 +755,32 @@ export const SButton = styled.button`
   cursor: pointer;
   &:hover {
     background-color: transparent !important;
+  }
+`;
+
+export const NoData = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 100px auto;
+  gap: 24px;
+  align-items: center;
+
+  div {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 27px;
+    color: #9d9fa7;
+  }
+
+  @media only screen and (max-width: 768px) {
+    div {
+      font-weight: 900;
+      font-size: 12px;
+      line-height: 19px;
+    }
+    img {
+      width: 200px;
+    }
   }
 `;

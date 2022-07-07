@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Web3 from 'web3';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import { Input, Button, DatePicker } from 'antd';
-import iconSearch from 'assets/img/liquidator-search.svg';
-import usdt from 'assets/img/coins/usdt.png';
 import iconSort from 'assets/img/icon-sort.svg';
+import iconSortDesc from 'assets/img/sort-desc.svg';
+import iconSortAsc from 'assets/img/sort-asc.svg';
+import noData from 'assets/img/no_data.svg';
+import dayjs from 'dayjs';
+import moment from 'moment';
+
 import {
   STable,
   THeadWrapper,
@@ -15,124 +21,157 @@ import {
   SeizedAndRepay,
   BorrowerAndLiquidator,
   CustomModal,
-  ModalContent
+  ModalContent,
+  NoData
 } from './style';
 import './overide.scss';
+import { formatRecentRecord } from './helper';
 
 function ModalLiquidations({ isOpenModal, onCancel }) {
-  const dataRecentTable = [
-    {
-      timestamp: '20/06/2022 19:31',
-      iconSeized: usdt,
-      valueSeized: '100',
-      symbolSeized: 'USDT',
-      valueSeizedToDollar: '10',
-      iconRepay: usdt,
-      valueRepay: '100',
-      symbolRepay: 'USDT',
-      valueRepayToDollar: '10',
-      borrower: '0x5edA1...EA02F',
-      liquidator: '0x5edA1...EA02F'
-    },
-    {
-      timestamp: '20/06/2022 19:31',
-      iconSeized: usdt,
-      valueSeized: '100',
-      symbolSeized: 'USDT',
-      valueSeizedToDollar: '10',
-      iconRepay: usdt,
-      valueRepay: '100',
-      symbolRepay: 'USDT',
-      valueRepayToDollar: '10',
-      borrower: '0x5edA1...EA02F',
-      liquidator: '0x5edA1...EA02F'
-    },
-    {
-      timestamp: '20/06/2022 19:31',
-      iconSeized: usdt,
-      valueSeized: '100',
-      symbolSeized: 'USDT',
-      valueSeizedToDollar: '10',
-      iconRepay: usdt,
-      valueRepay: '100',
-      symbolRepay: 'USDT',
-      valueRepayToDollar: '10',
-      borrower: '0x5edA1...EA02F',
-      liquidator: '0x5edA1...EA02F'
-    },
-    {
-      timestamp: '20/06/2022 19:31',
-      iconSeized: usdt,
-      valueSeized: '100',
-      symbolSeized: 'USDT',
-      valueSeizedToDollar: '10',
-      iconRepay: usdt,
-      valueRepay: '100',
-      symbolRepay: 'USDT',
-      valueRepayToDollar: '10',
-      borrower: '0x5edA1...EA02F',
-      liquidator: '0x5edA1...EA02F'
-    },
-    {
-      timestamp: '20/06/2022 19:31',
-      iconSeized: usdt,
-      valueSeized: '100',
-      symbolSeized: 'USDT',
-      valueSeizedToDollar: '10',
-      iconRepay: usdt,
-      valueRepay: '100',
-      symbolRepay: 'USDT',
-      valueRepayToDollar: '10',
-      borrower: '0x5edA1...EA02F',
-      liquidator: '0x5edA1...EA02F'
-    },
-    {
-      timestamp: '20/06/2022 19:31',
-      iconSeized: usdt,
-      valueSeized: '100',
-      symbolSeized: 'USDT',
-      valueSeizedToDollar: '10',
-      iconRepay: usdt,
-      valueRepay: '100',
-      symbolRepay: 'USDT',
-      valueRepayToDollar: '10',
-      borrower: '0x5edA1...EA02F',
-      liquidator: '0x5edA1...EA02F'
-    },
-    {
-      timestamp: '20/06/2022 19:31',
-      iconSeized: usdt,
-      valueSeized: '100',
-      symbolSeized: 'USDT',
-      valueSeizedToDollar: '10',
-      iconRepay: usdt,
-      valueRepay: '100',
-      symbolRepay: 'USDT',
-      valueRepayToDollar: '10',
-      borrower: '0x5edA1...EA02F',
-      liquidator: '0x5edA1...EA02F'
-    },
-    {
-      timestamp: '20/06/2022 19:31',
-      iconSeized: usdt,
-      valueSeized: '100',
-      symbolSeized: 'USDT',
-      valueSeizedToDollar: '10',
-      iconRepay: usdt,
-      valueRepay: '100',
-      symbolRepay: 'USDT',
-      valueRepayToDollar: '10',
-      borrower: '0x5edA1...EA02F',
-      liquidator: '0x5edA1...EA02F'
+  const [dataRecentTable, setDataRecentTable] = useState([]);
+  const [borrower, setBorrower] = useState('');
+  const [errorMess, setErrorMess] = useState('');
+  const [fromDateValue, setFromDateValue] = useState('');
+  const [fromDateDisplay, setFromDateDisplay] = useState('');
+  const [toDateValue, setToDateValue] = useState('');
+  const [toDateDisplay, setToDateDisplay] = useState('');
+  const [orderBy, setOrderBy] = useState('');
+  const [currentSortTimestamp, setCurrentSortTimestamp] = useState('');
+  const [currentSortSeize, setCurrentSortSeize] = useState('');
+  const [currentSortRepay, setCurrentSortRepay] = useState('');
+
+  const getDataRecent = async () => {
+    const res = await axios.get(
+      `${
+        process.env.REACT_APP_ENV === 'dev'
+          ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+          : `${process.env.REACT_APP_PRODUCTION_API}`
+      }/liquidator`,
+      {
+        params: {
+          borrower_address: borrower || undefined,
+          from_date: fromDateValue || undefined,
+          to_date: toDateValue || undefined,
+          order_by: orderBy || undefined,
+          order_direction:
+            currentSortTimestamp ||
+            currentSortSeize ||
+            currentSortRepay ||
+            undefined
+        }
+      }
+    );
+    const { data } = res.data;
+
+    setDataRecentTable(formatRecentRecord(data));
+  };
+
+  useEffect(() => {
+    getDataRecent();
+  }, [orderBy, currentSortTimestamp, currentSortSeize, currentSortRepay]);
+
+  const handleInputChange = value => {
+    const validateAddress = Web3.utils.isAddress(value);
+    if (!String(value)) {
+      setErrorMess('');
+      setBorrower('');
+      return;
     }
-  ];
+    if (validateAddress) {
+      setErrorMess('');
+      setBorrower(value);
+    } else {
+      setErrorMess('Please enter a valid address');
+      setBorrower('');
+    }
+  };
+
+  const handleSearchByBorrower = () => {
+    setCurrentSortTimestamp('');
+    setCurrentSortSeize('');
+    setCurrentSortRepay('');
+    getDataRecent();
+  };
+
+  const handleFromDateChange = (date, dateString) => {
+    if (date && dateString) {
+      setFromDateDisplay(date);
+      setFromDateValue(
+        dayjs(dateString)
+          .startOf('day')
+          .unix()
+      );
+    } else {
+      setFromDateDisplay('');
+      setFromDateValue('');
+    }
+  };
+
+  const handleToDateChange = (date, dateString) => {
+    if (date && dateString) {
+      setToDateDisplay(date);
+      setToDateValue(
+        dayjs(dateString)
+          .startOf('day')
+          .unix()
+      );
+    } else {
+      setToDateDisplay('');
+      setToDateValue('');
+    }
+  };
+
+  const handleSortByTimestamp = () => {
+    setOrderBy('blockTimestamp');
+    if (currentSortTimestamp === 'DESC') {
+      setCurrentSortTimestamp('ASC');
+      setCurrentSortSeize('');
+      setCurrentSortRepay('');
+    } else {
+      setCurrentSortTimestamp('DESC');
+      setCurrentSortSeize('');
+      setCurrentSortRepay('');
+    }
+  };
+
+  const handleSortBySeize = () => {
+    setOrderBy('totalPriceSeize');
+    if (currentSortSeize === 'DESC') {
+      setCurrentSortSeize('ASC');
+      setCurrentSortTimestamp('');
+      setCurrentSortRepay('');
+    } else {
+      setCurrentSortSeize('DESC');
+      setCurrentSortTimestamp('');
+      setCurrentSortRepay('');
+    }
+  };
+
+  const handleSortByRepay = () => {
+    setOrderBy('totalPriceRepay');
+    if (currentSortRepay === 'DESC') {
+      setCurrentSortRepay('ASC');
+      setCurrentSortSeize('');
+      setCurrentSortTimestamp('');
+    } else {
+      setCurrentSortRepay('DESC');
+      setCurrentSortSeize('');
+      setCurrentSortTimestamp('');
+    }
+  };
 
   const columns = [
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper sorted onClick={handleSortByTimestamp}>
           <div>Timestamp</div>
-          <img src={iconSort} alt="" />
+          {!currentSortTimestamp && <img src={iconSort} alt="" />}
+          {currentSortTimestamp === 'DESC' && (
+            <img src={iconSortDesc} alt="" className="desc" />
+          )}
+          {currentSortTimestamp === 'ASC' && (
+            <img src={iconSortAsc} alt="" className="asc" />
+          )}
         </THeadWrapper>
       ),
       dataIndex: 'timestamp',
@@ -145,23 +184,29 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper sorted onClick={handleSortBySeize}>
           <div>Seized Tokens</div>
-          <img src={iconSort} alt="" />
+          {!currentSortSeize && <img src={iconSort} alt="" />}
+          {currentSortSeize === 'DESC' && (
+            <img src={iconSortDesc} alt="" className="desc" />
+          )}
+          {currentSortSeize === 'ASC' && (
+            <img src={iconSortAsc} alt="" className="asc" />
+          )}
         </THeadWrapper>
       ),
-      dataIndex: 'valueSeized',
-      key: 'valueSeized',
+      dataIndex: 'seizeAmountEther',
+      key: 'seizeAmountEther',
       render(_, asset) {
         return {
           children: (
             <SeizedAndRepay>
-              {asset.iconSeized && <img src={asset.iconSeized} alt="" />}
+              {asset.logoSeize && <img src={asset.logoSeize} alt="" />}
               <div>
                 <span>
-                  {asset.valueSeized} {asset.symbolSeized}
+                  {asset.seizeAmountEther} {asset.symbolSeizeToken}
                 </span>
-                <span>${asset.valueSeizedToDollar}</span>
+                <span>${asset.seizeAmountUsd}</span>
               </div>
             </SeizedAndRepay>
           )
@@ -170,23 +215,29 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     },
     {
       title: () => (
-        <THeadWrapper>
+        <THeadWrapper sorted onClick={handleSortByRepay}>
           <div>Repay Amount</div>
-          <img src={iconSort} alt="" />
+          {!currentSortRepay && <img src={iconSort} alt="" />}
+          {currentSortRepay === 'DESC' && (
+            <img src={iconSortDesc} alt="" className="desc" />
+          )}
+          {currentSortRepay === 'ASC' && (
+            <img src={iconSortAsc} alt="" className="asc" />
+          )}
         </THeadWrapper>
       ),
-      dataIndex: 'valueSeized',
-      key: 'valueSeized',
+      dataIndex: 'repayAmountEther',
+      key: 'repayAmountEther',
       render(_, asset) {
         return {
           children: (
             <SeizedAndRepay>
-              {asset.iconSeized && <img src={asset.iconSeized} alt="" />}
+              {asset.logoRepay && <img src={asset.logoRepay} alt="" />}
               <div>
                 <span>
-                  {asset.valueSeized} {asset.symbolSeized}
+                  {asset.repayAmountEther} {asset.symbolRepayToken}
                 </span>
-                <span>${asset.valueSeizedToDollar}</span>
+                <span>${asset.repayAmountUsd}</span>
               </div>
             </SeizedAndRepay>
           )
@@ -200,8 +251,16 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       render(_, asset) {
         return {
           children: (
-            <BorrowerAndLiquidator>
-              {asset.borrower || '-'}
+            <BorrowerAndLiquidator
+              href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.borrower}`}
+              target="_blank"
+            >
+              {asset.borrower
+                ? `${asset.borrower.substr(0, 4)}...${asset.borrower.substr(
+                    asset.borrower.length - 4,
+                    4
+                  )}`
+                : '-'}
             </BorrowerAndLiquidator>
           )
         };
@@ -209,19 +268,68 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     },
     {
       title: () => <THeadWrapper>Liquidator</THeadWrapper>,
-      dataIndex: 'borrower',
-      key: 'borrower',
+      dataIndex: 'liquidator',
+      key: 'liquidator',
       render(_, asset) {
         return {
           children: (
-            <BorrowerAndLiquidator>
-              {asset.borrower || '-'}
+            <BorrowerAndLiquidator
+              href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.liquidator}`}
+              target="_blank"
+            >
+              {asset.liquidator
+                ? `${asset.liquidator.substr(0, 4)}...${asset.liquidator.substr(
+                    asset.liquidator.length - 4,
+                    4
+                  )}`
+                : '-'}
             </BorrowerAndLiquidator>
+          )
+        };
+      }
+    },
+    {
+      title: () => <THeadWrapper>Asset To Repay</THeadWrapper>,
+      dataIndex: 'repay',
+      key: 'repay',
+      render(_, asset) {
+        return {
+          children: (
+            <SeizedAndRepay>
+              {asset.logoRepay && <img src={asset.logoRepay} alt="" />}
+              <div>{asset.symbolRepayToken}</div>
+            </SeizedAndRepay>
+          )
+        };
+      }
+    },
+    {
+      title: () => <THeadWrapper>Asset To Seize</THeadWrapper>,
+      dataIndex: 'seize',
+      key: 'seize',
+      render(_, asset) {
+        return {
+          children: (
+            <SeizedAndRepay>
+              {asset.logoSeize && <img src={asset.logoSeize} alt="" />}
+              <div>{asset.symbolSeizeToken}</div>
+            </SeizedAndRepay>
           )
         };
       }
     }
   ];
+
+  const locale = {
+    emptyText: (
+      <NoData>
+        <>
+          <img src={noData} alt="No data" />
+          <div>No record was found </div>
+        </>
+      </NoData>
+    )
+  };
 
   return (
     <CustomModal
@@ -237,24 +345,47 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
         <div className="search-label">Search by borrower address</div>
         <div className="input-wrapper">
           <div className="search-input">
-            <Input placeholder="Search by borrower's address" />
-            <Button className="search-btn">
-              <img src={iconSearch} alt="" />
-            </Button>
+            <Input
+              placeholder="Search by borrower's address"
+              onChange={e => handleInputChange(e.target.value)}
+            />
           </div>
           <div className="date-picker-wrapper">
             <div className="date-picker">
               <span className="date-picker-label">From</span>
-              <DatePicker format="MM/DD/YYYY" placeholder="mm/dd/yyyy" />
+              <DatePicker
+                defaultPickerValue={moment(fromDateDisplay, 'MM/DD/YYYY')}
+                value={fromDateDisplay !== '' ? moment(fromDateDisplay) : null}
+                format="MM/DD/YYYY"
+                placeholder="mm/dd/yyyy"
+                onChange={handleFromDateChange}
+              />
             </div>
             <div className="date-picker">
               <span className="date-picker-label">To</span>
-              <DatePicker format="MM/DD/YYYY" placeholder="mm/dd/yyyy" />
+              <DatePicker
+                defaultPickerValue={moment(toDateDisplay, 'MM/DD/YYYY')}
+                value={toDateDisplay !== '' ? moment(toDateDisplay) : null}
+                format="MM/DD/YYYY"
+                placeholder="mm/dd/yyyy"
+                onChange={handleToDateChange}
+              />
             </div>
           </div>
+          <Button
+            className="search-btn"
+            disabled={
+              errorMess || (!borrower && !fromDateValue && !toDateValue)
+            }
+            onClick={handleSearchByBorrower}
+          >
+            Search
+          </Button>
         </div>
+        {errorMess && <div className="error-mess">{errorMess}</div>}
         <STable
           liquidatorTable
+          locale={locale}
           columns={columns}
           dataSource={dataRecentTable}
           pagination={false}
