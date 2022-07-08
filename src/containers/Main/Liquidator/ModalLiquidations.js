@@ -256,7 +256,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       render(_, asset) {
         return {
           children: (
-            <BorrowerAndLiquidator>
+            <BorrowerAndLiquidator title={asset.borrower}>
               {asset.borrower
                 ? `${asset.borrower.substr(0, 4)}...${asset.borrower.substr(
                     asset.borrower.length - 4,
@@ -275,7 +275,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       render(_, asset) {
         return {
           children: (
-            <BorrowerAndLiquidator>
+            <BorrowerAndLiquidator title={asset.liquidator}>
               {asset.liquidator
                 ? `${asset.liquidator.substr(0, 4)}...${asset.liquidator.substr(
                     asset.liquidator.length - 4,
@@ -348,6 +348,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
               placeholder="Search by borrower's address"
               onChange={e => handleInputChange(e.target.value)}
             />
+            {errorMess && <div className="error-mess-mobile">{errorMess}</div>}
           </div>
           <div className="date-picker-wrapper">
             <div className="date-picker">

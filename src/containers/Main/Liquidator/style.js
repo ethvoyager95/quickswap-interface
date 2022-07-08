@@ -576,10 +576,15 @@ export const ModalContent = styled.div`
 
     .search-input {
       display: flex;
+      flex-direction: column;
       align-items: center;
       height: 50px;
       width: 100%;
       flex: 1;
+
+      .error-mess-mobile {
+        display: none;
+      }
 
       input {
         padding-left: 20px;
@@ -660,6 +665,19 @@ export const ModalContent = styled.div`
       gap: 25px;
       margin-bottom: 24px;
 
+      .search-input {
+        .error-mess-mobile {
+          display: block;
+          color: #f84960;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 22px;
+          margin-top: 16px;
+          align-self: flex-start;
+        }
+      }
+
       .date-picker-wrapper {
         gap: 16px;
 
@@ -669,6 +687,10 @@ export const ModalContent = styled.div`
           align-items: flex-start;
         }
       }
+    }
+
+    .error-mess {
+      display: none;
     }
   }
 `;
