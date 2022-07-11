@@ -39,6 +39,7 @@ const renderLogo = symbol => {
   if (symbol.toLowerCase() === 'sxp') return sxp;
   if (symbol.toLowerCase() === 'wbtc') return wbtc;
   if (symbol.toLowerCase() === 'eth') return eth;
+  if (symbol.toLowerCase() === 'weth') return eth;
   if (symbol.toLowerCase() === 'link') return link;
   if (symbol.toLowerCase() === 'comp') return comp;
   if (symbol.toLowerCase() === 'uni') return uni;

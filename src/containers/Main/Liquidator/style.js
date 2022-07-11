@@ -103,14 +103,8 @@ export const THeadWrapper = styled.div`
   color: #9d9fa7;
   cursor: ${props => (props.sorted ? 'pointer' : 'unset')};
 
-  .desc {
-    align-self: flex-end;
-    margin-bottom: 4px;
-  }
-
   .asc {
-    align-self: flex-start;
-    margin-top: 4px;
+    transform: rotate(180deg);
   }
 `;
 

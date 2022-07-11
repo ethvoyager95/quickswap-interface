@@ -8,10 +8,8 @@ import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import { Input, Button, DatePicker } from 'antd';
 import iconSort from 'assets/img/icon-sort.svg';
-import iconSortDesc from 'assets/img/sort-desc.svg';
-import iconSortAsc from 'assets/img/sort-asc.svg';
+import iconSortActive from 'assets/img/sort-highlight.svg';
 import noData from 'assets/img/no_data.svg';
-import dayjs from 'dayjs';
 import moment from 'moment';
 
 import {
@@ -172,10 +170,10 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
           <div>Timestamp</div>
           {!currentSortTimestamp && <img src={iconSort} alt="" />}
           {currentSortTimestamp === 'DESC' && (
-            <img src={iconSortDesc} alt="" className="desc" />
+            <img src={iconSortActive} alt="" />
           )}
           {currentSortTimestamp === 'ASC' && (
-            <img src={iconSortAsc} alt="" className="asc" />
+            <img src={iconSortActive} alt="" className="asc" />
           )}
         </THeadWrapper>
       ),
@@ -192,11 +190,9 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
         <THeadWrapper sorted onClick={handleSortBySeize}>
           <div>Seized Tokens</div>
           {!currentSortSeize && <img src={iconSort} alt="" />}
-          {currentSortSeize === 'DESC' && (
-            <img src={iconSortDesc} alt="" className="desc" />
-          )}
+          {currentSortSeize === 'DESC' && <img src={iconSortActive} alt="" />}
           {currentSortSeize === 'ASC' && (
-            <img src={iconSortAsc} alt="" className="asc" />
+            <img src={iconSortActive} alt="" className="asc" />
           )}
         </THeadWrapper>
       ),
@@ -223,11 +219,9 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
         <THeadWrapper sorted onClick={handleSortByRepay}>
           <div>Repay Amount</div>
           {!currentSortRepay && <img src={iconSort} alt="" />}
-          {currentSortRepay === 'DESC' && (
-            <img src={iconSortDesc} alt="" className="desc" />
-          )}
+          {currentSortRepay === 'DESC' && <img src={iconSortActive} alt="" />}
           {currentSortRepay === 'ASC' && (
-            <img src={iconSortAsc} alt="" className="asc" />
+            <img src={iconSortActive} alt="" className="asc" />
           )}
         </THeadWrapper>
       ),
