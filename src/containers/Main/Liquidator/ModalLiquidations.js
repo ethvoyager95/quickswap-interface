@@ -80,7 +80,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       setBorrower(value);
     } else {
       setErrorMess('Please enter a valid address');
-      setBorrower('');
+      setBorrower(value);
     }
   };
 
