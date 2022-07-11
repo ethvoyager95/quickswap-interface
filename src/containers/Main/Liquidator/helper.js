@@ -74,9 +74,9 @@ export const formatRecentRecord = records =>
     ...record,
     timestamp: dayjs.unix(record.blockTimestamp).format('DD/MM/YYYY HH:mm'),
     logoSeize: renderLogo(record.symbolSeizeToken),
-    seizeAmountEther: formatNumber(record.seizeAmount),
+    seizeAmountEther: formatNumber(record.seizeAmountCalculate),
     seizeAmountUsd: formatNumber(record.totalPriceSeize),
     logoRepay: renderLogo(record.symbolRepayToken),
-    repayAmountEther: formatNumber(record.repayAmount),
+    repayAmountEther: formatNumber(record.repayAmountCalculate),
     repayAmountUsd: formatNumber(record.totalPriceRepay)
   }));
