@@ -88,6 +88,12 @@ export const STable = styled(Table)`
     margin-right: ${props => (props.dropdownOpen ? '0' : '16px')};
   }
 
+  @media only screen and (max-width: 1295px) {
+    table {
+      padding-right: 40px;
+    }
+  }
+
   .ant-table-thead {
     tr {
       th {
@@ -431,8 +437,8 @@ export const SBoxFlex = styled.div`
 
 export const SImg = styled.img`
   margin-right: 6px;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
 `;
 
 export const DivFlexBetween = styled.div`
