@@ -21,7 +21,8 @@ import {
   FAKE_STRK,
   STRK,
   ETH,
-  FAKE_TOTAL_SUPPLY
+  FAKE_TOTAL_SUPPLY,
+  FAKE_TOTAL_DEPOSIT
 } from './helper';
 import {
   getFarmingContract,
@@ -152,6 +153,7 @@ function DashboardStaking({ amount, txh }) {
     let decimalTotal = null;
     let totalETH = null;
     let totalSTRK = null;
+    let totalDepositString = null;
     try {
       // get decimals
       await methods
@@ -167,7 +169,7 @@ function DashboardStaking({ amount, txh }) {
         .call(strkContractCustomer.methods.totalSupply, [])
         .then(res => {
           if (res) {
-            totalSupply = divDecimals(res, decimalTotal);
+            totalSupply = res;
           }
         })
         .catch(err => {});
@@ -181,12 +183,20 @@ function DashboardStaking({ amount, txh }) {
           }
         })
         .catch(err => {});
+      await axiosInstance.get(`/user/total_stake`).then(res => {
+        if (res) {
+          const result = res.data.data;
+          totalDepositString = result?.totalDeposit;
+        }
+      });
+
       // get rate
       await axiosInstance
         .get('/price')
         .then(res => {
           if (res) {
             const result = res?.data?.data?.rows;
+
             const objPriceStrkToUSD = _.find(result, item => {
               return item.symbol.toLowerCase() === STRK;
             });
@@ -201,19 +211,21 @@ function DashboardStaking({ amount, txh }) {
               totalETH = totalETH?.toNumber();
               // eslint-disable-next-line no-self-assign
               totalSTRK = totalSTRK?.toNumber();
-              totalSupply = totalSupply?.toNumber();
             } else {
               // development env
               totalETH = FAKE_ETH;
               totalSTRK = FAKE_STRK;
-              totalSupply = divDecimals(FAKE_TOTAL_SUPPLY, 18);
+              totalSupply = FAKE_TOTAL_SUPPLY;
+              totalDepositString = FAKE_TOTAL_DEPOSIT;
             }
+
             const totalLiquidityBigNumber = getLiquidity(
               rateStrkVsUSD,
               totalSTRK,
               rateStrkVsETH,
               totalETH,
-              totalSupply
+              totalSupply,
+              totalDepositString
             );
             const total = renderValueFixedDashboard(
               totalLiquidityBigNumber.toNumber()
