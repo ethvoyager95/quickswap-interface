@@ -13,7 +13,8 @@ export const SECOND2DAY = process.env.REACT_APP_ENV === 'prod' ? 172800 : 240; /
 export const SECOND30DAY = process.env.REACT_APP_ENV === 'prod' ? 2592000 : 300; // 2592000
 export const FAKE_STRK = 18.6;
 export const FAKE_ETH = 11.5;
-export const FAKE_TOTAL_SUPPLY = 3133979606;
+export const FAKE_TOTAL_SUPPLY = 25050777416522;
+export const FAKE_TOTAL_DEPOSIT = 3133979606;
 export const UNSTAKE = 'UNSTAKE';
 export const CLAIMBASE = 'CLAIMBASE';
 export const CLAIMBOOST = 'CLAIMBOOST';
@@ -147,6 +148,7 @@ export const getLiquidity = (
     const t = new BigNumber(totalDeposit);
     const n = n0.plus(n1);
     const r = n.div(d);
+    console.log(n.toNumber(), 'n');
     const result = r.times(t);
     return result;
   }

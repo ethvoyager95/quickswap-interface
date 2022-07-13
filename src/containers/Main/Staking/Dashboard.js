@@ -21,7 +21,8 @@ import {
   FAKE_STRK,
   STRK,
   ETH,
-  FAKE_TOTAL_SUPPLY
+  FAKE_TOTAL_SUPPLY,
+  FAKE_TOTAL_DEPOSIT
 } from './helper';
 import {
   getFarmingContract,
@@ -215,7 +216,9 @@ function DashboardStaking({ amount, txh }) {
               totalETH = FAKE_ETH;
               totalSTRK = FAKE_STRK;
               totalSupply = FAKE_TOTAL_SUPPLY;
+              totalDepositString = FAKE_TOTAL_DEPOSIT;
             }
+
             const totalLiquidityBigNumber = getLiquidity(
               rateStrkVsUSD,
               totalSTRK,
