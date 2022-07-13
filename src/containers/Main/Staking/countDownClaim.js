@@ -26,7 +26,7 @@ const SBoxTime = styled.button`
   background: #fff;
   color: #f84960;
   border-radius: 5px;
-  padding: 8px 20px;
+  padding: 8px 16px;
   margin-right: 10px;
   width: 280px;
   text-align: center;
