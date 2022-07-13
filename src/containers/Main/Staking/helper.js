@@ -11,9 +11,9 @@ export const PERCENT_APR = 10;
 export const SECOND24H = process.env.REACT_APP_ENV === 'prod' ? 86400 : 180; // 86400
 export const SECOND2DAY = process.env.REACT_APP_ENV === 'prod' ? 172800 : 240; // 172800
 export const SECOND30DAY = process.env.REACT_APP_ENV === 'prod' ? 2592000 : 300; // 2592000
-export const FAKE_STRK = 27.15;
-export const FAKE_ETH = 0.425;
-export const FAKE_TOTAL_SUPPLY = 582099001354;
+export const FAKE_STRK = 18.6;
+export const FAKE_ETH = 11.5;
+export const FAKE_TOTAL_SUPPLY = 25050777416522;
 export const UNSTAKE = 'UNSTAKE';
 export const CLAIMBASE = 'CLAIMBASE';
 export const CLAIMBOOST = 'CLAIMBOOST';
@@ -128,8 +128,15 @@ export const getBaseApr = (liquidity, block) => {
   }
   return new BigNumber(0);
 };
-export const getLiquidity = (strk, rateSrk, eth, rateEth, totalSupply) => {
-  if ((strk, eth, rateEth, rateSrk, totalSupply)) {
+export const getLiquidity = (
+  strk,
+  rateSrk,
+  eth,
+  rateEth,
+  totalSupply,
+  totalDeposit
+) => {
+  if ((strk, eth, rateEth, rateSrk, totalSupply, totalDeposit)) {
     const strk_val = new BigNumber(strk);
     const eth_val = new BigNumber(eth);
     const rateSrk_val = new BigNumber(rateSrk);
@@ -137,8 +144,10 @@ export const getLiquidity = (strk, rateSrk, eth, rateEth, totalSupply) => {
     const n0 = new BigNumber(strk_val).times(rateSrk_val);
     const n1 = new BigNumber(eth_val).times(rateEth_val);
     const d = new BigNumber(totalSupply);
+    const t = new BigNumber(totalDeposit);
     const n = n0.plus(n1);
-    const result = n.div(d);
+    const r = n.div(d);
+    const result = r.times(t);
     return result;
   }
   return new BigNumber(0);
