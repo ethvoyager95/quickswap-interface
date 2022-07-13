@@ -148,7 +148,6 @@ export const getLiquidity = (
     const t = new BigNumber(totalDeposit);
     const n = n0.plus(n1);
     const r = n.div(d);
-    console.log(n.toNumber(), 'n');
     const result = r.times(t);
     return result;
   }
