@@ -37,7 +37,7 @@ import {
   SECOND24H,
   SECOND2DAY,
   SECOND30DAY,
-  TIME_UPDATE_MORALIS_API,
+  TIME_UPDATE_NFT,
   PERCENT_APR,
   MAX_STAKE_NFT,
   SETTING_SLIDER,
@@ -1277,7 +1277,7 @@ function Staking({ settings, setSetting }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
-              setTimeDelay(TIME_UPDATE_MORALIS_API);
+              setTimeDelay(TIME_UPDATE_NFT);
               setValueNFTStake('');
               setItemStaking([]);
               // begin time out
@@ -1287,7 +1287,7 @@ function Staking({ settings, setSetting }) {
                 setIsSuccess(true);
                 setTextSuccess('Stake NFT successfully');
                 setMessConfirm('');
-              }, TIME_UPDATE_MORALIS_API);
+              }, TIME_UPDATE_NFT);
             }
           })
           .catch(err => {
@@ -1340,7 +1340,7 @@ function Staking({ settings, setSetting }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
-              setTimeDelay(TIME_UPDATE_MORALIS_API);
+              setTimeDelay(TIME_UPDATE_NFT);
               setValueNFTUnStake('');
               setItemStaked([]);
               setTimeout(() => {
@@ -1350,7 +1350,7 @@ function Staking({ settings, setSetting }) {
                 setMessConfirm('');
 
                 setIsSuccess(true);
-              }, TIME_UPDATE_MORALIS_API);
+              }, TIME_UPDATE_NFT);
             }
           })
           .catch(err => {
@@ -1408,9 +1408,11 @@ function Staking({ settings, setSetting }) {
   };
   // check approve lp
   useEffect(() => {
-    checkApproveLP();
-    checkApproveNFT();
-    checkApproveVstrk();
+    if (address) {
+      checkApproveLP();
+      checkApproveNFT();
+      checkApproveVstrk();
+    }
   }, [
     val,
     handleMaxValue,
