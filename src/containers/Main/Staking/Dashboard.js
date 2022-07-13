@@ -175,7 +175,7 @@ function DashboardStaking({ amount, txh }) {
       await methods
         .call(strkContractCustomer.methods.getReserves, [])
         .then(res => {
-          if (res.length > 0) {
+          if (res) {
             totalSTRK = divDecimals(res[0], decimalTotal);
             totalETH = divDecimals(res[1], decimalTotal);
           }
