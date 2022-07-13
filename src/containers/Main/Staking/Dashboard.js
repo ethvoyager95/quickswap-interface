@@ -186,12 +186,12 @@ function DashboardStaking({ amount, txh }) {
         .get('/price')
         .then(res => {
           if (res) {
-            const result = res.data.data.rows;
+            const result = res?.data?.data?.rows;
             const objPriceStrkToUSD = _.find(result, item => {
-              return item.symbol === STRK;
+              return item.symbol.toLowerCase() === STRK;
             });
             const objPriceStrkToEthereum = _.find(result, item => {
-              return item.symbol === ETH;
+              return item.symbol.toLowerCase() === ETH;
             });
             rateStrkVsUSD = objPriceStrkToUSD?.amount;
             rateStrkVsETH = objPriceStrkToEthereum?.amount;
