@@ -371,7 +371,6 @@ export const SBtnStake = styled.button`
   border: none;
   outline: none;
   margin-right: 15px;
-  margin-top: 10px;
   @media only screen and (max-width: 768px) {
     width: 100%;
     margin-left: 0px !important;
@@ -398,7 +397,6 @@ export const SBtnApprove = styled.button`
   border: none;
   outline: none;
   margin-right: 15px;
-  margin-top: 10px;
   @media only screen and (max-width: 768px) {
     width: 100%;
     margin-left: 0px !important;
@@ -422,7 +420,6 @@ export const SBtnLoadding = styled.button`
   text-align: center;
   border: none;
   outline: none;
-  margin-top: 10px;
   margin-right: 15px;
   @media only screen and (max-width: 768px) {
     width: 100%;
@@ -443,7 +440,6 @@ export const SBtnUnstake = styled.button`
   text-align: center;
   border: 1px solid #f84960;
   margin-right: 15px;
-  margin-top: 10px;
   outline: none;
   &:hover {
     background: #fff !important;
@@ -539,7 +535,6 @@ export const SSUnTake = styled.button`
   outline: none;
   margin-right: 15px;
   .mg-10:disabled {
-    margin-top: 10px !important;
     @media only screen and (max-width: 768px) {
       margin-top: 0 !important;
     }
