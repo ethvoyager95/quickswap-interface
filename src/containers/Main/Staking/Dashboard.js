@@ -278,7 +278,13 @@ function DashboardStaking({ amount, txh }) {
       .call(farmingContract.methods.rewardPerBlock, [])
       .then(res => {
         if (res) {
-          const result = divDecimals(res, decimalStrkClaim).toNumber();
+          let decimlsAPR = null;
+          if (process.env.REACT_APP_ENV === 'dev') {
+            decimlsAPR = 18;
+          } else {
+            decimlsAPR = 6;
+          }
+          const result = divDecimals(res, decimlsAPR).toNumber();
           const baseAprCaculator = getBaseApr(totalLiquid, result);
           const baseAprPer = renderValueFixedDashboard(
             baseAprCaculator.toNumber()
