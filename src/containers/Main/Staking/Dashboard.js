@@ -252,7 +252,7 @@ function DashboardStaking({ amount, txh }) {
         .then(res => {
           if (res) {
             const result = res.data.data;
-            const totalDepositString = divDecimals(result?.totalDeposit, 18);
+            const totalDepositString = divDecimals(result?.totalDeposit, 0);
             const totalDepositNumber = totalDepositString?.toNumber();
             totalLiquid = totalDepositString?.toNumber();
             setAmountDeposit(renderValueFixedDashboard(totalDepositNumber));
@@ -280,7 +280,7 @@ function DashboardStaking({ amount, txh }) {
       .call(farmingContract.methods.rewardPerBlock, [])
       .then(res => {
         if (res) {
-          const result = divDecimals(res, decimalStrkClaim).toNumber();
+          const result = divDecimals(res, 6).toNumber();
           const baseAprCaculator = getBaseApr(totalLiquid, result);
           const baseAprPer = renderValueFixedDashboard(
             baseAprCaculator.toNumber()
