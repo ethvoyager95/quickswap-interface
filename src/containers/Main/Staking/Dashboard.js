@@ -30,6 +30,8 @@ import {
   getSTRKContract,
   methods
 } from '../../../utilities/ContractService';
+import * as ST from '../../../assets/styles/staking.js';
+import IconLpSmall from '../../../assets/img/lp_small.svg';
 
 const SMain = styled.div`
   width: 100%;
@@ -331,7 +333,10 @@ function DashboardStaking({ amount, txh }) {
                   <STextBox>Liquidity</STextBox>
                   <>
                     <SValueBox>
-                      <SIconFlash src={IconFlashSmall} />
+                      <ST.SIconSmall>
+                        <ST.SImgFlashSmall src={IconFlashSmall} />
+                        <ST.SImgLpSmall src={IconLpSmall} />
+                      </ST.SIconSmall>
                       {amountDeposit}
                     </SValueBox>
                     <SUSDBox>${totalLiquidity}</SUSDBox>

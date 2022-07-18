@@ -1943,7 +1943,7 @@ function Staking({ settings, setSetting }) {
               </ST.SDivPadding>
               <ST.SDivPaddingMT>
                 <ST.SDivHarvest>
-                  <ST.STextLeft>STRK-ETH Harvest</ST.STextLeft>
+                  <ST.STextLeft>Claim the Reward</ST.STextLeft>
                   <ST.SInforTextVSTRK>
                     <ST.SInforTextVSTRKDetail>
                       STRK claimed
