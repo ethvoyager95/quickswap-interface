@@ -769,7 +769,7 @@ export const SInforValueUn = styled.div`
 `;
 export const SIconSmall = styled.div`
   margin-right: 10px;
-  display: block;
+  display: inline-block;
 `;
 export const STotalClaim = styled.div`
   font-weight: 900;
