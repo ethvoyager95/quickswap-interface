@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink, withRouter, useLocation } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { message } from 'antd';
 import BigNumber from 'bignumber.js';
@@ -216,6 +216,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [available, setAvailable] = useState('0');
   const [balance, setBalance] = useState('');
+  const location = useLocation();
 
   const checkNetwork = () => {
     const netId = window.ethereum.networkVersion
@@ -728,7 +729,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   };
 
   useEffect(() => {
-    if (!settings.isConnected) {
+    if (!settings.isConnected && location.pathname !== '/history') {
       setIsOpenModal(true);
     }
   }, []);
