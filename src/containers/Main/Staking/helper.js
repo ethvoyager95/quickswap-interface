@@ -122,9 +122,7 @@ export const getBaseApr = (liquidity, block) => {
       .times(new BigNumber(DAY_OF_YEAR));
     const numerator = new BigNumber(STRK_REWARD_ONE_YEAR);
     const demerator = new BigNumber(liquidity);
-    const BASE_APR = new BigNumber(numerator)
-      .times(100)
-      .div(new BigNumber(demerator));
+    const BASE_APR = new BigNumber(numerator).div(new BigNumber(demerator));
     return BASE_APR;
   }
   return new BigNumber(0);
