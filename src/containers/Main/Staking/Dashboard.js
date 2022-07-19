@@ -253,7 +253,8 @@ function DashboardStaking({ amount, txh }) {
           if (res) {
             const result = res.data.data;
             const totalDepositString = divDecimals(result?.totalDeposit, 0);
-            const totalDepositNumber = totalDepositString?.toNumber();
+            const totalLiquidityString = divDecimals(result?.totalDeposit, 18);
+            const totalDepositNumber = totalLiquidityString?.toNumber();
             totalLiquid = totalDepositString?.toNumber();
             setAmountDeposit(renderValueFixedDashboard(totalDepositNumber));
             const totalStake = result?.totalBoost;
