@@ -21,6 +21,8 @@ export const CLAIMBOOST = 'CLAIMBOOST';
 export const UNSTAKENFT = 'UNSTAKENFT';
 export const STRK = 'strk';
 export const ETH = 'eth';
+export const GET_NFT_URL =
+  'https://looksrare.org/collections/0x474D72f1a6A7884B62edAcC8D24d0815d01A65a2#sell';
 // chacracter -+e.0 block
 export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 101];
 const REQUIRED_DECIMAL = 5;
