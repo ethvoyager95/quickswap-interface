@@ -5,16 +5,20 @@ import { Modal } from 'antd';
 import * as constants from 'utilities/constants';
 import metamaskImg from 'assets/img/metamask.png';
 import bitkeepImg from 'assets/img/bitkeep.png';
+import coinbaseImg from 'assets/img/coinbase.png';
+import walletConnectImg from 'assets/img/walletconnect.png';
+import trusteWalletImg from 'assets/img/trustwallet.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
+
 import WalletLink from 'walletlink';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { Web3Provider } from '@ethersproject/providers';
 import { connectAccount, accountActionCreators } from 'core';
 import { bindActionCreators } from 'redux';
 import { compose } from 'recompose';
 import { checkIsValidNetwork } from 'utilities/common';
-import coinbaseImg from 'assets/img/coinbase.png';
 
 const ModalContent = styled.div`
   border-radius: 5px;
@@ -36,7 +40,7 @@ const ModalContent = styled.div`
   }
   .connect-wallet-content {
     width: 100%;
-    padding: 38px 78px 32px 66px;
+    padding: 25px 78px 22px 66px;
     .metamask-connect-btn {
       width: 100%;
       cursor: pointer;
@@ -166,7 +170,7 @@ function ConnectModal({
 
       const provider = walletLink.makeWeb3Provider(
         'https://rinkeby.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4',
-        4
+        1
       );
       // setWalletlinkProvider(provider);
       const accounts = await provider.request({
@@ -182,6 +186,37 @@ function ConnectModal({
         const library = new Web3Provider(provider, 'any');
         console.log(settings);
         console.log(library);
+        setSetting({
+          selectedAddress: account.toString()
+        });
+        onCancel();
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
+  const connectWalletConnect = async () => {
+    try {
+
+      const walletConnector = new WalletConnectConnector({
+        rpc: {
+          1: 'https://mainnet.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4',
+        },
+        pollingInterval: 10000,
+        bridge: 'https://bridge.walletconnect.org',
+        qrcode: true,
+      });
+
+      await walletConnector.activate();
+      const account = walletConnector.getAccount();
+      if (!account) {
+        setSetting({
+          selectedAddress: null
+        });
+      } else {
+        console.log(account);
+        console.log(settings);
         setSetting({
           selectedAddress: account.toString()
         });
@@ -345,6 +380,54 @@ function ConnectModal({
             <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
           </div>
         </div>
+        <div className="connect-wallet-content">
+          <div
+            className="flex align-center just-between metamask-connect-btn"
+            onClick={connectWalletConnect}
+          >
+            <div className="flex align-center">
+              <img src={walletConnectImg} alt="metamask" />
+              <span>Wallet Connect</span>
+            </div>
+            <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+          </div>
+        </div>
+        <div className="connect-wallet-content">
+          {isMetaMask ? (
+            <>
+              <div
+                className="flex align-center just-between metamask-connect-btn"
+                onClick={onConnectMetaMask}
+              >
+                <div className="flex align-center">
+                  <img src={trusteWalletImg} alt="metamask" />
+                  <span>Trust Wallet</span>
+                </div>
+                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+              </div>
+              {(error || !web3) && (
+                <div className="metamask-status">
+                  <MetaMaskStatus />
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="flex align-center just-between metamask-connect-btn">
+                <div className="flex align-center">
+                  <img src={metamaskImg} alt="metamask" />
+                  <span>Trust Wallet</span>
+                </div>
+                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+              </div>
+              {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
+                <div className="metamask-status">
+                  <MetaMaskStatus />
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </ModalContent>
     </Modal>
   );
@@ -364,7 +447,7 @@ ConnectModal.defaultProps = {
   web3: {},
   error: '',
   awaiting: false,
-  onCancel: () => {}
+  onCancel: () => { }
 };
 
 const mapStateToProps = ({ account }) => ({

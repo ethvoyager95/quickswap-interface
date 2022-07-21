@@ -44,7 +44,8 @@ import {
   UNSTAKE,
   CLAIMBASE,
   CLAIMBOOST,
-  UNSTAKENFT
+  UNSTAKENFT,
+  GET_NFT_URL
 } from './helper';
 // eslint-disable-next-line import/named
 import { axiosInstance } from '../../../utilities/axios';
@@ -2151,10 +2152,7 @@ function Staking({ settings, setSetting }) {
                         >
                           <ST.SQuestion src={IconQuestion} />
                         </Tooltip>
-                        <ST.SHrefNft
-                          target="_blank"
-                          href="https://www.degenapestrike.org/"
-                        >
+                        <ST.SHrefNft target="_blank" href={GET_NFT_URL}>
                           Get Strike NFTs
                           <img style={{ width: '14px' }} src={IconLinkBlue} />
                         </ST.SHrefNft>
