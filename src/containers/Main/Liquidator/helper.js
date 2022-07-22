@@ -30,8 +30,9 @@ import sust from 'assets/img/coins/sust.png';
 
 const format = commaNumber.bindWith(',', '.');
 
-const renderLogo = symbol => {
+export const renderLogo = symbol => {
   if (symbol === null) return '';
+  if (!symbol) return '';
   if (symbol.toLowerCase() === 'usdc') return usdc;
   if (symbol.toLowerCase() === 'usdt') return usdt;
   if (symbol.toLowerCase() === 'busd') return busd;
@@ -61,7 +62,7 @@ const renderLogo = symbol => {
   return '';
 };
 
-const formatNumber = value => {
+export const formatNumber = value => {
   const valueEther = new BigNumber(value);
   if (valueEther.eq(0)) return '0.0';
   if (valueEther.lt(0.00001)) return '<0.00001';
@@ -80,3 +81,45 @@ export const formatRecentRecord = records =>
     repayAmountEther: formatNumber(record.repayAmountCalculate),
     repayAmountUsd: formatNumber(record.totalPriceRepay)
   }));
+
+export const formatUsersRecord = records =>
+  records?.map(record => ({
+    ...record,
+    accHealth: formatNumber(record.health),
+    logoSeize: renderLogo(record.symbolSeizeToken),
+    maxSeizeAmountEther: formatNumber(record.maxSeizeAmount),
+    maxSeizeAmountUsd: formatNumber(
+      record.maxSeizeAmount * record.seizeTokenPrice
+    ),
+    logoRepay: renderLogo(record.symbolBorrowToken),
+    maxRepayAmountEther: formatNumber(record.maxRepayAmount),
+    maxRepayAmountUsd: formatNumber(
+      record.maxRepayAmount * record.currentBorrowPrice
+    )
+  }));
+
+export const formatUserInfo = record => {
+  return {
+    ...record,
+    accHealth: formatNumber(record.health),
+    maxSeizeAmountEther: formatNumber(record.maxSeizeAmount),
+    maxSeizeAmountUsd: formatNumber(
+      record.maxSeizeAmount * record.seizeTokenPrice
+    ),
+    maxRepayAmountEther: formatNumber(record.maxRepayAmount),
+    maxRepayAmountUsd: formatNumber(
+      record.maxRepayAmount * record.currentBorrowPrice
+    )
+  };
+};
+
+export const calculateSeizeAmount = (repayAmount, repayPrice, seizePrice) => {
+  const repayAmountToUsd = new BigNumber(repayAmount).times(
+    new BigNumber(repayPrice)
+  );
+  const seizeAmountToUsd = repayAmountToUsd.times(1.1);
+  return {
+    toUsd: seizeAmountToUsd.toString(),
+    toEther: seizeAmountToUsd.div(new BigNumber(seizePrice).toString())
+  };
+};

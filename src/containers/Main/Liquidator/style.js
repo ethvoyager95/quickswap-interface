@@ -48,7 +48,7 @@ export const STable = styled(Table)`
 
   .ant-table-tbody {
     tr {
-      cursor: ${props => (props.liquidatorTable ? 'pointer' : 'unset')};
+      cursor: pointer;
       td {
         font-weight: normal;
         text-align: left;
@@ -134,6 +134,10 @@ export const SearchBar = styled.div`
       font-weight: 500;
       font-size: 16px;
       line-height: 24px;
+      color: #f84960;
+    }
+
+    .text-green {
       color: #06c270;
     }
 
@@ -145,6 +149,7 @@ export const SearchBar = styled.div`
       text-decoration-line: underline;
       color: #6d6f7b;
       align-self: flex-end;
+      cursor: pointer;
     }
 
     .text-input {
@@ -278,8 +283,16 @@ export const WalletInfo = styled.div`
         }
       }
 
-      .black-value {
-        color: #0b0f23;
+      .gray-value {
+        color: #6d6f7b;
+      }
+
+      .green-value {
+        color: #06c270;
+      }
+
+      .red-value {
+        color: #f84960;
       }
 
       .blue-value {
@@ -309,10 +322,19 @@ export const WalletInfo = styled.div`
     justify-content: center;
     width: 100%;
     height: 100%;
+    background: #ffffff;
+    border-radius: 5px;
+
+    .mess-liquidator {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 28px;
+      color: #6d6f7b;
+      padding: 120px 0;
+    }
 
     .liquidate {
-      background: #ffffff;
-      border-radius: 5px;
       font-style: normal;
       font-weight: 500;
       font-size: 18px;
@@ -386,6 +408,12 @@ export const WalletInfo = styled.div`
         align-items: center;
         justify-content: space-between;
         margin-bottom: 60px;
+
+        .err {
+          color: #f84960;
+          font-style: normal;
+          font-weight: 500;
+        }
 
         div {
           font-style: normal;

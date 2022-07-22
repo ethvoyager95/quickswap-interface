@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+import Web3 from 'web3';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -8,7 +10,6 @@ import { connectAccount, accountActionCreators } from 'core';
 import { Input, Button, Dropdown } from 'antd';
 import iconSearch from 'assets/img/liquidator-search.svg';
 import iconFilter from 'assets/img/liquidator-filter.svg';
-import usdt from 'assets/img/coins/usdt.png';
 import iconDropdown from 'assets/img/icon-dropdown.svg';
 import ModalLiquidations from './ModalLiquidations';
 import {
@@ -22,92 +23,205 @@ import {
   BlockLabel,
   DropdownAsset,
   SButton,
-  STableWrapper
+  STableWrapper,
+  SeizedAndRepay
 } from './style';
+import {
+  formatUsersRecord,
+  formatUserInfo,
+  renderLogo,
+  formatNumber,
+  calculateSeizeAmount
+} from './helper';
 
-function Liquidator() {
+function Liquidator({ settings }) {
+  const [userAddressInput, setUserAddressInput] = useState('');
+  const [selectedUserAddress, setSelectedUserAddress] = useState('');
+  const [mess, setMess] = useState('');
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
   const [visibleDropdownRepay, setVisibleDropdownRepay] = useState(false);
   const [visibleDropdownSeize, setVisibleDropdownSeize] = useState(false);
+  const [listRepay, setListRepay] = useState([]);
+  const [listSeize, setListSeize] = useState([]);
+  const [selectedAssetRepay, setSelectedAssetRepay] = useState('');
+  const [selectedAssetSeize, setSelectedAssetSeize] = useState('');
+  const [repayValue, setRepayValue] = useState('');
+  const [balanceSelectedRepay, setBalanceSelectedRepay] = useState('');
+  const [repayAmount, setRepayAmount] = useState({
+    toEth: '',
+    toUsd: ''
+  });
+  const [seizeAmount, setSeizeAmount] = useState({
+    toEth: '',
+    toUsd: ''
+  });
+  const [errMess, setErrMess] = useState('');
+  const [dataUsersTable, setDataUsersTable] = useState([]);
+
+  const handleInputAddressChange = value => {
+    const validateAddress = Web3.utils.isAddress(value);
+    if (!String(value) && !userAddressInput) {
+      setMess('');
+      setUserAddressInput('');
+      return;
+    }
+    if (validateAddress) {
+      setMess('');
+      setUserAddressInput(value);
+    } else {
+      setMess('Please enter a valid address');
+      setUserAddressInput(value);
+    }
+  };
+
+  const handleSearchUserAddress = () => {
+    setSelectedUserAddress(userAddressInput);
+  };
+
+  const handleInputAmountChange = value => {
+    if (+value > +balanceSelectedRepay) {
+      setErrMess(
+        'You have input the number higher than your balance. Try again'
+      );
+    } else if (+value > +userInfo.maxRepayAmount) {
+      setErrMess(
+        'You have input the number higher than max repay amount. Try again'
+      );
+    } else {
+      setErrMess('');
+    }
+
+    if (value && userInfo) {
+      setRepayValue(value);
+      const repayInfo = {
+        toEth: formatNumber(value),
+        toUsd: formatNumber(value * userInfo.currentBorrowPrice)
+      };
+      setRepayAmount(repayInfo);
+      const seizeInfo = {
+        toEth: formatNumber(
+          calculateSeizeAmount(
+            value,
+            userInfo.currentBorrowPrice,
+            userInfo.seizeTokenPrice
+          ).toEther
+        ),
+        toUsd: formatNumber(
+          calculateSeizeAmount(
+            value,
+            userInfo.currentBorrowPrice,
+            userInfo.seizeTokenPrice
+          ).toUsd
+        )
+      };
+      setSeizeAmount(seizeInfo);
+    }
+    if (!value) {
+      setRepayValue('');
+    }
+  };
+
+  const handleClickMaxBtn = () => {
+    if (+balanceSelectedRepay > +userInfo.maxRepayAmount) {
+      setRepayValue(userInfo.maxRepayAmount);
+      const repayInfo = {
+        toEth: formatNumber(userInfo.maxRepayAmount),
+        toUsd: formatNumber(
+          userInfo.maxRepayAmount * userInfo.currentBorrowPrice
+        )
+      };
+      setRepayAmount(repayInfo);
+      const seizeInfo = {
+        toEth: formatNumber(
+          calculateSeizeAmount(
+            userInfo.maxRepayAmount,
+            userInfo.currentBorrowPrice,
+            userInfo.seizeTokenPrice
+          ).toEther
+        ),
+        toUsd: formatNumber(
+          calculateSeizeAmount(
+            userInfo.maxRepayAmount,
+            userInfo.currentBorrowPrice,
+            userInfo.seizeTokenPrice
+          ).toUsd
+        )
+      };
+      setSeizeAmount(seizeInfo);
+    } else {
+      setRepayValue(balanceSelectedRepay);
+      const repayInfo = {
+        toEth: formatNumber(balanceSelectedRepay),
+        toUsd: formatNumber(balanceSelectedRepay * userInfo.currentBorrowPrice)
+      };
+      setRepayAmount(repayInfo);
+      const seizeInfo = {
+        toEth: formatNumber(
+          calculateSeizeAmount(
+            balanceSelectedRepay,
+            userInfo.currentBorrowPrice,
+            userInfo.seizeTokenPrice
+          ).toEther
+        ),
+        toUsd: formatNumber(
+          calculateSeizeAmount(
+            balanceSelectedRepay,
+            userInfo.currentBorrowPrice,
+            userInfo.seizeTokenPrice
+          ).toUsd
+        )
+      };
+      setSeizeAmount(seizeInfo);
+    }
+  };
+
+  const getDataUsers = async (userAddress, borrowToken, seizeToken) => {
+    const res = await axios.get(
+      `${
+        process.env.REACT_APP_ENV === 'dev'
+          ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+          : `${process.env.REACT_APP_PRODUCTION_API}`
+      }/user/user_info`,
+      {
+        params: {
+          address: userAddress || undefined,
+          borrow_token: borrowToken || userInfo.symbolBorrowToken || undefined,
+          seize_token: seizeToken || userInfo.symbolSeizeToken || undefined
+        }
+      }
+    );
+    const { data } = res.data;
+    return data;
+  };
+
+  const getDataTableUsers = async () => {
+    const dataUsers = await getDataUsers();
+    setDataUsersTable(formatUsersRecord(dataUsers.rows));
+  };
+
+  const getUserInfo = async (address, borrowToken, seizeToken) => {
+    const dataUser = await getDataUsers(address, borrowToken, seizeToken);
+    setUserInfo(formatUserInfo(dataUser.rows[0]));
+    setListRepay(dataUser.listTokenBorrow);
+    setListSeize(dataUser.listTokenSeize);
+  };
+
+  const handleRefresh = () => {
+    getUserInfo(selectedUserAddress, selectedAssetRepay, selectedAssetSeize);
+  };
+
+  const getBalance = () => {
+    const selectedMarket = settings.assetList.filter(el => {
+      return el.id === selectedAssetRepay.toLowerCase();
+    });
+    console.log('dataaa', selectedMarket);
+    setBalanceSelectedRepay(selectedMarket[0].walletBalance || '0');
+  };
 
   const handleCancel = () => {
     setIsOpenModal(false);
   };
-
-  const dataAddressTable = [
-    {
-      health: '0',
-      account: '0xb5...3382',
-      fakeLogo: usdt,
-      repay: 500,
-      maxRepay: 500,
-      seize: 500,
-      maxSeize: 500
-    },
-    {
-      health: '0',
-      account: '0xb5...3382',
-      fakeLogo: usdt,
-      repay: 500,
-      maxRepay: 500,
-      seize: 500,
-      maxSeize: 500
-    },
-    {
-      health: '0',
-      account: '0xb5...3382',
-      fakeLogo: usdt,
-      repay: 500,
-      maxRepay: 500,
-      seize: 500,
-      maxSeize: 500
-    },
-    {
-      health: '0',
-      account: '0xb5...3382',
-      fakeLogo: usdt,
-      repay: 500,
-      maxRepay: 500,
-      seize: 500,
-      maxSeize: 500
-    },
-    {
-      health: '0',
-      account: '0xb5...3382',
-      fakeLogo: usdt,
-      repay: 500,
-      maxRepay: 500,
-      seize: 500,
-      maxSeize: 500
-    },
-    {
-      health: '0',
-      account: '0xb5...3382',
-      fakeLogo: usdt,
-      repay: 500,
-      maxRepay: 500,
-      seize: 500,
-      maxSeize: 500
-    },
-    {
-      health: '0',
-      account: '0xb5...3382',
-      fakeLogo: usdt,
-      repay: 500,
-      maxRepay: 500,
-      seize: 500,
-      maxSeize: 500
-    },
-    {
-      health: '0',
-      account: '0xb5...3382',
-      fakeLogo: usdt,
-      repay: 500,
-      maxRepay: 500,
-      seize: 500,
-      maxSeize: 500
-    }
-  ];
 
   const handleVisibleDropdownRepayChange = flag => {
     setVisibleDropdownRepay(flag);
@@ -117,31 +231,71 @@ function Liquidator() {
     setVisibleDropdownSeize(flag);
   };
 
-  const dropdownAsset = (
+  useEffect(() => {
+    getDataTableUsers();
+  }, []);
+
+  useEffect(() => {
+    if (selectedUserAddress) {
+      Object.keys(userInfo).forEach(key => delete userInfo[key]);
+      setUserInfo(userInfo);
+      getUserInfo(selectedUserAddress, selectedAssetRepay, selectedAssetSeize);
+      if (!userInfo.health) {
+        setMess('');
+      } else if (userInfo.health !== 0) {
+        setMess('This account is healthy and can not be liquidated');
+      } else {
+        setMess('This account can be liquidated');
+      }
+    }
+  }, [selectedUserAddress, selectedAssetRepay, selectedAssetSeize]);
+
+  useEffect(() => {
+    if (selectedUserAddress && selectedAssetRepay) {
+      getBalance();
+    }
+  }, [selectedUserAddress, selectedAssetRepay]);
+
+  const dropdownAssetRepay = (
     <DropdownAsset>
-      <div>
-        <img src={usdt} alt="" />
-        <span>USDT</span>
-      </div>
-      <div>
-        <img src={usdt} alt="" />
-        <span>USDT</span>
-      </div>
-      <div>
-        <img src={usdt} alt="" />
-        <span>USDT</span>
-      </div>
+      {listRepay?.map(token => (
+        <div
+          onClick={() => {
+            setSelectedAssetRepay(token);
+            setVisibleDropdownRepay(false);
+          }}
+        >
+          <img src={renderLogo(token)} alt="" />
+          <span>{token}</span>
+        </div>
+      ))}
+    </DropdownAsset>
+  );
+
+  const dropdownAssetSeize = (
+    <DropdownAsset>
+      {listSeize?.map(token => (
+        <div
+          onClick={() => {
+            setSelectedAssetSeize(token);
+            setVisibleDropdownSeize(false);
+          }}
+        >
+          <img src={renderLogo(token)} alt="" />
+          <span>{token}</span>
+        </div>
+      ))}
     </DropdownAsset>
   );
 
   const columns = [
     {
       title: () => <THeadWrapper>Health</THeadWrapper>,
-      dataIndex: 'health',
-      key: 'health',
+      dataIndex: 'accHealth',
+      key: 'accHealth',
       render(_, asset) {
         return {
-          children: <Health>{asset.health || '-'}</Health>
+          children: <Health>{asset.accHealth || '-'}</Health>
         };
       }
     },
@@ -151,7 +305,19 @@ function Liquidator() {
       key: 'account',
       render(_, asset) {
         return {
-          children: <Address>{asset.account}</Address>
+          children: (
+            <Address>
+              {asset.userAddress
+                ? `${asset.userAddress.substr(
+                    0,
+                    4
+                  )}...${asset.userAddress.substr(
+                    asset.userAddress.length - 4,
+                    4
+                  )}`
+                : '-'}
+            </Address>
+          )
         };
       }
     },
@@ -163,8 +329,8 @@ function Liquidator() {
         return {
           children: (
             <TdWithImg>
-              <img src={asset.fakeLogo} alt="" />
-              <div>USDT</div>
+              <img src={asset.logoRepay} alt="" />
+              <div>{asset.symbolBorrowToken}</div>
             </TdWithImg>
           )
         };
@@ -181,10 +347,15 @@ function Liquidator() {
       render(_, asset) {
         return {
           children: (
-            <TdWithImg>
-              <img src={asset.fakeLogo} alt="" />
-              <div>{asset.maxRepay} USDT</div>
-            </TdWithImg>
+            <SeizedAndRepay>
+              {asset.logoRepay && <img src={asset.logoRepay} alt="" />}
+              <div>
+                <span>
+                  {asset.maxRepayAmountEther} {asset.symbolBorrowToken}
+                </span>
+                <span>${asset.maxRepayAmountUsd}</span>
+              </div>
+            </SeizedAndRepay>
           )
         };
       }
@@ -197,8 +368,8 @@ function Liquidator() {
         return {
           children: (
             <TdWithImg>
-              <img src={asset.fakeLogo} alt="" />
-              <div>USDT</div>
+              <img src={asset.logoSeize} alt="" />
+              <div>{asset.symbolSeizeToken}</div>
             </TdWithImg>
           )
         };
@@ -211,10 +382,15 @@ function Liquidator() {
       render(_, asset) {
         return {
           children: (
-            <TdWithImg>
-              <img src={asset.fakeLogo} alt="" />
-              <div>{asset.maxSeize} USDT</div>
-            </TdWithImg>
+            <SeizedAndRepay>
+              {asset.logoSeize && <img src={asset.logoSeize} alt="" />}
+              <div>
+                <span>
+                  {asset.maxSeizeAmountEther} {asset.symbolSeizeToken}
+                </span>
+                <span>${asset.maxSeizeAmountUsd}</span>
+              </div>
+            </SeizedAndRepay>
           )
         };
       }
@@ -227,8 +403,12 @@ function Liquidator() {
         <div className="label">Search address to liquidate</div>
         <div className="address">
           <div className="text-input">
-            <Input placeholder="0xbfr2zs203..." />
-            <Button className="search-btn">
+            <Input
+              placeholder="0xbfr2zs203..."
+              value={userAddressInput}
+              onChange={e => handleInputAddressChange(e.target.value)}
+            />
+            <Button className="search-btn" onClick={handleSearchUserAddress}>
               <img src={iconSearch} alt="" />
             </Button>
           </div>
@@ -243,8 +423,18 @@ function Liquidator() {
           </Button>
         </div>
         <div className="address">
-          <div className="message">This account can be liquidated</div>
-          <div className="refresh">Refresh</div>
+          <div
+            className={`${
+              mess === 'This account can be liquidated' ? 'text-green' : ''
+            } message`}
+          >
+            {mess && userAddressInput ? mess : null}
+          </div>
+          {selectedUserAddress && (
+            <div className="refresh" onClick={handleRefresh}>
+              Refresh
+            </div>
+          )}
         </div>
         <Button
           className="recent-btn-mob"
@@ -260,104 +450,193 @@ function Liquidator() {
         <div className="details">
           <div className="item">
             <div>Account Health</div>
-            <div className="black-value">0</div>
+            <div
+              className={`${!userInfo.health ? 'gray-value' : ''} ${
+                userInfo.health === 0 ? 'red-value' : ''
+              } ${userInfo.health > 0 ? 'green-value' : ''}`}
+            >
+              {userInfo.accHealth || 'N/A'}
+            </div>
           </div>
           <div className="item">
             <div>Asset to Repay</div>
-            <Dropdown
-              overlay={dropdownAsset}
-              trigger={['click']}
-              onVisibleChange={handleVisibleDropdownRepayChange}
-              visible={visibleDropdownRepay}
-              getPopupContainer={() => document.getElementById('repay')}
-              placement="bottomRight"
-            >
-              <SButton
-                onClick={e => {
-                  e.preventDefault();
-                }}
+            {userInfo.symbolBorrowToken ? (
+              <Dropdown
+                overlay={dropdownAssetRepay}
+                trigger={['click']}
+                onVisibleChange={handleVisibleDropdownRepayChange}
+                visible={visibleDropdownRepay}
+                getPopupContainer={() => document.getElementById('repay')}
+                placement="bottomRight"
               >
-                <div className="black-value flex-gap6" id="repay">
-                  <img src={usdt} alt="" />
-                  <div>USDT</div>
-                  <img src={iconDropdown} alt="" className="dropdown" />
-                </div>
-              </SButton>
-            </Dropdown>
+                <SButton
+                  onClick={e => {
+                    e.preventDefault();
+                  }}
+                >
+                  <div className="black-value flex-gap6" id="repay">
+                    <img
+                      src={
+                        renderLogo(selectedAssetRepay) ||
+                        renderLogo(userInfo.symbolBorrowToken)
+                      }
+                      alt=""
+                    />
+                    <div>
+                      {selectedAssetRepay || userInfo.symbolBorrowToken}
+                    </div>
+                    <img src={iconDropdown} alt="" className="dropdown" />
+                  </div>
+                </SButton>
+              </Dropdown>
+            ) : (
+              <div>N/A</div>
+            )}
           </div>
           <div className="item">
             <div>Asset to Seize</div>
-            <Dropdown
-              overlay={dropdownAsset}
-              trigger={['click']}
-              onVisibleChange={handleVisibleDropdownSeizeChange}
-              visible={visibleDropdownSeize}
-              getPopupContainer={() => document.getElementById('seize')}
-              placement="bottomRight"
-            >
-              <SButton
-                onClick={e => {
-                  e.preventDefault();
-                }}
+            {userInfo.symbolSeizeToken ? (
+              <Dropdown
+                overlay={dropdownAssetSeize}
+                trigger={['click']}
+                onVisibleChange={handleVisibleDropdownSeizeChange}
+                visible={visibleDropdownSeize}
+                getPopupContainer={() => document.getElementById('seize')}
+                placement="bottomRight"
               >
-                <div className="black-value flex-gap6" id="seize">
-                  <img src={usdt} alt="" />
-                  <div>USDT</div>
-                  <img src={iconDropdown} alt="" className="dropdown" />
-                </div>
-              </SButton>
-            </Dropdown>
+                <SButton
+                  onClick={e => {
+                    e.preventDefault();
+                  }}
+                >
+                  <div className="black-value flex-gap6" id="seize">
+                    <img
+                      src={
+                        renderLogo(selectedAssetSeize) ||
+                        renderLogo(userInfo.symbolSeizeToken)
+                      }
+                      alt=""
+                    />
+                    <div>{selectedAssetSeize || userInfo.symbolSeizeToken}</div>
+                    <img src={iconDropdown} alt="" className="dropdown" />
+                  </div>
+                </SButton>
+              </Dropdown>
+            ) : (
+              <div>N/A</div>
+            )}
           </div>
           <div className="item">
             <div>Max Repay Amount</div>
             <div className="flex-value">
-              <div className="blue-value">0.06 BUSD</div>
-              <div>$0.06</div>
+              {userInfo.maxRepayAmountEther ? (
+                <>
+                  <div className="blue-value">
+                    {userInfo.maxRepayAmountEther} {userInfo.symbolBorrowToken}
+                  </div>
+                  <div>${userInfo.maxRepayAmountUsd}</div>
+                </>
+              ) : (
+                'N/A'
+              )}
             </div>
           </div>
           <div className="item">
             <div>Max Seize Amount</div>
             <div className="flex-value">
-              <div className="blue-value">0.06 BUSD</div>
-              <div>$0.06</div>
+              {userInfo.maxSeizeAmountEther ? (
+                <>
+                  <div className="blue-value">
+                    {userInfo.maxSeizeAmountEther} {userInfo.symbolSeizeToken}
+                  </div>
+                  <div>${userInfo.maxSeizeAmountUsd}</div>
+                </>
+              ) : (
+                'N/A'
+              )}
             </div>
           </div>
         </div>
         <div className="liquidate-wrapper">
-          <div className="liquidate">
-            <div className="title">
-              Amount you want to repay in <img src={usdt} alt="" /> USDT
-            </div>
-            <div className="text-input">
-              <Input placeholder="0" />
-              <div className="max-btn">Max</div>
-            </div>
-            <div className="balance">
-              Wallet balance <span>0 LTC</span>
-            </div>
-            <div className="liquidate-btn-wrapper">
-              <div>
-                You will repay <span className="text-blue">0.06 BUSD</span>{' '}
-                <span className="text-gray">$0.06</span> and seize{' '}
-                <span className="text-blue">0.06 USDT</span>{' '}
-                <span className="text-gray">$0.06</span>
+          {selectedUserAddress && Object.keys(userInfo) !== 0 ? (
+            <div className="liquidate">
+              <div className="title">
+                Amount you want to repay in{' '}
+                <img
+                  src={
+                    renderLogo(selectedAssetRepay) ||
+                    renderLogo(userInfo.symbolBorrowToken)
+                  }
+                  alt=""
+                />{' '}
+                {selectedAssetRepay || userInfo.symbolBorrowToken}
               </div>
-              <Button>Liquidate</Button>
+              <div className="text-input">
+                <Input
+                  placeholder="0"
+                  onChange={e => handleInputAmountChange(e.target.value)}
+                  value={repayValue}
+                />
+                <div className="max-btn" onClick={handleClickMaxBtn}>
+                  Max
+                </div>
+              </div>
+              <div className="balance">
+                Wallet balance{' '}
+                <span>
+                  {balanceSelectedRepay}{' '}
+                  {selectedAssetRepay || userInfo.symbolBorrowToken}
+                </span>
+              </div>
+              <div className="liquidate-btn-wrapper">
+                <div>
+                  {repayValue && !errMess && (
+                    <>
+                      You will repay{' '}
+                      <span className="text-blue">
+                        {repayAmount.toEth}{' '}
+                        {selectedAssetRepay || userInfo.symbolBorrowToken}
+                      </span>{' '}
+                      <span className="text-gray">${repayAmount.toUsd}</span>{' '}
+                      and seize{' '}
+                      <span className="text-blue">
+                        {seizeAmount.toEth}{' '}
+                        {selectedAssetSeize || userInfo.symbolSeizeToken}
+                      </span>{' '}
+                      <span className="text-gray">${seizeAmount.toUsd}</span>
+                    </>
+                  )}
+                  {errMess && <div className="err">{errMess}</div>}
+                </div>
+                <Button disabled={errMess || !repayValue}>Liquidate</Button>
+              </div>
+              <div className="gas-price">
+                <div>Account health is updated every 2 seconds</div>
+                {/* <img src={iconFilter} alt="" /> */}
+              </div>
             </div>
-            <div className="gas-price">
-              <div>Account health is updated every 2 seconds</div>
-              {/* <img src={iconFilter} alt="" /> */}
+          ) : (
+            <div className="mess-liquidator">
+              Search an account you want to liquidate
             </div>
-          </div>
+          )}
         </div>
       </WalletInfo>
       <BlockLabel>block# 18964980</BlockLabel>
       <STableWrapper>
         <STable
           columns={columns}
-          dataSource={dataAddressTable}
+          dataSource={dataUsersTable}
           pagination={false}
-          // rowKey={record => record.id}
+          rowKey={record => record.userAddress}
+          onRow={record => {
+            return {
+              onClick: () => {
+                setSelectedUserAddress(record.userAddress);
+                setUserAddressInput(record.userAddress);
+              } // click row
+            };
+          }}
         />
       </STableWrapper>
       {isOpenModal && (
@@ -367,9 +646,13 @@ function Liquidator() {
   );
 }
 
-Liquidator.propTypes = {};
+Liquidator.propTypes = {
+  settings: PropTypes.object
+};
 
-Liquidator.defaultProps = {};
+Liquidator.defaultProps = {
+  settings: {}
+};
 
 const mapStateToProps = ({ account }) => ({
   settings: account.setting
