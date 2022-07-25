@@ -884,15 +884,17 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           </div>
         </TotalValue>
       )} */}
-      <ConnectModal
-        visible={isOpenModal}
-        web3={web3}
-        error={error}
-        awaiting={awaiting}
-        onCancel={() => setIsOpenModal(false)}
-        onConnectMetaMask={handleMetaMask}
-        checkNetwork={checkNetwork}
-      />
+      {isOpenModal && (
+        <ConnectModal
+          visible={isOpenModal}
+          web3={web3}
+          error={error}
+          awaiting={awaiting}
+          onCancel={() => setIsOpenModal(false)}
+          onConnectMetaMask={handleMetaMask}
+          checkNetwork={checkNetwork}
+        />
+      )}
       <UserInfoModal
         visible={isOpenInfoModal}
         onCancel={() => setIsOpenInfoModal(false)}
