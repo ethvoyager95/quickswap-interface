@@ -62,7 +62,8 @@ function Liquidator({ settings }) {
   });
   const [errMess, setErrMess] = useState('');
   const [dataUsersTable, setDataUsersTable] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [blockNumber, setBlockNumber] = useState();
 
   const handleInputAddressChange = value => {
     const validateAddress = Web3.utils.isAddress(value);
@@ -200,6 +201,17 @@ function Liquidator({ settings }) {
     return data;
   };
 
+  const getCurrentBlock = async () => {
+    const res = await axios.get(
+      `${
+        process.env.REACT_APP_ENV === 'dev'
+          ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+          : `${process.env.REACT_APP_PRODUCTION_API}`
+      }/liquidator/block_number`
+    );
+    setBlockNumber(res.data.blockNumber);
+  };
+
   const getDataTableUsers = async () => {
     const dataUsers = await getDataUsers();
     setDataUsersTable(formatUsersRecord(dataUsers.rows));
@@ -256,6 +268,7 @@ function Liquidator({ settings }) {
 
   useEffect(() => {
     getDataTableUsers();
+    getCurrentBlock();
   }, []);
 
   useEffect(() => {
@@ -672,7 +685,7 @@ function Liquidator({ settings }) {
           )}
         </div>
       </WalletInfo>
-      <BlockLabel>block# 18964980</BlockLabel>
+      <BlockLabel>block# {blockNumber}</BlockLabel>
       <STableWrapper>
         <STable
           locale={locale}
