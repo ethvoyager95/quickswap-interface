@@ -538,9 +538,13 @@ export const TdWithImg = styled.div`
 `;
 
 export const CustomModal = styled(Modal)`
+  .ant-modal-content {
+    border-radius: ${props => (props.loading ? '20px' : 'unset')};
+  }
   .ant-modal-body {
     padding: 70px 24px;
-    background: #eceff9;
+    background: ${props => (props.loading ? '#FFFFFF' : '#eceff9')};
+    border-radius: ${props => (props.loading ? '20px' : 'unset')};
   }
 
   .ant-modal-close:hover {
@@ -714,6 +718,20 @@ export const ModalContent = styled.div`
     .error-mess {
       display: none;
     }
+  }
+`;
+
+export const ModalLoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  .title {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 31px;
+    line-height: 120%;
+    color: #0b0f23;
   }
 `;
 

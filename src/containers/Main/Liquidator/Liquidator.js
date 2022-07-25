@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import Web3 from 'web3';
@@ -9,9 +9,12 @@ import MainLayout from 'containers/Layout/MainLayout';
 import { connectAccount, accountActionCreators } from 'core';
 import { Input, Button, Dropdown } from 'antd';
 import iconSearch from 'assets/img/liquidator-search.svg';
-import iconFilter from 'assets/img/liquidator-filter.svg';
+// import iconFilter from 'assets/img/liquidator-filter.svg';
+import noData from 'assets/img/no_data.svg';
 import iconDropdown from 'assets/img/icon-dropdown.svg';
+import { getSbepContract, methods } from 'utilities/ContractService';
 import ModalLiquidations from './ModalLiquidations';
+import ModalLoading from './ModalLoading';
 import {
   STable,
   THeadWrapper,
@@ -24,7 +27,8 @@ import {
   DropdownAsset,
   SButton,
   STableWrapper,
-  SeizedAndRepay
+  SeizedAndRepay,
+  NoData
 } from './style';
 import {
   formatUsersRecord,
@@ -58,6 +62,7 @@ function Liquidator({ settings }) {
   });
   const [errMess, setErrMess] = useState('');
   const [dataUsersTable, setDataUsersTable] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleInputAddressChange = value => {
     const validateAddress = Web3.utils.isAddress(value);
@@ -215,12 +220,15 @@ function Liquidator({ settings }) {
     const selectedMarket = settings.assetList.filter(el => {
       return el.id === selectedAssetRepay.toLowerCase();
     });
-    console.log('dataaa', selectedMarket);
     setBalanceSelectedRepay(selectedMarket[0].walletBalance || '0');
   };
 
   const handleCancel = () => {
     setIsOpenModal(false);
+  };
+
+  const handleCancelModalLoading = () => {
+    setIsLoading(false);
   };
 
   const handleVisibleDropdownRepayChange = flag => {
@@ -229,6 +237,21 @@ function Liquidator({ settings }) {
 
   const handleVisibleDropdownSeizeChange = flag => {
     setVisibleDropdownSeize(flag);
+  };
+
+  const handleLiquidate = async () => {
+    try {
+      const appContract = getSbepContract(selectedAssetRepay.toLowerCase());
+      setIsLoading(true);
+      await methods.send(
+        appContract.methods.liquidateBorrow,
+        [selectedUserAddress, repayValue, userInfo.seizeTokenAddress],
+        settings.selectedAddress
+      );
+      setIsLoading(false);
+    } catch {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -249,6 +272,17 @@ function Liquidator({ settings }) {
       }
     }
   }, [selectedUserAddress, selectedAssetRepay, selectedAssetSeize]);
+
+  useEffect(() => {
+    async function getAsset() {
+      const dataAsset = await getDataUsers(selectedUserAddress);
+      setSelectedAssetRepay(dataAsset.listTokenBorrow[0]);
+      setSelectedAssetSeize(dataAsset.listTokenSeize[0]);
+    }
+    if (selectedUserAddress) {
+      getAsset();
+    }
+  }, [selectedUserAddress]);
 
   useEffect(() => {
     if (selectedUserAddress && selectedAssetRepay) {
@@ -396,6 +430,17 @@ function Liquidator({ settings }) {
       }
     }
   ];
+
+  const locale = {
+    emptyText: (
+      <NoData>
+        <>
+          <img src={noData} alt="No data" />
+          <div>No record was found </div>
+        </>
+      </NoData>
+    )
+  };
 
   return (
     <MainLayout>
@@ -558,7 +603,7 @@ function Liquidator({ settings }) {
           </div>
         </div>
         <div className="liquidate-wrapper">
-          {selectedUserAddress && Object.keys(userInfo) !== 0 ? (
+          {selectedUserAddress && userInfo.userAddress ? (
             <div className="liquidate">
               <div className="title">
                 Amount you want to repay in{' '}
@@ -590,7 +635,7 @@ function Liquidator({ settings }) {
               </div>
               <div className="liquidate-btn-wrapper">
                 <div>
-                  {repayValue && !errMess && (
+                  {repayValue && +repayValue !== 0 && !errMess && (
                     <>
                       You will repay{' '}
                       <span className="text-blue">
@@ -608,7 +653,12 @@ function Liquidator({ settings }) {
                   )}
                   {errMess && <div className="err">{errMess}</div>}
                 </div>
-                <Button disabled={errMess || !repayValue}>Liquidate</Button>
+                <Button
+                  disabled={errMess || !repayValue}
+                  onClick={handleLiquidate}
+                >
+                  Liquidate
+                </Button>
               </div>
               <div className="gas-price">
                 <div>Account health is updated every 2 seconds</div>
@@ -625,6 +675,7 @@ function Liquidator({ settings }) {
       <BlockLabel>block# 18964980</BlockLabel>
       <STableWrapper>
         <STable
+          locale={locale}
           columns={columns}
           dataSource={dataUsersTable}
           pagination={false}
@@ -641,6 +692,12 @@ function Liquidator({ settings }) {
       </STableWrapper>
       {isOpenModal && (
         <ModalLiquidations isOpenModal={isOpenModal} onCancel={handleCancel} />
+      )}
+      {isLoading && (
+        <ModalLoading
+          isOpenModal={isLoading}
+          onCancel={handleCancelModalLoading}
+        />
       )}
     </MainLayout>
   );
