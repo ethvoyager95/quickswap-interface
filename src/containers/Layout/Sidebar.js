@@ -315,6 +315,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       }
       tempError = null;
     } catch (err) {
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x3';
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x1' }],
+      })
       tempError = err;
       accounts = [];
       await setSetting({ selectedAddress: null });
@@ -344,19 +349,26 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     Object.values(constants.CONTRACT_TOKEN_ADDRESS).forEach(async item => {
       decimals[`${item.id}`] = {};
       if (item.id !== 'eth' && item.id !== 'strk') {
-        const tokenContract = getTokenContract(item.id);
-        const tokenDecimals = await methods.call(
-          tokenContract.methods.decimals,
-          []
-        );
-        const sBepContract = getSbepContract(item.id);
-        const stokenDecimals = await methods.call(
-          sBepContract.methods.decimals,
-          []
-        );
-        decimals[`${item.id}`].token = Number(tokenDecimals);
-        decimals[`${item.id}`].stoken = Number(stokenDecimals);
-        decimals[`${item.id}`].price = 18 + 18 - Number(tokenDecimals);
+        if (checkIsValidNetwork()) {
+          const tokenContract = getTokenContract(item.id);
+          const tokenDecimals = await methods.call(
+            tokenContract.methods.decimals,
+            []
+          );
+          const sBepContract = getSbepContract(item.id);
+          const stokenDecimals = await methods.call(
+            sBepContract.methods.decimals,
+            []
+          );
+          decimals[`${item.id}`].token = Number(tokenDecimals);
+          decimals[`${item.id}`].stoken = Number(stokenDecimals);
+          decimals[`${item.id}`].price = 18 + 18 - Number(tokenDecimals);
+        } else {
+          decimals[`${item.id}`].token = item.decimals;
+          decimals[`${item.id}`].stoken = 8;
+          decimals[`${item.id}`].price = 18 + 18 - item.decimals;
+        }
+
       } else {
         decimals[`${item.id}`].token = 18;
         decimals[`${item.id}`].stoken = 8;
@@ -424,7 +436,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   useEffect(() => {
     if (window.ethereum) {
-      if (!settings.accountLoading && checkIsValidNetwork()) {
+      if (!settings.accountLoading/* && checkIsValidNetwork()*/) {
         initSettings();
       }
     }
@@ -598,11 +610,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             ).isZero()
               ? '0'
               : asset.borrowBalance
-                  .times(asset.tokenPrice)
-                  .div(settings.totalBorrowLimit)
-                  .times(100)
-                  .dp(0, 1)
-                  .toString(10);
+                .times(asset.tokenPrice)
+                .div(settings.totalBorrowLimit)
+                .times(100)
+                .dp(0, 1)
+                .toString(10);
 
             asset.hypotheticalLiquidity = hypotheticalLiquidity;
 
