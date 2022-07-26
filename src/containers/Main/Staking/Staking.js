@@ -2152,10 +2152,19 @@ function Staking({ settings, setSetting }) {
                         >
                           <ST.SQuestion src={IconQuestion} />
                         </Tooltip>
-                        <ST.SHrefNft target="_blank" href={GET_NFT_URL}>
-                          Get Strike NFTs
-                          <img style={{ width: '14px' }} src={IconLinkBlue} />
-                        </ST.SHrefNft>
+                        <ST.SHrefNftWrapper>
+                          <ST.SHrefNft
+                            target="_blank"
+                            href="https://www.degenapestrike.org/"
+                          >
+                            Get Strike NFTs
+                            <img style={{ width: '14px' }} src={IconLinkBlue} />
+                          </ST.SHrefNft>
+                          <ST.SHrefNft target="_blank" href={GET_NFT_URL}>
+                            LooksRare
+                            <img style={{ width: '14px' }} src={IconLinkBlue} />
+                          </ST.SHrefNft>
+                        </ST.SHrefNftWrapper>
                       </ST.SText>
                     </ST.SFlex>
                     {address ? (
