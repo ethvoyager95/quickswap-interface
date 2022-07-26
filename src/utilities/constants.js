@@ -49,77 +49,88 @@ export const CONTRACT_TOKEN_ADDRESS =
           symbol: 'USDC',
           address: process.env.REACT_APP_TEST_USDC_TOKEN_ADDRESS,
           asset: usdc,
-          sasset: susdc
+          sasset: susdc,
+          decimals: 6,
         },
         usdt: {
           id: 'usdt',
           symbol: 'USDT',
           address: process.env.REACT_APP_TEST_USDT_TOKEN_ADDRESS,
           asset: usdt,
-          sasset: susdt
+          sasset: susdt,
+          decimals: 6,
         },
         busd: {
           id: 'busd',
           symbol: 'BUSD',
           address: process.env.REACT_APP_TEST_BUSD_TOKEN_ADDRESS,
           asset: busd,
-          sasset: sbusd
+          sasset: sbusd,
+          decimals: 18,
         },
         strk: {
           id: 'strk',
           symbol: 'STRK',
           address: process.env.REACT_APP_TEST_STRK_TOKEN_ADDRESS,
           asset: strk,
-          sasset: sstrk
+          sasset: sstrk,
+          decimals: 18,
         },
         wbtc: {
           id: 'wbtc',
           symbol: 'WBTC',
           address: process.env.REACT_APP_TEST_WBTC_TOKEN_ADDRESS,
           asset: btc,
-          sasset: swbtc
+          sasset: swbtc,
+          decimals: 8,
         },
         eth: {
           id: 'eth',
           symbol: 'ETH',
           address: process.env.REACT_APP_TEST_ETH_TOKEN_ADDRESS,
           asset: eth,
-          sasset: seth
+          sasset: seth,
+          decimals: 18,
         },
         link: {
           id: 'link',
           symbol: 'LINK',
           address: process.env.REACT_APP_TEST_LINK_TOKEN_ADDRESS,
           asset: link,
-          sasset: slink
+          sasset: slink,
+          decimals: 18,
         },
         comp: {
           id: 'comp',
           symbol: 'COMP',
           address: process.env.REACT_APP_TEST_COMP_TOKEN_ADDRESS,
           asset: comp,
-          sasset: scomp
+          sasset: scomp,
+          decimals: 18,
         },
         uni: {
           id: 'uni',
           symbol: 'UNI',
           address: process.env.REACT_APP_TEST_UNI_TOKEN_ADDRESS,
           asset: uni,
-          sasset: suni
+          sasset: suni,
+          decimals: 18,
         },
         ape: {
           id: 'ape',
           symbol: 'APE',
           address: process.env.REACT_APP_TEST_APE_TOKEN_ADDRESS,
           asset: ape,
-          sasset: sape
+          sasset: sape,
+          decimals: 18,
         },
         ust: {
           id: 'ust',
           symbol: 'UST',
           address: process.env.REACT_APP_TEST_UST_TOKEN_ADDRESS,
           asset: ust,
-          sasset: sust
+          sasset: sust,
+          decimals: 18,
         }
       }
     : {
@@ -128,84 +139,96 @@ export const CONTRACT_TOKEN_ADDRESS =
           symbol: 'USDC',
           address: process.env.REACT_APP_MAIN_USDC_TOKEN_ADDRESS,
           asset: usdc,
-          sasset: susdc
+          sasset: susdc,
+          decimals: 6,
         },
         usdt: {
           id: 'usdt',
           symbol: 'USDT',
           address: process.env.REACT_APP_MAIN_USDT_TOKEN_ADDRESS,
           asset: usdt,
-          sasset: susdt
+          sasset: susdt,
+          decimals: 6,
         },
         busd: {
           id: 'busd',
           symbol: 'BUSD',
           address: process.env.REACT_APP_MAIN_BUSD_TOKEN_ADDRESS,
           asset: busd,
-          sasset: sbusd
+          sasset: sbusd,
+          decimals: 18,
         },
         strk: {
           id: 'strk',
           symbol: 'STRK',
           address: process.env.REACT_APP_MAIN_STRK_TOKEN_ADDRESS,
           asset: strk,
-          sasset: sstrk
+          sasset: sstrk,
+          decimals: 18,
         },
         sxp: {
           id: 'sxp',
           symbol: 'SXP',
           address: process.env.REACT_APP_MAIN_SXP_TOKEN_ADDRESS,
           asset: sxp,
-          sasset: ssxp
+          sasset: ssxp,
+          decimals: 6,
         },
         wbtc: {
           id: 'wbtc',
           symbol: 'WBTC',
           address: process.env.REACT_APP_MAIN_WBTC_TOKEN_ADDRESS,
           asset: btc,
-          sasset: swbtc
+          sasset: swbtc,
+          decimals: 8,
         },
         eth: {
           id: 'eth',
           symbol: 'ETH',
           address: process.env.REACT_APP_MAIN_ETH_TOKEN_ADDRESS,
           asset: eth,
-          sasset: seth
+          sasset: seth,
+          decimals: 18,
         },
         link: {
           id: 'link',
           symbol: 'LINK',
           address: process.env.REACT_APP_MAIN_LINK_TOKEN_ADDRESS,
           asset: link,
-          sasset: slink
+          sasset: slink,
+          decimals: 18,
         },
         comp: {
           id: 'comp',
           symbol: 'COMP',
           address: process.env.REACT_APP_MAIN_COMP_TOKEN_ADDRESS,
           asset: comp,
-          sasset: scomp
+          sasset: scomp,
+          decimals: 18,
         },
         uni: {
           id: 'uni',
           symbol: 'UNI',
           address: process.env.REACT_APP_MAIN_UNI_TOKEN_ADDRESS,
           asset: uni,
-          sasset: suni
+          sasset: suni,
+          decimals: 18,
         },
         ape: {
           id: 'ape',
           symbol: 'APE',
           address: process.env.REACT_APP_MAIN_APE_TOKEN_ADDRESS,
           asset: ape,
-          sasset: sape
+          sasset: sape,
+          decimals: 18,
         },
         ust: {
           id: 'ust',
           symbol: 'UST',
           address: process.env.REACT_APP_MAIN_UST_TOKEN_ADDRESS,
           asset: ust,
-          sasset: sust
+          sasset: sust,
+          decimals: 18,
         }
       };
 

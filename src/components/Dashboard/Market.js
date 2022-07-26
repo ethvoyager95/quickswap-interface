@@ -79,19 +79,21 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
   const updateMarketTable = async () => {
     const tempArr = [];
     settings.assetList.forEach(item => {
-      const temp = {
-        ...item,
-        supplyApy: getBigNumber(item.supplyApy),
-        borrowApy: getBigNumber(item.borrowApy),
-        walletBalance: getBigNumber(item.walletBalance),
-        supplyBalance: getBigNumber(item.supplyBalance),
-        sTokenBalance: getBigNumber(item.sTokenBalance),
-        borrowBalance: getBigNumber(item.borrowBalance),
-        collateralFactor: getBigNumber(item.collateralFactor),
-        tokenPrice: getBigNumber(item.tokenPrice),
-        liquidity: getBigNumber(item.liquidity)
-      };
-      tempArr.push(temp);
+      if (item) {
+        const temp = {
+          ...item,
+          supplyApy: getBigNumber(item.supplyApy),
+          borrowApy: getBigNumber(item.borrowApy),
+          walletBalance: getBigNumber(item.walletBalance),
+          supplyBalance: getBigNumber(item.supplyBalance),
+          sTokenBalance: getBigNumber(item.sTokenBalance),
+          borrowBalance: getBigNumber(item.borrowBalance),
+          collateralFactor: getBigNumber(item.collateralFactor),
+          tokenPrice: getBigNumber(item.tokenPrice),
+          liquidity: getBigNumber(item.liquidity)
+        };
+        tempArr.push(temp);
+      }
     });
 
     const tempSuppliedData = [];
@@ -171,9 +173,8 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
         <TabContainer>
           <Tabs>
             <div
-              className={`tab-item center ${
-                currentMarket === 'supply' ? 'tab-active' : ''
-              }`}
+              className={`tab-item center ${currentMarket === 'supply' ? 'tab-active' : ''
+                }`}
               onClick={() => {
                 setCurrentMarket('supply');
               }}
@@ -181,9 +182,8 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
               Supply Market
             </div>
             <div
-              className={`tab-item center ${
-                currentMarket === 'borrow' ? 'tab-active' : ''
-              }`}
+              className={`tab-item center ${currentMarket === 'borrow' ? 'tab-active' : ''
+                }`}
               onClick={() => {
                 setCurrentMarket('borrow');
               }}
