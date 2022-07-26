@@ -76,7 +76,7 @@ function Liquidator({ settings }) {
       setMess('');
       setUserAddressInput(value);
     } else {
-      setMess('Please enter a valid address');
+      setMess('Please input a valid address');
       setUserAddressInput(value);
     }
   };
@@ -462,7 +462,7 @@ function Liquidator({ settings }) {
         <div className="address">
           <div className="text-input">
             <Input
-              placeholder="0xbfr2zs203..."
+              placeholder="E.g 0xbfr2zs203..."
               value={userAddressInput}
               onChange={e => handleInputAddressChange(e.target.value)}
             />
@@ -513,7 +513,7 @@ function Liquidator({ settings }) {
                 userInfo.health === 0 ? 'red-value' : ''
               } ${userInfo.health > 0 ? 'green-value' : ''}`}
             >
-              {userInfo.accHealth || 'N/A'}
+              {userInfo.accHealth || '-'}
             </div>
           </div>
           <div className="item">
@@ -548,7 +548,7 @@ function Liquidator({ settings }) {
                 </SButton>
               </Dropdown>
             ) : (
-              <div>N/A</div>
+              <div>-</div>
             )}
           </div>
           <div className="item">
@@ -581,7 +581,7 @@ function Liquidator({ settings }) {
                 </SButton>
               </Dropdown>
             ) : (
-              <div>N/A</div>
+              <div>-</div>
             )}
           </div>
           <div className="item">
@@ -595,7 +595,7 @@ function Liquidator({ settings }) {
                   <div>${userInfo.maxRepayAmountUsd}</div>
                 </>
               ) : (
-                'N/A'
+                '-'
               )}
             </div>
           </div>
@@ -610,7 +610,7 @@ function Liquidator({ settings }) {
                   <div>${userInfo.maxSeizeAmountUsd}</div>
                 </>
               ) : (
-                'N/A'
+                '-'
               )}
             </div>
           </div>
