@@ -66,23 +66,21 @@ function Liquidator({ settings }) {
   const [blockNumber, setBlockNumber] = useState();
 
   const handleInputAddressChange = value => {
-    const validateAddress = Web3.utils.isAddress(value);
-    if (!String(value) && !userAddressInput) {
-      setMess('');
-      setUserAddressInput('');
-      return;
-    }
-    if (validateAddress) {
-      setMess('');
+    if (value) {
       setUserAddressInput(value);
     } else {
-      setMess('Please input a valid address');
-      setUserAddressInput(value);
+      setUserAddressInput('');
     }
   };
 
   const handleSearchUserAddress = () => {
-    setSelectedUserAddress(userAddressInput);
+    const validateAddress = Web3.utils.isAddress(userAddressInput);
+    if (!validateAddress) {
+      setMess('Please input a valid address');
+      setSelectedUserAddress(userAddressInput);
+    } else {
+      setSelectedUserAddress(userAddressInput);
+    }
   };
 
   const handleInputAmountChange = value => {
@@ -219,7 +217,11 @@ function Liquidator({ settings }) {
 
   const getUserInfo = async (address, borrowToken, seizeToken) => {
     const dataUser = await getDataUsers(address, borrowToken, seizeToken);
-    setUserInfo(formatUserInfo(dataUser.rows[0]));
+    if (dataUser.rows.length === 0) {
+      setUserInfo({});
+    } else {
+      setUserInfo(formatUserInfo(dataUser.rows[0]));
+    }
     setListRepay(dataUser.listTokenBorrow);
     setListSeize(dataUser.listTokenSeize);
   };
@@ -270,18 +272,16 @@ function Liquidator({ settings }) {
     getDataTableUsers();
     getCurrentBlock();
   }, []);
-
+  console.log('dataaaa', userInfo);
   useEffect(() => {
     if (selectedUserAddress) {
-      Object.keys(userInfo).forEach(key => delete userInfo[key]);
-      setUserInfo(userInfo);
       getUserInfo(selectedUserAddress, selectedAssetRepay, selectedAssetSeize);
-      if (!userInfo.health) {
-        setMess('');
-      } else if (userInfo.health !== 0) {
-        setMess('This account is healthy and can not be liquidated');
-      } else {
-        setMess('This account can be liquidated');
+      if (Web3.utils.isAddress(selectedUserAddress)) {
+        if (userInfo.health > 0) {
+          setMess('This account is healthy and can not be liquidated');
+        } else if (userInfo.health <= 0) {
+          setMess('This account can be liquidated');
+        }
       }
     }
   }, [selectedUserAddress, selectedAssetRepay, selectedAssetSeize]);
