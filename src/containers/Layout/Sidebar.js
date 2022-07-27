@@ -318,7 +318,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x3';
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0x1' }],
+        params: [{ chainId: chainId }],
       })
       tempError = err;
       accounts = [];
