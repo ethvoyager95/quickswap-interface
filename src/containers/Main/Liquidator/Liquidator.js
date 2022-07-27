@@ -74,12 +74,14 @@ function Liquidator({ settings }) {
   };
 
   const handleSearchUserAddress = () => {
-    const validateAddress = Web3.utils.isAddress(userAddressInput);
-    if (!validateAddress) {
-      setMess('Please input a valid address');
-      setSelectedUserAddress(userAddressInput);
-    } else {
-      setSelectedUserAddress(userAddressInput);
+    if (userAddressInput) {
+      const validateAddress = Web3.utils.isAddress(userAddressInput);
+      if (!validateAddress) {
+        setMess('Please input a valid address');
+        setSelectedUserAddress(userAddressInput);
+      } else {
+        setSelectedUserAddress(userAddressInput);
+      }
     }
   };
 
@@ -272,7 +274,7 @@ function Liquidator({ settings }) {
     getDataTableUsers();
     getCurrentBlock();
   }, []);
-  console.log('dataaaa', userInfo);
+
   useEffect(() => {
     if (selectedUserAddress) {
       getUserInfo(selectedUserAddress, selectedAssetRepay, selectedAssetSeize);
@@ -283,6 +285,8 @@ function Liquidator({ settings }) {
           setMess('This account can be liquidated');
         }
       }
+    } else {
+      setUserInfo({});
     }
   }, [selectedUserAddress, selectedAssetRepay, selectedAssetSeize]);
 
@@ -486,7 +490,7 @@ function Liquidator({ settings }) {
               mess === 'This account can be liquidated' ? 'text-green' : ''
             } message`}
           >
-            {mess && userAddressInput ? mess : null}
+            {mess && selectedUserAddress ? mess : null}
           </div>
           {selectedUserAddress && (
             <div className="refresh" onClick={handleRefresh}>
@@ -667,7 +671,7 @@ function Liquidator({ settings }) {
                   {errMess && <div className="err">{errMess}</div>}
                 </div>
                 <Button
-                  disabled={errMess || !repayValue}
+                  disabled={errMess || !repayValue || +repayValue === 0}
                   onClick={handleLiquidate}
                 >
                   Liquidate
