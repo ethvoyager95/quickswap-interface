@@ -33,7 +33,7 @@ import iconWithdraw from 'assets/img/methods/withdraw.svg';
 import iconBorrow from 'assets/img/methods/borrow.svg';
 import iconRepayBorrow from 'assets/img/methods/repay-borrow.svg';
 import iconLiquidateBorrow from 'assets/img/methods/liquidate-borrow.svg';
-import iconBoost from 'assets/img/methods/boost.png';
+import iconBoost from 'assets/img/methods/boost.svg';
 import iconDeposit from 'assets/img/methods/deposit.svg';
 import iconUnBoost from 'assets/img/methods/un-boost.svg';
 import iconClaimBase from 'assets/img/methods/claim-base-reward.svg';
@@ -57,17 +57,17 @@ const MINUTES_TO_TIMESTAMP = 60;
 const HOUR_TO_TIMESTAMP = 60 * 60;
 const DAY_TO_TIMESTAMP = 24 * 60 * 60;
 
-const SUPPLY = 'Supplier';
+const SUPPLY = 'Supply';
 const REDEEM = 'Redeem';
 const BORROW = 'Borrow';
-const REPAY_BORROW = 'RepayBorrow';
-const LIQUIDATE_BORROW = 'LiquidateBorrow';
+const REPAY_BORROW = 'Repay & Borrow';
+const LIQUIDATE_BORROW = 'Liquidate Borrow';
 const BOOST = 'Boost';
 const DEPOSIT = 'Deposit';
-const UN_BOOST = 'UnBoost';
+const UN_BOOST = 'Unboost';
 const WITHDRAW = 'Withdraw';
-const CLAIM_BASE_REWARD = 'ClaimBaseRewards';
-const CLAIM_BOOST_REWARD = 'ClaimBoostRewards';
+const CLAIM_BASE_REWARD = 'Claim Base Rewards';
+const CLAIM_BOOST_REWARD = 'Claim Boost Rewards';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -168,7 +168,7 @@ export const renderBgColor = action => {
   if (action === UN_BOOST) return '#E9FAFA';
   if (action === WITHDRAW) return '#E1F7ED';
   if (action === CLAIM_BASE_REWARD) return '#FFE6F8';
-  if (action === CLAIM_BOOST_REWARD) return '##E9EDFA';
+  if (action === CLAIM_BOOST_REWARD) return '#E9EDFA';
   return '#E0EFFA';
 };
 

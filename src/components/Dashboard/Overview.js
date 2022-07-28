@@ -177,7 +177,7 @@ function Overview({ currentMarket, settings, getMarketHistory }) {
   useEffect(() => {
     if (settings.assetList && settings.assetList.length > 0) {
       const currentMarketInfo =
-        settings.assetList.filter(s => s.id === currentAsset).length !== 0
+        settings.assetList.filter(s => s?.id === currentAsset).length !== 0
           ? settings.assetList.filter(s => s.id === currentAsset)[0]
           : {};
       const supplyApy = getBigNumber(currentMarketInfo.supplyApy);

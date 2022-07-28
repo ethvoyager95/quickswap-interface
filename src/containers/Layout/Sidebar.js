@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink, withRouter, useLocation } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { message } from 'antd';
 import BigNumber from 'bignumber.js';
@@ -74,6 +74,7 @@ const Logo = styled.div`
 const MainMenu = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 
   @media only screen and (max-width: 768px) {
     display: flex;
@@ -88,7 +89,10 @@ const MainMenu = styled.div`
     transition: all 0.5s ease;
     background-color: #090d27;
     padding-top: 20px;
+    padding-bottom: 20px;
     z-index: 10;
+    overflow-y: auto;
+    flex-wrap: nowrap;
   }
 
   a {
@@ -216,6 +220,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [available, setAvailable] = useState('0');
   const [balance, setBalance] = useState('');
+  const location = useLocation();
 
   const checkNetwork = () => {
     const netId = window.ethereum.networkVersion
@@ -310,6 +315,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       }
       tempError = null;
     } catch (err) {
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x3';
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: chainId }],
+      })
       tempError = err;
       accounts = [];
       await setSetting({ selectedAddress: null });
@@ -339,19 +349,26 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     Object.values(constants.CONTRACT_TOKEN_ADDRESS).forEach(async item => {
       decimals[`${item.id}`] = {};
       if (item.id !== 'eth' && item.id !== 'strk') {
-        const tokenContract = getTokenContract(item.id);
-        const tokenDecimals = await methods.call(
-          tokenContract.methods.decimals,
-          []
-        );
-        const sBepContract = getSbepContract(item.id);
-        const stokenDecimals = await methods.call(
-          sBepContract.methods.decimals,
-          []
-        );
-        decimals[`${item.id}`].token = Number(tokenDecimals);
-        decimals[`${item.id}`].stoken = Number(stokenDecimals);
-        decimals[`${item.id}`].price = 18 + 18 - Number(tokenDecimals);
+        if (checkIsValidNetwork()) {
+          const tokenContract = getTokenContract(item.id);
+          const tokenDecimals = await methods.call(
+            tokenContract.methods.decimals,
+            []
+          );
+          const sBepContract = getSbepContract(item.id);
+          const stokenDecimals = await methods.call(
+            sBepContract.methods.decimals,
+            []
+          );
+          decimals[`${item.id}`].token = Number(tokenDecimals);
+          decimals[`${item.id}`].stoken = Number(stokenDecimals);
+          decimals[`${item.id}`].price = 18 + 18 - Number(tokenDecimals);
+        } else {
+          decimals[`${item.id}`].token = item.decimals;
+          decimals[`${item.id}`].stoken = 8;
+          decimals[`${item.id}`].price = 18 + 18 - item.decimals;
+        }
+
       } else {
         decimals[`${item.id}`].token = 18;
         decimals[`${item.id}`].stoken = 8;
@@ -419,7 +436,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   useEffect(() => {
     if (window.ethereum) {
-      if (!settings.accountLoading && checkIsValidNetwork()) {
+      if (!settings.accountLoading/* && checkIsValidNetwork()*/) {
         initSettings();
       }
     }
@@ -593,11 +610,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             ).isZero()
               ? '0'
               : asset.borrowBalance
-                  .times(asset.tokenPrice)
-                  .div(settings.totalBorrowLimit)
-                  .times(100)
-                  .dp(0, 1)
-                  .toString(10);
+                .times(asset.tokenPrice)
+                .div(settings.totalBorrowLimit)
+                .times(100)
+                .dp(0, 1)
+                .toString(10);
 
             asset.hypotheticalLiquidity = hypotheticalLiquidity;
 
@@ -728,7 +745,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   };
 
   useEffect(() => {
-    if (!settings.isConnected) {
+    if (!settings.isConnected && location.pathname !== '/history') {
       setIsOpenModal(true);
     }
   }, []);
@@ -820,6 +837,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             <Label>Faucet</Label>
           </NavLink>
         )}
+        <NavLink
+          className="flex flex-start align-center"
+          to="/staking"
+          activeClassName="active"
+        >
+          <Label>DeFi Vault 3.0</Label>
+        </NavLink>
         {settings.selectedAddress && (
           <UserInfoButton>
             <Button
@@ -879,15 +903,17 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           </div>
         </TotalValue>
       )} */}
-      <ConnectModal
-        visible={isOpenModal}
-        web3={web3}
-        error={error}
-        awaiting={awaiting}
-        onCancel={() => setIsOpenModal(false)}
-        onConnectMetaMask={handleMetaMask}
-        checkNetwork={checkNetwork}
-      />
+      {isOpenModal && (
+        <ConnectModal
+          visible={isOpenModal}
+          web3={web3}
+          error={error}
+          awaiting={awaiting}
+          onCancel={() => setIsOpenModal(false)}
+          onConnectMetaMask={handleMetaMask}
+          checkNetwork={checkNetwork}
+        />
+      )}
       <UserInfoModal
         visible={isOpenInfoModal}
         onCancel={() => setIsOpenInfoModal(false)}
