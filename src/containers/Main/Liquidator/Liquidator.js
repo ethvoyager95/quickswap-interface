@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -63,6 +64,7 @@ function Liquidator({ settings }) {
   const [errMess, setErrMess] = useState('');
   const [dataUsersTable, setDataUsersTable] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingInfo, setIsLoadingInfo] = useState(false);
   const [blockNumber, setBlockNumber] = useState();
 
   const handleInputAddressChange = value => {
@@ -74,15 +76,7 @@ function Liquidator({ settings }) {
   };
 
   const handleSearchUserAddress = () => {
-    if (userAddressInput) {
-      const validateAddress = Web3.utils.isAddress(userAddressInput);
-      if (!validateAddress) {
-        setMess('Please input a valid address');
-        setSelectedUserAddress(userAddressInput);
-      } else {
-        setSelectedUserAddress(userAddressInput);
-      }
-    }
+    setSelectedUserAddress(userAddressInput);
   };
 
   const handleInputAmountChange = value => {
@@ -228,8 +222,14 @@ function Liquidator({ settings }) {
     setListSeize(dataUser.listTokenSeize);
   };
 
-  const handleRefresh = () => {
-    getUserInfo(selectedUserAddress, selectedAssetRepay, selectedAssetSeize);
+  const handleRefresh = async () => {
+    setIsLoadingInfo(true);
+    await getUserInfo(
+      selectedUserAddress,
+      selectedAssetRepay,
+      selectedAssetSeize
+    );
+    setIsLoadingInfo(false);
   };
 
   const getBalance = () => {
@@ -279,11 +279,15 @@ function Liquidator({ settings }) {
     if (selectedUserAddress) {
       getUserInfo(selectedUserAddress, selectedAssetRepay, selectedAssetSeize);
       if (Web3.utils.isAddress(selectedUserAddress)) {
-        if (userInfo.health > 0) {
+        if (!userInfo.health) {
+          setMess('');
+        } else if (userInfo.health > 0) {
           setMess('This account is healthy and can not be liquidated');
         } else if (userInfo.health <= 0) {
           setMess('This account can be liquidated');
         }
+      } else {
+        setMess('Please input a valid address');
       }
     } else {
       setUserInfo({});
@@ -517,12 +521,14 @@ function Liquidator({ settings }) {
                 userInfo.health === 0 ? 'red-value' : ''
               } ${userInfo.health > 0 ? 'green-value' : ''}`}
             >
-              {userInfo.accHealth || '-'}
+              {isLoadingInfo ? '-' : userInfo.accHealth || '-'}
             </div>
           </div>
           <div className="item">
             <div>Asset to Repay</div>
-            {userInfo.symbolBorrowToken ? (
+            {isLoadingInfo ? (
+              <div>-</div>
+            ) : userInfo.symbolBorrowToken ? (
               <Dropdown
                 overlay={dropdownAssetRepay}
                 trigger={['click']}
@@ -557,7 +563,9 @@ function Liquidator({ settings }) {
           </div>
           <div className="item">
             <div>Asset to Seize</div>
-            {userInfo.symbolSeizeToken ? (
+            {isLoadingInfo ? (
+              <div>-</div>
+            ) : userInfo.symbolSeizeToken ? (
               <Dropdown
                 overlay={dropdownAssetSeize}
                 trigger={['click']}
@@ -591,7 +599,9 @@ function Liquidator({ settings }) {
           <div className="item">
             <div>Max Repay Amount</div>
             <div className="flex-value">
-              {userInfo.maxRepayAmountEther ? (
+              {isLoadingInfo ? (
+                '-'
+              ) : userInfo.maxRepayAmountEther ? (
                 <>
                   <div className="blue-value">
                     {userInfo.maxRepayAmountEther} {userInfo.symbolBorrowToken}
@@ -606,7 +616,9 @@ function Liquidator({ settings }) {
           <div className="item">
             <div>Max Seize Amount</div>
             <div className="flex-value">
-              {userInfo.maxSeizeAmountEther ? (
+              {isLoadingInfo ? (
+                '-'
+              ) : userInfo.maxSeizeAmountEther ? (
                 <>
                   <div className="blue-value">
                     {userInfo.maxSeizeAmountEther} {userInfo.symbolSeizeToken}
@@ -620,7 +632,11 @@ function Liquidator({ settings }) {
           </div>
         </div>
         <div className="liquidate-wrapper">
-          {selectedUserAddress && userInfo.userAddress ? (
+          {!settings.selectedAddress || !settings.isConnected ? (
+            <div className="mess-liquidator">
+              You need to connect your wallet
+            </div>
+          ) : selectedUserAddress && userInfo.userAddress ? (
             <div className="liquidate">
               <div className="title">
                 Amount you want to repay in{' '}
