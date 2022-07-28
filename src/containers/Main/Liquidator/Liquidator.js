@@ -236,7 +236,12 @@ function Liquidator({ settings }) {
     const selectedMarket = settings.assetList.filter(el => {
       return el.id === selectedAssetRepay.toLowerCase();
     });
-    setBalanceSelectedRepay(selectedMarket[0].walletBalance || '0');
+    const balance = selectedMarket[0].walletBalance;
+    if (balance) {
+      setBalanceSelectedRepay(balance.toString());
+    } else {
+      setBalanceSelectedRepay('0');
+    }
   };
 
   const handleCancel = () => {
@@ -315,6 +320,7 @@ function Liquidator({ settings }) {
     <DropdownAsset>
       {listRepay?.map(token => (
         <div
+          key={token}
           onClick={() => {
             setSelectedAssetRepay(token);
             setVisibleDropdownRepay(false);
@@ -331,6 +337,7 @@ function Liquidator({ settings }) {
     <DropdownAsset>
       {listSeize?.map(token => (
         <div
+          key={token}
           onClick={() => {
             setSelectedAssetSeize(token);
             setVisibleDropdownSeize(false);
@@ -662,8 +669,7 @@ function Liquidator({ settings }) {
               <div className="balance">
                 Wallet balance{' '}
                 <span>
-                  {balanceSelectedRepay}{' '}
-                  {selectedAssetRepay || userInfo.symbolBorrowToken}
+                  {balanceSelectedRepay} {selectedAssetRepay}
                 </span>
               </div>
               <div className="liquidate-btn-wrapper">
@@ -672,14 +678,12 @@ function Liquidator({ settings }) {
                     <>
                       You will repay{' '}
                       <span className="text-blue">
-                        {repayAmount.toEth}{' '}
-                        {selectedAssetRepay || userInfo.symbolBorrowToken}
+                        {repayAmount.toEth} {selectedAssetRepay}
                       </span>{' '}
                       <span className="text-gray">${repayAmount.toUsd}</span>{' '}
                       and seize{' '}
                       <span className="text-blue">
-                        {seizeAmount.toEth}{' '}
-                        {selectedAssetSeize || userInfo.symbolSeizeToken}
+                        {seizeAmount.toEth} {selectedAssetSeize}
                       </span>{' '}
                       <span className="text-gray">${seizeAmount.toUsd}</span>
                     </>
