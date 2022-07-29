@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import Web3 from 'web3';
+import BigNumber from 'bignumber.js';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -39,7 +40,7 @@ import {
   calculateSeizeAmount
 } from './helper';
 
-function Liquidator({ settings }) {
+function Liquidator({ settings, setSetting }) {
   const [userAddressInput, setUserAddressInput] = useState('');
   const [selectedUserAddress, setSelectedUserAddress] = useState('');
   const [mess, setMess] = useState('');
@@ -242,6 +243,7 @@ function Liquidator({ settings }) {
     } else {
       setBalanceSelectedRepay('0');
     }
+    console.log('re-render', balance, balanceSelectedRepay);
   };
 
   const handleCancel = () => {
@@ -264,16 +266,39 @@ function Liquidator({ settings }) {
     try {
       const appContract = getSbepContract(selectedAssetRepay.toLowerCase());
       setIsLoading(true);
+      const decimals = await methods.call(appContract.methods.decimals, []);
       await methods.send(
         appContract.methods.liquidateBorrow,
-        [selectedUserAddress, repayValue, userInfo.seizeTokenAddress],
+        [
+          selectedUserAddress,
+          new BigNumber(+repayValue)
+            .times(new BigNumber(10).pow(decimals))
+            .integerValue()
+            .toString(10),
+          userInfo.seizeTokenAddress
+        ],
         settings.selectedAddress
       );
+
       setIsLoading(false);
-    } catch {
+    } catch (err) {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!settings.selectedAddress) {
+      return;
+    }
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', acc => {
+        setSetting({
+          selectedAddress: acc[0],
+          accountLoading: true
+        });
+      });
+    }
+  }, [window.ethereum, settings.selectedAddress]);
 
   useEffect(() => {
     getDataTableUsers();
@@ -314,7 +339,12 @@ function Liquidator({ settings }) {
     if (selectedUserAddress && selectedAssetRepay) {
       getBalance();
     }
-  }, [selectedUserAddress, selectedAssetRepay]);
+  }, [
+    selectedUserAddress,
+    selectedAssetRepay,
+    settings.selectedAddress,
+    settings.accountLoading
+  ]);
 
   const dropdownAssetRepay = (
     <DropdownAsset>
@@ -741,7 +771,8 @@ function Liquidator({ settings }) {
 }
 
 Liquidator.propTypes = {
-  settings: PropTypes.object
+  settings: PropTypes.object,
+  setSetting: PropTypes.func.isRequired
 };
 
 Liquidator.defaultProps = {
