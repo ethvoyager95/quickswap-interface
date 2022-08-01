@@ -19,7 +19,7 @@ import { Card } from 'components/Basic/Card';
 
 const ProposalsWrapper = styled.div`
   width: 100%;
-  height: 555px;
+  min-height: 555px;
   border-radius: 5px;
   background-color: var(--color-bg-primary);
   padding: 20px 30px;
@@ -57,6 +57,10 @@ const ProposalsWrapper = styled.div`
       color: var(--color-text-secondary);
     }
 
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
     .ant-pagination-prev,
     .ant-pagination-next {
       display: none;
@@ -82,6 +86,7 @@ const ProposalsWrapper = styled.div`
     .button {
       width: 200px;
       flex-direction: row-reverse;
+
       span {
         font-size: 16px;
         font-weight: 900;
@@ -115,6 +120,32 @@ const ProposalsWrapper = styled.div`
       .button-next:hover {
         span {
           color: var(--color-blue);
+        }
+      }
+
+      @media (max-width: 768px) {
+        gap: 10px;
+        justify-content: center;
+
+        img {
+          width: 20px;
+          height: 16px;
+          border-radius: 50%;
+        }
+
+        .button-prev {
+          cursor: pointer;
+          img {
+            margin-right: 12px;
+            transform: rotate(180deg);
+          }
+        }
+
+        .button-next {
+          cursor: pointer;
+          span {
+            margin-right: 12px;
+          }
         }
       }
     }
