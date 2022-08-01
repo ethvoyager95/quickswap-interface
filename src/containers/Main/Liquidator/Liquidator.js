@@ -15,7 +15,11 @@ import iconSearch from 'assets/img/liquidator-search.svg';
 // import iconFilter from 'assets/img/liquidator-filter.svg';
 import noData from 'assets/img/no_data.svg';
 import iconDropdown from 'assets/img/icon-dropdown.svg';
-import { getSbepContract, methods } from 'utilities/ContractService';
+import {
+  getSbepContract,
+  getTokenContract,
+  methods
+} from 'utilities/ContractService';
 import ModalLiquidations from './ModalLiquidations';
 import ModalLoading from './ModalLoading';
 import {
@@ -84,37 +88,25 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const handleInputAmountChange = value => {
-    if (+value > +balanceSelectedRepay) {
-      setErrMess(
-        'You have input the number higher than your balance. Try again'
-      );
-    } else if (+value > +userInfo.maxRepayAmount) {
-      setErrMess(
-        'You have input the number higher than max repay amount. Try again'
-      );
-    } else {
-      setErrMess('');
-    }
-
     if (value && userInfo) {
       setRepayValue(value);
       const repayInfo = {
         toEth: formatNumber(value),
-        toUsd: formatNumber(value * userInfo.currentBorrowPrice)
+        toUsd: formatNumber(value * userInfo.borrowTokenPrice)
       };
       setRepayAmount(repayInfo);
       const seizeInfo = {
         toEth: formatNumber(
           calculateSeizeAmount(
             value,
-            userInfo.currentBorrowPrice,
+            userInfo.borrowTokenPrice,
             userInfo.seizeTokenPrice
           ).toEther
         ),
         toUsd: formatNumber(
           calculateSeizeAmount(
             value,
-            userInfo.currentBorrowPrice,
+            userInfo.borrowTokenPrice,
             userInfo.seizeTokenPrice
           ).toUsd
         )
@@ -131,23 +123,21 @@ function Liquidator({ settings, setSetting }) {
       setRepayValue(userInfo.maxRepayAmount);
       const repayInfo = {
         toEth: formatNumber(userInfo.maxRepayAmount),
-        toUsd: formatNumber(
-          userInfo.maxRepayAmount * userInfo.currentBorrowPrice
-        )
+        toUsd: formatNumber(userInfo.maxRepayAmount * userInfo.borrowTokenPrice)
       };
       setRepayAmount(repayInfo);
       const seizeInfo = {
         toEth: formatNumber(
           calculateSeizeAmount(
             userInfo.maxRepayAmount,
-            userInfo.currentBorrowPrice,
+            userInfo.borrowTokenPrice,
             userInfo.seizeTokenPrice
           ).toEther
         ),
         toUsd: formatNumber(
           calculateSeizeAmount(
             userInfo.maxRepayAmount,
-            userInfo.currentBorrowPrice,
+            userInfo.borrowTokenPrice,
             userInfo.seizeTokenPrice
           ).toUsd
         )
@@ -157,21 +147,21 @@ function Liquidator({ settings, setSetting }) {
       setRepayValue(balanceSelectedRepay);
       const repayInfo = {
         toEth: formatNumber(balanceSelectedRepay),
-        toUsd: formatNumber(balanceSelectedRepay * userInfo.currentBorrowPrice)
+        toUsd: formatNumber(balanceSelectedRepay * userInfo.borrowTokenPrice)
       };
       setRepayAmount(repayInfo);
       const seizeInfo = {
         toEth: formatNumber(
           calculateSeizeAmount(
             balanceSelectedRepay,
-            userInfo.currentBorrowPrice,
+            userInfo.borrowTokenPrice,
             userInfo.seizeTokenPrice
           ).toEther
         ),
         toUsd: formatNumber(
           calculateSeizeAmount(
             balanceSelectedRepay,
-            userInfo.currentBorrowPrice,
+            userInfo.borrowTokenPrice,
             userInfo.seizeTokenPrice
           ).toUsd
         )
@@ -306,12 +296,13 @@ function Liquidator({ settings, setSetting }) {
 
   const handleLiquidate = async () => {
     try {
-      const appContract = getSbepContract(selectedAssetRepay.toLowerCase());
+      const tokenContract = getTokenContract(selectedAssetRepay.toLowerCase());
+      const sbepContract = getSbepContract(selectedAssetRepay.toLowerCase());
       setIsLoading(true);
       setAction('Liquidating');
-      const decimals = await methods.call(appContract.methods.decimals, []);
+      const decimals = await methods.call(tokenContract.methods.decimals, []);
       await methods.send(
-        appContract.methods.liquidateBorrow,
+        sbepContract.methods.liquidateBorrow,
         [
           selectedUserAddress,
           new BigNumber(+repayValue)
@@ -348,6 +339,20 @@ function Liquidator({ settings, setSetting }) {
     getDataTableUsers();
     getCurrentBlock();
   }, []);
+
+  useEffect(() => {
+    if (+repayValue > +balanceSelectedRepay) {
+      setErrMess(
+        'You have input the number higher than your balance. Try again'
+      );
+    } else if (+repayValue > +userInfo.maxRepayAmount) {
+      setErrMess(
+        'You have input the number higher than max repay amount. Try again'
+      );
+    } else {
+      setErrMess('');
+    }
+  }, [settings.selectedAddress, repayValue, balanceSelectedRepay, userInfo]);
 
   useEffect(() => {
     if (selectedUserAddress) {
