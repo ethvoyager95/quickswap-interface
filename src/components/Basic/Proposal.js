@@ -20,7 +20,7 @@ const ProposalWrapper = styled.div`
   .title {
     margin-bottom: 10px;
     * {
-      width: 250px;
+      width: 80%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -54,7 +54,7 @@ const ProposalWrapper = styled.div`
     color: var(--color-blue);
   }
   .Failed-btn {
-    color: #f3f3f3;
+    color: var(--color-red);
   }
 
   .description {

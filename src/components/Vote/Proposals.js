@@ -188,7 +188,7 @@ function Proposals({
         setProposalThreshold(+Web3.utils.fromWei(res, 'ether'));
       });
       methods.call(voteContract.methods.proposalMaxOperations, []).then(res => {
-        setMaxOperation(res);
+        setMaxOperation(Number(res));
       });
     }
   }, [address]);
