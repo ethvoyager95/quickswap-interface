@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import * as constants from 'utilities/constants';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -67,6 +68,8 @@ function Liquidator({ settings, setSetting }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingInfo, setIsLoadingInfo] = useState(false);
   const [blockNumber, setBlockNumber] = useState();
+  const [isApprove, setIsApprove] = useState(false);
+  const [action, setAction] = useState('');
 
   const handleInputAddressChange = value => {
     if (value) {
@@ -223,6 +226,31 @@ function Liquidator({ settings, setSetting }) {
     setListSeize(dataUser.listTokenSeize);
   };
 
+  const getBalance = () => {
+    const selectedMarket = settings.assetList.filter(el => {
+      return el.id === selectedAssetRepay.toLowerCase();
+    });
+    const balance = selectedMarket[0].walletBalance;
+    if (balance) {
+      setBalanceSelectedRepay(formatNumber(balance).toString());
+    } else {
+      setBalanceSelectedRepay('0');
+    }
+  };
+
+  const checkApprove = async () => {
+    const appContract = getSbepContract(selectedAssetRepay.toLowerCase());
+    const approved = await methods.call(appContract.methods.allowance, [
+      settings.selectedAddress,
+      constants.CONTRACT_SBEP_ADDRESS[selectedAssetRepay.toLowerCase()].address
+    ]);
+    if (+approved === 0) {
+      setIsApprove(false);
+    } else {
+      setIsApprove(true);
+    }
+  };
+
   const handleRefresh = async () => {
     setIsLoadingInfo(true);
     await getUserInfo(
@@ -230,20 +258,9 @@ function Liquidator({ settings, setSetting }) {
       selectedAssetRepay,
       selectedAssetSeize
     );
+    getBalance();
+    await checkApprove();
     setIsLoadingInfo(false);
-  };
-
-  const getBalance = () => {
-    const selectedMarket = settings.assetList.filter(el => {
-      return el.id === selectedAssetRepay.toLowerCase();
-    });
-    const balance = selectedMarket[0].walletBalance;
-    if (balance) {
-      setBalanceSelectedRepay(balance.toString());
-    } else {
-      setBalanceSelectedRepay('0');
-    }
-    console.log('re-render', balance, balanceSelectedRepay);
   };
 
   const handleCancel = () => {
@@ -262,10 +279,36 @@ function Liquidator({ settings, setSetting }) {
     setVisibleDropdownSeize(flag);
   };
 
+  const handleApprove = async () => {
+    try {
+      setIsLoading(true);
+      setAction('Approve');
+      const appContract = getSbepContract(selectedAssetRepay.toLowerCase());
+      await methods.send(
+        appContract.methods.approve,
+        [
+          constants.CONTRACT_SBEP_ADDRESS[selectedAssetRepay.toLowerCase()]
+            .address,
+          new BigNumber(2)
+            .pow(256)
+            .minus(1)
+            .toString(10)
+        ],
+        settings.selectedAddress
+      );
+      setIsLoading(false);
+      setIsApprove(true);
+    } catch (err) {
+      console.error(err);
+      setIsLoading(false);
+    }
+  };
+
   const handleLiquidate = async () => {
     try {
       const appContract = getSbepContract(selectedAssetRepay.toLowerCase());
       setIsLoading(true);
+      setAction('Liquidating');
       const decimals = await methods.call(appContract.methods.decimals, []);
       await methods.send(
         appContract.methods.liquidateBorrow,
@@ -282,6 +325,7 @@ function Liquidator({ settings, setSetting }) {
 
       setIsLoading(false);
     } catch (err) {
+      console.error(err);
       setIsLoading(false);
     }
   };
@@ -308,21 +352,26 @@ function Liquidator({ settings, setSetting }) {
   useEffect(() => {
     if (selectedUserAddress) {
       getUserInfo(selectedUserAddress, selectedAssetRepay, selectedAssetSeize);
-      if (Web3.utils.isAddress(selectedUserAddress)) {
-        if (!userInfo.health) {
-          setMess('');
-        } else if (userInfo.health > 0) {
-          setMess('This account is healthy and can not be liquidated');
-        } else if (userInfo.health <= 0) {
-          setMess('This account can be liquidated');
-        }
-      } else {
-        setMess('Please input a valid address');
-      }
     } else {
       setUserInfo({});
     }
   }, [selectedUserAddress, selectedAssetRepay, selectedAssetSeize]);
+
+  useEffect(() => {
+    if (Web3.utils.isAddress(selectedUserAddress)) {
+      if (!userInfo.userAddress) {
+        setMess('');
+      }
+      if (+userInfo.health > 0) {
+        setMess('This account is healthy and can not be liquidated');
+      }
+      if (+userInfo.health <= 0) {
+        setMess('This account can be liquidated');
+      }
+    } else {
+      setMess('Please input a valid address');
+    }
+  }, [selectedUserAddress, userInfo]);
 
   useEffect(() => {
     async function getAsset() {
@@ -338,6 +387,7 @@ function Liquidator({ settings, setSetting }) {
   useEffect(() => {
     if (selectedUserAddress && selectedAssetRepay) {
       getBalance();
+      checkApprove();
     }
   }, [
     selectedUserAddress,
@@ -387,7 +437,9 @@ function Liquidator({ settings, setSetting }) {
       key: 'accHealth',
       render(_, asset) {
         return {
-          children: <Health>{asset.accHealth || '-'}</Health>
+          children: (
+            <Health health={asset.accHealth}>{asset.accHealth || '-'}</Health>
+          )
         };
       }
     },
@@ -510,6 +562,7 @@ function Liquidator({ settings, setSetting }) {
               placeholder="E.g 0xbfr2zs203..."
               value={userAddressInput}
               onChange={e => handleInputAddressChange(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSearchUserAddress()}
             />
             <Button className="search-btn" onClick={handleSearchUserAddress}>
               <img src={iconSearch} alt="" />
@@ -699,7 +752,8 @@ function Liquidator({ settings, setSetting }) {
               <div className="balance">
                 Wallet balance{' '}
                 <span>
-                  {balanceSelectedRepay} {selectedAssetRepay}
+                  {isLoadingInfo ? '-' : balanceSelectedRepay || '-'}{' '}
+                  {selectedAssetRepay}
                 </span>
               </div>
               <div className="liquidate-btn-wrapper">
@@ -720,12 +774,21 @@ function Liquidator({ settings, setSetting }) {
                   )}
                   {errMess && <div className="err">{errMess}</div>}
                 </div>
-                <Button
-                  disabled={errMess || !repayValue || +repayValue === 0}
-                  onClick={handleLiquidate}
-                >
-                  Liquidate
-                </Button>
+                {isApprove ? (
+                  <Button
+                    disabled={
+                      errMess ||
+                      !repayValue ||
+                      +repayValue === 0 ||
+                      userInfo.health > 0
+                    }
+                    onClick={handleLiquidate}
+                  >
+                    Liquidate
+                  </Button>
+                ) : (
+                  <Button onClick={handleApprove}>Approve</Button>
+                )}
               </div>
               <div className="gas-price">
                 <div>Account health is updated every 2 seconds</div>
@@ -763,6 +826,7 @@ function Liquidator({ settings, setSetting }) {
       {isLoading && (
         <ModalLoading
           isOpenModal={isLoading}
+          action={action}
           onCancel={handleCancelModalLoading}
         />
       )}

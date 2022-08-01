@@ -62,8 +62,9 @@ export const renderLogo = symbol => {
   return '';
 };
 
-export const formatNumber = value => {
+export const formatNumber = (value, isAccHealth) => {
   const valueEther = new BigNumber(value);
+  if (valueEther.eq(0) && isAccHealth) return '0';
   if (valueEther.eq(0)) return '0.0';
   if (valueEther.lt(0.00001)) return '<0.00001';
   if (valueEther.isNaN()) return '-';
@@ -85,7 +86,7 @@ export const formatRecentRecord = records =>
 export const formatUsersRecord = records =>
   records?.map(record => ({
     ...record,
-    accHealth: formatNumber(record.health),
+    accHealth: formatNumber(record.health, true),
     logoSeize: renderLogo(record.symbolSeizeToken),
     maxSeizeAmountEther: formatNumber(record.maxSeizeAmount),
     maxSeizeAmountUsd: formatNumber(
@@ -94,21 +95,21 @@ export const formatUsersRecord = records =>
     logoRepay: renderLogo(record.symbolBorrowToken),
     maxRepayAmountEther: formatNumber(record.maxRepayAmount),
     maxRepayAmountUsd: formatNumber(
-      record.maxRepayAmount * record.currentBorrowPrice
+      record.maxRepayAmount * record.borrowTokenPrice
     )
   }));
 
 export const formatUserInfo = record => {
   return {
     ...record,
-    accHealth: formatNumber(record.health),
+    accHealth: formatNumber(record.health, true),
     maxSeizeAmountEther: formatNumber(record.maxSeizeAmount),
     maxSeizeAmountUsd: formatNumber(
       record.maxSeizeAmount * record.seizeTokenPrice
     ),
     maxRepayAmountEther: formatNumber(record.maxRepayAmount),
     maxRepayAmountUsd: formatNumber(
-      record.maxRepayAmount * record.currentBorrowPrice
+      record.maxRepayAmount * record.borrowTokenPrice
     )
   };
 };

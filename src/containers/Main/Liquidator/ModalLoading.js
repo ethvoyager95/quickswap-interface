@@ -8,7 +8,7 @@ import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { CustomModal, ModalLoadingContent } from './style';
 import './overide.scss';
 
-function ModalLoading({ isOpenModal, onCancel }) {
+function ModalLoading({ isOpenModal, onCancel, action }) {
   return (
     <CustomModal
       centered
@@ -21,7 +21,7 @@ function ModalLoading({ isOpenModal, onCancel }) {
     >
       <ModalLoadingContent>
         <LoadingSpinner size={80} />
-        <div className="title">Liquidating</div>
+        <div className="title">{action}</div>
       </ModalLoadingContent>
     </CustomModal>
   );
@@ -29,12 +29,14 @@ function ModalLoading({ isOpenModal, onCancel }) {
 
 ModalLoading.propTypes = {
   isOpenModal: PropTypes.bool,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
+  action: PropTypes.string
 };
 
 ModalLoading.defaultProps = {
   isOpenModal: false,
-  onCancel: {}
+  onCancel: {},
+  action: ''
 };
 
 const mapStateToProps = ({ account }) => ({
