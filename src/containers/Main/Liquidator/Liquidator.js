@@ -373,18 +373,29 @@ function Liquidator({ settings, setSetting }) {
   }, []);
 
   useEffect(() => {
-    if (+repayValue > +balanceSelectedRepay) {
+    const balanceBigNumber = new BigNumber(balanceSelectedRepay);
+    const repayValueBigNumber = new BigNumber(repayValue);
+    const maxRepayBigNumber = new BigNumber(userInfo.maxRepayAmount);
+
+    if (repayValueBigNumber.gt(balanceBigNumber)) {
       setErrMess(
         'You have input the number higher than your balance. Try again'
       );
-    } else if (+repayValue > +userInfo.maxRepayAmount) {
+    } else if (repayValueBigNumber.gt(maxRepayBigNumber)) {
       setErrMess(
         'You have input the number higher than max repay amount. Try again'
       );
     } else {
       setErrMess('');
     }
-  }, [settings.selectedAddress, repayValue, balanceSelectedRepay, userInfo]);
+  }, [
+    settings.selectedAddress,
+    repayValue,
+    repayAmount,
+    seizeAmount,
+    balanceSelectedRepay,
+    userInfo
+  ]);
 
   useEffect(() => {
     let updateTimer;
