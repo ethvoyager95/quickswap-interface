@@ -119,8 +119,11 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const handleClickMaxBtn = () => {
-    if (+balanceSelectedRepay > +userInfo.maxRepayAmount) {
-      setRepayValue(userInfo.maxRepayAmount);
+    const balanceBigNumber = new BigNumber(balanceSelectedRepay);
+    const maxRepayBigNumber = new BigNumber(userInfo.maxRepayAmount);
+
+    if (balanceBigNumber.gt(maxRepayBigNumber)) {
+      setRepayValue(maxRepayBigNumber.toString(10));
       const repayInfo = {
         toEth: formatNumber(userInfo.maxRepayAmount),
         toUsd: formatNumber(userInfo.maxRepayAmount * userInfo.borrowTokenPrice)
@@ -144,7 +147,7 @@ function Liquidator({ settings, setSetting }) {
       };
       setSeizeAmount(seizeInfo);
     } else {
-      setRepayValue(balanceSelectedRepay);
+      setRepayValue(formatNumber(balanceSelectedRepay));
       const repayInfo = {
         toEth: formatNumber(balanceSelectedRepay),
         toUsd: formatNumber(balanceSelectedRepay * userInfo.borrowTokenPrice)
@@ -222,7 +225,7 @@ function Liquidator({ settings, setSetting }) {
     });
     const balance = selectedMarket[0].walletBalance;
     if (balance) {
-      setBalanceSelectedRepay(formatNumber(balance).toString());
+      setBalanceSelectedRepay(balance.toString(10));
     } else {
       setBalanceSelectedRepay('0');
     }
@@ -313,7 +316,6 @@ function Liquidator({ settings, setSetting }) {
         ],
         settings.selectedAddress
       );
-
       setIsLoading(false);
     } catch (err) {
       console.error(err);
@@ -757,7 +759,9 @@ function Liquidator({ settings, setSetting }) {
               <div className="balance">
                 Wallet balance{' '}
                 <span>
-                  {isLoadingInfo ? '-' : balanceSelectedRepay || '-'}{' '}
+                  {isLoadingInfo
+                    ? '-'
+                    : formatNumber(balanceSelectedRepay) || '-'}{' '}
                   {selectedAssetRepay}
                 </span>
               </div>
