@@ -239,8 +239,8 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const checkApprove = async () => {
-    const appContract = getSbepContract(selectedAssetRepay.toLowerCase());
-    const approved = await methods.call(appContract.methods.allowance, [
+    const tokenContract = getTokenContract(selectedAssetRepay.toLowerCase());
+    const approved = await methods.call(tokenContract.methods.allowance, [
       settings.selectedAddress,
       constants.CONTRACT_SBEP_ADDRESS[selectedAssetRepay.toLowerCase()].address
     ]);
@@ -284,9 +284,9 @@ function Liquidator({ settings, setSetting }) {
       setTypeModal('loading');
       setIsOpenModalLoading(true);
       setAction('Approve');
-      const appContract = getSbepContract(selectedAssetRepay.toLowerCase());
+      const tokenContract = getTokenContract(selectedAssetRepay.toLowerCase());
       await methods.send(
-        appContract.methods.approve,
+        tokenContract.methods.approve,
         [
           constants.CONTRACT_SBEP_ADDRESS[selectedAssetRepay.toLowerCase()]
             .address,
