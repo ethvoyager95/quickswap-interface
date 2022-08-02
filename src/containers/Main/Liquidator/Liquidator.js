@@ -46,6 +46,7 @@ import {
 } from './helper';
 
 function Liquidator({ settings, setSetting }) {
+  const abortController = new AbortController();
   const [userAddressInput, setUserAddressInput] = useState('');
   const [selectedUserAddress, setSelectedUserAddress] = useState('');
   const [mess, setMess] = useState('');
@@ -354,6 +355,17 @@ function Liquidator({ settings, setSetting }) {
   useEffect(() => {
     getDataTableUsers();
     getCurrentBlock();
+    const updateTimer = setInterval(() => {
+      getDataTableUsers();
+      getCurrentBlock();
+    }, 10000);
+
+    return function cleanup() {
+      abortController.abort();
+      if (updateTimer) {
+        clearInterval(updateTimer);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -371,11 +383,26 @@ function Liquidator({ settings, setSetting }) {
   }, [settings.selectedAddress, repayValue, balanceSelectedRepay, userInfo]);
 
   useEffect(() => {
+    let updateTimer;
     if (selectedUserAddress) {
       getUserInfo(selectedUserAddress, selectedAssetRepay, selectedAssetSeize);
+      updateTimer = setInterval(() => {
+        getUserInfo(
+          selectedUserAddress,
+          selectedAssetRepay,
+          selectedAssetSeize
+        );
+      }, 2000);
     } else {
       setUserInfo({});
     }
+
+    return function cleanup() {
+      abortController.abort();
+      if (updateTimer) {
+        clearInterval(updateTimer);
+      }
+    };
   }, [selectedUserAddress, selectedAssetRepay, selectedAssetSeize]);
 
   useEffect(() => {
