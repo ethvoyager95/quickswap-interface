@@ -186,8 +186,8 @@ function Liquidator({ settings, setSetting }) {
       {
         params: {
           address: userAddress || undefined,
-          borrow_token: borrowToken || userInfo.symbolBorrowToken || undefined,
-          seize_token: seizeToken || userInfo.symbolSeizeToken || undefined
+          borrow_token: borrowToken || undefined,
+          seize_token: seizeToken || undefined
         }
       }
     );
