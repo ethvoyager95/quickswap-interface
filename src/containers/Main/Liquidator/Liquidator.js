@@ -91,6 +91,10 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const handleInputAmountChange = value => {
+    const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
+    if (!numberDigitsRegex.test(value)) {
+      return;
+    }
     if (value && userInfo) {
       setRepayValue(value);
       const repayInfo = {
