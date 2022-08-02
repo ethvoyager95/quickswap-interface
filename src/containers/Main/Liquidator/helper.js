@@ -124,3 +124,8 @@ export const calculateSeizeAmount = (repayAmount, repayPrice, seizePrice) => {
     toEther: seizeAmountToUsd.div(new BigNumber(seizePrice).toString())
   };
 };
+
+export const getShortAddress = address => {
+  if (address.length === 0) return '';
+  return `${address?.slice(0, 4)}...${address?.slice(-4)}`;
+};

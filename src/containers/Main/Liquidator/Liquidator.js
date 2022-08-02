@@ -69,11 +69,13 @@ function Liquidator({ settings, setSetting }) {
   });
   const [errMess, setErrMess] = useState('');
   const [dataUsersTable, setDataUsersTable] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isOpenModalLoading, setIsOpenModalLoading] = useState(false);
   const [isLoadingInfo, setIsLoadingInfo] = useState(false);
   const [blockNumber, setBlockNumber] = useState();
   const [isApprove, setIsApprove] = useState(false);
   const [action, setAction] = useState('');
+  const [typeModal, setTypeModal] = useState('');
+  const [transactionHash, setTransactionHash] = useState('');
 
   const handleInputAddressChange = value => {
     if (value) {
@@ -261,7 +263,7 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const handleCancelModalLoading = () => {
-    setIsLoading(false);
+    setIsOpenModalLoading(false);
   };
 
   const handleVisibleDropdownRepayChange = flag => {
@@ -274,7 +276,8 @@ function Liquidator({ settings, setSetting }) {
 
   const handleApprove = async () => {
     try {
-      setIsLoading(true);
+      setTypeModal('loading');
+      setIsOpenModalLoading(true);
       setAction('Approve');
       const appContract = getSbepContract(selectedAssetRepay.toLowerCase());
       await methods.send(
@@ -289,22 +292,23 @@ function Liquidator({ settings, setSetting }) {
         ],
         settings.selectedAddress
       );
-      setIsLoading(false);
+      setIsOpenModalLoading(false);
       setIsApprove(true);
     } catch (err) {
       console.error(err);
-      setIsLoading(false);
+      setIsOpenModalLoading(false);
     }
   };
 
   const handleLiquidate = async () => {
     try {
+      setTypeModal('loading');
       const tokenContract = getTokenContract(selectedAssetRepay.toLowerCase());
       const sbepContract = getSbepContract(selectedAssetRepay.toLowerCase());
-      setIsLoading(true);
+      setIsOpenModalLoading(true);
       setAction('Liquidating');
       const decimals = await methods.call(tokenContract.methods.decimals, []);
-      await methods.send(
+      const resLiquidate = await methods.send(
         sbepContract.methods.liquidateBorrow,
         [
           selectedUserAddress,
@@ -316,10 +320,20 @@ function Liquidator({ settings, setSetting }) {
         ],
         settings.selectedAddress
       );
-      setIsLoading(false);
+      if (resLiquidate.status) {
+        setTypeModal('transaction success');
+        setRepayValue('');
+      } else {
+        setTypeModal('transaction fail');
+      }
+      setTransactionHash(resLiquidate.transactionHash);
     } catch (err) {
       console.error(err);
-      setIsLoading(false);
+      if (err.code === 4001) {
+        setTypeModal('reject');
+      } else {
+        setTypeModal('other error');
+      }
     }
   };
 
@@ -832,10 +846,12 @@ function Liquidator({ settings, setSetting }) {
       {isOpenModal && (
         <ModalLiquidations isOpenModal={isOpenModal} onCancel={handleCancel} />
       )}
-      {isLoading && (
+      {isOpenModalLoading && (
         <ModalLoading
-          isOpenModal={isLoading}
+          isOpenModal={isOpenModalLoading}
           action={action}
+          type={typeModal}
+          txh={transactionHash}
           onCancel={handleCancelModalLoading}
         />
       )}

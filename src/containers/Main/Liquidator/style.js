@@ -726,12 +726,70 @@ export const ModalLoadingContent = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 30px;
+
   .title {
     font-style: normal;
     font-weight: 500;
     font-size: 31px;
     line-height: 120%;
     color: #0b0f23;
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-direction: column;
+
+    .title {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 31px;
+      line-height: 120%;
+      color: #0b0f23;
+    }
+
+    .sub-title {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: #9d9fa7;
+    }
+  }
+
+  .txh-wrapper {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    color: #0b0f23;
+    padding: 16px 0;
+    background: #eeeeee;
+    border-radius: 8px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    .icon-copy {
+      cursor: pointer;
+    }
+  }
+
+  .link {
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 24px;
+    color: #107def;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
 `;
 
