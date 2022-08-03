@@ -828,11 +828,11 @@ export const SeizedAndRepay = styled.div`
     font-size: 18px;
     line-height: 28px;
 
-    span:nth-child(1) {
+    .black {
       color: #0b0f23;
     }
 
-    span:last-child {
+    .gray {
       color: #6d6f7b;
     }
   }

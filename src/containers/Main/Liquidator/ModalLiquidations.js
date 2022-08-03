@@ -204,10 +204,9 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
             <SeizedAndRepay>
               {asset.logoSeize && <img src={asset.logoSeize} alt="" />}
               <div>
-                <span>
+                <span className="black">
                   {asset.seizeAmountEther} {asset.symbolSeizeToken}
                 </span>
-                <span>${asset.seizeAmountUsd}</span>
               </div>
             </SeizedAndRepay>
           )
@@ -233,10 +232,10 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
             <SeizedAndRepay>
               {asset.logoRepay && <img src={asset.logoRepay} alt="" />}
               <div>
-                <span>
+                <span className="black">
                   {asset.repayAmountEther} {asset.symbolRepayToken}
                 </span>
-                <span>${asset.repayAmountUsd}</span>
+                <span className="gray">${asset.repayAmountUsd}</span>
               </div>
             </SeizedAndRepay>
           )

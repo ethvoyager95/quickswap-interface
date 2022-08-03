@@ -64,10 +64,7 @@ function Liquidator({ settings, setSetting }) {
     toEth: '',
     toUsd: ''
   });
-  const [seizeAmount, setSeizeAmount] = useState({
-    toEth: '',
-    toUsd: ''
-  });
+  const [seizeAmount, setSeizeAmount] = useState('');
   const [errMess, setErrMess] = useState('');
   const [dataUsersTable, setDataUsersTable] = useState([]);
   const [isOpenModalLoading, setIsOpenModalLoading] = useState(false);
@@ -102,23 +99,18 @@ function Liquidator({ settings, setSetting }) {
         toUsd: formatNumber(value * userInfo.borrowTokenPrice)
       };
       setRepayAmount(repayInfo);
-      const seizeInfo = {
-        toEth: formatNumber(
+      setSeizeAmount(
+        formatNumber(
           calculateSeizeAmount(
             value,
-            userInfo.borrowTokenPrice,
-            userInfo.seizeTokenPrice
-          ).toEther
-        ),
-        toUsd: formatNumber(
-          calculateSeizeAmount(
-            value,
-            userInfo.borrowTokenPrice,
-            userInfo.seizeTokenPrice
-          ).toUsd
+            userInfo.decimalBorrowToken,
+            userInfo.decimalSeizeToken,
+            userInfo.underlyingPriceBorrowToken,
+            userInfo.underlyingPriceSeizeToken,
+            userInfo.exchangeRateSeizeToken
+          )
         )
-      };
-      setSeizeAmount(seizeInfo);
+      );
     }
     if (!value) {
       setRepayValue('');
@@ -136,23 +128,18 @@ function Liquidator({ settings, setSetting }) {
         toUsd: formatNumber(userInfo.maxRepayAmount * userInfo.borrowTokenPrice)
       };
       setRepayAmount(repayInfo);
-      const seizeInfo = {
-        toEth: formatNumber(
+      setSeizeAmount(
+        formatNumber(
           calculateSeizeAmount(
             userInfo.maxRepayAmount,
-            userInfo.borrowTokenPrice,
-            userInfo.seizeTokenPrice
-          ).toEther
-        ),
-        toUsd: formatNumber(
-          calculateSeizeAmount(
-            userInfo.maxRepayAmount,
-            userInfo.borrowTokenPrice,
-            userInfo.seizeTokenPrice
-          ).toUsd
+            userInfo.decimalBorrowToken,
+            userInfo.decimalSeizeToken,
+            userInfo.underlyingPriceBorrowToken,
+            userInfo.underlyingPriceSeizeToken,
+            userInfo.exchangeRateSeizeToken
+          )
         )
-      };
-      setSeizeAmount(seizeInfo);
+      );
     } else {
       setRepayValue(formatNumber(balanceSelectedRepay));
       const repayInfo = {
@@ -160,23 +147,18 @@ function Liquidator({ settings, setSetting }) {
         toUsd: formatNumber(balanceSelectedRepay * userInfo.borrowTokenPrice)
       };
       setRepayAmount(repayInfo);
-      const seizeInfo = {
-        toEth: formatNumber(
+      setSeizeAmount(
+        formatNumber(
           calculateSeizeAmount(
             balanceSelectedRepay,
-            userInfo.borrowTokenPrice,
-            userInfo.seizeTokenPrice
-          ).toEther
-        ),
-        toUsd: formatNumber(
-          calculateSeizeAmount(
-            balanceSelectedRepay,
-            userInfo.borrowTokenPrice,
-            userInfo.seizeTokenPrice
-          ).toUsd
+            userInfo.decimalBorrowToken,
+            userInfo.decimalSeizeToken,
+            userInfo.underlyingPriceBorrowToken,
+            userInfo.underlyingPriceSeizeToken,
+            userInfo.exchangeRateSeizeToken
+          )
         )
-      };
-      setSeizeAmount(seizeInfo);
+      );
     }
   };
 
@@ -557,10 +539,10 @@ function Liquidator({ settings, setSetting }) {
             <SeizedAndRepay>
               {asset.logoRepay && <img src={asset.logoRepay} alt="" />}
               <div>
-                <span>
+                <span className="black">
                   {asset.maxRepayAmountEther} {asset.symbolBorrowToken}
                 </span>
-                <span>${asset.maxRepayAmountUsd}</span>
+                <span className="gray">${asset.maxRepayAmountUsd}</span>
               </div>
             </SeizedAndRepay>
           )
@@ -592,10 +574,9 @@ function Liquidator({ settings, setSetting }) {
             <SeizedAndRepay>
               {asset.logoSeize && <img src={asset.logoSeize} alt="" />}
               <div>
-                <span>
+                <span className="black">
                   {asset.maxSeizeAmountEther} {asset.symbolSeizeToken}
                 </span>
-                <span>${asset.maxSeizeAmountUsd}</span>
               </div>
             </SeizedAndRepay>
           )
@@ -772,12 +753,9 @@ function Liquidator({ settings, setSetting }) {
               {isLoadingInfo ? (
                 '-'
               ) : userInfo.maxSeizeAmountEther ? (
-                <>
-                  <div className="blue-value">
-                    {userInfo.maxSeizeAmountEther} {userInfo.symbolSeizeToken}
-                  </div>
-                  <div>${userInfo.maxSeizeAmountUsd}</div>
-                </>
+                <div className="blue-value">
+                  {userInfo.maxSeizeAmountEther} {userInfo.symbolSeizeToken}
+                </div>
               ) : (
                 '-'
               )}
@@ -832,9 +810,8 @@ function Liquidator({ settings, setSetting }) {
                       <span className="text-gray">${repayAmount.toUsd}</span>{' '}
                       and seize{' '}
                       <span className="text-blue">
-                        {seizeAmount.toEth} {selectedAssetSeize}
-                      </span>{' '}
-                      <span className="text-gray">${seizeAmount.toUsd}</span>
+                        {seizeAmount} {selectedAssetSeize}
+                      </span>
                     </>
                   )}
                   {errMess && <div className="err">{errMess}</div>}

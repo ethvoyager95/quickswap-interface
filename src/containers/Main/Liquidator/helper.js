@@ -114,15 +114,34 @@ export const formatUserInfo = record => {
   };
 };
 
-export const calculateSeizeAmount = (repayAmount, repayPrice, seizePrice) => {
-  const repayAmountToUsd = new BigNumber(repayAmount).times(
-    new BigNumber(repayPrice)
+export const calculateSeizeAmount = (
+  repayAmount,
+  decimalsRepay,
+  decimalsSeize,
+  underlyingRepayPrice,
+  underlyingSeizePrice,
+  exchangeRate
+) => {
+  const repayAmountTimesDecimals = new BigNumber(repayAmount).times(
+    new BigNumber(10).pow(decimalsRepay)
   );
-  const seizeAmountToUsd = repayAmountToUsd.times(1.1);
-  return {
-    toUsd: seizeAmountToUsd.toString(),
-    toEther: seizeAmountToUsd.div(new BigNumber(seizePrice).toString())
-  };
+  const decimalsBigNumber = new BigNumber(10).pow(18);
+  const repayPriceDivDecimals = new BigNumber(underlyingRepayPrice).div(
+    decimalsBigNumber
+  );
+  const seizePriceDivDecimals = new BigNumber(underlyingSeizePrice).div(
+    decimalsBigNumber
+  );
+  const exchangeRateDivDecimals = new BigNumber(exchangeRate).div(
+    decimalsBigNumber
+  );
+  const numerator = repayAmountTimesDecimals
+    .times(1.1)
+    .times(0.95)
+    .times(repayPriceDivDecimals)
+    .div(new BigNumber(10).pow(decimalsSeize));
+  const denominator = seizePriceDivDecimals.times(exchangeRateDivDecimals);
+  return numerator.div(denominator).toString(10);
 };
 
 export const getShortAddress = address => {
