@@ -45,6 +45,8 @@ import {
   calculateSeizeAmount
 } from './helper';
 
+BigNumber.config({ DECIMAL_PLACES: 100 });
+
 function Liquidator({ settings, setSetting }) {
   const abortController = new AbortController();
   const [userAddressInput, setUserAddressInput] = useState('');
@@ -88,7 +90,7 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const handleInputAmountChange = value => {
-    const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
+    const numberDigitsRegex = /^\d*(\.\d{0,})?$/g;
     if (!numberDigitsRegex.test(value)) {
       return;
     }
