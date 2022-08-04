@@ -90,7 +90,7 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const handleInputAmountChange = value => {
-    const numberDigitsRegex = /^\d*(\.\d{0,})?$/g;
+    const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
     if (!numberDigitsRegex.test(value)) {
       return;
     }
@@ -121,19 +121,21 @@ function Liquidator({ settings, setSetting }) {
 
   const handleClickMaxBtn = () => {
     const balanceBigNumber = new BigNumber(balanceSelectedRepay);
-    const maxRepayBigNumber = new BigNumber(userInfo.maxRepayAmount);
+    const maxRepayBigNumber = new BigNumber(userInfo.maxRepayAmountEther);
 
     if (balanceBigNumber.gt(maxRepayBigNumber)) {
       setRepayValue(maxRepayBigNumber.toString(10));
       const repayInfo = {
-        toEth: formatNumber(userInfo.maxRepayAmount),
-        toUsd: formatNumber(userInfo.maxRepayAmount * userInfo.borrowTokenPrice)
+        toEth: formatNumber(userInfo.maxRepayAmountEther),
+        toUsd: formatNumber(
+          userInfo.maxRepayAmountEther * userInfo.borrowTokenPrice
+        )
       };
       setRepayAmount(repayInfo);
       setSeizeAmount(
         formatNumber(
           calculateSeizeAmount(
-            userInfo.maxRepayAmount,
+            userInfo.maxRepayAmountEther,
             userInfo.decimalBorrowToken,
             userInfo.decimalSeizeToken,
             userInfo.underlyingPriceBorrowToken,
@@ -359,7 +361,7 @@ function Liquidator({ settings, setSetting }) {
   useEffect(() => {
     const balanceBigNumber = new BigNumber(balanceSelectedRepay);
     const repayValueBigNumber = new BigNumber(repayValue);
-    const maxRepayBigNumber = new BigNumber(userInfo.maxRepayAmount);
+    const maxRepayBigNumber = new BigNumber(userInfo.maxRepayAmountEther);
 
     if (repayValueBigNumber.gt(balanceBigNumber)) {
       setErrMess(

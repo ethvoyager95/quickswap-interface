@@ -95,6 +95,7 @@ const calculateMaxRepayAmount = (
     .times(borrowAmountDivDecimalsBigNumber)
     .times(closeFactorMantissaDivDecimalsBigNumber)
     .div(borrowUserIndexDivDecimalsBigNumber)
+    .dp(18, 1)
     .toString(10);
 };
 
@@ -125,7 +126,10 @@ export const calculateSeizeAmount = (
     .times(repayPriceDivDecimals)
     .div(new BigNumber(10).pow(decimalsSeize));
   const denominator = seizePriceDivDecimals.times(exchangeRateDivDecimals);
-  return numerator.div(denominator).toString(10);
+  return numerator
+    .div(denominator)
+    .dp(18, 1)
+    .toString(10);
 };
 
 export const formatRecentRecord = records =>
