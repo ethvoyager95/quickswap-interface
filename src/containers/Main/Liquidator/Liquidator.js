@@ -542,7 +542,8 @@ function Liquidator({ settings, setSetting }) {
               {asset.logoRepay && <img src={asset.logoRepay} alt="" />}
               <div>
                 <span className="black">
-                  {asset.maxRepayAmountEther} {asset.symbolBorrowToken}
+                  {formatNumber(asset.maxRepayAmountEther)}{' '}
+                  {asset.symbolBorrowToken}
                 </span>
                 <span className="gray">${asset.maxRepayAmountUsd}</span>
               </div>
@@ -577,7 +578,8 @@ function Liquidator({ settings, setSetting }) {
               {asset.logoSeize && <img src={asset.logoSeize} alt="" />}
               <div>
                 <span className="black">
-                  {asset.maxSeizeAmountEther} {asset.symbolSeizeToken}
+                  {formatNumber(asset.maxSeizeAmountEther)}{' '}
+                  {asset.symbolSeizeToken}
                 </span>
               </div>
             </SeizedAndRepay>
@@ -740,7 +742,8 @@ function Liquidator({ settings, setSetting }) {
               ) : userInfo.maxRepayAmountEther ? (
                 <>
                   <div className="blue-value">
-                    {userInfo.maxRepayAmountEther} {userInfo.symbolBorrowToken}
+                    {formatNumber(userInfo.maxRepayAmountEther)}{' '}
+                    {userInfo.symbolBorrowToken}
                   </div>
                   <div>${userInfo.maxRepayAmountUsd}</div>
                 </>
@@ -756,7 +759,8 @@ function Liquidator({ settings, setSetting }) {
                 '-'
               ) : userInfo.maxSeizeAmountEther ? (
                 <div className="blue-value">
-                  {userInfo.maxSeizeAmountEther} {userInfo.symbolSeizeToken}
+                  {formatNumber(userInfo.maxSeizeAmountEther)}{' '}
+                  {userInfo.symbolSeizeToken}
                 </div>
               ) : (
                 '-'
