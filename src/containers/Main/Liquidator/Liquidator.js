@@ -96,23 +96,6 @@ function Liquidator({ settings, setSetting }) {
     }
     if (value && userInfo) {
       setRepayValue(value);
-      const repayInfo = {
-        toEth: formatNumber(value),
-        toUsd: formatNumber(value * userInfo.borrowTokenPrice)
-      };
-      setRepayAmount(repayInfo);
-      setSeizeAmount(
-        formatNumber(
-          calculateSeizeAmount(
-            value,
-            userInfo.decimalBorrowToken,
-            userInfo.decimalSeizeToken,
-            userInfo.underlyingPriceBorrowToken,
-            userInfo.underlyingPriceSeizeToken,
-            userInfo.exchangeRateSeizeToken
-          )
-        )
-      );
     }
     if (!value) {
       setRepayValue('');
@@ -400,6 +383,26 @@ function Liquidator({ settings, setSetting }) {
     balanceSelectedRepay,
     userInfo
   ]);
+
+  useEffect(() => {
+    const repayInfo = {
+      toEth: formatNumber(repayValue),
+      toUsd: formatNumber(repayValue * userInfo.borrowTokenPrice)
+    };
+    setRepayAmount(repayInfo);
+    setSeizeAmount(
+      formatNumber(
+        calculateSeizeAmount(
+          repayValue,
+          userInfo.decimalBorrowToken,
+          userInfo.decimalSeizeToken,
+          userInfo.underlyingPriceBorrowToken,
+          userInfo.underlyingPriceSeizeToken,
+          userInfo.exchangeRateSeizeToken
+        )
+      )
+    );
+  }, [repayValue, userInfo]);
 
   useEffect(() => {
     let updateTimer;
