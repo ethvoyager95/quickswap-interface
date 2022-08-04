@@ -213,40 +213,58 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const getBalance = () => {
-    const selectedMarket = settings.assetList.filter(el => {
-      return el.id === selectedAssetRepay.toLowerCase();
-    });
-    const balance = selectedMarket[0].walletBalance;
-    if (balance) {
-      setBalanceSelectedRepay(balance.toString(10));
+    if (settings.selectedAddress) {
+      const selectedMarket = settings.assetList.filter(el => {
+        return el.id === selectedAssetRepay.toLowerCase();
+      });
+      const balance = selectedMarket[0].walletBalance;
+      console.log(
+        'runnnnnnnnnn',
+        selectedMarket[0].walletBalance.toString(10),
+        settings.selectedAddress
+      );
+      if (balance) {
+        setBalanceSelectedRepay(balance.toString(10));
+      } else {
+        setBalanceSelectedRepay('0');
+      }
     } else {
       setBalanceSelectedRepay('0');
     }
   };
 
   const checkApprove = async () => {
-    const tokenContract = getTokenContract(selectedAssetRepay.toLowerCase());
-    const approved = await methods.call(tokenContract.methods.allowance, [
-      settings.selectedAddress,
-      constants.CONTRACT_SBEP_ADDRESS[selectedAssetRepay.toLowerCase()].address
-    ]);
-    if (+approved === 0) {
-      setIsApprove(false);
+    if (settings.selectedAddress) {
+      const tokenContract = getTokenContract(selectedAssetRepay.toLowerCase());
+      const approved = await methods.call(tokenContract.methods.allowance, [
+        settings.selectedAddress,
+        constants.CONTRACT_SBEP_ADDRESS[selectedAssetRepay.toLowerCase()]
+          .address
+      ]);
+      if (+approved === 0) {
+        setIsApprove(false);
+      } else {
+        setIsApprove(true);
+      }
     } else {
-      setIsApprove(true);
+      setIsApprove(false);
     }
   };
 
   const handleRefresh = async () => {
-    setIsLoadingInfo(true);
-    await getUserInfo(
-      selectedUserAddress,
-      selectedAssetRepay,
-      selectedAssetSeize
-    );
-    getBalance();
-    await checkApprove();
-    setIsLoadingInfo(false);
+    try {
+      setIsLoadingInfo(true);
+      await getUserInfo(
+        selectedUserAddress,
+        selectedAssetRepay,
+        selectedAssetSeize
+      );
+      getBalance();
+      await checkApprove();
+      setIsLoadingInfo(false);
+    } catch (err) {
+      setIsLoadingInfo(false);
+    }
   };
 
   const handleCancel = () => {
@@ -439,10 +457,10 @@ function Liquidator({ settings, setSetting }) {
       checkApprove();
     }
   }, [
-    selectedUserAddress,
     selectedAssetRepay,
     settings.selectedAddress,
-    settings.accountLoading
+    settings.accountLoading,
+    settings.markets
   ]);
 
   const dropdownAssetRepay = (
@@ -636,7 +654,7 @@ function Liquidator({ settings, setSetting }) {
           >
             {mess && selectedUserAddress ? mess : null}
           </div>
-          {selectedUserAddress && (
+          {selectedUserAddress && Web3.utils.isAddress(selectedUserAddress) && (
             <div className="refresh" onClick={handleRefresh}>
               Refresh
             </div>
