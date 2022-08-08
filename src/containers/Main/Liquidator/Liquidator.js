@@ -851,7 +851,8 @@ function Liquidator({ settings, setSetting }) {
                       errMess ||
                       !repayValue ||
                       +repayValue === 0 ||
-                      userInfo.health > 0
+                      userInfo.health > 0 ||
+                      userInfo.userAddress === settings.selectedAddress
                     }
                     onClick={handleLiquidate}
                   >
