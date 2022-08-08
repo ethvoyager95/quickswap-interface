@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import Web3 from 'web3';
@@ -201,11 +201,6 @@ function Liquidator({ settings, setSetting }) {
         return el.id === selectedAssetRepay.toLowerCase();
       });
       const balance = selectedMarket[0].walletBalance;
-      console.log(
-        'runnnnnnnnnn',
-        selectedMarket[0].walletBalance.toString(10),
-        settings.selectedAddress
-      );
       if (balance) {
         setBalanceSelectedRepay(balance.toString(10));
       } else {
@@ -328,6 +323,16 @@ function Liquidator({ settings, setSetting }) {
       }
     }
   };
+
+  const disableBtnLiquidate = useMemo(() => {
+    if (settings.selectedAddress && userInfo.userAddress) {
+      const checkAddress =
+        settings.selectedAddress.toLowerCase() ===
+        userInfo.userAddress.toLowerCase();
+      return checkAddress;
+    }
+    return false;
+  }, [settings.selectedAddress, userInfo.userAddress, window.ethereum]);
 
   useEffect(() => {
     if (!settings.selectedAddress) {
@@ -852,7 +857,7 @@ function Liquidator({ settings, setSetting }) {
                       !repayValue ||
                       +repayValue === 0 ||
                       userInfo.health > 0 ||
-                      userInfo.userAddress === settings.selectedAddress
+                      disableBtnLiquidate
                     }
                     onClick={handleLiquidate}
                   >
