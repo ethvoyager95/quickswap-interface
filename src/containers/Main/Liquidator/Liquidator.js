@@ -830,6 +830,7 @@ function Liquidator({ settings, setSetting }) {
               </div>
               <div className="text-input">
                 <Input
+                  tabIndex={-1}
                   placeholder="0"
                   onChange={e => handleInputAmountChange(e.target.value)}
                   value={repayValue}
