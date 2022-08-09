@@ -39,6 +39,10 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
   const [currentSortRepay, setCurrentSortRepay] = useState('');
 
   const getDataRecent = async () => {
+    if (borrower && !Web3.utils.isAddress(borrower)) {
+      setDataRecentTable([]);
+      return;
+    }
     const res = await axios.get(
       `${
         process.env.REACT_APP_ENV === 'dev'
@@ -69,22 +73,27 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
   }, [orderBy, currentSortTimestamp, currentSortSeize, currentSortRepay]);
 
   const handleInputChange = value => {
-    const validateAddress = Web3.utils.isAddress(value);
-    if (!String(value)) {
-      setErrorMess('');
-      setBorrower('');
+    const nonSpaceDigitsRegex = /^\S*$/;
+    if (!nonSpaceDigitsRegex.test(value)) {
       return;
     }
-    if (validateAddress) {
+    if (!String(value)) {
+      setBorrower('');
       setErrorMess('');
-      setBorrower(value);
     } else {
-      setErrorMess('Please enter a valid address');
       setBorrower(value);
     }
   };
 
   const handleSearchByBorrower = () => {
+    if (borrower) {
+      const validateAddress = Web3.utils.isAddress(borrower);
+      if (validateAddress) {
+        setErrorMess('');
+      } else {
+        setErrorMess('Please enter a valid address');
+      }
+    }
     setOrderBy('');
     setCurrentSortTimestamp('');
     setCurrentSortSeize('');
@@ -340,6 +349,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
             <Input
               placeholder="Search by address"
               onChange={e => handleInputChange(e.target.value)}
+              value={borrower}
             />
             {errorMess && <div className="error-mess-mobile">{errorMess}</div>}
           </div>

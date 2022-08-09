@@ -78,6 +78,10 @@ function Liquidator({ settings, setSetting }) {
   const [transactionHash, setTransactionHash] = useState('');
 
   const handleInputAddressChange = value => {
+    const nonSpaceDigitsRegex = /^\S*$/;
+    if (!nonSpaceDigitsRegex.test(value)) {
+      return;
+    }
     if (value) {
       setUserAddressInput(value);
     } else {
