@@ -350,6 +350,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
               placeholder="Search by address"
               onChange={e => handleInputChange(e.target.value)}
               value={borrower}
+              onKeyDown={e => e.key === 'Enter' && handleSearchByBorrower()}
             />
             {errorMess && <div className="error-mess-mobile">{errorMess}</div>}
           </div>

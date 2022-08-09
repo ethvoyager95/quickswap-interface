@@ -220,20 +220,26 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const checkApprove = async () => {
-    if (settings.selectedAddress) {
-      const tokenContract = getTokenContract(selectedAssetRepay.toLowerCase());
-      const approved = await methods.call(tokenContract.methods.allowance, [
-        settings.selectedAddress,
-        constants.CONTRACT_SBEP_ADDRESS[selectedAssetRepay.toLowerCase()]
-          .address
-      ]);
-      if (+approved === 0) {
-        setIsApprove(false);
+    if (selectedAssetRepay.toLowerCase() !== 'eth') {
+      if (settings.selectedAddress) {
+        const tokenContract = getTokenContract(
+          selectedAssetRepay.toLowerCase()
+        );
+        const approved = await methods.call(tokenContract.methods.allowance, [
+          settings.selectedAddress,
+          constants.CONTRACT_SBEP_ADDRESS[selectedAssetRepay.toLowerCase()]
+            .address
+        ]);
+        if (+approved === 0) {
+          setIsApprove(false);
+        } else {
+          setIsApprove(true);
+        }
       } else {
-        setIsApprove(true);
+        setIsApprove(false);
       }
     } else {
-      setIsApprove(false);
+      setIsApprove(true);
     }
   };
 
