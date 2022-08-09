@@ -185,14 +185,18 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const getUserInfo = async (address, borrowToken, seizeToken) => {
-    const dataUser = await getDataUsers(address, borrowToken, seizeToken);
-    if (dataUser.rows.length === 0) {
-      setUserInfo({});
+    if (Web3.utils.isAddress(selectedUserAddress)) {
+      const dataUser = await getDataUsers(address, borrowToken, seizeToken);
+      if (dataUser.rows.length === 0) {
+        setUserInfo({});
+      } else {
+        setUserInfo(formatUserInfo(dataUser.rows[0]));
+      }
+      setListRepay(dataUser.listTokenBorrow);
+      setListSeize(dataUser.listTokenSeize);
     } else {
-      setUserInfo(formatUserInfo(dataUser.rows[0]));
+      setUserInfo({});
     }
-    setListRepay(dataUser.listTokenBorrow);
-    setListSeize(dataUser.listTokenSeize);
   };
 
   const getBalance = () => {
