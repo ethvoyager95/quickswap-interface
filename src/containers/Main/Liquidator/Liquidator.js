@@ -5,6 +5,7 @@ import axios from 'axios';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import * as constants from 'utilities/constants';
+import { liquidateBorrow } from 'utilities/EthContract';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -153,18 +154,47 @@ function Liquidator({ settings, setSetting }) {
     }
   };
 
-  const getDataUsers = async (userAddress, borrowToken, seizeToken) => {
+  const getDataUsers = async () => {
     const res = await axios.get(
-      `${
-        process.env.REACT_APP_ENV === 'dev'
-          ? `${process.env.REACT_APP_DEVELOPMENT_API}`
-          : `${process.env.REACT_APP_PRODUCTION_API}`
-      }/user/user_info`,
+      `${process.env.REACT_APP_ENV === 'dev'
+        ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+        : `${process.env.REACT_APP_PRODUCTION_API}`
+      }/get_liquidators`,
+      {
+        params: {}
+      }
+    );
+    const { data } = res.data;
+    return data;
+  };
+
+  const getDataUsersAssets = async (userAddress) => {
+    const res = await axios.get(
+      `${process.env.REACT_APP_ENV === 'dev'
+        ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+        : `${process.env.REACT_APP_PRODUCTION_API}`
+      }/get_liquidator`,
       {
         params: {
-          address: userAddress || undefined,
-          borrow_token: borrowToken || undefined,
-          seize_token: seizeToken || undefined
+          account: userAddress
+        }
+      }
+    );
+    const { data } = res.data;
+    return data;
+  };
+
+  const getDataUsersDetail = async (userAddress, borrowToken, seizeToken) => {
+    const res = await axios.get(
+      `${process.env.REACT_APP_ENV === 'dev'
+        ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+        : `${process.env.REACT_APP_PRODUCTION_API}`
+      }/get_liquidator_detail`,
+      {
+        params: {
+          account: userAddress || undefined,
+          repayAsset: borrowToken || undefined,
+          seizeAsset: seizeToken || undefined
         }
       }
     );
@@ -174,10 +204,9 @@ function Liquidator({ settings, setSetting }) {
 
   const getCurrentBlock = async () => {
     const res = await axios.get(
-      `${
-        process.env.REACT_APP_ENV === 'dev'
-          ? `${process.env.REACT_APP_DEVELOPMENT_API}`
-          : `${process.env.REACT_APP_PRODUCTION_API}`
+      `${process.env.REACT_APP_ENV === 'dev'
+        ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+        : `${process.env.REACT_APP_PRODUCTION_API}`
       }/liquidator/block_number`
     );
     setBlockNumber(res.data.blockNumber);
@@ -185,19 +214,17 @@ function Liquidator({ settings, setSetting }) {
 
   const getDataTableUsers = async () => {
     const dataUsers = await getDataUsers();
-    setDataUsersTable(formatUsersRecord(dataUsers.rows));
+    setDataUsersTable(formatUsersRecord(dataUsers.result));
   };
 
   const getUserInfo = async (address, borrowToken, seizeToken) => {
     if (Web3.utils.isAddress(selectedUserAddress)) {
-      const dataUser = await getDataUsers(address, borrowToken, seizeToken);
-      if (dataUser.rows.length === 0) {
-        setUserInfo({});
+      const dataUser = await getDataUsersDetail(address, borrowToken, seizeToken);
+      if (dataUser) {
+        setUserInfo(formatUserInfo(dataUser));
       } else {
-        setUserInfo(formatUserInfo(dataUser.rows[0]));
+        setUserInfo({});
       }
-      setListRepay(dataUser.listTokenBorrow);
-      setListSeize(dataUser.listTokenSeize);
     } else {
       setUserInfo({});
     }
@@ -304,23 +331,30 @@ function Liquidator({ settings, setSetting }) {
   const handleLiquidate = async () => {
     try {
       setTypeModal('loading');
-      const tokenContract = getTokenContract(selectedAssetRepay.toLowerCase());
+      const tokenContract = selectedAssetRepay === 'ETH' ? null : getTokenContract(selectedAssetRepay.toLowerCase());
       const sbepContract = getSbepContract(selectedAssetRepay.toLowerCase());
       setIsOpenModalLoading(true);
       setAction('Liquidating');
-      const decimals = await methods.call(tokenContract.methods.decimals, []);
-      const resLiquidate = await methods.send(
-        sbepContract.methods.liquidateBorrow,
-        [
-          selectedUserAddress,
-          new BigNumber(+repayValue)
-            .times(new BigNumber(10).pow(decimals))
-            .integerValue()
-            .toString(10),
-          userInfo.seizeTokenAddress
-        ],
-        settings.selectedAddress
-      );
+      const decimals = selectedAssetRepay === 'ETH' ? 18 : await methods.call(tokenContract.methods.decimals, []);
+      const resLiquidate = selectedAssetRepay === 'ETH' ? await liquidateBorrow(settings.selectedAddress,
+        selectedUserAddress,
+        constants.CONTRACT_SBEP_ADDRESS[selectedAssetSeize.toLowerCase()].address,
+        new BigNumber(+repayValue)
+          .times(new BigNumber(10).pow(decimals))
+          .integerValue()
+          .toString(10)) : await methods.send(
+            sbepContract.methods.liquidateBorrow,
+            [
+              selectedUserAddress,
+              new BigNumber(+repayValue)
+                .times(new BigNumber(10).pow(decimals))
+                .integerValue()
+                .toString(10),
+              constants.CONTRACT_SBEP_ADDRESS[selectedAssetSeize.toLowerCase()].address
+            ],
+            settings.selectedAddress
+          );
+
       if (resLiquidate.status) {
         setTypeModal('transaction success');
         setRepayValue('');
@@ -339,14 +373,14 @@ function Liquidator({ settings, setSetting }) {
   };
 
   const disableBtnLiquidate = useMemo(() => {
-    if (settings.selectedAddress && userInfo.userAddress) {
+    if (settings.selectedAddress && userInfo.account) {
       const checkAddress =
         settings.selectedAddress.toLowerCase() ===
-        userInfo.userAddress.toLowerCase();
+        userInfo.account.toLowerCase();
       return checkAddress;
     }
     return false;
-  }, [settings.selectedAddress, userInfo.userAddress, window.ethereum]);
+  }, [settings.selectedAddress, userInfo.account, window.ethereum]);
 
   useEffect(() => {
     if (!settings.selectedAddress) {
@@ -448,13 +482,13 @@ function Liquidator({ settings, setSetting }) {
 
   useEffect(() => {
     if (Web3.utils.isAddress(selectedUserAddress)) {
-      if (!userInfo.userAddress) {
+      if (!userInfo.account) {
         setMess('');
       }
-      if (+userInfo.health > 0) {
+      if (+userInfo.accHealth > 1) {
         setMess('This account is healthy and can not be liquidated');
       }
-      if (+userInfo.health <= 0) {
+      if (+userInfo.accHealth <= 1) {
         setMess('This account can be liquidated');
       }
     } else {
@@ -464,9 +498,11 @@ function Liquidator({ settings, setSetting }) {
 
   useEffect(() => {
     async function getAsset() {
-      const dataAsset = await getDataUsers(selectedUserAddress);
-      setSelectedAssetRepay(dataAsset.listTokenBorrow[0]);
-      setSelectedAssetSeize(dataAsset.listTokenSeize[0]);
+      const dataAsset = await getDataUsersAssets(selectedUserAddress);
+      setListRepay(dataAsset.repayAssets);
+      setListSeize(dataAsset.seizeAssets);
+      setSelectedAssetRepay(dataAsset.repayAssets[0]);
+      setSelectedAssetSeize(dataAsset.seizeAssets[0]);
     }
     if (selectedUserAddress) {
       getAsset();
@@ -540,14 +576,14 @@ function Liquidator({ settings, setSetting }) {
         return {
           children: (
             <Address>
-              {asset.userAddress
-                ? `${asset.userAddress.substr(
-                    0,
-                    4
-                  )}...${asset.userAddress.substr(
-                    asset.userAddress.length - 4,
-                    4
-                  )}`
+              {asset.account
+                ? `${asset.account.substr(
+                  0,
+                  4
+                )}...${asset.account.substr(
+                  asset.account.length - 4,
+                  4
+                )}`
                 : '-'}
             </Address>
           )
@@ -563,7 +599,7 @@ function Liquidator({ settings, setSetting }) {
           children: (
             <TdWithImg>
               <img src={asset.logoRepay} alt="" />
-              <div>{asset.symbolBorrowToken}</div>
+              <div>{asset.assetToRepay}</div>
             </TdWithImg>
           )
         };
@@ -585,7 +621,7 @@ function Liquidator({ settings, setSetting }) {
               <div>
                 <span className="black">
                   {formatNumber(asset.maxRepayAmountEther)}{' '}
-                  {asset.symbolBorrowToken}
+                  {asset.assetToRepay}
                 </span>
                 <span className="gray">${asset.maxRepayAmountUsd}</span>
               </div>
@@ -603,7 +639,7 @@ function Liquidator({ settings, setSetting }) {
           children: (
             <TdWithImg>
               <img src={asset.logoSeize} alt="" />
-              <div>{asset.symbolSeizeToken}</div>
+              <div>{asset.assetToSeize}</div>
             </TdWithImg>
           )
         };
@@ -621,7 +657,7 @@ function Liquidator({ settings, setSetting }) {
               <div>
                 <span className="black">
                   {formatNumber(asset.maxSeizeAmountEther)}{' '}
-                  {asset.symbolSeizeToken}
+                  {asset.assetToSeize}
                 </span>
               </div>
             </SeizedAndRepay>
@@ -670,9 +706,8 @@ function Liquidator({ settings, setSetting }) {
         </div>
         <div className="address">
           <div
-            className={`${
-              mess === 'This account can be liquidated' ? 'text-green' : ''
-            } message`}
+            className={`${mess === 'This account can be liquidated' ? 'text-green' : ''
+              } message`}
           >
             {mess && selectedUserAddress ? mess : null}
           </div>
@@ -697,9 +732,8 @@ function Liquidator({ settings, setSetting }) {
           <div className="item">
             <div>Account Health</div>
             <div
-              className={`${!userInfo.health ? 'gray-value' : ''} ${
-                userInfo.health === 0 ? 'red-value' : ''
-              } ${userInfo.health > 0 ? 'green-value' : ''}`}
+              className={`${!userInfo.accHealth ? 'gray-value' : ''} ${userInfo.accHealth < 1 ? 'red-value' : ''
+                } ${userInfo.accHealth >= 1 ? 'green-value' : ''}`}
             >
               {isLoadingInfo ? '-' : userInfo.accHealth || '-'}
             </div>
@@ -708,7 +742,7 @@ function Liquidator({ settings, setSetting }) {
             <div>Asset to Repay</div>
             {isLoadingInfo ? (
               <div>-</div>
-            ) : userInfo.symbolBorrowToken ? (
+            ) : userInfo.repayAsset ? (
               <Dropdown
                 overlay={dropdownAssetRepay}
                 trigger={['click']}
@@ -726,12 +760,12 @@ function Liquidator({ settings, setSetting }) {
                     <img
                       src={
                         renderLogo(selectedAssetRepay) ||
-                        renderLogo(userInfo.symbolBorrowToken)
+                        renderLogo(userInfo.repayAsset)
                       }
                       alt=""
                     />
                     <div>
-                      {selectedAssetRepay || userInfo.symbolBorrowToken}
+                      {selectedAssetRepay || userInfo.repayAsset}
                     </div>
                     <img src={iconDropdown} alt="" className="dropdown" />
                   </div>
@@ -745,7 +779,7 @@ function Liquidator({ settings, setSetting }) {
             <div>Asset to Seize</div>
             {isLoadingInfo ? (
               <div>-</div>
-            ) : userInfo.symbolSeizeToken ? (
+            ) : userInfo.seizeAsset ? (
               <Dropdown
                 overlay={dropdownAssetSeize}
                 trigger={['click']}
@@ -763,11 +797,11 @@ function Liquidator({ settings, setSetting }) {
                     <img
                       src={
                         renderLogo(selectedAssetSeize) ||
-                        renderLogo(userInfo.symbolSeizeToken)
+                        renderLogo(userInfo.seizeAsset)
                       }
                       alt=""
                     />
-                    <div>{selectedAssetSeize || userInfo.symbolSeizeToken}</div>
+                    <div>{selectedAssetSeize || userInfo.seizeAsset}</div>
                     <img src={iconDropdown} alt="" className="dropdown" />
                   </div>
                 </SButton>
@@ -785,7 +819,7 @@ function Liquidator({ settings, setSetting }) {
                 <>
                   <div className="blue-value">
                     {formatNumber(userInfo.maxRepayAmountEther)}{' '}
-                    {userInfo.symbolBorrowToken}
+                    {userInfo.repayAsset}
                   </div>
                   <div>${userInfo.maxRepayAmountUsd}</div>
                 </>
@@ -802,7 +836,7 @@ function Liquidator({ settings, setSetting }) {
               ) : userInfo.maxSeizeAmountEther ? (
                 <div className="blue-value">
                   {formatNumber(userInfo.maxSeizeAmountEther)}{' '}
-                  {userInfo.symbolSeizeToken}
+                  {userInfo.seizeAsset}
                 </div>
               ) : (
                 '-'
@@ -815,7 +849,7 @@ function Liquidator({ settings, setSetting }) {
             <div className="mess-liquidator">
               You need to connect your wallet
             </div>
-          ) : selectedUserAddress && userInfo.userAddress ? (
+          ) : selectedUserAddress && userInfo.healthFactor ? (
             <div className="liquidate">
               <div className="title">
                 Amount you want to repay in{' '}
@@ -871,7 +905,7 @@ function Liquidator({ settings, setSetting }) {
                       errMess ||
                       !repayValue ||
                       +repayValue === 0 ||
-                      userInfo.health > 0 ||
+                      userInfo.accHealth >= 1 ||
                       disableBtnLiquidate
                     }
                     onClick={handleLiquidate}
@@ -901,12 +935,12 @@ function Liquidator({ settings, setSetting }) {
           columns={columns}
           dataSource={dataUsersTable}
           pagination={false}
-          rowKey={record => record.userAddress}
+          rowKey={record => record.account}
           onRow={record => {
             return {
               onClick: () => {
-                setSelectedUserAddress(record.userAddress);
-                setUserAddressInput(record.userAddress);
+                setSelectedUserAddress(record.account);
+                setUserAddressInput(record.account);
               } // click row
             };
           }}

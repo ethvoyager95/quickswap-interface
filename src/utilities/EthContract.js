@@ -56,3 +56,29 @@ export const sendRepay = async (from, amount, callback) => {
     callback(false);
   }
 };
+
+export const liquidateBorrow = async (from, borrower, sTokenCollateral, amount) => {
+  const web3 = new Web3(window.web3.currentProvider);
+  try {
+    const contract = new web3.eth.Contract(
+      JSON.parse(constants.CONTRACT_SETH_ABI),
+      constants.CONTRACT_SBEP_ADDRESS.eth.address
+    );
+    const contractData = contract.methods.liquidateBorrow(borrower, sTokenCollateral).encodeABI();
+
+    const tx = {
+      from,
+      to: constants.CONTRACT_SBEP_ADDRESS.eth.address,
+      value: amount,
+      data: contractData
+    };
+    // Send transaction
+    await web3.eth.sendTransaction(tx)
+      .then(receipt => {
+        return receipt;
+      })
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    return null;
+  }
+};

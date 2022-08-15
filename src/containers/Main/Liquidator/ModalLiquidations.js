@@ -65,7 +65,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     );
     const { data } = res.data;
 
-    setDataRecentTable(formatRecentRecord(data));
+    setDataRecentTable(formatRecentRecord(data));    
   };
 
   useEffect(() => {
@@ -289,36 +289,36 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
         };
       }
     },
-    {
-      title: () => <THeadWrapper>Asset To Repay</THeadWrapper>,
-      dataIndex: 'repay',
-      key: 'repay',
-      render(_, asset) {
-        return {
-          children: (
-            <SeizedAndRepay>
-              {asset.logoRepay && <img src={asset.logoRepay} alt="" />}
-              <div>{asset.symbolRepayToken}</div>
-            </SeizedAndRepay>
-          )
-        };
-      }
-    },
-    {
-      title: () => <THeadWrapper>Asset To Seize</THeadWrapper>,
-      dataIndex: 'seize',
-      key: 'seize',
-      render(_, asset) {
-        return {
-          children: (
-            <SeizedAndRepay>
-              {asset.logoSeize && <img src={asset.logoSeize} alt="" />}
-              <div>{asset.symbolSeizeToken}</div>
-            </SeizedAndRepay>
-          )
-        };
-      }
-    }
+    // {
+    //   title: () => <THeadWrapper>Asset To Repay</THeadWrapper>,
+    //   dataIndex: 'repay',
+    //   key: 'repay',
+    //   render(_, asset) {
+    //     return {
+    //       children: (
+    //         <SeizedAndRepay>
+    //           {asset.logoRepay && <img src={asset.logoRepay} alt="" />}
+    //           <div>{asset.repayUnderlyingSymbol}</div>
+    //         </SeizedAndRepay>
+    //       )
+    //     };
+    //   }
+    // },
+    // {
+    //   title: () => <THeadWrapper>Asset To Seize</THeadWrapper>,
+    //   dataIndex: 'seize',
+    //   key: 'seize',
+    //   render(_, asset) {
+    //     return {
+    //       children: (
+    //         <SeizedAndRepay>
+    //           {asset.logoSeize && <img src={asset.logoSeize} alt="" />}
+    //           <div>{asset.seizeSymbol}</div>
+    //         </SeizedAndRepay>
+    //       )
+    //     };
+    //   }
+    // }
   ];
 
   const locale = {

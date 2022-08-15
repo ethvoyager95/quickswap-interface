@@ -519,7 +519,7 @@ export const Health = styled.div`
   font-weight: 500;
   font-size: 18px;
   line-height: 28px;
-  color: ${props => (props.health === '0' ? '#f84960' : '#06c270')};
+  color: ${props => (props.health <= '1' ? '#f84960' : '#06c270')};
 `;
 
 export const TdWithImg = styled.div`

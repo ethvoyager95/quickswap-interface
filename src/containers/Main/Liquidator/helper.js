@@ -135,93 +135,35 @@ export const calculateSeizeAmount = (
 export const formatRecentRecord = records =>
   records?.map(record => ({
     ...record,
-    timestamp: dayjs.unix(record.blockTimestamp).format('DD/MM/YYYY HH:mm'),
-    logoSeize: renderLogo(record.symbolSeizeToken),
-    seizeAmountEther: formatNumber(record.seizeAmountCalculate),
+    timestamp: dayjs.unix(record.timestamp).format('DD/MM/YYYY HH:mm'),
+    logoSeize: renderLogo(record.seizeSymbol),
+    seizeAmountEther: formatNumber(record.seizeAmount),
     seizeAmountUsd: formatNumber(record.totalPriceSeize),
-    logoRepay: renderLogo(record.symbolRepayToken),
-    repayAmountEther: formatNumber(record.repayAmountCalculate),
-    repayAmountUsd: formatNumber(record.totalPriceRepay)
+    logoRepay: renderLogo(record.repayUnderlyingSymbol),
+    repayAmountEther: formatNumber(record.repayAmount),
+    repayAmountUsd: formatNumber(record.repayAssetPrice)
   }));
 
 export const formatUsersRecord = records =>
   records?.map(record => ({
     ...record,
-    accHealth: formatNumber(record.health, true),
-    logoSeize: renderLogo(record.symbolSeizeToken),
-    maxSeizeAmountEther: calculateSeizeAmount(
-      calculateMaxRepayAmount(
-        record.borrowIndex,
-        record.borrowAmount,
-        record.closeFactorMantissa,
-        record.borrowUserIndex,
-        record.decimalBorrowToken
-      ),
-      record.decimalBorrowToken,
-      record.decimalSeizeToken,
-      record.underlyingPriceBorrowToken,
-      record.underlyingPriceSeizeToken,
-      record.exchangeRateSeizeToken
-    ),
-    maxSeizeAmountUsd: formatNumber(
-      record.maxSeizeAmount * record.seizeTokenPrice
-    ),
-    logoRepay: renderLogo(record.symbolBorrowToken),
-    maxRepayAmountEther: calculateMaxRepayAmount(
-      record.borrowIndex,
-      record.borrowAmount,
-      record.closeFactorMantissa,
-      record.borrowUserIndex,
-      record.decimalBorrowToken
-    ),
-    maxRepayAmountUsd: formatNumber(
-      +calculateMaxRepayAmount(
-        record.borrowIndex,
-        record.borrowAmount,
-        record.closeFactorMantissa,
-        record.borrowUserIndex,
-        record.decimalBorrowToken
-      ) * +record.borrowTokenPrice
-    )
+    accHealth: formatNumber(record.healthFactor, true),
+    logoSeize: renderLogo(record.assetToSeize),
+    maxSeizeAmountEther: record.maxSeizeAmount,
+    maxSeizeAmountUsd: record.seizeAssetPrice,
+    logoRepay: renderLogo(record.assetToRepay),
+    maxRepayAmountEther: record.maxRepayAmount,
+    maxRepayAmountUsd: formatNumber(record.repayAssetPrice)
   }));
 
 export const formatUserInfo = record => {
   return {
     ...record,
-    accHealth: formatNumber(record.health, true),
-    maxSeizeAmountEther: calculateSeizeAmount(
-      calculateMaxRepayAmount(
-        record.borrowIndex,
-        record.borrowAmount,
-        record.closeFactorMantissa,
-        record.borrowUserIndex,
-        record.decimalBorrowToken
-      ),
-      record.decimalBorrowToken,
-      record.decimalSeizeToken,
-      record.underlyingPriceBorrowToken,
-      record.underlyingPriceSeizeToken,
-      record.exchangeRateSeizeToken
-    ),
-    maxSeizeAmountUsd: formatNumber(
-      record.maxSeizeAmount * record.seizeTokenPrice
-    ),
-    maxRepayAmountEther: calculateMaxRepayAmount(
-      record.borrowIndex,
-      record.borrowAmount,
-      record.closeFactorMantissa,
-      record.borrowUserIndex,
-      record.decimalBorrowToken
-    ),
-    maxRepayAmountUsd: formatNumber(
-      +calculateMaxRepayAmount(
-        record.borrowIndex,
-        record.borrowAmount,
-        record.closeFactorMantissa,
-        record.borrowUserIndex,
-        record.decimalBorrowToken
-      ) * +record.borrowTokenPrice
-    )
+    accHealth: formatNumber(record.healthFactor, true),
+    maxSeizeAmountEther: record.seizeAmount,
+    maxSeizeAmountUsd: record.seizeAssetPrice,
+    maxRepayAmountEther: record.repayAmount,
+    maxRepayAmountUsd: formatNumber(record.repayAssetPrice)
   };
 };
 
