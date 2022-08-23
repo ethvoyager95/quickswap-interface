@@ -589,17 +589,19 @@ function Liquidator({ settings, setSetting }) {
       render(_, asset) {
         return {
           children: (
-            <Address>
-              {asset.account
-                ? `${asset.account.substr(
-                  0,
-                  4
-                )}...${asset.account.substr(
-                  asset.account.length - 4,
-                  4
-                )}`
-                : '-'}
-            </Address>
+            <a href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.account}`} target='_blank'>
+              <Address>
+                {asset.account
+                  ? `${asset.account.substr(
+                    0,
+                    4
+                  )}...${asset.account.substr(
+                    asset.account.length - 4,
+                    4
+                  )}`
+                  : '-'}
+              </Address>
+            </a>
           )
         };
       }
