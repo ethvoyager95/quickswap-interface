@@ -530,7 +530,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               borrowBalance: new BigNumber(0),
               isEnabled: false,
               collateral: false,
-              percentOfLimit: '0'
+              percentOfLimit: '0',
+              borrowPaused: true,
             };
 
             const tokenDecimal = settings.decimals[item.id].token || 18;
@@ -580,12 +581,21 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               )
             );
 
+            // borrowGuardianPaused
+            promises.push(
+              methods.call(
+                appContract.methods.borrowGuardianPaused,
+                [asset.stokenAddress]
+              )
+            );
+
             const [
               walletBalance,
               allowBalance,
               supplyBalance,
               borrowBalance,
-              hypotheticalLiquidity
+              hypotheticalLiquidity,
+              borrowGuardianPaused
             ] = await Promise.all(promises);
             asset.walletBalance = new BigNumber(walletBalance).div(
               new BigNumber(10).pow(tokenDecimal)
@@ -617,6 +627,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
                 .toString(10);
 
             asset.hypotheticalLiquidity = hypotheticalLiquidity;
+
+            asset.borrowPaused = borrowGuardianPaused;
 
             const supplyBalanceUSD = asset.supplyBalance.times(
               asset.tokenPrice

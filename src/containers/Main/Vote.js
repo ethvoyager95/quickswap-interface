@@ -231,6 +231,7 @@ function Vote({ settings, history, getProposals, setSetting }) {
                 <VotingWallet
                   balance={balance !== '0' ? `${balance}` : '0.00000000'}
                   earnedBalance={earnedBalance}
+                  pageType=""
                 />
               </Column>
               <Column xs="12" sm="12" md="7" style={{ height: '100%' }}>
@@ -242,7 +243,7 @@ function Vote({ settings, history, getProposals, setSetting }) {
                   pageNumber={current}
                   proposals={proposals.result}
                   total={proposals.total || 0}
-                  votingWeight={votingWeight}
+                  votingWeight={Number(votingWeight)}
                   onChangePage={handleChangePage}
                 />
               </Column>

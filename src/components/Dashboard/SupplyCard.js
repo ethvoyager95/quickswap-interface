@@ -113,7 +113,7 @@ function SupplyCard({ currentMarket, settings }) {
   useEffect(() => {
     if (currentAsset.id === 'ust' && currentMarket === 'supply') {
       setCurrentTab('withdraw');
-    } else if (currentAsset.id === 'ust' && currentMarket === 'borrow') {
+    } else if (currentAsset.borrowPaused && currentMarket === 'borrow') {
       setCurrentTab('repay');
     } else {
       setCurrentTab(currentMarket);
@@ -207,7 +207,7 @@ function SupplyCard({ currentMarket, settings }) {
         ) : (
           <>
             <Tabs>
-              {currentAsset.id !== 'ust' && (
+              {!currentAsset.borrowPaused && (
                 <div
                   className={`tab-item center ${
                     currentTab === 'borrow' ? 'tab-active' : ''
