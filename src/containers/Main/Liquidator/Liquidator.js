@@ -358,6 +358,20 @@ function Liquidator({ settings, setSetting }) {
       if (resLiquidate.status) {
         setTypeModal('transaction success');
         setRepayValue('');
+
+        const res = await axios.get(
+          `${process.env.REACT_APP_ENV === 'dev'
+            ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+            : `${process.env.REACT_APP_PRODUCTION_API}`
+          }/liquidated`,
+          {
+            params: {
+              account: selectedUserAddress
+            }
+          }
+        );
+        getDataTableUsers();
+        getCurrentBlock();
       } else {
         setTypeModal('transaction fail');
       }
@@ -467,7 +481,7 @@ function Liquidator({ settings, setSetting }) {
           selectedAssetRepay,
           selectedAssetSeize
         );
-      }, 2000);
+      }, 5000);
     } else {
       setUserInfo({});
     }

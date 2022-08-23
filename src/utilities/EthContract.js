@@ -73,7 +73,7 @@ export const liquidateBorrow = async (from, borrower, sTokenCollateral, amount) 
       data: contractData
     };
     // Send transaction
-    await web3.eth.sendTransaction(tx)
+    return await web3.eth.sendTransaction(tx)
       .then(receipt => {
         return receipt;
       })
