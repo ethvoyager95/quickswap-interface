@@ -62,13 +62,13 @@ export const renderLogo = symbol => {
   return '';
 };
 
-export const formatNumber = (value, isAccHealth) => {
+export const formatNumber = (value, isAccHealth, decimal = 5) => {
   const valueEther = new BigNumber(value);
   if (valueEther.eq(0) && isAccHealth) return '0';
   if (valueEther.eq(0)) return '0.0';
   if (valueEther.lt(0.00001)) return '<0.00001';
   if (valueEther.isNaN()) return '-';
-  return format(new BigNumber(valueEther || 0).dp(5, 1).toString(10));
+  return format(new BigNumber(valueEther || 0).dp(decimal, 1).toString(10));
 };
 
 const calculateMaxRepayAmount = (
@@ -141,7 +141,7 @@ export const formatRecentRecord = records =>
     seizeAmountUsd: formatNumber(record.totalPriceSeize),
     logoRepay: renderLogo(record.repayUnderlyingSymbol),
     repayAmountEther: formatNumber(record.repayAmount),
-    repayAmountUsd: formatNumber(record.repayAssetPrice)
+    repayAmountUsd: formatNumber(record.repayAssetPrice, false, 2)
   }));
 
 export const formatUsersRecord = records =>
