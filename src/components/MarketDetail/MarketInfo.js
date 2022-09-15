@@ -68,7 +68,7 @@ function MarketInfo({ marketInfo, marketType }) {
             </p>
           </div>
           <div className="supply-apy">
-            <p className="label right">Supply APY</p>
+            <p className="label right"> {marketType === 'supply' ? 'Supply' : 'Borrow'} APY</p>
             <p className="value right">
               {marketType === 'supply'
                 ? new BigNumber(+marketInfo.supplyApy < 0.01 ? 0.01 : marketInfo.supplyApy).dp(2, 1).toString(10)
@@ -88,7 +88,7 @@ function MarketInfo({ marketInfo, marketType }) {
             </p>
           </div>
           <div className="total-supply">
-            <p className="label right">Total Supply</p>
+            <p className="label right">Total {marketType === 'supply' ? 'Supply' : 'Borrow'}</p>
             <p className="value right">
               ${format(new BigNumber(marketType === 'supply' ? marketInfo.totalSupplyUsd : marketInfo.totalBorrowsUsd).dp(2, 1).toString(10))}
             </p>

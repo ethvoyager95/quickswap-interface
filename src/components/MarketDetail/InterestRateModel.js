@@ -187,52 +187,84 @@ function InterestRateModel({ settings, currentAsset, history }) {
       []
     );
     const interestModelContract = getInterestModelContract(interestRateModel);
-    const multiplierPerBlock = await methods.call(interestModelContract.methods.multiplierPerBlock, []);
-    const baseRatePerBlock = await methods.call(interestModelContract.methods.baseRatePerBlock, []);
+    const cashValue = await methods.call(vbepContract.methods.getCash, []);
     const data = [];
     const marketInfo = settings.markets.find(
       item => item.underlyingSymbol.toLowerCase() === asset.toLowerCase()
     );
-    const oneMinusReserveFactor = new BigNumber(1).minus(
-      new BigNumber(marketInfo.reserveFactor).div(new BigNumber(10).pow(18))
-    );
     // Get Current Utilization Rate
-    let cash = await methods.call(vbepContract.methods.getCash, []);
-    cash = new BigNumber(cash).div(new BigNumber(10).pow(18));
+    const cash = new BigNumber(cashValue).div(new BigNumber(10).pow(settings.decimals[asset].token));
     const borrows = new BigNumber(marketInfo.totalBorrows2);
     const reserves = new BigNumber(marketInfo.totalReserves || 0).div(new BigNumber(10).pow(settings.decimals[asset].token));
     const currentUtilizationRate = borrows.div(cash.plus(borrows).minus(reserves));
-
     const tempCurrentPercent = parseInt(+currentUtilizationRate.toString(10) * 100, 10);
+
     setCurrentPercent(tempCurrentPercent || 0);
     const lineElement = document.getElementById('line');
     if (lineElement) {
       setCurrentPos(30 + (lineElement.clientWidth * tempCurrentPercent) / 100);
     }
-    for (let i = 0; i <= 1; i += 0.01) {
-      const utilizationRate = i;
-      // Borrow Rate
-      const borrowRate = new BigNumber(utilizationRate).multipliedBy(new BigNumber(multiplierPerBlock)).plus(new BigNumber(baseRatePerBlock));
 
-      // Supply Rate
-      const rateToPool = borrowRate.multipliedBy(oneMinusReserveFactor);
-      const supplyRate = new BigNumber(utilizationRate).multipliedBy(rateToPool);
+    const urArray = [];
+    for (let i = 1; i <= 100; i = i + 10) {
+      urArray.push(i / 100);
+    }
+
+    const borrowRes = await Promise.all(
+      urArray.map(ur =>
+        methods.call(interestModelContract.methods.getBorrowRate, [
+          new BigNumber(1 / ur - 1)
+            .times(1e4)
+            .dp(0)
+            .toString(10),
+          1e4,
+          0
+        ])
+      )
+    );
+    const supplyRes = await Promise.all(
+      urArray.map(ur =>
+        methods.call(interestModelContract.methods.getSupplyRate, [
+          new BigNumber(1 / ur - 1)
+            .times(1e4)
+            .dp(0)
+            .toString(10),
+          1e4,
+          0,
+          marketInfo.reserveFactor.toString(10)
+        ])
+      )
+    );
+
+    urArray.forEach((ur, index) => {
       // supply apy, borrow apy
-      const blocksPerDay = 20 * 60 * 24;
+      const blocksPerDay = 4 * 60 * 24;
       const daysPerYear = 365;
 
-      const mantissa = new BigNumber(10).pow(18);
-      const supplyBase = supplyRate.div(mantissa).times(blocksPerDay).plus(1);
-      const borrowBase = borrowRate.div(mantissa).times(blocksPerDay).plus(1);
-      const supplyApy = supplyBase.pow(daysPerYear - 1).minus(1).times(100);
-      const borrowApy = borrowBase.pow(daysPerYear - 1).minus(1).times(100);
+      const mantissa = 1e18;
+      const supplyBase = new BigNumber(supplyRes[index])
+        .div(mantissa)
+        .times(blocksPerDay)
+        .plus(1);
+      const borrowBase = new BigNumber(borrowRes[index])
+        .div(mantissa)
+        .times(blocksPerDay)
+        .plus(1);
+      const supplyApy = supplyBase
+        .pow(daysPerYear - 1)
+        .minus(1)
+        .times(100);
+      const borrowApy = borrowBase
+        .pow(daysPerYear - 1)
+        .minus(1)
+        .times(100);
 
       data.push({
-        percent: i,
+        percent: ur,
         supplyApy: supplyApy.dp(2, 1).toString(10),
         borrowApy: borrowApy.dp(2, 1).toString(10)
       });
-    }
+    });
     setGraphData(data);
     setSeries([
       {
