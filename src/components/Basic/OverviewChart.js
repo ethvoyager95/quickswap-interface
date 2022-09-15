@@ -154,11 +154,11 @@ function OverviewChart({ marketType, data, graphType }) {
       });
     } else {
       setAreaOptions({
-        ...areaOptions,
+        // ...areaOptions,
         colors: ['#f9053e']
       });
       setBarOptions({
-        ...barOptions,
+        // ...barOptions,
         colors: ['#f9053e']
       });
     }
