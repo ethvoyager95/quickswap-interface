@@ -174,6 +174,10 @@ export const SectionWrapper = styled.div`
       &.green {
         color: #9dd562;
       }
+
+      &.red {
+        color: #f9053e;
+      }
     }
 
     .arrow-right-img {
@@ -440,7 +444,7 @@ function SupplySection({ asset, settings, setSetting }) {
           <div className="description">
             <div className="flex align-center">
               <img src={coinImg} alt="asset" />
-              <span className="label">Interest APY</span>
+              <span className="label">Distribution APY</span>
             </div>
             <span className="value">
               {getBigNumber(asset.strkSupplyApy)

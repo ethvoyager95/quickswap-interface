@@ -212,7 +212,7 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
           <div className="description">
             <div className="flex align-center">
               <img src={coinImg} alt="asset" />
-              <span className="label">Interest APY</span>
+              <span className="label">Distribution APY</span>
             </div>
             <span className="value">
               {getBigNumber(asset.strkSupplyApy)

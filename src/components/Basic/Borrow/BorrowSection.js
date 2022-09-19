@@ -188,7 +188,7 @@ function BorrowSection({ asset, settings, setSetting }) {
               <img src={asset.img} alt="asset" />
               <span className="label">Borrow APY</span>
             </div>
-            <span className="value green">
+            <span className="value red">
               {asset.borrowApy &&
                 getBigNumber(asset.borrowApy)
                   .dp(2, 1)
@@ -199,7 +199,7 @@ function BorrowSection({ asset, settings, setSetting }) {
           <div className="description">
             <div className="flex align-center">
               <img src={coinImg} alt="asset" />
-              <span className="label">Interest APY</span>
+              <span className="label">Distribution APY</span>
             </div>
             <span className="value">
               {getBigNumber(asset.strkBorrowApy)
