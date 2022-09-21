@@ -11,7 +11,8 @@ import {
   getTokenContract,
   getSbepContract,
   getComptrollerContract,
-  methods
+  methods,
+  multicall
 } from 'utilities/ContractService';
 import { promisify } from 'utilities';
 import * as constants from 'utilities/constants';
@@ -466,7 +467,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       if (checkIsValidNetwork()) {
         getMarkets();
       }
-    }, 3000);
+    }, 8000);
 
     return function cleanup() {
       abortController.abort();
@@ -540,75 +541,139 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             const sBepContract = getSbepContract(item.id);
             asset.collateral = assetsIn.includes(asset.stokenAddress);
 
-            const promises = [];
+            // const promises = [];
+            const contractCallContext = [];
 
             // wallet balance
             if (item.id !== 'eth') {
               const tokenContract = getTokenContract(item.id);
-              promises.push(
-                methods.call(tokenContract.methods.balanceOf, [accountAddress]),
-                // allowance
-                methods.call(tokenContract.methods.allowance, [
-                  accountAddress,
-                  asset.stokenAddress
-                ])
+              // promises.push(
+              //   methods.call(tokenContract.methods.balanceOf, [accountAddress]),
+              //   // allowance
+              //   methods.call(tokenContract.methods.allowance, [
+              //     accountAddress,
+              //     asset.stokenAddress
+              //   ])
+              // );
+
+              contractCallContext.push(
+                {
+                  reference: 'walletBalance',
+                  contractAddress: tokenContract.options.address,
+                  abi: tokenContract.options.jsonInterface,
+                  calls: [{ methodName: 'balanceOf', methodParameters: [accountAddress] }]
+                },
+                {
+                  reference: 'allowBalance',
+                  contractAddress: tokenContract.options.address,
+                  abi: tokenContract.options.jsonInterface,
+                  calls: [{ methodName: 'allowance', methodParameters: [accountAddress, asset.stokenAddress] }]
+                }
               );
-            } else if (window.ethereum) {
-              promises.push(window.web3.eth.getBalance(accountAddress), null);
             }
+            // else if (window.ethereum) {
+            //   promises.push(window.web3.eth.getBalance(accountAddress), null);
+            // }
 
             // supply balance
-            promises.push(
-              methods.call(sBepContract.methods.balanceOfUnderlying, [
-                accountAddress
-              ])
-            );
+            // promises.push(
+            //   methods.call(sBepContract.methods.balanceOfUnderlying, [
+            //     accountAddress
+            //   ])
+            // );
 
             // borrow balance
-            promises.push(
-              methods.call(sBepContract.methods.borrowBalanceCurrent, [
-                accountAddress
-              ])
-            );
+            // promises.push(
+            //   methods.call(sBepContract.methods.borrowBalanceCurrent, [
+            //     accountAddress
+            //   ])
+            // );
 
             // hypotheticalLiquidity
             const totalBalance = await methods.call(
               sBepContract.methods.balanceOf,
               [accountAddress]
             );
-            promises.push(
-              methods.call(
-                appContract.methods.getHypotheticalAccountLiquidity,
-                [accountAddress, asset.stokenAddress, totalBalance, 0]
-              )
-            );
+
+            // promises.push(
+            //   methods.call(
+            //     appContract.methods.getHypotheticalAccountLiquidity,
+            //     [accountAddress, asset.stokenAddress, totalBalance, 0]
+            //   )
+            // );
 
             // borrowGuardianPaused
-            promises.push(
-              methods.call(
-                appContract.methods.borrowGuardianPaused,
-                [asset.stokenAddress]
-              )
+            // promises.push(
+            //   methods.call(
+            //     appContract.methods.borrowGuardianPaused,
+            //     [asset.stokenAddress]
+            //   )
+            // );
+
+            // const [
+            //   walletBalance,
+            //   allowBalance,
+            //   supplyBalance,
+            //   borrowBalance,
+            //   hypotheticalLiquidity,
+            //   borrowGuardianPaused
+            // ] = await Promise.all(promises);
+            // asset.walletBalance = new BigNumber(walletBalance).div(
+            //   new BigNumber(10).pow(tokenDecimal)
+            // );
+
+            contractCallContext.push(
+              {
+                reference: 'supplyBalance',
+                contractAddress: sBepContract.options.address,
+                abi: sBepContract.options.jsonInterface,
+                calls: [{ methodName: 'balanceOfUnderlying', methodParameters: [accountAddress] }]
+              },
+              {
+                reference: 'borrowBalance',
+                contractAddress: sBepContract.options.address,
+                abi: sBepContract.options.jsonInterface,
+                calls: [{ methodName: 'borrowBalanceCurrent', methodParameters: [accountAddress] }]
+              },
+              {
+                reference: 'hypotheticalLiquidity',
+                contractAddress: appContract.options.address,
+                abi: appContract.options.jsonInterface,
+                calls: [{ methodName: 'getHypotheticalAccountLiquidity', methodParameters: [accountAddress, asset.stokenAddress, totalBalance, 0] }]
+              },
+              {
+                reference: 'borrowGuardianPaused',
+                contractAddress: appContract.options.address,
+                abi: appContract.options.jsonInterface,
+                calls: [{ methodName: 'borrowGuardianPaused', methodParameters: [asset.stokenAddress] }]
+              }
             );
 
-            const [
-              walletBalance,
-              allowBalance,
-              supplyBalance,
-              borrowBalance,
-              hypotheticalLiquidity,
-              borrowGuardianPaused
-            ] = await Promise.all(promises);
-            asset.walletBalance = new BigNumber(walletBalance).div(
-              new BigNumber(10).pow(tokenDecimal)
-            );
+            const results = await multicall.call(contractCallContext);
+            // console.log(`${item.id} =`, results);
+
+            let walletBalance = new BigNumber(0)
+            let allowBalance = new BigNumber(0)
+            const supplyBalance = results.results.supplyBalance.callsReturnContext[0].returnValues[0].hex
+            const borrowBalance = results.results.borrowBalance.callsReturnContext[0].returnValues[0].hex
+            const hypotheticalLiquidity = results.results.hypotheticalLiquidity.callsReturnContext[0].returnValues
+            const borrowGuardianPaused = results.results.borrowGuardianPaused.callsReturnContext[0].returnValues[0]
+
             if (item.id !== 'eth') {
+              walletBalance = results.results.walletBalance.callsReturnContext[0].returnValues[0].hex
+              allowBalance = results.results.allowBalance.callsReturnContext[0].returnValues[0].hex
+
+              asset.walletBalance = new BigNumber(walletBalance).div(new BigNumber(10).pow(tokenDecimal))
               asset.isEnabled = new BigNumber(allowBalance)
                 .div(new BigNumber(10).pow(tokenDecimal))
                 .isGreaterThan(asset.walletBalance);
             } else if (window.ethereum) {
+              walletBalance = await window.web3.eth.getBalance(accountAddress)
+              asset.walletBalance = new BigNumber(walletBalance).div(new BigNumber(10).pow(tokenDecimal))
               asset.isEnabled = true;
             }
+
+
             asset.supplyBalance = new BigNumber(supplyBalance).div(
               new BigNumber(10).pow(tokenDecimal)
             );
