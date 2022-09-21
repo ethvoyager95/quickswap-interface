@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-// import { initOnRamp } from '@coinbase/cbpay-js/dist/index.js';
-import { initOnRamp } from '@coinbase/cbpay-js';
+import React, { useEffect, useState, useRef } from 'react';
+import { initOnRamp } from '@coinbase/cbpay-js/dist/index.js';
+//import { initOnRamp } from '@coinbase/cbpay-js';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
@@ -142,7 +142,8 @@ const StyledDropdown = styled.div`
 `;
 
 function AccountModal({ visible, onCancel, onDisconnect, settings }) {
-  const [onrampInstance, setOnrampInstance] = useState(null);
+  const onrampInstance = useRef();
+  const [isReady, setIsReady] = useState(false);
 
   const format = commaNumber.bindWith(',', '.');
 
@@ -157,6 +158,8 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
   useEffect(() => {
     initOnRamp({
       appId: process.env.REACT_APP_COINBASE_PAY_APP_ID,
+      experienceLoggedIn: 'embedded',
+      experienceLoggedOut: 'popup',
       widgetParameters: {
         destinationWallets: [
           {
@@ -165,32 +168,30 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
           },
         ],
       },
+      onReady: () => {
+        setIsReady(true);
+      },
       onSuccess: () => {
         console.log('success');
       },
-      onExit: () => {
-        console.log('exit');
+      onExit: (event) => {
+        console.log('exit', event);
       },
       onEvent: (event) => {
-        console.log('event', event);
+        console.log('onEvent', event);
       },
-      experienceLoggedIn: 'popup',
-      experienceLoggedOut: 'popup',
       closeOnExit: true,
       closeOnSuccess: true,
-    }, (_, instance) => {
-      setOnrampInstance(instance);
     });
-
     return () => {
-      if (onrampInstance)
-        onrampInstance.destroy();
+      if (onrampInstance.current)
+        onrampInstance.current.destroy();
     };
   }, [settings.selectedAddress]);
 
   const handleCoinbasePayClick = () => {
-    if (onrampInstance)
-      onrampInstance.open();
+    if (onrampInstance.current)
+      onrampInstance.current.open();
   };
 
   const handleLink = () => {
@@ -247,7 +248,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
           </UserInfoButton>
 
           <UserInfoButton>
-            <Button className="coinbase-pay-btn" disabled={!onrampInstance} onClick={() => { handleCoinbasePayClick(); }}>
+            <Button className="coinbase-pay-btn" disabled={!isReady} onClick={() => { handleCoinbasePayClick(); }}>
               <img src={coinbaseImg} alt="coinbase" />Coinbase Pay
             </Button>
           </UserInfoButton>
