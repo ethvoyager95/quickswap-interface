@@ -9,7 +9,8 @@ import { connectAccount } from 'core';
 import {
   getSbepContract,
   getInterestModelContract,
-  methods
+  methods,
+  multicall
 } from 'utilities/ContractService';
 import { checkIsValidNetwork } from 'utilities/common';
 
@@ -206,35 +207,79 @@ function InterestRateModel({ settings, currentAsset, history }) {
     }
 
     const urArray = [];
-    for (let i = 1; i <= 100; i = i + 10) {
+    for (let i = 1; i <= 100; i = i + 1) {
       urArray.push(i / 100);
     }
 
-    const borrowRes = await Promise.all(
-      urArray.map(ur =>
-        methods.call(interestModelContract.methods.getBorrowRate, [
-          new BigNumber(1 / ur - 1)
-            .times(1e4)
-            .dp(0)
-            .toString(10),
-          1e4,
-          0
-        ])
+    const contractCallContext = []
+    urArray.map((ur, index) => {
+      contractCallContext.push(
+        {
+          reference: `borrowRes${index}`,
+          contractAddress: interestModelContract.options.address,
+          abi: interestModelContract.options.jsonInterface,
+          calls: [{
+            methodName: 'getBorrowRate', methodParameters: [
+              new BigNumber(1 / ur - 1)
+                .times(1e4)
+                .dp(0)
+                .toString(10),
+              1e4,
+              0]
+          }]
+        },
+        {
+          reference: `supplyRes${index}`,
+          contractAddress: interestModelContract.options.address,
+          abi: interestModelContract.options.jsonInterface,
+          calls: [{
+            methodName: 'getSupplyRate', methodParameters: [
+              new BigNumber(1 / ur - 1)
+                .times(1e4)
+                .dp(0)
+                .toString(10),
+              1e4,
+              0,
+              marketInfo.reserveFactor.toString(10)]
+          }]
+        }
       )
-    );
-    const supplyRes = await Promise.all(
-      urArray.map(ur =>
-        methods.call(interestModelContract.methods.getSupplyRate, [
-          new BigNumber(1 / ur - 1)
-            .times(1e4)
-            .dp(0)
-            .toString(10),
-          1e4,
-          0,
-          marketInfo.reserveFactor.toString(10)
-        ])
-      )
-    );
+    })
+
+    const results = await multicall.call(contractCallContext)
+
+    let borrowRes = []
+    let supplyRes = []
+    urArray.map((ur, index) => {
+      borrowRes.push(results.results[`borrowRes${index}`].callsReturnContext[0].returnValues[0].hex)
+      supplyRes.push(results.results[`supplyRes${index}`].callsReturnContext[0].returnValues[0].hex)
+    })
+
+    // const borrowRes = await Promise.all(
+    //   urArray.map(ur =>
+    //     methods.call(interestModelContract.methods.getBorrowRate, [
+    //       new BigNumber(1 / ur - 1)
+    //         .times(1e4)
+    //         .dp(0)
+    //         .toString(10),
+    //       1e4,
+    //       0
+    //     ])
+    //   )
+    // );
+    // const supplyRes = await Promise.all(
+    //   urArray.map(ur =>
+    //     methods.call(interestModelContract.methods.getSupplyRate, [
+    //       new BigNumber(1 / ur - 1)
+    //         .times(1e4)
+    //         .dp(0)
+    //         .toString(10),
+    //       1e4,
+    //       0,
+    //       marketInfo.reserveFactor.toString(10)
+    //     ])
+    //   )
+    // );
 
     urArray.forEach((ur, index) => {
       // supply apy, borrow apy
