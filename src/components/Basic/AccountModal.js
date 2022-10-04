@@ -1,118 +1,37 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { initOnRamp } from '@coinbase/cbpay-js/dist/index.js';
-//import { initOnRamp } from '@coinbase/cbpay-js';
+// import { initOnRamp } from '@coinbase/cbpay-js';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
-import closeImg from 'assets/img/close.png';
-import { connectAccount, accountActionCreators } from 'core';
-import { bindActionCreators } from 'redux';
+import { connectAccount } from 'core';
 import { compose } from 'recompose';
-import AnimatedNumber from 'animated-number-react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { message, Icon } from 'antd';
-import { getBigNumber } from 'utilities/common';
-import Button from '@material-ui/core/Button';
-import commaNumber from 'comma-number';
-import coinbaseImg from 'assets/img/coinbase_pay.png';
+import { message } from 'antd';
+import coinbaseImg from 'assets/img/coinbase_pay.svg';
+import buyCryptoWithFiatImg from 'assets/img/buy_crypto_banner.svg';
 
 const ModalContent = styled.div`
   border-radius: 5px;
   background-color: var(--color-bg-primary);
-  padding: 0 20px 32px;
+  padding: 27px 32px 23px 32px;
+  color: black;
+  gap: 25px;
+  user-select: none;
+
   .close-btn {
     position: absolute;
-    top: 23px;
-    right: 23px;
+    top: 30px;
+    right: 32px;
   }
+
   .header {
-    padding: 24px;
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .wallet {
     width: 100%;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .info-wrapper {
-    width: 100%;
-  }
-
-  @media only screen and (max-width: 768px) {
-    padding: 0 20px 10px;
-  }
-`;
-
-const UserInfoButton = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
-  gap: 30px;
-
-  @media only screen and (max-width: 768px) {
-    width: 100%;
-    margin: 20px 0 0;
-  }
-
-  .user-info-btn {
-    padding: 0 8px;
-    height: 32px;
-    box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
-    background-color: rgba(39, 126, 230, 0.7);
+    font-size: 18px;
+    font-weight: 500;
     display: flex;
+    gap: 10px;
     align-items: center;
-
-    @media only screen and (max-width: 768px) {
-      padding: 0 8px;
-    }
-
-    .MuiButton-label {
-      font-size: 13.5px;
-      line-height: 1;
-      font-weight: 500;
-      color: var(--color-white);
-      text-transform: capitalize;
-      display: flex;
-      align-items: center;
-    }
-
-    img {
-      width: 16px;
-      height: 16px;
-    }
-  }
-
-  .coinbase-pay-btn {
-    padding: 0 8px;
-    height: 32px;
-    box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
-    background-color: rgba(39, 126, 230, 0.7);
-    display: flex;
-    align-items: center;
-
-    @media only screen and (max-width: 768px) {
-      padding: 0 8px;
-    }
-
-    .MuiButton-label {
-      font-size: 13.5px;
-      line-height: 1;
-      font-weight: 500;
-      color: var(--color-white);
-      text-transform: capitalize;
-      display: flex;
-      align-items: center;
-    }
-
-    img {
-      margin-right: 10px;
-      width: 16px;
-      height: 16px;
-    }
   }
 
   .item {
@@ -121,72 +40,161 @@ const UserInfoButton = styled.div`
     gap: 5px;
     cursor: pointer;
     
-    svg {
-      fill: rgba(0, 0, 0, 0.65);
-    }
-
     &:hover {
       transition: all 0.3s;
       color: rgba(39, 126, 230, 0.7);
 
-      svg {
+      svg path {
         transition: all 0.3s;
         fill: rgba(39, 126, 230, 0.7);
       }
     }
   }
+
+  .fiat-option {
+    width: 100%;
+    height: 212px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+
+
+  }
+
+  .disconnect-button {
+    width: 100%;
+    font-weight: 500;
+    font-size: 18px;
+    padding: 10px 0px;
+    border-radius: 5px;    
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    text-align: center;
+    cursor: pointer;    
+  }
 `;
 
-const StyledDropdown = styled.div`
-  display: flex;
+const StyledPaymentMethod = styled.div`
+  margin: auto;
+  width: 100%;
+	position: relative;
 `;
+
+const StyledPayment = styled.div`
+  margin: auto;
+	width: 90%;
+	height: 41px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 16px;
+	cursor: pointer;
+`;
+
+const StyledPaymentSelect = styled.div`
+	position: absolute;
+  left: 50%;
+  top: 50px;
+  transform: translate(-50%, 0%);
+  margin: auto;
+  width: 90%;
+	background: #EEEEEE;
+  border-radius: 5px;
+`;
+
+const StyledPaymentItem = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 15px;
+	cursor: pointer;
+	height: 50px;
+	width: 100%;
+
+	&:not(:last-child) {
+		margin-bottom: 8px;
+	}
+
+	&.active {
+		background: #EEEEEE;
+	}
+`;
+
+const StyledName = styled.div`
+	font-family: 'Inter-Medium';
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 19px;
+  display: flex;
+	align-items: center;
+  gap: 10px;
+`;
+
+export const useOutside = (ref, onClick) => {
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        onClick();
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, onClick]);
+};
+
 
 function AccountModal({ visible, onCancel, onDisconnect, settings }) {
   const onrampInstance = useRef();
   const [isReady, setIsReady] = useState(false);
 
-  const format = commaNumber.bindWith(',', '.');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [openDropdown, setOpenDropdown] = useState(false);
 
-  const formatValue = value => {
-    return `$${format(
-      getBigNumber(value)
-        .dp(2, 1)
-        .toString(10)
-    )}`;
-  };
+  const wrapperRef = useRef(null);
+  useOutside(wrapperRef, setOpenDropdown);
 
   useEffect(() => {
-    initOnRamp({
-      appId: process.env.REACT_APP_COINBASE_PAY_APP_ID,
-      experienceLoggedIn: 'embedded',
-      experienceLoggedOut: 'popup',
-      widgetParameters: {
-        destinationWallets: [
-          {
-            address: settings.selectedAddress,
-            blockchains: ['ethereum'],
-          },
-        ],
-      },
-      onReady: () => {
-        setIsReady(true);
-      },
-      onSuccess: () => {
-        console.log('success');
-      },
-      onExit: (event) => {
-        console.log('exit', event);
-      },
-      onEvent: (event) => {
-        console.log('onEvent', event);
-      },
-      closeOnExit: true,
-      closeOnSuccess: true,
-    });
-    return () => {
-      if (onrampInstance.current)
-        onrampInstance.current.destroy();
-    };
+    if (settings.selectedAddress) {
+      onrampInstance.current = null;
+      setIsReady(false);
+
+      initOnRamp({
+        appId: process.env.REACT_APP_COINBASE_PAY_APP_ID,
+        experienceLoggedIn: 'embedded',
+        experienceLoggedOut: 'popup',
+        widgetParameters: {
+          destinationWallets: [
+            {
+              address: settings.selectedAddress,
+              blockchains: ['ethereum'],
+            },
+          ],
+        },
+        onSuccess: () => {
+          console.log('success');
+        },
+        onExit: (event) => {
+          console.log('exit', event);
+        },
+        onEvent: (event) => {
+          console.log('onEvent', event);
+        },
+        closeOnExit: true,
+        closeOnSuccess: true,
+      }, (error, instance) => {
+        if (instance) {
+          onrampInstance.current = instance;
+          setIsReady(true);
+        }
+      });
+
+      return () => {
+        if (onrampInstance.current)
+          onrampInstance.current.destroy();
+      };
+    }
   }, [settings.selectedAddress]);
 
   const handleCoinbasePayClick = () => {
@@ -203,7 +211,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
 
   return (
     <Modal
-      className="connect-modal"
+      className="info-modal"
       visible={visible}
       onCancel={onCancel}
       footer={null}
@@ -212,54 +220,91 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
       centered
     >
       <ModalContent className="flex flex-column align-center just-center">
-        <img
-          className="close-btn pointer"
-          src={closeImg}
-          alt="close"
-          onClick={onCancel}
-        />
-        <div className="header">Your Wallet</div>
 
-        <div className="flex flex-column info-wrapper">
-
-          <div className="wallet">
-            {settings.selectedAddress}
-          </div>
-
-          <UserInfoButton>
-            <div className="item" onClick={() => { handleLink(); }}>
-              View on Etherscan
-              <svg viewBox="0 0 24 24" width="20px" xmlns="http://www.w3.org/2000/svg" class="sc-bdvvaa cpQaOW"><path d="M18 19H6C5.45 19 5 18.55 5 18V6C5 5.45 5.45 5 6 5H11C11.55 5 12 4.55 12 4C12 3.45 11.55 3 11 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V13C21 12.45 20.55 12 20 12C19.45 12 19 12.45 19 13V18C19 18.55 18.55 19 18 19ZM14 4C14 4.55 14.45 5 15 5H17.59L8.46 14.13C8.07 14.52 8.07 15.15 8.46 15.54C8.85 15.93 9.48 15.93 9.87 15.54L19 6.41V9C19 9.55 19.45 10 20 10C20.55 10 21 9.55 21 9V4C21 3.45 20.55 3 20 3H15C14.45 3 14 3.45 14 4Z"></path>
-              </svg>
-            </div>
-
-            <CopyToClipboard
-              text={settings.selectedAddress}
-              onCopy={() => {
-                message.success(`Copied address`);
-              }}
-            >
-              <div className="item">
-                Copy Address
-                <svg viewBox="0 0 24 24" width="20px" color="primary" xmlns="http://www.w3.org/2000/svg" class="sc-bdvvaa cpQaOW"><path d="M15 1H4C2.9 1 2 1.9 2 3V16C2 16.55 2.45 17 3 17C3.55 17 4 16.55 4 16V4C4 3.45 4.45 3 5 3H15C15.55 3 16 2.55 16 2C16 1.45 15.55 1 15 1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM18 21H9C8.45 21 8 20.55 8 20V8C8 7.45 8.45 7 9 7H18C18.55 7 19 7.45 19 8V20C19 20.55 18.55 21 18 21Z"></path>
-                </svg>
-              </div>
-            </CopyToClipboard>
-          </UserInfoButton>
-
-          <UserInfoButton>
-            <Button className="coinbase-pay-btn" disabled={!isReady} onClick={() => { handleCoinbasePayClick(); }}>
-              <img src={coinbaseImg} alt="coinbase" />Coinbase Pay
-            </Button>
-          </UserInfoButton>
-
-          <UserInfoButton>
-            <Button className="user-info-btn" onClick={() => { onDisconnect(); onCancel(); }}>
-              Disconnect
-            </Button>
-          </UserInfoButton>
+        <div className="close-btn pointer" onClick={onCancel}>
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.37608 0L0 1.37608L6.12392 7.5L0 13.6239L1.37608 15L7.5 8.87608L13.6239 15L15 13.6239L8.87608 7.5L15 1.37608L13.6239 0L7.5 6.12392L1.37608 0Z" fill="black" />
+          </svg>
         </div>
 
+        <div className="header">
+          <div className="flex">
+            {settings.selectedAddress ? `${settings.selectedAddress.substr(
+              0,
+              6
+            )}...${settings.selectedAddress.substr(
+              settings.selectedAddress.length - 4,
+              4
+            )}` : ''}
+          </div>
+
+          <div className="item" onClick={() => { handleLink(); }}>
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1.66667 0C0.755208 0 0 0.755208 0 1.66667V13.3333C0 14.2448 0.755208 15 1.66667 15H13.3333C14.2448 15 15 14.2448 15 13.3333V7.5H13.3333V13.3333H1.66667V1.66667H7.5V0H1.66667ZM9.16667 0V1.66667H12.1549L4.41081 9.41081L5.58919 10.5892L13.3333 2.84505V5.83333H15V0H9.16667Z" fill="black" />
+            </svg>
+          </div>
+
+          <CopyToClipboard
+            text={settings.selectedAddress}
+            onCopy={() => {
+              message.success(`Copied address`);
+            }}
+          >
+            <div className="item">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.5 0C0.670898 0 0 0.670898 0 1.5V12H1.5V1.5H12V0H1.5ZM4.5 3C3.6709 3 3 3.6709 3 4.5V13.5C3 14.3291 3.6709 15 4.5 15H13.5C14.3291 15 15 14.3291 15 13.5V4.5C15 3.6709 14.3291 3 13.5 3H4.5ZM4.5 4.5H13.5V13.5H4.5V4.5Z" fill="black" />
+              </svg>
+            </div>
+          </CopyToClipboard>
+        </div>
+
+
+        <div className="flex flex-column fiat-option">
+          <img src={buyCryptoWithFiatImg} alt='buy_crypto_with_fiat' />
+          <StyledPaymentMethod>
+            <StyledPayment
+              onClick={() => setOpenDropdown(!openDropdown)}
+            // onMouseDown={(e) => {
+            //   e.preventDefault();
+            //   e.stopPropagation();
+            //   setOpenDropdown(!openDropdown);
+            // }}
+            >
+              Buy crypto with Fiat
+              {openDropdown ? (
+                <svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7.5 0L0 7.5L1.85328 9.35328L7.5 3.70656L13.1467 9.35328L15 7.5L7.5 0Z" fill="black" />
+                </svg>
+              ) : (
+                <svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7.5 9.35327L15 1.85327L13.1467 -1.04904e-05L7.5 5.64671L1.85328 -1.04904e-05L0 1.85327L7.5 9.35327Z" fill="black" />
+                </svg>
+              )}
+            </StyledPayment>
+            {openDropdown && (
+              <StyledPaymentSelect ref={wrapperRef}>
+                <StyledPaymentItem
+                  className={`${paymentMethod === 'coinbase_pay' ? 'active' : ''}`}
+                  disabled={!isReady}
+                  onClick={() => {
+                    setPaymentMethod('coinbase_pay');
+                    setOpenDropdown(false);
+                    handleCoinbasePayClick();
+                  }}
+                >
+                  <StyledName>
+                    <img src={coinbaseImg} alt='token' />
+                    {' '}Coinbase Pay
+                  </StyledName>
+                </StyledPaymentItem>
+              </StyledPaymentSelect>
+            )}
+          </StyledPaymentMethod>
+        </div>
+
+        <div className="disconnect-button" onClick={() => { onDisconnect(); onCancel(); }}>
+          Disconnect
+        </div>
       </ModalContent >
     </Modal >
   );
