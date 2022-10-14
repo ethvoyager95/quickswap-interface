@@ -900,6 +900,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         </NavLink>
         <NavLink
           className="flex flex-start align-center"
+          to="/vault"
+          activeClassName="active"
+        >
+          <Label>Staking</Label>
+        </NavLink>
+        <NavLink
+          className="flex flex-start align-center"
           to="/liquidator"
           activeClassName="active"
         >
