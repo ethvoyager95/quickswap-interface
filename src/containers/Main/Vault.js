@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { useWeb3React } from '@web3-react/core';
@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { message } from 'antd';
 import commaNumber from 'comma-number';
 import MainLayout from 'containers/Layout/MainLayout';
-import { Row, Column } from 'components/Basic/Style';
 // import { useBalance } from '../../hooks/useBalance';
 // import {
 //   useStakingData,
@@ -18,6 +17,10 @@ import { Row, Column } from 'components/Basic/Style';
 // } from '../../hooks/useStaking';
 // import { useMarkets } from 'hooks/useMarkets';
 import PenaltyModal from 'components/Basic/PenaltyModal';
+
+import TotalStakedImg from 'assets/img/total_staked.svg';
+import TotalLockedImg from 'assets/img/total_locked.svg';
+import AccumulatedFeesImg from 'assets/img/accumulated_fees.svg';
 
 const VaultContainer = styled.div`
   img {
@@ -58,6 +61,60 @@ const VaultContainer = styled.div`
     margin-bottom: 20px;
   }
 
+  .info_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+
+    .subimage {
+      width: 45px;
+      height: 45px;
+    }
+
+    .subtitle {
+      padding-left: 20px;
+      font-size: 18px;
+    }
+
+    .text {
+      font-weight: 600;
+      font-size: 22px;
+      line-height: 100%;
+      color: var(--color-text-main);
+    }
+  }
+
+  .claim_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .subtitle {
+      font-size: 16px;
+    }
+
+    .value {
+      color: var(--color-text-main);
+      font-size: 16px;
+    }
+
+    .description {
+      font-size: 12px;
+    }
+
+    .link {
+      font-size: 12px;
+      color: var(--color-blue);
+      text-decoration: none;
+      cursor: pointer;
+    }
+  }
+
   .col {
     flex: 1;
   }
@@ -67,13 +124,15 @@ const VaultContainer = styled.div`
   }
 
   .link {
-    color: #0074FF;
-    text-decoration: underline;
+    color: #0074ff;
+    text-decoration: none;
     cursor: pointer;
   }
+
   .text-right {
     text-align: right;
   }
+
   .border {
     border: 1px solid #30374f;
     border-radius: 5px;
@@ -99,30 +158,13 @@ const VaultContainer = styled.div`
     line-height: 22px;
   }
 
-  .text {
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 135%;
-    letter-spacing: -0.02em;
-  }
-
   .APR {
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 140%;
-    letter-spacing: -0.02em;
-  }
-  .APR-number {
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 140%;
-    letter-spacing: -0.02em;
-  }
-  .balance {
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 150%;
-    text-align: right;
+    padding: 5px 10px;
+    font-size: 14px;
+    color: var(--color-blue);
+    line-height: 100%;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
   }
 
   .button {
@@ -137,41 +179,57 @@ const VaultContainer = styled.div`
 
   .button-disable {
     width: 100%;
-    background-color: #404968;
-    color: white;
+    background-color: #f0f0f0;
+    color: rgba(0, 0, 0, 0.5);
     text-align: center;
     padding: 12px;
     border: none;
     border-radius: 5px;
+
+    &:hover {
+      background: #f0f0f0 !important;
+    }
   }
   .w-100 {
     width: 100%;
   }
 
   input {
+    font-size: 26px;
+    color: var(--color-text-main);
     background: transparent;
     border: none;
+
     &:focus {
       outline: none;
+    }
+
+    ::placeholder {
+      color: var(--color-text-secondary);
     }
   }
 
   .input-bg {
     padding: 16px;
 
-    background: #242a3e;
+    background: #f0f0f0;
     border-radius: 5px;
   }
 
-  .input-button {
+  .max-button {
     padding: 10px 20px;
     color: var(--color-blue);
 
-    background: #30374f;
+    background: #e4e4e4;
     border-radius: 5px;
     border: none;
     cursor: pointer;
+    font-size: 12px;
     font-weight: 600;
+
+    &:hover {
+      color: white;
+    }
   }
 
   .mb-1 {
@@ -218,8 +276,10 @@ const VaultContainer = styled.div`
   }
 
   .divider {
-    border: 1px solid #30374f;
+    margin: 20px -20px;
+    border-bottom: 1px solid #eef1fa;
   }
+
   .mx-auto {
     margin-left: auto;
     margin-right: auto;
@@ -229,6 +289,16 @@ const VaultContainer = styled.div`
     font-weight: 500;
     font-size: 16px;
     line-height: 22px;
+  }
+
+  .balance_row {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-main);
+
+    .span-strk {
+      color: var(--color-blue);
+    }
   }
 `;
 
@@ -268,25 +338,23 @@ const Vault = () => {
   const locks = [];
   const unlockable = new BigNumber(0);
   const fees = [];
-  const totalEarned = new BigNumber(0);
   const vests = [];
   const strkBalance = new BigNumber(0);
   const strkStakingAllowance = new BigNumber(0);
   const reserves = new BigNumber(0);
   const strkPrice = new BigNumber(0);
-  
+
   const handleStake = () => {};
   const handleApprove = () => {};
   const handleWithdraw = () => {};
   const handleGetReward = () => {};
   const handleWithdrawExpiredLocks = () => {};
-  
+
   const stakePending = false;
   const approvePending = false;
   const withdrawPending = false;
   const getRewardPending = false;
   const withdrawExpiredLocksPending = false;
-
 
   const { account } = useWeb3React();
 
@@ -425,6 +493,7 @@ const Vault = () => {
   const overview = [
     {
       name: 'Total STRK Staked',
+      img: TotalStakedImg,
       value: totalStaked
         .div(1e18)
         .toNumber()
@@ -432,36 +501,32 @@ const Vault = () => {
     },
     {
       name: 'Total STRK Locked',
+      img: TotalLockedImg,
       value: totalLocked
         .div(1e18)
         .toNumber()
         .toLocaleString('en-US', { maximumFractionDigits: 0 })
     },
     {
-      name: 'Protocol Reserves',
+      name: 'Accumulated Fees',
+      img: AccumulatedFeesImg,
       value: `$${reserves.toLocaleString('en-US', {
         maximumFractionDigits: 3
       })}`
-    },
-    {
-      name: 'Wallet STRK Balance',
-      value: strkBalance
-        .div(1e18)
-        .toNumber()
-        .toLocaleString('en-US', { maximumFractionDigits: 0 })
     }
   ];
 
   const input = [
     {
       name: 'Stake STRK',
+      text: [`Stake STRK and earn platform fees with no lockup period.`],
       apr: `${stakeApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}%`
     },
     {
       name: 'Lock STRK',
       text: [
         `Lock STRK and earn platform fees and penalty fees in unlocked STRK`,
-        `The lock period is 4 weeks`,
+        `The lock date are grouped by the week. Any lock between Thursday 00:00 UTC to Wednesday 23:59 UTC are grouped in the same week group, and will release at the same time four(4) weeks later.`,
         `Locked STRK will continue to earn fees after the locks expire if you do not withdraw.`
       ],
       apr: `${lockApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}%`
@@ -471,6 +536,7 @@ const Vault = () => {
   const claim = [
     {
       name: 'Claimable STRK',
+      description: 'Include staked STRK and vested STRK',
       value: `${unlockedBalance
         .div(1e18)
         .toNumber()
@@ -480,6 +546,7 @@ const Vault = () => {
     },
     {
       name: 'STRK in Vesting',
+      description: 'STRK amount that can be claimed with a 50% penalty',
       value: `${penaltyAmount
         .times(2)
         .div(1e18)
@@ -489,6 +556,7 @@ const Vault = () => {
     },
     {
       name: 'Claim all STRK above',
+      description: 'Early Exit Penalty',
       value: `${penaltyAmount
         .div(1e18)
         .toNumber()
@@ -498,6 +566,7 @@ const Vault = () => {
     },
     {
       name: 'Expired Locked STRK',
+      description: '',
       value: `${unlockable
         .div(1e18)
         .toNumber()
@@ -513,88 +582,92 @@ const Vault = () => {
         <div className="main-container mt-1 mx-auto gap">
           <div className="col">
             <div className="container">
-              <p className="title mb-3">Overview</p>
-              <div
-                style={{
-                  display: 'flex',
-                  flexFlow: 'row wrap'
-                }}
-              >
-                {overview.map(e => (
-                  <div key={e.name} style={{ width: '50%' }}>
-                    <div className="flex mb-1">
-                      <p className="subtitle mr-1">{e.name}</p>
+              {overview.map((e, index) => (
+                <div>
+                  <div className="info_row" key={e.name}>
+                    <div>
+                      <img className="subimage" src={e.img} alt={e.name} />
+                      <p className="subtitle">{e.name}</p>
                     </div>
-                    <p className="text mb-2">{e.value}</p>
+                    <div>
+                      <p className="text">{e.value} STRK</p>
+                    </div>
                   </div>
-                ))}
-              </div>
+                  {index !== overview.length - 1 && <div className="divider" />}
+                </div>
+              ))}
             </div>
+
             {input.map((e, index) => (
               <div key={e.name} className="container">
                 <div className="flex space-between mb-3">
                   <div className="flex">
                     <p className="title mr-1">{e.name}</p>
                   </div>
-                  <div className="flex">
-                    <p className="APR mr-1">APR: </p>
-                    <p className="APR-number">{e.apr}</p>
-                  </div>
+                  <div className="APR">APR {e.apr}</div>
                 </div>
-                <div>
-                  <div className="flex align-center space-between input-bg mb-2">
+                {e.text && (
+                  <div className="mb-2">
+                    {e.text.map((it, i) => (
+                      <>
+                        <p key={i} className="lock-text">
+                          {it}
+                        </p>
+                        <br />
+                      </>
+                    ))}
+                  </div>
+                )}
+                <div className="input-bg mb-2">
+                  <div className="flex align-center space-between balance_row">
+                    <p className="amount">Amount</p>
+                    <p className="balance">
+                      Balance{' '}
+                      {format(
+                        strkBalance
+                          .div(1e18)
+                          .dp(2, 1)
+                          .toString(10)
+                      )}{' '}
+                      <span className="span-strk">STRK</span>
+                    </p>
+                  </div>
+                  <div className="flex align-center space-between">
                     <div className="flex align-center">
-                      <img src="icon.png" alt="" className="mr-1 max-20" />
                       <input
                         placeholder="0.00"
                         value={index === 0 ? stakeAmount : lockAmount}
                         onChange={event => {
-                          index === 0 &&
+                          if (
+                            index === 0 &&
                             (!event.target.value.length ||
-                              Number(event.target.value) >= 0) &&
+                              Number(event.target.value) >= 0)
+                          )
                             setStakeAmount(event.target.value);
-                          index === 1 &&
+                          if (
+                            index === 1 &&
                             (!event.target.value.length ||
-                              Number(event.target.value) >= 0) &&
+                              Number(event.target.value) >= 0)
+                          )
                             setLockAmount(event.target.value);
                         }}
                       />
                     </div>
                     <button
-                      className="input-button"
+                      type="button"
+                      className="max-button"
                       onClick={() => {
-                        index === 0 &&
+                        if (index === 0)
                           setStakeAmount(strkBalance.div(1e18).toString());
-                        index === 1 &&
-                          setLockAmount(strkBalance.div(1e18).toString());
+                        else setLockAmount(strkBalance.div(1e18).toString());
                       }}
                     >
                       MAX
                     </button>
                   </div>
                 </div>
-                <div className="flex space-between mb-2">
-                  <p className="subtitle">Wallet balance</p>
-                  <p className="balance">
-                    {format(
-                      strkBalance
-                        .div(1e18)
-                        .dp(2, 1)
-                        .toString(10)
-                    )}{' '}
-                    <span className="span-strk">STRK</span>
-                  </p>
-                </div>
-                {e.text && (
-                  <div className="mb-2">
-                    {e.text.map((e, index) => (
-                      <p key={index} className="lock-text">
-                        {e}
-                      </p>
-                    ))}
-                  </div>
-                )}
                 <button
+                  type="button"
                   className={
                     approvePending ||
                     stakePending ||
@@ -620,7 +693,7 @@ const Vault = () => {
                   (index === 1 &&
                     (stakePending || approvePending) &&
                     lockPending) ? (
-                    <div className="loader" color="#656170" />
+                    <div className="loader" />
                   ) : (
                     <>{isApprove() ? 'Approve' : e.name}</>
                   )}
@@ -628,23 +701,40 @@ const Vault = () => {
               </div>
             ))}
           </div>
+
           <div className="col">
             <div className="container">
               {claim.map((e, index) => (
-                <div className=" mb-3" key={e.name}>
-                  <div className="flex space-between mb-1 ">
-                    <div className="flex w-100">
-                      <p className="subtitle mr-1">{e.name}</p>
-                    </div>
-                    <p className="value w-100 text-right">{e.value}</p>
+                <div key={e.name}>
+                  <div className="claim_row">
+                    <p className="subtitle">{e.name}</p>
+                    <p className="value">{e.value}</p>
                   </div>
-                  <p className="link text-right mb-3" onClick={e.handler}>
-                    {e.claim}
-                  </p>
+                  <div className="claim_row">
+                    <p className="description">{e.description}</p>
+                    {e.claim && (
+                      <p className="link" onClick={e.handler}>
+                        {e.claim}{' '}
+                        <svg
+                          width="6"
+                          height="9"
+                          viewBox="0 0 6 9"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M5.9992 3.15029C5.99428 3.02059 5.93827 2.89776 5.84394 2.80736L3.34808 0.342936L2.99728 0L2.64648 0.342936L0.15062 2.80736C-0.0468874 3.00192 -0.050818 3.3193 0.142759 3.51779C0.336336 3.7153 0.654706 3.71923 0.852213 3.52467L2.49811 1.89548L2.49811 8.15774C2.49516 8.33756 2.58949 8.50461 2.74573 8.59501C2.90098 8.68639 3.09358 8.68639 3.24883 8.59501C3.40409 8.50461 3.4994 8.33756 3.49645 8.15774L3.49645 1.89548L5.14137 3.52467C5.28679 3.67501 5.50887 3.72021 5.70146 3.63669C5.89209 3.55218 6.01099 3.35959 5.9992 3.15029Z"
+                            fill="#277ee6"
+                          />
+                        </svg>
+                      </p>
+                    )}
+                  </div>
                   {index !== claim.length - 1 && <div className="divider" />}
                 </div>
               ))}
             </div>
+
             <div className="container">
               <div className="flex space-between mb">
                 <p className="title">STRK Vests</p>
@@ -701,6 +791,7 @@ const Vault = () => {
                 )}
               </div>
             </div>
+
             <div className="container">
               <div className="flex space-between mb">
                 <p className="title">STRK Locks</p>
@@ -795,7 +886,19 @@ const Vault = () => {
                 </div>
               ))}
               <p className="link text-right" onClick={getReward}>
-                Claim All
+                Claim All{' '}
+                <svg
+                  width="6"
+                  height="9"
+                  viewBox="0 0 6 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5.9992 3.15029C5.99428 3.02059 5.93827 2.89776 5.84394 2.80736L3.34808 0.342936L2.99728 0L2.64648 0.342936L0.15062 2.80736C-0.0468874 3.00192 -0.050818 3.3193 0.142759 3.51779C0.336336 3.7153 0.654706 3.71923 0.852213 3.52467L2.49811 1.89548L2.49811 8.15774C2.49516 8.33756 2.58949 8.50461 2.74573 8.59501C2.90098 8.68639 3.09358 8.68639 3.24883 8.59501C3.40409 8.50461 3.4994 8.33756 3.49645 8.15774L3.49645 1.89548L5.14137 3.52467C5.28679 3.67501 5.50887 3.72021 5.70146 3.63669C5.89209 3.55218 6.01099 3.35959 5.9992 3.15029Z"
+                    fill="#0074FF"
+                  />
+                </svg>
               </p>
             </div>
           </div>
