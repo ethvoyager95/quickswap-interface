@@ -95,6 +95,7 @@ const VaultContainer = styled.div`
     justify-content: space-between;
 
     .subtitle {
+      color: var(--color-text-main);
       font-size: 16px;
     }
 
@@ -144,7 +145,7 @@ const VaultContainer = styled.div`
 
   .title {
     font-weight: 600;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 140%;
 
     letter-spacing: -0.02em;
@@ -258,17 +259,22 @@ const VaultContainer = styled.div`
   }
 
   .value {
+    color: var(--color-text-main);
     font-weight: 600;
-    font-size: 20px;
+    font-size: 12px;
     line-height: 140%;
     letter-spacing: -0.02em;
   }
 
   .span-total {
     font-weight: 600;
-    font-size: 20px;
+    font-size: 12px;
     line-height: 140%;
     letter-spacing: -0.02em;
+  }
+
+  .span-strk {
+    color: var(--color-blue);
   }
 
   .align-center {
@@ -295,10 +301,13 @@ const VaultContainer = styled.div`
     font-size: 14px;
     font-weight: 600;
     color: var(--color-text-main);
+  }
 
-    .span-strk {
-      color: var(--color-blue);
-    }
+  .fee_list {
+    color: var(--color-text-main);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 `;
 
@@ -337,7 +346,7 @@ const Vault = () => {
   const penaltyAmount = new BigNumber(0);
   const locks = [];
   const unlockable = new BigNumber(0);
-  const fees = [];
+  const fees = [new BigNumber(100.55e18), new BigNumber(200.23e6)];
   const vests = [];
   const strkBalance = new BigNumber(0);
   const strkStakingAllowance = new BigNumber(0);
@@ -739,14 +748,14 @@ const Vault = () => {
               <div className="flex space-between mb">
                 <p className="title">STRK Vests</p>
                 <p className="value">
-                  <span className="span-total">Total:</span>{' '}
+                  <span className="span-total">Total</span>{' '}
                   {vests
                     .reduce(
                       (total, e) => total + e.amount.div(1e18).toNumber(),
                       0
                     )
                     .toLocaleString('en-US', { maximumFractionDigits: 3 })}{' '}
-                  STRK
+                  <span className="span-strk">STRK</span>
                 </p>
               </div>
               <div className="border flex flex-column center">
@@ -785,6 +794,19 @@ const Vault = () => {
                       alt=""
                     />
                     <div>
+                      <svg
+                        width="16"
+                        height="25"
+                        viewBox="0 0 16 25"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M4.27102 25C4.18047 25 4.08993 24.9796 4.00391 24.9344C3.75944 24.8053 3.64173 24.5224 3.72322 24.2598L6.60934 14.8001H0.574514C0.352678 14.8001 0.153479 14.6733 0.056143 14.4741C-0.038929 14.2749 -0.0117657 14.0395 0.126315 13.8652L11.0777 0.215542C11.2498 0.000497638 11.5463 -0.0606205 11.7885 0.0638792C12.0353 0.190642 12.153 0.469069 12.0783 0.731649L9.38682 10.2004H15.1953C15.4171 10.2004 15.6186 10.3272 15.7137 10.5264C15.8087 10.7256 15.7816 10.9632 15.6457 11.1353L4.71922 24.785C4.6083 24.9253 4.44079 25 4.27102 25Z"
+                          fill="black"
+                        />
+                      </svg>
+
                       <p>No vesting found</p>
                     </div>
                   </div>
@@ -796,14 +818,14 @@ const Vault = () => {
               <div className="flex space-between mb">
                 <p className="title">STRK Locks</p>
                 <p className="value">
-                  <span className="span-total">Total:</span>{' '}
+                  <span className="span-total">Total</span>{' '}
                   {locks
                     .reduce(
                       (total, e) => total + e.amount.div(1e18).toNumber(),
                       0
                     )
                     .toLocaleString('en-US', { maximumFractionDigits: 3 })}{' '}
-                  STRK
+                  <span className="span-strk">STRK</span>
                 </p>
               </div>
               <div className="border flex flex-column center">
@@ -842,6 +864,19 @@ const Vault = () => {
                       alt=""
                     />
                     <div>
+                      <svg
+                        width="16"
+                        height="25"
+                        viewBox="0 0 16 25"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M4.27102 25C4.18047 25 4.08993 24.9796 4.00391 24.9344C3.75944 24.8053 3.64173 24.5224 3.72322 24.2598L6.60934 14.8001H0.574514C0.352678 14.8001 0.153479 14.6733 0.056143 14.4741C-0.038929 14.2749 -0.0117657 14.0395 0.126315 13.8652L11.0777 0.215542C11.2498 0.000497638 11.5463 -0.0606205 11.7885 0.0638792C12.0353 0.190642 12.153 0.469069 12.0783 0.731649L9.38682 10.2004H15.1953C15.4171 10.2004 15.6186 10.3272 15.7137 10.5264C15.8087 10.7256 15.7816 10.9632 15.6457 11.1353L4.71922 24.785C4.6083 24.9253 4.44079 25 4.27102 25Z"
+                          fill="black"
+                        />
+                      </svg>
+
                       <p>No locking found</p>
                     </div>
                   </div>
@@ -852,7 +887,7 @@ const Vault = () => {
               <div className="flex space-between mb">
                 <p className="title">Claimable Fees</p>
                 <p className="value">
-                  <span className="span-total">Total:</span>{' '}
+                  <span className="span-total">Total</span>{' '}
                   {fees.length >= 2
                     ? fees[0]
                         .div(1e18)
@@ -864,27 +899,26 @@ const Vault = () => {
                   $
                 </p>
               </div>
-              {fees.map((e, index) => (
-                <div
-                  key={e}
-                  className="flex align-center space-between input-bg mb-2"
-                >
-                  <div className="flex align-center">
-                    <img
-                      src={['icon.png', 'coins/usdc.svg'][index]}
-                      alt=""
-                      className="mr-1 max-20"
-                    />
-                    <p1>{['STRK', 'USDC'][index]}</p1>
+              <div className="fee_list input-bg mb-2">
+                {fees.map((e, index) => (
+                  <div key={e} className="flex align-center space-between">
+                    <div className="flex align-center">
+                      <img
+                        src={['coins/strk.png', 'coins/usdc.png'][index]}
+                        alt=""
+                        className="mr-1 max-20"
+                      />
+                      <p1>{['STRK', 'USDC'][index]}</p1>
+                    </div>
+                    <p1>
+                      {e
+                        .div(index === 1 ? 1e6 : 1e18)
+                        .toNumber()
+                        .toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                    </p1>
                   </div>
-                  <p1>
-                    {e
-                      .div(index === 1 ? 1e6 : 1e18)
-                      .toNumber()
-                      .toLocaleString('en-US', { maximumFractionDigits: 2 })}
-                  </p1>
-                </div>
-              ))}
+                ))}
+              </div>
               <p className="link text-right" onClick={getReward}>
                 Claim All{' '}
                 <svg
