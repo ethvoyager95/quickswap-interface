@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { useWeb3React } from '@web3-react/core';
 import styled from 'styled-components';
-import { message } from 'antd';
+import { Tooltip, message } from 'antd';
 import commaNumber from 'comma-number';
 import MainLayout from 'containers/Layout/MainLayout';
 // import { useBalance } from '../../hooks/useBalance';
@@ -21,6 +21,7 @@ import PenaltyModal from 'components/Basic/PenaltyModal';
 import TotalStakedImg from 'assets/img/total_staked.svg';
 import TotalLockedImg from 'assets/img/total_locked.svg';
 import AccumulatedFeesImg from 'assets/img/accumulated_fees.svg';
+import IconQuestion from 'assets/img/question.png';
 
 const VaultContainer = styled.div`
   img {
@@ -83,7 +84,7 @@ const VaultContainer = styled.div`
 
     .text {
       font-weight: 600;
-      font-size: 22px;
+      font-size: 20px;
       line-height: 100%;
       color: var(--color-text-main);
     }
@@ -147,6 +148,7 @@ const VaultContainer = styled.div`
     font-weight: 600;
     font-size: 18px;
     line-height: 140%;
+    white-space: nowrap;
 
     letter-spacing: -0.02em;
 
@@ -196,7 +198,7 @@ const VaultContainer = styled.div`
   }
 
   input {
-    font-size: 26px;
+    // font-size: 26px;
     color: var(--color-text-main);
     background: transparent;
     border: none;
@@ -308,6 +310,17 @@ const VaultContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 20px;
+  }
+`;
+
+const SQuestion = styled.img`
+  width: 23px;
+  height: 23px;
+  margin-right: 10px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
+    margin-right: 0;
   }
 `;
 
@@ -526,15 +539,15 @@ const Vault = () => {
   ];
 
   const input = [
-    {
-      name: 'Stake STRK',
-      text: [`Stake STRK and earn platform fees with no lockup period.`],
-      apr: `${stakeApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}%`
-    },
+    // {
+    //   name: 'Stake STRK',
+    //   text: [`Stake STRK and earn platform fees with no lockup period.`],
+    //   apr: `${stakeApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}%`
+    // },
     {
       name: 'Lock STRK',
       text: [
-        `Lock STRK and earn platform fees and penalty fees in unlocked STRK`,
+        `Lock STRK and earn platform fees and penalty fees in unlocked STRK.`,
         `The lock date are grouped by the week. Any lock between Thursday 00:00 UTC to Wednesday 23:59 UTC are grouped in the same week group, and will release at the same time four(4) weeks later.`,
         `Locked STRK will continue to earn fees after the locks expire if you do not withdraw.`
       ],
@@ -612,21 +625,26 @@ const Vault = () => {
                 <div className="flex space-between mb-3">
                   <div className="flex">
                     <p className="title mr-1">{e.name}</p>
+                    <Tooltip
+                      placement="right"
+                      title={
+                        <div className="mb-2">
+                          {e.text.map((it, i) => (
+                            <>
+                              <p key={i} className="lock-text">
+                                {it}
+                              </p>
+                              <br />
+                            </>
+                          ))}
+                        </div>
+                      }
+                    >
+                      <SQuestion src={IconQuestion} />
+                    </Tooltip>
                   </div>
                   <div className="APR">APR {e.apr}</div>
                 </div>
-                {e.text && (
-                  <div className="mb-2">
-                    {e.text.map((it, i) => (
-                      <>
-                        <p key={i} className="lock-text">
-                          {it}
-                        </p>
-                        <br />
-                      </>
-                    ))}
-                  </div>
-                )}
                 <div className="input-bg mb-2">
                   <div className="flex align-center space-between balance_row">
                     <p className="amount">Amount</p>
@@ -709,6 +727,59 @@ const Vault = () => {
                 </button>
               </div>
             ))}
+
+            <div className="container">
+              <div className="flex space-between mb">
+                <p className="title">Claimable Fees</p>
+                <p className="value">
+                  <span className="span-total">Total</span>{' '}
+                  {fees.length >= 2
+                    ? fees[0]
+                        .div(1e18)
+                        .times(strkPrice)
+                        .plus(fees[1].div(1e6).times(1))
+                        .toNumber()
+                        .toLocaleString('en-US', { maximumFractionDigits: 3 })
+                    : 0}{' '}
+                  $
+                </p>
+              </div>
+              <div className="fee_list input-bg mb-2">
+                {fees.map((e, index) => (
+                  <div key={e} className="flex align-center space-between">
+                    <div className="flex align-center">
+                      <img
+                        src={['coins/strk.png', 'coins/usdc.png'][index]}
+                        alt=""
+                        className="mr-1 max-20"
+                      />
+                      <p1>{['STRK', 'USDC'][index]}</p1>
+                    </div>
+                    <p1>
+                      {e
+                        .div(index === 1 ? 1e6 : 1e18)
+                        .toNumber()
+                        .toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                    </p1>
+                  </div>
+                ))}
+              </div>
+              <p className="link text-right" onClick={getReward}>
+                Claim All{' '}
+                <svg
+                  width="6"
+                  height="9"
+                  viewBox="0 0 6 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5.9992 3.15029C5.99428 3.02059 5.93827 2.89776 5.84394 2.80736L3.34808 0.342936L2.99728 0L2.64648 0.342936L0.15062 2.80736C-0.0468874 3.00192 -0.050818 3.3193 0.142759 3.51779C0.336336 3.7153 0.654706 3.71923 0.852213 3.52467L2.49811 1.89548L2.49811 8.15774C2.49516 8.33756 2.58949 8.50461 2.74573 8.59501C2.90098 8.68639 3.09358 8.68639 3.24883 8.59501C3.40409 8.50461 3.4994 8.33756 3.49645 8.15774L3.49645 1.89548L5.14137 3.52467C5.28679 3.67501 5.50887 3.72021 5.70146 3.63669C5.89209 3.55218 6.01099 3.35959 5.9992 3.15029Z"
+                    fill="#0074FF"
+                  />
+                </svg>
+              </p>
+            </div>
           </div>
 
           <div className="col">
@@ -882,58 +953,6 @@ const Vault = () => {
                   </div>
                 )}
               </div>
-            </div>
-            <div className="container">
-              <div className="flex space-between mb">
-                <p className="title">Claimable Fees</p>
-                <p className="value">
-                  <span className="span-total">Total</span>{' '}
-                  {fees.length >= 2
-                    ? fees[0]
-                        .div(1e18)
-                        .times(strkPrice)
-                        .plus(fees[1].div(1e6).times(1))
-                        .toNumber()
-                        .toLocaleString('en-US', { maximumFractionDigits: 3 })
-                    : 0}{' '}
-                  $
-                </p>
-              </div>
-              <div className="fee_list input-bg mb-2">
-                {fees.map((e, index) => (
-                  <div key={e} className="flex align-center space-between">
-                    <div className="flex align-center">
-                      <img
-                        src={['coins/strk.png', 'coins/usdc.png'][index]}
-                        alt=""
-                        className="mr-1 max-20"
-                      />
-                      <p1>{['STRK', 'USDC'][index]}</p1>
-                    </div>
-                    <p1>
-                      {e
-                        .div(index === 1 ? 1e6 : 1e18)
-                        .toNumber()
-                        .toLocaleString('en-US', { maximumFractionDigits: 2 })}
-                    </p1>
-                  </div>
-                ))}
-              </div>
-              <p className="link text-right" onClick={getReward}>
-                Claim All{' '}
-                <svg
-                  width="6"
-                  height="9"
-                  viewBox="0 0 6 9"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5.9992 3.15029C5.99428 3.02059 5.93827 2.89776 5.84394 2.80736L3.34808 0.342936L2.99728 0L2.64648 0.342936L0.15062 2.80736C-0.0468874 3.00192 -0.050818 3.3193 0.142759 3.51779C0.336336 3.7153 0.654706 3.71923 0.852213 3.52467L2.49811 1.89548L2.49811 8.15774C2.49516 8.33756 2.58949 8.50461 2.74573 8.59501C2.90098 8.68639 3.09358 8.68639 3.24883 8.59501C3.40409 8.50461 3.4994 8.33756 3.49645 8.15774L3.49645 1.89548L5.14137 3.52467C5.28679 3.67501 5.50887 3.72021 5.70146 3.63669C5.89209 3.55218 6.01099 3.35959 5.9992 3.15029Z"
-                    fill="#0074FF"
-                  />
-                </svg>
-              </p>
             </div>
           </div>
         </div>
