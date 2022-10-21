@@ -228,7 +228,7 @@ const menu = (
     <Menu.Item key="0">
       <NavLink
         className="flex flex-start align-center"
-        to="/vault"
+        to="/staking"
         activeClassName="active"
       >
         <Label>Staking</Label>
@@ -237,7 +237,7 @@ const menu = (
     <Menu.Item key="0">
       <NavLink
         className="flex flex-start align-center"
-        to="/staking"
+        to="/vault"
         activeClassName="active"
       >
         <Label>DeFi Vault 3.0</Label>
@@ -1002,7 +1002,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           <>
             <NavLink
               className="flex flex-start align-center"
-              to="/vault"
+              to="/staking"
               activeClassName="active"
             >
               <Label>Staking</Label>
@@ -1016,7 +1016,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             </NavLink>
             <NavLink
               className="flex flex-start align-center"
-              to="/staking"
+              to="/vault"
               activeClassName="active"
             >
               <Label>DeFi Vault 3.0</Label>
