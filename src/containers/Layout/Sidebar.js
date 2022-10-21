@@ -275,14 +275,14 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       accountLoading: true
     });
     if (netId) {
-      if (netId === 1 || netId === 3) {
-        if (netId === 3 && process.env.REACT_APP_ENV === 'prod') {
+      if (netId === 1 || netId === 5) {
+        if (netId === 5 && process.env.REACT_APP_ENV === 'prod') {
           message.error(
-            'You are currently visiting the Ropsten Test Network for Strike Finance. Please change your metamask to access the Ethereum Mainnet.'
+            'You are currently visiting the Goerli Test Network for Strike Finance. Please change your metamask to access the Ethereum Mainnet.'
           );
         } else if (netId === 1 && process.env.REACT_APP_ENV === 'dev') {
           message.error(
-            'You are currently visiting the Main Network for Strike Finance. Please change your metamask to access the Ropsten Test Network.'
+            'You are currently visiting the Main Network for Strike Finance. Please change your metamask to access the Goerli Test Network.'
           );
         } else {
           setSetting({
