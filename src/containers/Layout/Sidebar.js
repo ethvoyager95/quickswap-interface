@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { compose } from 'recompose';
 import { NavLink, withRouter, useLocation } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { message } from 'antd';
+import { message, Dropdown, Menu, Icon } from 'antd';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import {
@@ -25,6 +25,7 @@ import MetaMaskClass from 'utilities/MetaMask';
 import logoImg from 'assets/img/logo.png';
 import commaNumber from 'comma-number';
 import { checkIsValidNetwork, getBigNumber } from 'utilities/common';
+import useWindowDimensions from 'hooks/useWindowDimensions';
 
 import { check } from 'prettier';
 import { FaBars, FaTimes } from 'react-icons/fa';
@@ -77,6 +78,16 @@ const MainMenu = styled.div`
   align-items: center;
   flex-wrap: wrap;
 
+  .dropdown-link {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--color-text-secondary);
+
+    &:hover {
+      color: var(--color-blue);
+    }
+  }
+
   @media only screen and (max-width: 768px) {
     display: flex;
     flex-direction: column;
@@ -98,7 +109,7 @@ const MainMenu = styled.div`
 
   a {
     padding: 7px;
-    margin-right: 40px;
+    margin-right: 20px;
 
     &:last-child {
       margin-right: 0;
@@ -212,6 +223,38 @@ let metamaskWatcher = null;
 let lockFlag = false;
 const abortController = new AbortController();
 
+const menu = (
+  <Menu>
+    <Menu.Item key="0">
+      <NavLink
+        className="flex flex-start align-center"
+        to="/vault"
+        activeClassName="active"
+      >
+        <Label>Staking</Label>
+      </NavLink>
+    </Menu.Item>
+    <Menu.Item key="0">
+      <NavLink
+        className="flex flex-start align-center"
+        to="/staking"
+        activeClassName="active"
+      >
+        <Label>DeFi Vault 3.0</Label>
+      </NavLink>
+    </Menu.Item>
+    <Menu.Item key="0">
+      <NavLink
+        className="flex flex-start align-center"
+        to="/liquidator"
+        activeClassName="active"
+      >
+        <Label>Liquidator</Label>
+      </NavLink>
+    </Menu.Item>
+  </Menu>
+);
+
 function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
@@ -222,6 +265,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [available, setAvailable] = useState('0');
   const [balance, setBalance] = useState('');
   const location = useLocation();
+  const { width } = useWindowDimensions();
 
   const checkNetwork = () => {
     const netId = window.ethereum.networkVersion
@@ -319,8 +363,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x3';
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: chainId }],
-      })
+        params: [{ chainId: chainId }]
+      });
       tempError = err;
       accounts = [];
       await setSetting({ selectedAddress: null });
@@ -369,7 +413,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           decimals[`${item.id}`].stoken = 8;
           decimals[`${item.id}`].price = 18 + 18 - item.decimals;
         }
-
       } else {
         decimals[`${item.id}`].token = 18;
         decimals[`${item.id}`].stoken = 8;
@@ -437,7 +480,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   useEffect(() => {
     if (window.ethereum) {
-      if (!settings.accountLoading/* && checkIsValidNetwork()*/) {
+      if (!settings.accountLoading /* && checkIsValidNetwork()*/) {
         initSettings();
       }
     }
@@ -532,7 +575,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               isEnabled: false,
               collateral: false,
               percentOfLimit: '0',
-              borrowPaused: true,
+              borrowPaused: true
             };
 
             const tokenDecimal = settings.decimals[item.id].token || 18;
@@ -559,13 +602,23 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
                   reference: 'walletBalance',
                   contractAddress: tokenContract.options.address,
                   abi: tokenContract.options.jsonInterface,
-                  calls: [{ methodName: 'balanceOf', methodParameters: [accountAddress] }]
+                  calls: [
+                    {
+                      methodName: 'balanceOf',
+                      methodParameters: [accountAddress]
+                    }
+                  ]
                 },
                 {
                   reference: 'allowBalance',
                   contractAddress: tokenContract.options.address,
                   abi: tokenContract.options.jsonInterface,
-                  calls: [{ methodName: 'allowance', methodParameters: [accountAddress, asset.stokenAddress] }]
+                  calls: [
+                    {
+                      methodName: 'allowance',
+                      methodParameters: [accountAddress, asset.stokenAddress]
+                    }
+                  ]
                 }
               );
             }
@@ -625,52 +678,92 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
                 reference: 'supplyBalance',
                 contractAddress: sBepContract.options.address,
                 abi: sBepContract.options.jsonInterface,
-                calls: [{ methodName: 'balanceOfUnderlying', methodParameters: [accountAddress] }]
+                calls: [
+                  {
+                    methodName: 'balanceOfUnderlying',
+                    methodParameters: [accountAddress]
+                  }
+                ]
               },
               {
                 reference: 'borrowBalance',
                 contractAddress: sBepContract.options.address,
                 abi: sBepContract.options.jsonInterface,
-                calls: [{ methodName: 'borrowBalanceCurrent', methodParameters: [accountAddress] }]
+                calls: [
+                  {
+                    methodName: 'borrowBalanceCurrent',
+                    methodParameters: [accountAddress]
+                  }
+                ]
               },
               {
                 reference: 'hypotheticalLiquidity',
                 contractAddress: appContract.options.address,
                 abi: appContract.options.jsonInterface,
-                calls: [{ methodName: 'getHypotheticalAccountLiquidity', methodParameters: [accountAddress, asset.stokenAddress, totalBalance, 0] }]
+                calls: [
+                  {
+                    methodName: 'getHypotheticalAccountLiquidity',
+                    methodParameters: [
+                      accountAddress,
+                      asset.stokenAddress,
+                      totalBalance,
+                      0
+                    ]
+                  }
+                ]
               },
               {
                 reference: 'borrowGuardianPaused',
                 contractAddress: appContract.options.address,
                 abi: appContract.options.jsonInterface,
-                calls: [{ methodName: 'borrowGuardianPaused', methodParameters: [asset.stokenAddress] }]
+                calls: [
+                  {
+                    methodName: 'borrowGuardianPaused',
+                    methodParameters: [asset.stokenAddress]
+                  }
+                ]
               }
             );
 
             const results = await multicall.call(contractCallContext);
             // console.log(`${item.id} =`, results);
 
-            let walletBalance = new BigNumber(0)
-            let allowBalance = new BigNumber(0)
-            const supplyBalance = results.results.supplyBalance.callsReturnContext[0].returnValues[0].hex
-            const borrowBalance = results.results.borrowBalance.callsReturnContext[0].returnValues[0].hex
-            const hypotheticalLiquidity = results.results.hypotheticalLiquidity.callsReturnContext[0].returnValues
-            const borrowGuardianPaused = results.results.borrowGuardianPaused.callsReturnContext[0].returnValues[0]
+            let walletBalance = new BigNumber(0);
+            let allowBalance = new BigNumber(0);
+            const supplyBalance =
+              results.results.supplyBalance.callsReturnContext[0]
+                .returnValues[0].hex;
+            const borrowBalance =
+              results.results.borrowBalance.callsReturnContext[0]
+                .returnValues[0].hex;
+            const hypotheticalLiquidity =
+              results.results.hypotheticalLiquidity.callsReturnContext[0]
+                .returnValues;
+            const borrowGuardianPaused =
+              results.results.borrowGuardianPaused.callsReturnContext[0]
+                .returnValues[0];
 
             if (item.id !== 'eth') {
-              walletBalance = results.results.walletBalance.callsReturnContext[0].returnValues[0].hex
-              allowBalance = results.results.allowBalance.callsReturnContext[0].returnValues[0].hex
+              walletBalance =
+                results.results.walletBalance.callsReturnContext[0]
+                  .returnValues[0].hex;
+              allowBalance =
+                results.results.allowBalance.callsReturnContext[0]
+                  .returnValues[0].hex;
 
-              asset.walletBalance = new BigNumber(walletBalance).div(new BigNumber(10).pow(tokenDecimal))
+              asset.walletBalance = new BigNumber(walletBalance).div(
+                new BigNumber(10).pow(tokenDecimal)
+              );
               asset.isEnabled = new BigNumber(allowBalance)
                 .div(new BigNumber(10).pow(tokenDecimal))
                 .isGreaterThan(asset.walletBalance);
             } else if (window.ethereum) {
-              walletBalance = await window.web3.eth.getBalance(accountAddress)
-              asset.walletBalance = new BigNumber(walletBalance).div(new BigNumber(10).pow(tokenDecimal))
+              walletBalance = await window.web3.eth.getBalance(accountAddress);
+              asset.walletBalance = new BigNumber(walletBalance).div(
+                new BigNumber(10).pow(tokenDecimal)
+              );
               asset.isEnabled = true;
             }
-
 
             asset.supplyBalance = new BigNumber(supplyBalance).div(
               new BigNumber(10).pow(tokenDecimal)
@@ -685,11 +778,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             ).isZero()
               ? '0'
               : asset.borrowBalance
-                .times(asset.tokenPrice)
-                .div(settings.totalBorrowLimit)
-                .times(100)
-                .dp(0, 1)
-                .toString(10);
+                  .times(asset.tokenPrice)
+                  .div(settings.totalBorrowLimit)
+                  .times(100)
+                  .dp(0, 1)
+                  .toString(10);
 
             asset.hypotheticalLiquidity = hypotheticalLiquidity;
 
@@ -898,20 +991,38 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         >
           <Label>History</Label>
         </NavLink>
-        <NavLink
-          className="flex flex-start align-center"
-          to="/vault"
-          activeClassName="active"
-        >
-          <Label>Staking</Label>
-        </NavLink>
-        <NavLink
-          className="flex flex-start align-center"
-          to="/liquidator"
-          activeClassName="active"
-        >
-          <Label>Liquidator</Label>
-        </NavLink>
+        {!isMenuOpen && width < 1600 && (
+          <Dropdown overlay={menu} trigger={['click']}>
+            <a className="dropdown-link" onClick={e => e.preventDefault()}>
+              Earning <Icon type="down" />
+            </a>
+          </Dropdown>
+        )}
+        {(width >= 1600 || isMenuOpen) && (
+          <>
+            <NavLink
+              className="flex flex-start align-center"
+              to="/vault"
+              activeClassName="active"
+            >
+              <Label>Staking</Label>
+            </NavLink>
+            <NavLink
+              className="flex flex-start align-center"
+              to="/liquidator"
+              activeClassName="active"
+            >
+              <Label>Liquidator</Label>
+            </NavLink>
+            <NavLink
+              className="flex flex-start align-center"
+              to="/staking"
+              activeClassName="active"
+            >
+              <Label>DeFi Vault 3.0</Label>
+            </NavLink>
+          </>
+        )}
         {process.env.REACT_APP_ENV === 'dev' && (
           <NavLink
             className="flex flex-start align-center"
@@ -921,13 +1032,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             <Label>Faucet</Label>
           </NavLink>
         )}
-        <NavLink
-          className="flex flex-start align-center"
-          to="/staking"
-          activeClassName="active"
-        >
-          <Label>DeFi Vault 3.0</Label>
-        </NavLink>
         {settings.selectedAddress && (
           <UserInfoButton>
             <Button
