@@ -136,15 +136,23 @@ export const CONTRACT_TOKEN_ADDRESS =
           asset: uni,
           sasset: suni
           // decimals: 18
+        },
+        ape: {
+          id: 'ape',
+          symbol: 'APE',
+          address: process.env.REACT_APP_TEST_APE_TOKEN_ADDRESS,
+          asset: ape,
+          sasset: sape,
+          decimals: 18
+        },
+        sxp: {
+          id: 'sxp',
+          symbol: 'SXP',
+          address: process.env.REACT_APP_TEST_SXP_TOKEN_ADDRESS,
+          asset: sxp,
+          sasset: ssxp,
+          decimals: 18
         }
-        // ape: {
-        //   id: 'ape',
-        //   symbol: 'APE',
-        //   address: process.env.REACT_APP_TEST_APE_TOKEN_ADDRESS,
-        //   asset: ape,
-        //   sasset: sape,
-        //   decimals: 18
-        // },
         // ust: {
         //   id: 'ust',
         //   symbol: 'UST',
@@ -333,12 +341,17 @@ export const CONTRACT_SBEP_ADDRESS =
           id: 'uni',
           symbol: 'sUNI',
           address: process.env.REACT_APP_TEST_UNI_SBEP_ADDRESS
+        },
+        ape: {
+          id: 'ape',
+          symbol: 'sAPE',
+          address: process.env.REACT_APP_TEST_APE_SBEP_ADDRESS
+        },
+        sxp: {
+          id: 'sxp',
+          symbol: 'sSXP',
+          address: process.env.REACT_APP_TEST_SXP_SBEP_ADDRESS
         }
-        // ape: {
-        //   id: 'ape',
-        //   symbol: 'sAPE',
-        //   address: process.env.REACT_APP_TEST_APE_SBEP_ADDRESS
-        // },
         // ust: {
         //   id: 'ust',
         //   symbol: 'sUST',
