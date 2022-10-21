@@ -353,7 +353,6 @@ const Vault = () => {
 
   const totalLocked = new BigNumber(0);
   const totalStaked = new BigNumber(0);
-  const stakeApr = new BigNumber(0);
   const lockApr = new BigNumber(0);
   const unlockedBalance = new BigNumber(0);
   const penaltyAmount = new BigNumber(0);

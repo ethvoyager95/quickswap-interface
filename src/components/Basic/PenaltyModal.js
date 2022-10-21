@@ -19,7 +19,8 @@ const ModalContent = styled.div`
 
   .title {
     position: absolute;
-    font-size: 24.5px;
+    font-size: 22px;
+    font-weight: 600;
     color: var(--color-text-main);
     top: 23px;
     left: 23px;
@@ -31,88 +32,150 @@ const ModalContent = styled.div`
 
   .modal-body {
     margin-top: 80px;
-    color: white;
+    color: var(--color-text-secondary);
     display: flex;
     flex-direction: column;
     font-size: 18px;
-    border-radius: 15px;
-    border: 1px solid #303030;
     width: 100%;
-    padding: 25px;
   }
 
-  .maxValue {
-    width: 100%;
+  .flex {
     display: flex;
-    justify-content: space-between;
   }
 
-  .input {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
+  input {
+    // font-size: 26px;
+    color: var(--color-text-main);
+    background: transparent;
+    border: none;
+
+    &:focus {
+      outline: none;
+    }
+
+    ::placeholder {
+      color: var(--color-text-secondary);
+    }
+  }
+
+  .input-bg {
     padding: 16px;
-    background: #242a3e;
-    border-radius: 8px;
 
-    & div:first-child {
-      display: flex;
-      align-items: center;
-    }
-    & img {
-      margin-right: 10px;
-    }
-    & input {
-      background: transparent;
-      border: none;
-      &:focus {
-        outline: none;
-      }
-      @media (max-width: 768px) {
-        width: 100px;
-      }
-    }
+    background: #f0f0f0;
+    border-radius: 5px;
+  }
 
-    & button {
-      padding: 10px 20px;
-      color: #dcdfea;
+  .max-button {
+    padding: 10px 20px;
+    color: var(--color-blue);
 
-      background: #30374f;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
+    background: #e4e4e4;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+
+    &:hover {
+      color: white;
     }
+  }
+
+  .mb-1 {
+    margin-bottom: 8px;
+  }
+  .mb-2 {
+    margin-bottom: 16px;
+  }
+  .mb-3 {
+    margin-bottom: 24px;
+  }
+  .mr-1 {
+    margin-right: 8px;
+  }
+
+  .mt-1 {
+    margin-top: 10px;
+  }
+
+  .mt-3 {
+    margin-top: 34px;
+  }
+
+  .span- {
+    margin-left: 8px;
+  }
+
+  .value {
+    color: var(--color-text-main);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 140%;
+    letter-spacing: -0.02em;
+  }
+
+  .span-total {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 140%;
+    letter-spacing: -0.02em;
+  }
+
+  .span-strk {
+    color: var(--color-blue);
+  }
+
+  .align-center {
+    align-items: center;
+  }
+
+  .space-between {
+    justify-content: space-between;
+  }
+
+  .balance_row {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-main);
   }
 
   .info {
-    margin-top: 25px;
+    margin-top: 10px;
     display: flex;
     justify-content: space-between;
+    font-size: 14px;
+    font-weight: 500;
+
+    .span-strk {
+      color: var(--color-blue);
+      font-size: 12px;
+    }
+
+    .value {
+      color: var(--color-text-main);
+      font-size: 14px;
+    }
   }
 
   .confirm-btn {
     margin-top: 20px;
     width: 100%;
-    height: 50px;
-    background-color: #7839ee;
-    color: #fbfaff;
+    background-color: var(--color-blue);
+    color: white;
     text-align: center;
     padding: 12px;
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
+    border-radius: 5px;
+
     &:disabled {
-      background-color: #404968 !important;
-      color: #7d89b0;
+      background: #f0f0f0 !important;
+      color: rgba(0, 0, 0, 0.5);
       cursor: not-allowed;
     }
   }
 `;
 
-const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin />;
+// const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin />;
 
 function PenaltyModal({ visible, onCancel }) {
   // const {
@@ -149,7 +212,6 @@ function PenaltyModal({ visible, onCancel }) {
   return (
     <Modal
       className="collateral-confirm-modal"
-      width={800}
       visible={visible}
       onCancel={onCancel}
       footer={null}
@@ -166,16 +228,40 @@ function PenaltyModal({ visible, onCancel }) {
         />
         <p className="title">Claim with penalty</p>
         <div className="modal-body">
-          <div className="maxValue">
-            <p>Amount</p>
-            <p className="desktop-show">
-              Max Claimable: {withdrawableBalance.div(1e18).toFixed(3)} LOAN
-            </p>
-            <p className="mobile-show">
-              {withdrawableBalance.div(1e18).toFixed(3)} LOAN
-            </p>
+          <div className="input-bg mb-2">
+            <div className="flex align-center space-between balance_row">
+              <p className="amount">Amount</p>
+              <p className="balance">
+                Max Claimable {withdrawableBalance.div(1e18).toFixed(3)}{' '}
+                <span className="span-strk">STRK</span>
+              </p>
+            </div>
+            <div className="flex align-center space-between">
+              <div className="flex align-center">
+                <input
+                  placeholder="0.00"
+                  value={claimAmount}
+                  onChange={event => {
+                    if (
+                      !event.target.value.length ||
+                      Number(event.target.value) >= 0
+                    )
+                      setClaimAmount(event.target.value);
+                  }}
+                />
+              </div>
+              <button
+                type="button"
+                className="max-button"
+                onClick={() => {
+                  setClaimAmount(withdrawableBalance.div(1e18).toString(10));
+                }}
+              >
+                MAX
+              </button>
+            </div>
           </div>
-          <div className="input">
+          {/* <div className="input">
             <div>
               <img src="icon.png" alt="" />
               <input
@@ -195,33 +281,46 @@ function PenaltyModal({ visible, onCancel }) {
             >
               MAX
             </button>
+          </div> */}
+          <div className="info">
+            <p>Released STRK (Vested, Staked)</p>
+            <div className="flex">
+              <span className="value">
+                {unlockedBalance.div(1e18).toFixed(3)}
+              </span>
+              <span className="span-strk">&nbsp;STRK</span>
+            </div>
           </div>
           <div className="info">
-            <p className="desktop-show">Released LOAN (Vested, Staked)</p>
-            <p className="mobile-show">Released LOAN</p>
-            <p>{unlockedBalance.div(1e18).toFixed(3)} LOAN</p>
-          </div>
-          <div className="info">
-            <p>Vesting LOAN</p>
-            <p>{totalEarned.div(1e18).toFixed(3)} LOAN</p>
+            <p>Vesting STRK</p>
+            <div className="flex">
+              <span className="value">{totalEarned.div(1e18).toFixed(3)}</span>
+              <span className="span-strk">&nbsp;STRK</span>
+            </div>
           </div>
           <div className="info">
             <p>Early Claimed Penalty</p>
-            <p>
-              {Number(claimAmount) > unlockedBalance.div(1e18).toNumber()
-                ? `-${(
-                    Number(claimAmount) - unlockedBalance.div(1e18).toNumber()
-                  ).toFixed(3)}`
-                : 0}{' '}
-              LOAN
-            </p>
+            <div className="flex">
+              <span className="value">
+                {Number(claimAmount) > unlockedBalance.div(1e18).toNumber()
+                  ? `-${(
+                      Number(claimAmount) - unlockedBalance.div(1e18).toNumber()
+                    ).toFixed(3)}`
+                  : 0}
+              </span>
+              <span className="span-strk">&nbsp;STRK</span>
+            </div>
           </div>
           <div className="info">
             <p>You Will Receive</p>
-            <p>{claimAmount} LOAN</p>
+            <div className="flex">
+              <span className="value">{claimAmount}</span>
+              <span className="span-strk">&nbsp;STRK</span>
+            </div>
           </div>
         </div>
         <button
+          type="button"
           className="confirm-btn"
           onClick={withdraw}
           disabled={
