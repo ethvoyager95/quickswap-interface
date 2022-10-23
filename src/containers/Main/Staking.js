@@ -1,20 +1,22 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import { useWeb3React } from '@web3-react/core';
 import styled from 'styled-components';
 import { Tooltip, message } from 'antd';
 import commaNumber from 'comma-number';
 import MainLayout from 'containers/Layout/MainLayout';
-// import { useBalance } from '../../hooks/useBalance';
-// import {
-//   useStakingData,
-//   useStakeCallback,
-//   useWithdrawCallback,
-//   useGetRewardCallback,
-//   useWithdrawExpiredLocksCallback,
-//   useStrkApproveCallback
-// } from '../../hooks/useStaking';
+import { connectAccount } from 'core';
+import { useBalance } from 'hooks/useBalance';
+import {
+  useStakingData,
+  useStakeCallback,
+  useWithdrawCallback,
+  useGetRewardCallback,
+  useWithdrawExpiredLocksCallback,
+  useStrkApproveCallback
+} from 'hooks/useStaking';
 // import { useMarkets } from 'hooks/useMarkets';
 import PenaltyModal from 'components/Basic/PenaltyModal';
 
@@ -326,64 +328,77 @@ const SQuestion = styled.img`
 
 const format = commaNumber.bindWith(',', '.');
 
-const Vault = () => {
-  //   const {
-  //     totalLocked,
-  //     totalStaked,
-  //     stakeApr,
-  //     lockApr,
-  //     unlockedBalance,
-  //     penaltyAmount,
-  //     locks,
-  //     unlockable,
-  //     fees,
-  //     totalEarned,
-  //     vests
-  //   } = useStakingData();
-  //   const { strkBalance, strkStakingAllowance } = useBalance();
-  //   const { handleStake, pending: stakePending } = useStakeCallback();
-  //   const { handleApprove, pending: approvePending } = useStrkApproveCallback();
-  //   const { handleWithdraw, pending: withdrawPending } = useWithdrawCallback();
-  //   const { handleGetReward, pending: getRewardPending } = useGetRewardCallback();
-  //   const {
-  //     handleWithdrawExpiredLocks,
-  //     pending: withdrawExpiredLocksPending
-  //   } = useWithdrawExpiredLocksCallback();
-  //   const { reserves, strkPrice } = useMarkets();
-
-  const totalLocked = new BigNumber(0);
-  const totalStaked = new BigNumber(0);
-  const lockApr = new BigNumber(0);
-  const unlockedBalance = new BigNumber(0);
-  const penaltyAmount = new BigNumber(0);
-  const locks = [];
-  const unlockable = new BigNumber(0);
-  const fees = [new BigNumber(100.55e18), new BigNumber(200.23e6)];
-  const vests = [];
-  const strkBalance = new BigNumber(0);
-  const strkStakingAllowance = new BigNumber(0);
-  const reserves = new BigNumber(0);
-  const strkPrice = new BigNumber(0);
-
-  const handleStake = () => {};
-  const handleApprove = () => {};
-  const handleWithdraw = () => {};
-  const handleGetReward = () => {};
-  const handleWithdrawExpiredLocks = () => {};
-
-  const stakePending = false;
-  const approvePending = false;
-  const withdrawPending = false;
-  const getRewardPending = false;
-  const withdrawExpiredLocksPending = false;
-
-  const { account } = useWeb3React();
-
+const Staking = ({ settings }) => {
+  const [strkPrice, setStrkPrice] = useState(0);
   const [stakeAmount, setStakeAmount] = useState('');
   const [lockAmount, setLockAmount] = useState('');
   const [lockPending, setLockPending] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const {
+    totalLocked,
+    totalStaked,
+    // stakeApr,
+    lockApr,
+    unlockedBalance,
+    penaltyAmount,
+    locks,
+    unlockable,
+    fees,
+    // totalEarned,
+    vests
+  } = useStakingData(settings.selectedAddress, strkPrice);
+  const { strkBalance, strkStakingAllowance } = useBalance(
+    settings.selectedAddress,
+    false
+  );
+  const { handleStake, pending: stakePending } = useStakeCallback(
+    settings.selectedAddress
+  );
+  const { handleApprove, pending: approvePending } = useStrkApproveCallback(
+    settings.selectedAddress
+  );
+  const { handleWithdraw, pending: withdrawPending } = useWithdrawCallback(
+    settings.selectedAddress
+  );
+  const { handleGetReward, pending: getRewardPending } = useGetRewardCallback(
+    settings.selectedAddress
+  );
+  const {
+    handleWithdrawExpiredLocks,
+    pending: withdrawExpiredLocksPending
+  } = useWithdrawExpiredLocksCallback(settings.selectedAddress);
+
+  // const totalLocked = new BigNumber(0);
+  // const totalStaked = new BigNumber(0);
+  // const lockApr = new BigNumber(0);
+  // const unlockedBalance = new BigNumber(0);
+  // const penaltyAmount = new BigNumber(0);
+  // const locks = [];
+  // const unlockable = new BigNumber(0);
+  // const fees = [new BigNumber(100.55e18), new BigNumber(200.23e6)];
+  // const vests = [];
+  const reserves = 0;
+  // const strkPrice = 0;
+
+  // const handleStake = () => {};
+  // const handleApprove = () => {};
+  // const handleWithdraw = () => {};
+  // const handleGetReward = () => {};
+  // const handleWithdrawExpiredLocks = () => {};
+
+  // const stakePending = false;
+  // const approvePending = false;
+  // const withdrawPending = false;
+  // const getRewardPending = false;
+  // const withdrawExpiredLocksPending = false;
+
+  useEffect(() => {
+    const market = settings.markets.find(
+      ele => ele.underlyingSymbol === 'STRK'
+    );
+    setStrkPrice(Number(market.tokenPrice));
+  }, [settings.markets]);
 
   const isPending = () => {
     if (
@@ -415,7 +430,7 @@ const Vault = () => {
       return;
     }
 
-    if (!account) {
+    if (!settings.selectedAddress) {
       return;
     }
 
@@ -467,7 +482,7 @@ const Vault = () => {
       return;
     }
 
-    if (!account) {
+    if (!settings.selectedAddress) {
       return;
     }
 
@@ -477,7 +492,7 @@ const Vault = () => {
     } else {
       message.error('Something went wrong while claim.');
     }
-  }, [handleWithdraw, unlockedBalance, account]);
+  }, [handleWithdraw, unlockedBalance, settings.selectedAddress]);
 
   const getReward = async () => {
     if (isPending()) {
@@ -697,7 +712,7 @@ const Vault = () => {
                   className={
                     approvePending ||
                     stakePending ||
-                    (account &&
+                    (settings.selectedAddress &&
                       strkBalance.lt(
                         new BigNumber(
                           index === 0 ? stakeAmount : lockAmount
@@ -964,4 +979,11 @@ const Vault = () => {
   );
 };
 
-export default Vault;
+const mapStateToProps = ({ account }) => ({
+  settings: account.setting
+});
+
+export default compose(
+  withRouter,
+  connectAccount(mapStateToProps, null)
+)(Staking);

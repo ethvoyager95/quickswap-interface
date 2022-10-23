@@ -1023,7 +1023,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             </NavLink>
           </>
         )}
-        {process.env.REACT_APP_ENV === 'dev' && (
+        {/* {process.env.REACT_APP_ENV === 'dev' && (
           <NavLink
             className="flex flex-start align-center"
             to="/faucet"
@@ -1031,7 +1031,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           >
             <Label>Faucet</Label>
           </NavLink>
-        )}
+        )} */}
         {settings.selectedAddress && (
           <UserInfoButton>
             <Button
