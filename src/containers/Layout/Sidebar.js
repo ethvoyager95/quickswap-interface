@@ -360,7 +360,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       }
       tempError = null;
     } catch (err) {
-      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x3';
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: chainId }]
@@ -474,7 +474,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         )
       ],
       marketVolumeLog: res.data.marketVolumeLog,
-      dailyStrike: res.data.dailyStrike
+      dailyStrike: res.data.dailyStrike,
+      reserves: res.data.reserves
     });
   };
 

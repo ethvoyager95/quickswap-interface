@@ -369,6 +369,8 @@ const Staking = ({ settings }) => {
     pending: withdrawExpiredLocksPending
   } = useWithdrawExpiredLocksCallback(settings.selectedAddress);
 
+  const reserves = Number(settings.reserves);
+
   // const totalLocked = new BigNumber(0);
   // const totalStaked = new BigNumber(0);
   // const lockApr = new BigNumber(0);
@@ -378,7 +380,7 @@ const Staking = ({ settings }) => {
   // const unlockable = new BigNumber(0);
   // const fees = [new BigNumber(100.55e18), new BigNumber(200.23e6)];
   // const vests = [];
-  const reserves = 0;
+  // const reserves = 0;
   // const strkPrice = 0;
 
   // const handleStake = () => {};
@@ -397,7 +399,9 @@ const Staking = ({ settings }) => {
     const market = settings.markets.find(
       ele => ele.underlyingSymbol === 'STRK'
     );
-    setStrkPrice(Number(market.tokenPrice));
+    if (market) {
+      setStrkPrice(Number(market.tokenPrice));
+    }
   }, [settings.markets]);
 
   const isPending = () => {

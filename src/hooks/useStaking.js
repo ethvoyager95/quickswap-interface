@@ -30,7 +30,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
       {
         reference: 'lockedSupply',
         contractAddress: constants.STAKING_ADDRESS,
-        abi: constants.STAKING_ABI,
+        abi: JSON.parse(constants.STAKING_ABI),
         calls: [
           {
             methodName: 'lockedSupply',
@@ -41,7 +41,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
       {
         reference: 'totalSupply',
         contractAddress: constants.STAKING_ADDRESS,
-        abi: constants.STAKING_ABI,
+        abi: JSON.parse(constants.STAKING_ABI),
         calls: [
           {
             methodName: 'totalSupply',
@@ -52,7 +52,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
       {
         reference: 'rewardDataSTRK',
         contractAddress: constants.STAKING_ADDRESS,
-        abi: constants.STAKING_ABI,
+        abi: JSON.parse(constants.STAKING_ABI),
         calls: [
           {
             methodName: 'rewardData',
@@ -63,7 +63,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
       {
         reference: 'rewardDataUSDC',
         contractAddress: constants.STAKING_ADDRESS,
-        abi: constants.STAKING_ABI,
+        abi: JSON.parse(constants.STAKING_ABI),
         calls: [
           {
             methodName: 'rewardData',
@@ -77,7 +77,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
         {
           reference: 'withdrawableBalance',
           contractAddress: constants.STAKING_ADDRESS,
-          abi: constants.STAKING_ABI,
+          abi: JSON.parse(constants.STAKING_ABI),
           calls: [
             {
               methodName: 'withdrawableBalance',
@@ -88,7 +88,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
         {
           reference: 'unlockedBalance',
           contractAddress: constants.STAKING_ADDRESS,
-          abi: constants.STAKING_ABI,
+          abi: JSON.parse(constants.STAKING_ABI),
           calls: [
             {
               methodName: 'unlockedBalance',
@@ -99,7 +99,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
         {
           reference: 'earnedBalances',
           contractAddress: constants.STAKING_ADDRESS,
-          abi: constants.STAKING_ABI,
+          abi: JSON.parse(constants.STAKING_ABI),
           calls: [
             {
               methodName: 'earnedBalances',
@@ -110,7 +110,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
         {
           reference: 'lockedBalances',
           contractAddress: constants.STAKING_ADDRESS,
-          abi: constants.STAKING_ABI,
+          abi: JSON.parse(constants.STAKING_ABI),
           calls: [
             {
               methodName: 'lockedBalances',
@@ -121,7 +121,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
         {
           reference: 'claimableRewards',
           contractAddress: constants.STAKING_ADDRESS,
-          abi: constants.STAKING_ABI,
+          abi: JSON.parse(constants.STAKING_ABI),
           calls: [
             {
               methodName: 'claimableRewards',
@@ -153,18 +153,22 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
             })
           ]);
         }
+        console.log('data = ', data);
 
-        const totalLockedAmount =
-          data.results.lockedSupply.callsReturnContext[0].returnValues[0].hex;
-        const totalSupplyAmount =
-          data.results.totalSupply.callsReturnContext[0].returnValues[0].hex;
+        const totalLockedAmount = new BigNumber(
+          data.results.lockedSupply.callsReturnContext[0].returnValues[0].hex
+        );
+        const totalSupplyAmount = new BigNumber(
+          data.results.totalSupply.callsReturnContext[0].returnValues[0].hex
+        );
 
         let _lockApr = 0;
         const lockRewardPeriodFinish = Number(
-          data.results.rewardDataSTRK.callsReturnContext[0].returnValues[0]
+          data.results.rewardDataSTRK.callsReturnContext[0].returnValues[0].hex
         );
-        const lockRewardRate =
-          data.results.rewardDataSTRK.callsReturnContext[0].returnValues[1].hex;
+        const lockRewardRate = new BigNumber(
+          data.results.rewardDataSTRK.callsReturnContext[0].returnValues[1].hex
+        );
         if (lockRewardPeriodFinish < moment().unix()) {
           _lockApr = 0;
         } else if (totalLockedAmount.gt(0)) {
@@ -180,10 +184,11 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
           // USDC reward
           const stakingRewardPeriodFinish = Number(
             data.results.rewardDataUSDC.callsReturnContext[0].returnValues[0]
+              .hex
           );
-          const stakingRewardRate =
-            data.results.rewardDataUSDC.callsReturnContext[0].returnValues[1]
-              .hex;
+          const stakingRewardRate = new BigNumber(
+            data.results.rewardDataUSDC.callsReturnContext[0].returnValues[1].hex
+          );
 
           if (stakingRewardPeriodFinish < moment().unix()) {
             _stakingApr = 0;
@@ -210,28 +215,32 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
         const startIndex = 4;
         if (account) {
           setWithdrawableBalance(
-            data.results.withdrawableBalance.callsReturnContext[0]
-              .returnValues[0].hex
+            new BigNumber(
+              data.results.withdrawableBalance.callsReturnContext[0].returnValues[0].hex
+            )
           );
           setPenaltyAmount(
-            data.results.withdrawableBalance.callsReturnContext[0]
-              .returnValues[1].hex
+            new BigNumber(
+              data.results.withdrawableBalance.callsReturnContext[0].returnValues[1].hex
+            )
           );
           setUnlockedBalance(
-            data.results.unlockedBalance.callsReturnContext[0].returnValues[0]
-              .hex
+            new BigNumber(
+              data.results.unlockedBalance.callsReturnContext[0].returnValues[0].hex
+            )
           );
 
           setTotalEarned(
-            data.results.earnedBalances.callsReturnContext[0].returnValues[0]
-              .hex
+            new BigNumber(
+              data.results.earnedBalances.callsReturnContext[0].returnValues[0].hex
+            )
           );
           const _earningsData = [];
           data.results.earnedBalances.callsReturnContext[0].returnValues[1].forEach(
             e => {
               _earningsData.push({
-                amount: new BigNumber(e[0].toString()),
-                unlockTime: e[1].toNumber()
+                amount: new BigNumber(e[0].hex),
+                unlockTime: Number(e[1].hex)
               });
             }
           );
@@ -241,23 +250,37 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
           data.results.lockedBalances.callsReturnContext[0].returnValues[3].forEach(
             e => {
               _locks.push({
-                amount: new BigNumber(e[0].toString()),
-                unlockTime: e[1].toNumber()
+                amount: new BigNumber(e[0].hex),
+                unlockTime: Number(e[1].hex)
               });
             }
           );
           setLocks(_locks);
           setUnlockable(
-            data.results.lockedBalances.callsReturnContext[0].returnValues[1]
-              .hex
+            new BigNumber(
+              data.results.lockedBalances.callsReturnContext[0].returnValues[1].hex
+            )
           );
 
-          setFees([
-            data.results.claimableRewards.callsReturnContext[0]
-              .returnValues[0][0][1].hex,
-            data.results.claimableRewards.callsReturnContext[0]
-              .returnValues[0][1][1].hex
-          ]);
+          if (
+            data.results.claimableRewards.callsReturnContext[0].returnValues
+              .length > 1
+          )
+            setFees([
+              new BigNumber(
+                data.results.claimableRewards.callsReturnContext[0].returnValues[0][0][1].hex
+              ),
+              new BigNumber(
+                data.results.claimableRewards.callsReturnContext[0].returnValues[0][1][1].hex
+              )
+            ]);
+          else
+            setFees([
+              new BigNumber(
+                data.results.claimableRewards.callsReturnContext[0].returnValues[0][1].hex
+              ),
+              new BigNumber(0)
+            ]);
 
           setUnlockedBalance(new BigNumber(_unlockedBalance));
         } else {

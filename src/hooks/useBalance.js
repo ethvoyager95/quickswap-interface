@@ -17,7 +17,7 @@ export const useBalance = (account, forceUpdate) => {
       {
         reference: 'balance',
         contractAddress: constants.CONTRACT_TOKEN_ADDRESS.strk.address,
-        abi: constants.STRK_ABI,
+        abi: JSON.parse(constants.STRK_ABI),
         calls: [
           {
             methodName: 'balanceOf',
@@ -28,7 +28,7 @@ export const useBalance = (account, forceUpdate) => {
       {
         reference: 'allowance',
         contractAddress: constants.CONTRACT_TOKEN_ADDRESS.strk.address,
-        abi: constants.STRK_ABI,
+        abi: JSON.parse(constants.STRK_ABI),
         calls: [
           {
             methodName: 'allowance',
@@ -44,10 +44,14 @@ export const useBalance = (account, forceUpdate) => {
       if (account) {
         const data = await multicall.call(calls);
         setStrkBalance(
-          data.results.balance.callsReturnContext[0].returnValues[0].hex
+          new BigNumber(
+            data.results.balance.callsReturnContext[0].returnValues[0].hex
+          )
         );
         setStrkStakingAllowance(
-          data.results.allowance.callsReturnContext[0].returnValues[0].hex
+          new BigNumber(
+            data.results.allowance.callsReturnContext[0].returnValues[0].hex
+          )
         );
       } else {
         setStrkBalance(new BigNumber(0));
