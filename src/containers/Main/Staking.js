@@ -90,6 +90,25 @@ const VaultContainer = styled.div`
       line-height: 100%;
       color: var(--color-text-main);
     }
+
+    @media only screen and (max-width: 768px) {
+      .subimage {
+        width: 28px;
+        height: 28px;
+      }
+
+      .subtitle {
+        padding-left: 10px;
+        font-size: 13px;
+      }
+
+      .text {
+        font-weight: 600;
+        font-size: 13px;
+        line-height: 100%;
+        color: var(--color-text-main);
+      }
+    }
   }
 
   .claim_row {
@@ -548,11 +567,11 @@ const Staking = ({ settings }) => {
         .toLocaleString('en-US', { maximumFractionDigits: 0 })
     },
     {
-      name: 'Accumulated Fees',
+      name: 'Protocol Reserve',
       img: AccumulatedFeesImg,
       value: `$${reserves.toLocaleString('en-US', {
         maximumFractionDigits: 3
-      })}`
+      })} USD`
     }
   ];
 
@@ -566,7 +585,7 @@ const Staking = ({ settings }) => {
       name: 'Lock STRK',
       text: [
         `Lock STRK and earn platform fees and penalty fees in unlocked STRK.`,
-        `The lock date are grouped by the week. Any lock between Thursday 00:00 UTC to Wednesday 23:59 UTC are grouped in the same week group, and will release at the same time four(4) weeks later.`,
+        `The lock period is 24 weeks`,
         `Locked STRK will continue to earn fees after the locks expire if you do not withdraw.`
       ],
       apr: `${lockApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}%`
@@ -630,7 +649,9 @@ const Staking = ({ settings }) => {
                       <p className="subtitle">{e.name}</p>
                     </div>
                     <div>
-                      <p className="text">{e.value} STRK</p>
+                      <p className="text">
+                        {e.value} {index !== 2 && 'STRK'}
+                      </p>
                     </div>
                   </div>
                   {index !== overview.length - 1 && <div className="divider" />}
