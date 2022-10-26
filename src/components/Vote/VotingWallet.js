@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
-import { Icon } from 'antd';
+import { Tooltip, Icon } from 'antd';
 import { connectAccount } from 'core';
 import Button from '@material-ui/core/Button';
 import commaNumber from 'comma-number';
@@ -17,6 +17,7 @@ import { Card } from 'components/Basic/Card';
 import coinImg from 'assets/img/strike_32.png';
 import { addToken } from 'utilities/common';
 import metaMaskImg from 'assets/img/metamask.png';
+import IconQuestion from 'assets/img/question.png';
 
 const VotingWalletWrapper = styled.div`
   width: 100%;
@@ -138,6 +139,17 @@ const VotingWalletWrapper = styled.div`
   }
 `;
 
+const SQuestion = styled.img`
+  width: 23px;
+  height: 23px;
+  margin-right: 10px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
+    margin-right: 0;
+  }
+`;
+
 let timeStamp = 0;
 const format = commaNumber.bindWith(',', '.');
 
@@ -251,7 +263,23 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
               {settings.selectedAddress && (
                 <div className="flex align-center">
                   <p className="pointer" onClick={handleCollect}>
-                    {isLoading && <Icon type="loading" />} Collect
+                    {isLoading && <Icon type="loading" />} Collect&nbsp;
+                    <Tooltip
+                      placement="bottom"
+                      title={
+                        <span>
+                          Distributed STRK rewards have an 24-week vesting
+                          period. During the vesting period tokens count as
+                          staked tokens and earn platform fees. User must claim
+                          the accumulated STRK rewards on the Rewards page in
+                          order to put them into the 24-week vesting. Rewards
+                          can be claimed during the vesting period for a 50%
+                          penalty fee
+                        </span>
+                      }
+                    >
+                      <SQuestion src={IconQuestion} />
+                    </Tooltip>
                   </p>
                 </div>
               )}

@@ -268,10 +268,10 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
           )
             setFees([
               new BigNumber(
-                data.results.claimableRewards.callsReturnContext[0].returnValues[0][0][1].hex
+                data.results.claimableRewards.callsReturnContext[0].returnValues[0][1].hex
               ),
               new BigNumber(
-                data.results.claimableRewards.callsReturnContext[0].returnValues[0][1][1].hex
+                data.results.claimableRewards.callsReturnContext[0].returnValues[1][1].hex
               )
             ]);
           else

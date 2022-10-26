@@ -1,8 +1,11 @@
 import { useMemo } from 'react';
-import { getSTRKContract, getStakingContract } from 'utilities/ContractService';
+import {
+  getTokenContract,
+  getStakingContract
+} from 'utilities/ContractService';
 
 export const useStrkContract = () => {
-  return useMemo(() => getSTRKContract(), []);
+  return useMemo(() => getTokenContract('strk'), []);
 };
 
 export const useStakingContract = () => {

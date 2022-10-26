@@ -429,7 +429,7 @@ const Staking = ({ settings }) => {
     return false;
   };
 
-  const stake = async (lock = false) => {
+  const stake = async lock => {
     if (isPending()) {
       return;
     }
@@ -681,16 +681,16 @@ const Staking = ({ settings }) => {
                     <div className="flex align-center">
                       <input
                         placeholder="0.00"
-                        value={index === 0 ? stakeAmount : lockAmount}
+                        value={lockAmount}
                         onChange={event => {
+                          // if (
+                          //   index === 0 &&
+                          //   (!event.target.value.length ||
+                          //     Number(event.target.value) >= 0)
+                          // )
+                          //   setStakeAmount(event.target.value);
                           if (
                             index === 0 &&
-                            (!event.target.value.length ||
-                              Number(event.target.value) >= 0)
-                          )
-                            setStakeAmount(event.target.value);
-                          if (
-                            index === 1 &&
                             (!event.target.value.length ||
                               Number(event.target.value) >= 0)
                           )
@@ -702,9 +702,10 @@ const Staking = ({ settings }) => {
                       type="button"
                       className="max-button"
                       onClick={() => {
-                        if (index === 0)
-                          setStakeAmount(strkBalance.div(1e18).toString());
-                        else setLockAmount(strkBalance.div(1e18).toString());
+                        // if (index === 0)
+                        //   setStakeAmount(strkBalance.div(1e18).toString());
+                        // else
+                        setLockAmount(strkBalance.div(1e18).toString());
                       }}
                     >
                       MAX
@@ -717,28 +718,17 @@ const Staking = ({ settings }) => {
                     approvePending ||
                     stakePending ||
                     (settings.selectedAddress &&
-                      strkBalance.lt(
-                        new BigNumber(
-                          index === 0 ? stakeAmount : lockAmount
-                        ).times(1e18)
-                      )) ||
-                    new BigNumber(
-                      Number(index === 0 ? stakeAmount : lockAmount)
-                    ).eq(0)
+                      strkBalance.lt(new BigNumber(lockAmount).times(1e18))) ||
+                    new BigNumber(Number(lockAmount)).eq(0)
                       ? 'button-disable'
                       : 'button'
                   }
                   onClick={() => {
-                    stake(index === 1);
+                    stake(true);
                   }}
                 >
-                  {(index === 0 &&
-                    (stakePending || approvePending) &&
-                    !lockPending) ||
-                  (index === 1 &&
-                    (stakePending || approvePending) &&
-                    lockPending) ? (
-                    <div className="loader" />
+                  {index === 0 && approvePending && lockPending ? (
+                    <span>Pending...</span>
                   ) : (
                     <>{isApprove() ? 'Approve' : e.name}</>
                   )}
