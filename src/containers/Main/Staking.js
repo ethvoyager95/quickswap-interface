@@ -569,7 +569,7 @@ const Staking = ({ settings }) => {
     {
       name: 'Protocol Reserve',
       img: AccumulatedFeesImg,
-      value: `$${reserves.toLocaleString('en-US', {
+      value: `${reserves.toLocaleString('en-US', {
         maximumFractionDigits: 3
       })} USD`
     }
@@ -770,12 +770,12 @@ const Staking = ({ settings }) => {
                         .toNumber()
                         .toLocaleString('en-US', { maximumFractionDigits: 3 })
                     : 0}{' '}
-                  $
+                  USD
                 </p>
               </div>
               <div className="fee_list input-bg mb-2">
                 {fees.map((e, index) => (
-                  <div key={e} className="flex align-center space-between">
+                  <div key={index} className="flex align-center space-between">
                     <div className="flex align-center">
                       <img
                         src={['coins/strk.png', 'coins/usdc.png'][index]}
@@ -877,9 +877,9 @@ const Staking = ({ settings }) => {
                       </p1>{' '}
                       <p1>STRK</p1>
                     </div>
-                    <p1 className="mobile-show">
+                    {/* <p1 className="mobile-show">
                       {moment.unix(e.unlockTime).format('DD/MM HH:mm')}
-                    </p1>
+                    </p1> */}
                     <p1 className="desktop-show">
                       Expired at{' '}
                       {moment.unix(e.unlockTime).format('DD/MM/YYYY HH:mm:ss')}
@@ -947,9 +947,9 @@ const Staking = ({ settings }) => {
                       </p1>{' '}
                       <p1>STRK</p1>
                     </div>
-                    <p1 className="mobile-show">
+                    {/* <p1 className="mobile-show">
                       {moment.unix(e.unlockTime).format('DD/MM HH:mm')}
-                    </p1>
+                    </p1> */}
                     <p1 className="desktop-show">
                       Expired at{' '}
                       {moment.unix(e.unlockTime).format('DD/MM/YYYY HH:mm:ss')}
