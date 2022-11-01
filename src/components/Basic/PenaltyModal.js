@@ -270,12 +270,7 @@ function PenaltyModal({ visible, onCancel, settings }) {
                 type="button"
                 className="max-button"
                 onClick={() => {
-                  setClaimAmount(
-                    withdrawableBalance
-                      .minus(1)
-                      .div(1e18)
-                      .toString(10)
-                  );
+                  setClaimAmount(withdrawableBalance.div(1e18).toString(10));
                 }}
               >
                 MAX

@@ -64,6 +64,12 @@ const VaultContainer = styled.div`
     margin-bottom: 20px;
   }
 
+  .scroll-div {
+    max-height: 125px;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
   .info_row {
     display: flex;
     align-items: center;
@@ -316,7 +322,7 @@ const VaultContainer = styled.div`
 
   .lock-text {
     font-weight: 500;
-    font-size: 16px;
+    font-size: 13px;
     line-height: 22px;
   }
 
@@ -584,8 +590,8 @@ const Staking = ({ settings }) => {
     {
       name: 'Lock STRK',
       text: [
-        `Lock STRK and earn platform fees and penalty fees in unlocked STRK.`,
-        `The lock period is 24 weeks`,
+        `Lock STRK and earn platform revenue and penalty fees in unlocked STRK.`,
+        `The lock period is 24 weeks.`,
         `Locked STRK will continue to earn fees after the locks expire if you do not withdraw.`
       ],
       apr: `${lockApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}%`
@@ -664,7 +670,7 @@ const Staking = ({ settings }) => {
                 <div className="flex space-between mb-3">
                   <div className="flex">
                     <p className="title mr-1">{e.name}</p>
-                    <Tooltip
+                    {/* <Tooltip
                       placement="right"
                       title={
                         <div className="mb-2">
@@ -680,9 +686,19 @@ const Staking = ({ settings }) => {
                       }
                     >
                       <SQuestion src={IconQuestion} />
-                    </Tooltip>
+                    </Tooltip> */}
                   </div>
                   <div className="APR">APR {e.apr}</div>
+                </div>
+                <div className="mb-1">
+                  {e.text.map((it, i) => (
+                    <>
+                      <span key={i} className="lock-text">
+                        {it}
+                      </span>
+                      <br />
+                    </>
+                  ))}
                 </div>
                 <div className="input-bg mb-2">
                   <div className="flex align-center space-between balance_row">
@@ -858,11 +874,11 @@ const Staking = ({ settings }) => {
                   <span className="span-strk">STRK</span>
                 </p>
               </div>
-              <div className="border flex flex-column center">
+              <div className="border flex flex-column center input-bg scroll-div">
                 {vests.map((e, index) => (
                   <div
                     key={e}
-                    className={`flex align-center space-between input-bg ${index <
+                    className={`flex align-center space-between ${index <
                       vests.length - 1 && 'mb-2'}`}
                   >
                     <div className="flex align-center">
@@ -928,11 +944,11 @@ const Staking = ({ settings }) => {
                   <span className="span-strk">STRK</span>
                 </p>
               </div>
-              <div className="border flex flex-column center">
+              <div className="border flex flex-column center input-bg scroll-div">
                 {locks.map((e, index) => (
                   <div
                     key={e}
-                    className={`flex align-center space-between input-bg ${index <
+                    className={`flex align-center space-between ${index <
                       locks.length - 1 && 'mb-2'}`}
                   >
                     <div className="flex align-center">
