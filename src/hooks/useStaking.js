@@ -144,7 +144,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
         let _unlockedBalance;
 
         if (!account) {
-          data = await multicall();
+          data = await multicall.call(calls);
         } else {
           [data, _unlockedBalance] = await Promise.all([
             multicall.call(calls),

@@ -550,14 +550,14 @@ const Staking = ({ settings }) => {
   }, [handleWithdrawExpiredLocks, unlockable]);
 
   const overview = [
-    {
-      name: 'Total STRK Staked',
-      img: TotalStakedImg,
-      value: totalStaked
-        .div(1e18)
-        .toNumber()
-        .toLocaleString('en-US', { maximumFractionDigits: 0 })
-    },
+    // {
+    //   name: 'Total STRK Staked',
+    //   img: TotalStakedImg,
+    //   value: totalStaked
+    //     .div(1e18)
+    //     .toNumber()
+    //     .toLocaleString('en-US', { maximumFractionDigits: 0 })
+    // },
     {
       name: 'Total STRK Locked',
       img: TotalLockedImg,
@@ -650,7 +650,7 @@ const Staking = ({ settings }) => {
                     </div>
                     <div>
                       <p className="text">
-                        {e.value} {index !== 2 && 'STRK'}
+                        {e.value} {index === 0 && 'STRK'}
                       </p>
                     </div>
                   </div>

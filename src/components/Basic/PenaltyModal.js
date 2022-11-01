@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal, Icon, message } from 'antd';
 import BigNumber from 'bignumber.js';
-// import { useStakingData, useWithdrawCallback } from 'hooks/useStaking';
+import { connectAccount } from 'core';
+import { useStakingData, useWithdrawCallback } from 'hooks/useStaking';
 import closeImg from 'assets/img/close.png';
 
 const ModalContent = styled.div`
@@ -177,20 +180,33 @@ const ModalContent = styled.div`
 
 // const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin />;
 
-function PenaltyModal({ visible, onCancel }) {
-  // const {
-  //   unlockedBalance,
-  //   totalEarned,
-  //   withdrawableBalance
-  // } = useStakingData();
+function PenaltyModal({ visible, onCancel, settings }) {
+  const [strkPrice, setStrkPrice] = useState(0);
 
-  const unlockedBalance = new BigNumber(0);
-  const totalEarned = new BigNumber(0);
-  const withdrawableBalance = new BigNumber(0);
+  useEffect(() => {
+    const market = settings.markets.find(
+      ele => ele.underlyingSymbol === 'STRK'
+    );
+    if (market) {
+      setStrkPrice(Number(market.tokenPrice));
+    }
+  }, [settings.markets]);
 
-  // const { handleWithdraw, pending } = useWithdrawCallback();
-  const handleWithdraw = () => {};
-  const pending = false;
+  const { unlockedBalance, totalEarned, withdrawableBalance } = useStakingData(
+    settings.selectedAddress,
+    strkPrice
+  );
+
+  const { handleWithdraw, pending } = useWithdrawCallback(
+    settings.selectedAddress
+  );
+
+  // const unlockedBalance = new BigNumber(0);
+  // const totalEarned = new BigNumber(0);
+  // const withdrawableBalance = new BigNumber(0);
+
+  // const handleWithdraw = () => {};
+  // const pending = false;
 
   const [claimAmount, setClaimAmount] = React.useState('');
 
@@ -254,7 +270,12 @@ function PenaltyModal({ visible, onCancel }) {
                 type="button"
                 className="max-button"
                 onClick={() => {
-                  setClaimAmount(withdrawableBalance.div(1e18).toString(10));
+                  setClaimAmount(
+                    withdrawableBalance
+                      .minus(1)
+                      .div(1e18)
+                      .toString(10)
+                  );
                 }}
               >
                 MAX
@@ -346,4 +367,11 @@ PenaltyModal.defaultProps = {
   onCancel: () => {}
 };
 
-export default PenaltyModal;
+const mapStateToProps = ({ account }) => ({
+  settings: account.setting
+});
+
+export default compose(
+  withRouter,
+  connectAccount(mapStateToProps, null)
+)(PenaltyModal);
