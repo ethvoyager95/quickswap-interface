@@ -341,12 +341,12 @@ const VaultContainer = styled.div`
 `;
 
 const SQuestion = styled.img`
-  width: 23px;
-  height: 23px;
-  margin-right: 10px;
+  width: 23px !important;
+  height: 23px !important;
+  margin-left: 10px;
   @media only screen and (max-width: 768px) {
-    width: 15px;
-    height: 15px;
+    width: 15px !important;
+    height: 15px !important;
     margin-right: 0;
   }
 `;
@@ -371,7 +371,8 @@ const Staking = ({ settings }) => {
     unlockable,
     fees,
     // totalEarned,
-    vests
+    vests,
+    strkEmission
   } = useStakingData(settings.selectedAddress, strkPrice);
   const { strkBalance, strkStakingAllowance } = useBalance(
     settings.selectedAddress,
@@ -578,6 +579,14 @@ const Staking = ({ settings }) => {
       value: `${reserves.toLocaleString('en-US', {
         maximumFractionDigits: 3
       })} USD`
+    },
+    {
+      name: 'Penalty STRK Emission',
+      img: TotalStakedImg,
+      value: `${strkEmission
+        .div(1e18)
+        .toNumber()
+        .toLocaleString('en-US', { maximumFractionDigits: 3 })}`
     }
   ];
 
@@ -653,10 +662,24 @@ const Staking = ({ settings }) => {
                     <div>
                       <img className="subimage" src={e.img} alt={e.name} />
                       <p className="subtitle">{e.name}</p>
+                      {index === 2 && (
+                        <Tooltip
+                          placement="right"
+                          title={
+                            <div className="mb-2">
+                              This means the STRK emission per second at which
+                              penalized STRKs are distributed to STRK lock
+                              users.
+                            </div>
+                          }
+                        >
+                          <SQuestion src={IconQuestion} />
+                        </Tooltip>
+                      )}
                     </div>
                     <div>
                       <p className="text">
-                        {e.value} {index === 0 && 'STRK'}
+                        {e.value} {index === 0 && 'STRK'}{' '}
                       </p>
                     </div>
                   </div>

@@ -22,6 +22,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
   const [locks, setLocks] = useState([]);
   const [unlockable, setUnlockable] = useState(new BigNumber(0));
   const [fees, setFees] = useState([]);
+  const [strkEmission, setStrkEmission] = useState(new BigNumber(0));
 
   const { fastRefresh } = useRefresh();
 
@@ -211,6 +212,11 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
         setTotalStaked(totalSupplyAmount.minus(totalLockedAmount));
         setLockApr(_lockApr);
         setStakeApr(_stakingApr);
+        setStrkEmission(
+          new BigNumber(
+            data.results.rewardDataSTRK.callsReturnContext[0].returnValues[1].hex
+          )
+        );
 
         const startIndex = 4;
         if (account) {
@@ -311,7 +317,8 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
     vests,
     locks,
     unlockable,
-    fees
+    fees,
+    strkEmission
   };
 };
 
