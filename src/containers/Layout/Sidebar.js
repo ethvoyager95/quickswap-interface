@@ -18,6 +18,7 @@ import { promisify } from 'utilities';
 import * as constants from 'utilities/constants';
 import ConnectModal from 'components/Basic/ConnectModal';
 import UserInfoModal from 'components/Basic/UserInfoModal';
+import AccountModal from 'components/Basic/AccountModal';
 import { Label } from 'components/Basic/Label';
 import Button from '@material-ui/core/Button';
 import { connectAccount, accountActionCreators } from 'core';
@@ -215,6 +216,7 @@ const abortController = new AbortController();
 function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
+  const [isOpenAccountModal, setIsOpenAccountModal] = useState(false);
   const [error, setError] = useState('');
   const [web3, setWeb3] = useState(null);
   const [awaiting, setAwaiting] = useState(false);
@@ -827,13 +829,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     }
   }, []);
 
-  const handleLink = () => {
-    window.open(
-      `${process.env.REACT_APP_ETH_EXPLORER}/address/${settings.selectedAddress}`,
-      '_blank'
-    );
-  };
-
   const updateBalance = async () => {
     if (window.ethereum && checkIsValidNetwork() && settings.selectedAddress) {
       const strkTokenContract = getTokenContract('strk');
@@ -937,7 +932,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             <Button
               className="connect-btn"
               onClick={() => {
-                handleLink();
+                setIsOpenAccountModal(true);
               }}
             >
               {`${settings.selectedAddress.substr(
@@ -959,13 +954,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             </Button>
           )}
         </ConnectButton>
-        {settings.selectedAddress && (
+        {/* {settings.selectedAddress && (
           <UserInfoButton>
             <Button className="user-info-btn" onClick={handleDisconnect}>
               Disconnect
             </Button>
           </UserInfoButton>
-        )}
+        )} */}
       </MainMenu>
       {/* {settings.selectedAddress && (
         <TotalValue>
@@ -995,6 +990,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         visible={isOpenInfoModal}
         onCancel={() => setIsOpenInfoModal(false)}
         available={available}
+      />
+      <AccountModal
+        visible={isOpenAccountModal}
+        onCancel={() => setIsOpenAccountModal(false)}
+        onDisconnect={() => handleDisconnect()}
       />
     </SidebarWrapper>
   );

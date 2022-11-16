@@ -35,7 +35,7 @@ body {
 // .switch-wrapper > div {
 //     position: absolute;
 // }
-
+.info-modal,
 .connect-modal,
 .collateral-confirm-modal {
     .ant-modal-content {
@@ -45,6 +45,13 @@ body {
             padding: 0;
             border-radius: 5px;
         }
+    }
+}
+
+.info-modal {
+    .ant-modal-content {
+        max-width: 430px;
+        margin: auto;
     }
 }
 
