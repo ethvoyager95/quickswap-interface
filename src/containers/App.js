@@ -16,8 +16,9 @@ import VoteOverview from 'containers/Main/VoteOverview';
 import ProposerDetail from 'containers/Main/ProposerDetail';
 import VoterLeaderboard from 'containers/Main/VoterLeaderboard';
 import Forbidden from 'containers/Main/Forbidden';
+import Staking from 'containers/Main/Staking';
 import Liquidator from 'containers/Main/Liquidator/Liquidator';
-import Staking from 'containers/Main/Staking/Staking';
+import Vault from 'containers/Main/Vault';
 import { ApolloProvider } from 'react-apollo';
 import { client } from '../apollo/client';
 import Theme from './Theme';
@@ -61,8 +62,9 @@ class App extends React.Component {
                   <Route exact path="/market/:asset" component={MarketDetail} />
                   <Route exact path="/forbidden" component={Forbidden} />
                   <Route exact path="/history" component={History} />
-                  <Route exact path="/liquidator" component={Liquidator} />
                   <Route exact path="/staking" component={Staking} />
+                  <Route exact path="/liquidator" component={Liquidator} />
+                  <Route exact path="/vault" component={Vault} />
                   <Route
                     exact
                     path="/vote/leaderboard"

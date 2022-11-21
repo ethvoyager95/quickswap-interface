@@ -142,7 +142,8 @@ const SHrefIcon = styled.img`
 const ChainId = {
   MAINNET: 1,
   ROPSTEN: 3,
-  RINKEBY: 4
+  RINKEBY: 4,
+  GOERLI: 5
 };
 const explorers = {
   etherscan: (link, data, type) => {
@@ -165,6 +166,10 @@ const chains = {
   },
   [ChainId.RINKEBY]: {
     link: 'https://rinkeby.etherscan.io',
+    builder: explorers.etherscan
+  },
+  [ChainId.GOERLI]: {
+    link: 'https://goerli.etherscan.io',
     builder: explorers.etherscan
   }
 };

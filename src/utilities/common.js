@@ -13,7 +13,9 @@ export const encodeParameters = (types, values) => {
 
 export const getArgs = func => {
   // First match everything inside the function argument parens.
-  const args = func.toString().match(/.*?\(([^)]*)\)/) ? func.toString().match(/.*?\(([^)]*)\)/)[1] : '';
+  const args = func.toString().match(/.*?\(([^)]*)\)/)
+    ? func.toString().match(/.*?\(([^)]*)\)/)[1]
+    : '';
   // Split the arguments string into an array comma delimited.
   return args
     .split(',')
@@ -29,10 +31,12 @@ export const getArgs = func => {
 
 export const checkIsValidNetwork = () => {
   if (window.ethereum) {
-    const netId = window.ethereum.networkVersion ? +window.ethereum.networkVersion : +window.ethereum.chainId
+    const netId = window.ethereum.networkVersion
+      ? +window.ethereum.networkVersion
+      : +window.ethereum.chainId;
     if (netId) {
-      if (netId === 1 || netId === 3) {
-        if (netId === 3 && process.env.REACT_APP_ENV === 'prod') {
+      if (netId === 1 || netId === 5) {
+        if (netId === 5 && process.env.REACT_APP_ENV === 'prod') {
           return false;
         }
         if (netId === 1 && process.env.REACT_APP_ENV === 'dev') {
@@ -51,14 +55,19 @@ export const addToken = async (asset, decimal, type) => {
   let tokenSymbol = '';
   let tokenDecimals = 18;
   let tokenImage = '';
-  
+
   tokenAddress =
     type === 'token'
       ? constants.CONTRACT_TOKEN_ADDRESS[asset].address
       : constants.CONTRACT_SBEP_ADDRESS[asset].address;
-  tokenSymbol = type === 'token' ? asset.toUpperCase() : `s${(asset === 'wbtc' ? 'btc' : asset).toUpperCase()}`;
+  tokenSymbol =
+    type === 'token'
+      ? asset.toUpperCase()
+      : `s${(asset === 'wbtc' ? 'btc' : asset).toUpperCase()}`;
   tokenDecimals = decimal || (type === 'token' ? 18 : 8);
-  tokenImage = `${window.location.origin}/coins/${type === 'token' ? asset : `s${asset === 'wbtc' ? 'btc' : asset}`}.png`;
+  tokenImage = `${window.location.origin}/coins/${
+    type === 'token' ? asset : `s${asset === 'wbtc' ? 'btc' : asset}`
+  }.png`;
 
   try {
     // wasAdded is a boolean. Like any RPC method, an error may be thrown.
@@ -97,17 +106,19 @@ export const getBigNumber = value => {
 
 export const currencyFormatter = labelValue => {
   // Nine Zeroes for Billions
-  return Math.abs(Number(labelValue)) >= 1.0e+9
-
-  ? `$${format(new BigNumber(`${Math.abs(Number(labelValue)) / 1.0e+9}`).dp(2, 1))}B`
-  // Six Zeroes for Millions 
-  : Math.abs(Number(labelValue)) >= 1.0e+6
-
-  ? `$${format(new BigNumber(`${Math.abs(Number(labelValue)) / 1.0e+6}`).dp(2, 1))}M`
-  // Three Zeroes for Thousands
-  : Math.abs(Number(labelValue)) >= 1.0e+3
-
-  ? `$${format(new BigNumber(`${Math.abs(Number(labelValue)) / 1.0e+3}`).dp(2, 1))}K`
-
-  : `$${format(new BigNumber(`${Math.abs(Number(labelValue))}`).dp(2, 1))}`;
+  return Math.abs(Number(labelValue)) >= 1.0e9
+    ? `$${format(
+        new BigNumber(`${Math.abs(Number(labelValue)) / 1.0e9}`).dp(2, 1)
+      )}B`
+    : // Six Zeroes for Millions
+    Math.abs(Number(labelValue)) >= 1.0e6
+    ? `$${format(
+        new BigNumber(`${Math.abs(Number(labelValue)) / 1.0e6}`).dp(2, 1)
+      )}M`
+    : // Three Zeroes for Thousands
+    Math.abs(Number(labelValue)) >= 1.0e3
+    ? `$${format(
+        new BigNumber(`${Math.abs(Number(labelValue)) / 1.0e3}`).dp(2, 1)
+      )}K`
+    : `$${format(new BigNumber(`${Math.abs(Number(labelValue))}`).dp(2, 1))}`;
 };

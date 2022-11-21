@@ -1,14 +1,15 @@
 import Web3 from 'web3';
-import {
-  Multicall
-} from 'ethereum-multicall';
+import { Multicall } from 'ethereum-multicall';
 
 import * as constants from './constants';
 
 const instance = new Web3(window.ethereum);
 // const instance = new Web3('http://3.10.133.254:8575');
 
-export const multicall = new Multicall({ web3Instance: instance, tryAggregate: true });
+export const multicall = new Multicall({
+  web3Instance: instance,
+  tryAggregate: true
+});
 
 const TOKEN_ABI = {
   usdc: constants.CONTRACT_USDC_TOKEN_ABI,
@@ -132,6 +133,12 @@ export const getSTRKContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.STRK_ABI),
     constants.STRK_ADDRESS
+  );
+};
+export const getStakingContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.STAKING_ABI),
+    constants.STAKING_ADDRESS
   );
 };
 export const methods = {
