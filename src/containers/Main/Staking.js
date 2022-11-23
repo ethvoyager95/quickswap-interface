@@ -600,7 +600,7 @@ const Staking = ({ settings }) => {
       name: 'Lock STRK',
       text: [
         `Lock STRK and earn platform revenue and penalty fees in unlocked STRK.`,
-        `The lock period is 24 weeks.`,
+        `The lock period is 12 weeks.`,
         `Locked STRK will continue to earn fees after the locks expire if you do not withdraw.`
       ],
       apr: `${lockApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}%`

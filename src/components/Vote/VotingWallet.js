@@ -268,11 +268,11 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
                       placement="bottom"
                       title={
                         <span>
-                          Distributed STRK rewards have an 24-week vesting
+                          Distributed STRK rewards have an 12-week vesting
                           period. During the vesting period tokens count as
                           staked tokens and earn platform fees. User must claim
                           the accumulated STRK rewards on the Rewards page in
-                          order to put them into the 24-week vesting. Rewards
+                          order to put them into the 12-week vesting. Rewards
                           can be claimed during the vesting period for a 50%
                           penalty fee
                         </span>
