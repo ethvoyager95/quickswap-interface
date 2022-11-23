@@ -22,12 +22,20 @@ const HeaderWrapper = styled.div`
     }
   }
 
+  .apr {
+    font-size: 18px;
+  }
+
   @media only screen and (max-width: 768px) {
     display: none;
+
+    .apr {
+      font-size: 15px;
+    }
   }
 `;
 
-function Header({ title, history }) {
+function Header({ title, apr, history }) {
   const handleRoute = () => {
     if (title === 'Overview' || title === 'Details') {
       history.go(-1);
@@ -54,17 +62,20 @@ function Header({ title, history }) {
           {title}
         </p>
       </div>
+      {apr !== '' && <div className="flex align-center apr">APR: {apr}%</div>}
     </HeaderWrapper>
   );
 }
 
 Header.propTypes = {
   title: PropTypes.string,
+  apr: PropTypes.string,
   history: PropTypes.object
 };
 
 Header.defaultProps = {
   title: '',
+  apr: '',
   history: {}
 };
 export default compose(withRouter)(Header);
