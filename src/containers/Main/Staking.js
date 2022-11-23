@@ -50,7 +50,6 @@ const VaultContainer = styled.div`
   }
 
   color: var(--color-text-secondary);
-  width: 99%;
   .flex {
     display: flex;
   }
@@ -372,7 +371,8 @@ const Staking = ({ settings }) => {
     fees,
     // totalEarned,
     vests,
-    strkEmission
+    strkEmission,
+    reserves
   } = useStakingData(settings.selectedAddress, strkPrice);
   const { strkBalance, strkStakingAllowance } = useBalance(
     settings.selectedAddress,
@@ -395,7 +395,7 @@ const Staking = ({ settings }) => {
     pending: withdrawExpiredLocksPending
   } = useWithdrawExpiredLocksCallback(settings.selectedAddress);
 
-  const reserves = Number(settings.reserves);
+  // const reserves = Number(settings.reserves);
 
   // const totalLocked = new BigNumber(0);
   // const totalStaked = new BigNumber(0);
@@ -576,9 +576,9 @@ const Staking = ({ settings }) => {
     {
       name: 'Protocol Reserve',
       img: AccumulatedFeesImg,
-      value: `${reserves.toLocaleString('en-US', {
+      value: `${reserves.toNumber().toLocaleString('en-US', {
         maximumFractionDigits: 3
-      })} USD`
+      })} USDC`
     },
     {
       name: 'Penalty STRK Emission',
@@ -651,7 +651,7 @@ const Staking = ({ settings }) => {
   ];
 
   return (
-    <MainLayout title="Vault">
+    <MainLayout title="Revenue Share Staking" apr={lockApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}>
       <VaultContainer>
         <div className="main-container mt-1 mx-auto gap">
           <div className="col">

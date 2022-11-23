@@ -23,6 +23,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
   const [unlockable, setUnlockable] = useState(new BigNumber(0));
   const [fees, setFees] = useState([]);
   const [strkEmission, setStrkEmission] = useState(new BigNumber(0));
+  const [reserves, setReserves] = useState(new BigNumber(0));
 
   const { fastRefresh } = useRefresh();
 
@@ -69,6 +70,17 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
           {
             methodName: 'rewardData',
             methodParameters: [constants.CONTRACT_TOKEN_ADDRESS.usdc.address]
+          }
+        ]
+      },
+      {
+        reference: 'reservedUSDC',
+        contractAddress: constants.CONTRACT_TOKEN_ADDRESS.usdc.address,
+        abi: JSON.parse(constants.CONTRACT_USDC_TOKEN_ABI),
+        calls: [
+          {
+            methodName: 'balanceOf',
+            methodParameters: [constants.STAKING_ADDRESS]
           }
         ]
       }
@@ -154,7 +166,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
             })
           ]);
         }
-        console.log('data = ', data);
+        // console.log('data = ', data);
 
         const totalLockedAmount = new BigNumber(
           data.results.lockedSupply.callsReturnContext[0].returnValues[0].hex
@@ -216,6 +228,12 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
           new BigNumber(
             data.results.rewardDataSTRK.callsReturnContext[0].returnValues[1].hex
           )
+        );
+
+        setReserves(
+          new BigNumber(
+            data.results.reservedUSDC.callsReturnContext[0].returnValues[0].hex
+          ).div(1e6)
         );
 
         const startIndex = 4;
@@ -318,7 +336,8 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
     locks,
     unlockable,
     fees,
-    strkEmission
+    strkEmission,
+    reserves
   };
 };
 
