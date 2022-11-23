@@ -289,9 +289,18 @@ const VaultContainer = styled.div`
   .value {
     color: var(--color-text-main);
     font-weight: 600;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 140%;
     letter-spacing: -0.02em;
+  }
+
+  .apr {
+    color: var(--color-text-main);
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 140%;
+    letter-spacing: -0.02em;
+    margin-right: 20px;
   }
 
   .span-total {
@@ -362,7 +371,7 @@ const Staking = ({ settings }) => {
   const {
     totalLocked,
     totalStaked,
-    // stakeApr,
+    stakeApr,
     lockApr,
     unlockedBalance,
     penaltyAmount,
@@ -574,7 +583,7 @@ const Staking = ({ settings }) => {
         .toLocaleString('en-US', { maximumFractionDigits: 0 })
     },
     {
-      name: 'Protocol Reserve',
+      name: 'Reserve Vault',
       img: AccumulatedFeesImg,
       value: `${reserves.toNumber().toLocaleString('en-US', {
         maximumFractionDigits: 3
@@ -651,7 +660,10 @@ const Staking = ({ settings }) => {
   ];
 
   return (
-    <MainLayout title="Revenue Share Staking" apr={lockApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}>
+    <MainLayout
+      title="Revenue Share Staking"
+      apr={lockApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+    >
       <VaultContainer>
         <div className="main-container mt-1 mx-auto gap">
           <div className="col">
@@ -886,16 +898,27 @@ const Staking = ({ settings }) => {
             <div className="container">
               <div className="flex space-between mb">
                 <p className="title">STRK Vests</p>
-                <p className="value">
-                  <span className="span-total">Total</span>{' '}
-                  {vests
-                    .reduce(
-                      (total, e) => total + e.amount.div(1e18).toNumber(),
-                      0
-                    )
-                    .toLocaleString('en-US', { maximumFractionDigits: 3 })}{' '}
-                  <span className="span-strk">STRK</span>
-                </p>
+                <div className="flex align-center">
+                  <p className="apr">
+                    APR{' '}
+                    {stakeApr.toLocaleString('en-US', {
+                      maximumFractionDigits: 0
+                    })}
+                    %
+                  </p>
+                  <p className="value">
+                    <span className="span-total">Total</span>{' '}
+                    {vests
+                      .reduce(
+                        (total, e) => total + e.amount.div(1e18).toNumber(),
+                        0
+                      )
+                      .toLocaleString('en-US', {
+                        maximumFractionDigits: 3
+                      })}{' '}
+                    <span className="span-strk">STRK</span>
+                  </p>
+                </div>
               </div>
               <div className="border flex flex-column center input-bg scroll-div">
                 {vests.map((e, index) => (
@@ -956,16 +979,27 @@ const Staking = ({ settings }) => {
             <div className="container">
               <div className="flex space-between mb">
                 <p className="title">STRK Locks</p>
-                <p className="value">
-                  <span className="span-total">Total</span>{' '}
-                  {locks
-                    .reduce(
-                      (total, e) => total + e.amount.div(1e18).toNumber(),
-                      0
-                    )
-                    .toLocaleString('en-US', { maximumFractionDigits: 3 })}{' '}
-                  <span className="span-strk">STRK</span>
-                </p>
+                <div className="flex align-center">
+                  <p className="apr">
+                    APR{' '}
+                    {lockApr.toLocaleString('en-US', {
+                      maximumFractionDigits: 0
+                    })}
+                    %
+                  </p>
+                  <p className="value">
+                    <span className="span-total">Total</span>{' '}
+                    {locks
+                      .reduce(
+                        (total, e) => total + e.amount.div(1e18).toNumber(),
+                        0
+                      )
+                      .toLocaleString('en-US', {
+                        maximumFractionDigits: 3
+                      })}{' '}
+                    <span className="span-strk">STRK</span>
+                  </p>
+                </div>
               </div>
               <div className="border flex flex-column center input-bg scroll-div">
                 {locks.map((e, index) => (
