@@ -50,7 +50,7 @@ const MainLayoutWrapper = styled.div`
   }
 `;
 
-function MainLayout({ title, isHeader, apr, children }) {
+function MainLayout({ title, isHeader, children }) {
   return (
     <MainLayoutWrapper>
       <Row>
@@ -61,7 +61,7 @@ function MainLayout({ title, isHeader, apr, children }) {
           <Row>
             {isHeader && title && (
               <Column xs="12">
-                <Header title={title} apr={apr}/>
+                <Header title={title} />
               </Column>
             )}
             <Column xs="12">
@@ -80,7 +80,6 @@ function MainLayout({ title, isHeader, apr, children }) {
 MainLayout.propTypes = {
   title: PropTypes.string,
   isHeader: PropTypes.bool,
-  apr: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -90,7 +89,6 @@ MainLayout.propTypes = {
 MainLayout.defaultProps = {
   title: '',
   isHeader: true,
-  apr: '',
   children: null
 };
 
