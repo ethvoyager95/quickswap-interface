@@ -30,6 +30,54 @@ const VaultContainer = styled.div`
     width: 100%;
   }
 
+  .header-container {
+    padding: 30px 20px 10px 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    .title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--color-text-main);
+    }
+
+    .info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .item {
+        text-align: center;
+        .label {
+          font-size: 16px;
+          color: #9d9fa7;
+        }
+
+        .value {
+          font-size: 16px;
+          color: var(--color-blue);
+        }
+      }
+    }
+
+    @media (max-width: 1280px) {
+      display: block;
+
+      .title {
+        margin-bottom: 10px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      display: block;
+
+      .info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  }
+
   .main-container {
     padding: 0px 20px;
     @media (min-width: 768px) {
@@ -658,13 +706,55 @@ const Staking = ({ settings }) => {
       handler: withdrawExpiredLocks
     }
   ];
-
+  console.log(strkPrice);
   return (
-    <MainLayout
-      title="Revenue Share Staking"
-      apr={lockApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}
-    >
+    <MainLayout>
       <VaultContainer>
+        <div className="header-container mt-2 mx-auto">
+          <div className="title">Revenue Share Staking</div>
+          <div className="info">
+            <div className="item">
+              <div className="label">Total Locked</div>
+              <div className="value">
+                ${' '}
+                {totalLocked
+                  .div(1e18)
+                  .times(strkPrice)
+                  .toNumber()
+                  .toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              </div>
+            </div>
+            <div className="item">
+              <div className="label">Lock APR</div>
+              <div className="value">
+                {lockApr.toLocaleString('en-US', {
+                  maximumFractionDigits: 0
+                })}
+                %
+              </div>
+            </div>
+            <div className="item">
+              <div className="label">Total Vested</div>
+              <div className="value">
+                ${' '}
+                {totalStaked
+                  .div(1e18)
+                  .times(strkPrice)
+                  .toNumber()
+                  .toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              </div>
+            </div>
+            <div className="item">
+              <div className="label">Vesting APR</div>
+              <div className="value">
+                {stakeApr.toLocaleString('en-US', {
+                  maximumFractionDigits: 0
+                })}
+                %
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="main-container mt-1 mx-auto gap">
           <div className="col">
             <div className="container">
