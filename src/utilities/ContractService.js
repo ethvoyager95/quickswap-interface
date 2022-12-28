@@ -22,7 +22,8 @@ const TOKEN_ABI = {
   comp: constants.CONTRACT_COMP_TOKEN_ABI,
   uni: constants.CONTRACT_UNI_TOKEN_ABI,
   ape: constants.CONTRACT_APE_TOKEN_ABI,
-  ust: constants.CONTRACT_UST_TOKEN_ABI
+  ust: constants.CONTRACT_UST_TOKEN_ABI,
+  dai: constants.CONTRACT_DAI_TOKEN_ABI
 };
 
 const call = (method, params) => {
