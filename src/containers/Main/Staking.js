@@ -706,7 +706,7 @@ const Staking = ({ settings }) => {
       handler: withdrawExpiredLocks
     }
   ];
-  console.log(strkPrice);
+
   return (
     <MainLayout>
       <VaultContainer>
