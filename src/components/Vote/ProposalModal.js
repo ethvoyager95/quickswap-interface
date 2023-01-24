@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Web3 from 'web3';
 import { compose } from 'recompose';
 import { Form, Input, Modal, Icon, Collapse } from 'antd';
 import Button from '@material-ui/core/Button';
@@ -208,7 +209,7 @@ function ProposalModal({
             const callDataValues = [];
             let callDataTypes = [];
             targetAddresses.push(formValues[`targetAddress${i}`]);
-            values.push(0); // Web3.utils.toWei(formValues[`value${i}`], 'ether')
+            values.push(process.env.REACT_APP_ENV === 'dev' ? 0 : Web3.utils.toWei(formValues[`value${i}`], 'ether'));
             signatures.push(formValues[`signature${i}`]);
             callDataTypes = getArgs(formValues[`signature${i}`]);
 
@@ -364,18 +365,20 @@ function ProposalModal({
                         initialValue: f.targetAddress
                       })(<Input placeholder="Address" onKeyUp={() => handleKeyUp('targetAddress', index, null, form.getFieldValue(`targetAddress${index}`))} />)}
                     </Form.Item>
-                    {/* <Form.Item>
-                      {getFieldDecorator(`value${index}`, {
-                        rules: [
-                          { required: true, message: 'Value is required!' },
-                          {
-                            whitespace: true,
-                            message: 'This field can not empty'
-                          }
-                        ],
-                        initialValue: f.value
-                      })(<Input type="number" placeholder="Eth" onKeyUp={() => handleKeyUp('value', index, null, form.getFieldValue(`value${index}`))} />)}
-                    </Form.Item> */}
+                    {process.env.REACT_APP_ENV !== 'dev' &&
+                      <Form.Item>
+                        {getFieldDecorator(`value${index}`, {
+                          rules: [
+                            { required: true, message: 'Value is required!' },
+                            {
+                              whitespace: true,
+                              message: 'This field can not empty'
+                            }
+                          ],
+                          initialValue: f.value
+                        })(<Input type="number" placeholder="Eth" onKeyUp={() => handleKeyUp('value', index, null, form.getFieldValue(`value${index}`))} />)}
+                      </Form.Item>
+                    }
                     <Form.Item>
                       {getFieldDecorator(`signature${index}`, {
                         rules: [
