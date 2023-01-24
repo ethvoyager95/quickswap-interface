@@ -209,7 +209,7 @@ function ProposalModal({
             const callDataValues = [];
             let callDataTypes = [];
             targetAddresses.push(formValues[`targetAddress${i}`]);
-            values.push(process.env.REACT_APP_ENV === 'dev' ? 0 : Web3.utils.toWei(formValues[`value${i}`], 'ether'));
+            values.push(process.env.REACT_APP_ENV === 'dev' || formValues[`value${i}`] === '' ? 0 : formValues[`value${i}`]);
             signatures.push(formValues[`signature${i}`]);
             callDataTypes = getArgs(formValues[`signature${i}`]);
 
@@ -369,7 +369,7 @@ function ProposalModal({
                       <Form.Item>
                         {getFieldDecorator(`value${index}`, {
                           rules: [
-                            { required: true, message: 'Value is required!' },
+                            { required: false, message: 'Value is required!' },
                             {
                               whitespace: true,
                               message: 'This field can not empty'
