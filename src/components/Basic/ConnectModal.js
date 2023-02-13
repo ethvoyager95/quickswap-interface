@@ -198,14 +198,13 @@ function ConnectModal({
 
   const connectWalletConnect = async () => {
     try {
-
       const walletConnector = new WalletConnectConnector({
         rpc: {
-          1: 'https://mainnet.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4',
+          1: 'https://mainnet.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4'
         },
         pollingInterval: 10000,
         bridge: 'https://bridge.walletconnect.org',
-        qrcode: true,
+        qrcode: true
       });
 
       await walletConnector.activate();
@@ -393,39 +392,20 @@ function ConnectModal({
           </div>
         </div>
         <div className="connect-wallet-content">
-          {isMetaMask ? (
-            <>
-              <div
-                className="flex align-center just-between metamask-connect-btn"
-                onClick={onConnectMetaMask}
-              >
-                <div className="flex align-center">
-                  <img src={trusteWalletImg} alt="metamask" />
-                  <span>Trust Wallet</span>
-                </div>
-                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
-              </div>
-              {(error || !web3) && (
-                <div className="metamask-status">
-                  <MetaMaskStatus />
-                </div>
-              )}
-            </>
-          ) : (
-            <>
-              <div className="flex align-center just-between metamask-connect-btn">
-                <div className="flex align-center">
-                  <img src={metamaskImg} alt="metamask" />
-                  <span>Trust Wallet</span>
-                </div>
-                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
-              </div>
-              {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
-                <div className="metamask-status">
-                  <MetaMaskStatus />
-                </div>
-              )}
-            </>
+          <div
+            className="flex align-center just-between metamask-connect-btn"
+            onClick={onConnectMetaMask}
+          >
+            <div className="flex align-center">
+              <img src={trusteWalletImg} alt="metamask" />
+              <span>Trust Wallet</span>
+            </div>
+            <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
+          </div>
+          {(error || !web3) && (
+            <div className="metamask-status">
+              <MetaMaskStatus />
+            </div>
           )}
         </div>
       </ModalContent>
@@ -447,7 +427,7 @@ ConnectModal.defaultProps = {
   web3: {},
   error: '',
   awaiting: false,
-  onCancel: () => { }
+  onCancel: () => {}
 };
 
 const mapStateToProps = ({ account }) => ({
