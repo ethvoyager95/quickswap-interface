@@ -1082,7 +1082,7 @@ const Staking = ({ settings }) => {
                     {locks
                       .reduce(
                         (total, e) => total + e.amount.div(1e18).toNumber(),
-                        0
+                        unlockable.div(1e18).toNumber()
                       )
                       .toLocaleString('en-US', {
                         maximumFractionDigits: 3
