@@ -402,11 +402,11 @@ function ConnectModal({
             </div>
             <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
           </div>
-          {(error || !web3) && (
+          {/* {(error || !web3) && (
             <div className="metamask-status">
               <MetaMaskStatus />
             </div>
-          )}
+          )} */}
         </div>
       </ModalContent>
     </Modal>
