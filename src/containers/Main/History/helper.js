@@ -15,6 +15,7 @@ import uni from 'assets/img/coins/uni.png';
 import ape from 'assets/img/coins/ape.png';
 import ust from 'assets/img/coins/ust.png';
 import dai from 'assets/img/coins/dai.png';
+import xcn from 'assets/img/coins/xcn.png';
 
 import susdc from 'assets/img/coins/susdc.png';
 import susdt from 'assets/img/coins/susdt.png';
@@ -29,6 +30,7 @@ import suni from 'assets/img/coins/suni.png';
 import sape from 'assets/img/coins/sape.png';
 import sust from 'assets/img/coins/sust.png';
 import sdai from 'assets/img/coins/sdai.png';
+import sxcn from 'assets/img/coins/sxcn.png';
 
 import iconSupplier from 'assets/img/methods/supplier.svg';
 import iconWithdraw from 'assets/img/methods/withdraw.svg';
@@ -128,6 +130,7 @@ const renderImg = symbol => {
   if (symbol.toLowerCase() === 'ape') return ape;
   if (symbol.toLowerCase() === 'ust') return ust;
   if (symbol.toLowerCase() === 'dai') return dai;
+  if (symbol.toLowerCase() === 'xcn') return xcn;
   if (symbol.toLowerCase() === 'susdc') return susdc;
   if (symbol.toLowerCase() === 'susdt') return susdt;
   if (symbol.toLowerCase() === 'sbusd') return sbusd;
@@ -141,6 +144,7 @@ const renderImg = symbol => {
   if (symbol.toLowerCase() === 'sape') return sape;
   if (symbol.toLowerCase() === 'sust') return sust;
   if (symbol.toLowerCase() === 'sdai') return sdai;
+  if (symbol.toLowerCase() === 'sxcn') return sxcn;
   return '';
 };
 
