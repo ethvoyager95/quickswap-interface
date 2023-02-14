@@ -816,13 +816,27 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         )
       );
 
-      setSetting({
-        assetList,
-        totalLiquidity: totalLiquidity.toString(10),
-        totalSupplyBalance: totalSupplyBalance.toString(10),
-        totalBorrowBalance: totalBorrowBalance.toString(10),
-        totalBorrowLimit: totalBorrowLimit.toString(10)
-      });
+      if (settings.selectedAsset && settings.selectedAsset.id) {
+        const info = assetList.find(
+          item => item.symbol.toLowerCase() === settings.selectedAsset.id
+        );
+        setSetting({
+          assetList,
+          totalLiquidity: totalLiquidity.toString(10),
+          totalSupplyBalance: totalSupplyBalance.toString(10),
+          totalBorrowBalance: totalBorrowBalance.toString(10),
+          totalBorrowLimit: totalBorrowLimit.toString(10),
+          selectedAsset: { ...info }
+        });
+      } else {
+        setSetting({
+          assetList,
+          totalLiquidity: totalLiquidity.toString(10),
+          totalSupplyBalance: totalSupplyBalance.toString(10),
+          totalBorrowBalance: totalBorrowBalance.toString(10),
+          totalBorrowLimit: totalBorrowLimit.toString(10)
+        });
+      }
       lockFlag = false;
     } catch {
       const assetList = await Promise.all(
@@ -891,6 +905,12 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       updateMarketInfo();
     }
   }, [settings.markets]);
+
+  useEffect(() => {
+    if (!lockFlag && !settings.pendingInfo?.status) {
+      updateMarketInfo();
+    }
+  }, [settings.pendingInfo.status]);
 
   useEffect(() => {
     if (settings.accountLoading) {
