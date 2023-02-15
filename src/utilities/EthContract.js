@@ -57,14 +57,21 @@ export const sendRepay = async (from, amount, callback) => {
   }
 };
 
-export const liquidateBorrow = async (from, borrower, sTokenCollateral, amount) => {
+export const liquidateBorrow = async (
+  from,
+  borrower,
+  sTokenCollateral,
+  amount
+) => {
   const web3 = new Web3(window.web3.currentProvider);
   try {
     const contract = new web3.eth.Contract(
       JSON.parse(constants.CONTRACT_SETH_ABI),
       constants.CONTRACT_SBEP_ADDRESS.eth.address
     );
-    const contractData = contract.methods.liquidateBorrow(borrower, sTokenCollateral).encodeABI();
+    const contractData = contract.methods
+      .liquidateBorrow(borrower, sTokenCollateral)
+      .encodeABI();
 
     const tx = {
       from,
@@ -73,10 +80,34 @@ export const liquidateBorrow = async (from, borrower, sTokenCollateral, amount) 
       data: contractData
     };
     // Send transaction
-    return await web3.eth.sendTransaction(tx)
-      .then(receipt => {
-        return receipt;
-      })
+    return await web3.eth.sendTransaction(tx).then(receipt => {
+      return receipt;
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    return null;
+  }
+};
+
+export const nftMint = async (from, totalPrice, amount) => {
+  const web3 = new Web3(window.web3.currentProvider);
+  try {
+    const contract = new web3.eth.Contract(
+      JSON.parse(constants.NFT_ABI),
+      constants.NFT_ADDRESS
+    );
+    const contractData = contract.methods.mint(from, amount).encodeABI();
+
+    const tx = {
+      from,
+      to: constants.NFT_ADDRESS,
+      value: totalPrice,
+      data: contractData
+    };
+    // Send transaction
+    return await web3.eth.sendTransaction(tx).then(receipt => {
+      return receipt;
+    });
   } catch (err) {
     // eslint-disable-next-line no-console
     return null;

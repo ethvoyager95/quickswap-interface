@@ -805,6 +805,15 @@ export const SHrefNftWrapper = styled.div`
     margin-left: 0px;
   }
 `;
+export const SHrefGetNft = styled.span`
+  font-size: 16px;
+  color: #1890ff;
+  cursor: pointer;
+
+  @media only screen and (max-width: 768px) {
+    margin-left: 0px;
+  }
+`;
 export const SHrefNft = styled.a`
   font-size: 16px;
   @media only screen and (max-width: 768px) {
