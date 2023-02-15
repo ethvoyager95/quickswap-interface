@@ -21,6 +21,7 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import axios from 'axios';
 import * as constants from 'utilities/constants';
+import NftMintModal from 'components/Basic/NftMintModal';
 // import { checkIsValidNetwork } from 'utilities/common';
 import {
   DECIMALS_INPUT,
@@ -79,6 +80,7 @@ import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
 import { THE_GRAPH, HEADER } from '../../../utilities/constants';
+
 // eslint-disable-next-line import/order
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
@@ -171,6 +173,8 @@ function Staking({ settings, setSetting }) {
   const [valueNFTStake, setValueNFTStake] = useState('');
   const [valueNFTUnStake, setValueNFTUnStake] = useState('');
   const [fakeImgNFT, setFakeImgNFT] = useState('');
+  const [isOpenNftMintModal, setIsOpenNftMintModal] = useState(false);
+
   // contract
   const farmingContract = getFarmingContract();
   const lpContract = getLPContract();
@@ -2153,13 +2157,11 @@ function Staking({ settings, setSetting }) {
                           <ST.SQuestion src={IconQuestion} />
                         </Tooltip>
                         <ST.SHrefNftWrapper>
-                          <ST.SHrefNft
-                            target="_blank"
-                            href="https://www.degenapestrike.org/"
+                          <ST.SHrefGetNft
+                            onClick={() => setIsOpenNftMintModal(true)}
                           >
                             Get Strike NFTs
-                            <img style={{ width: '14px' }} src={IconLinkBlue} />
-                          </ST.SHrefNft>
+                          </ST.SHrefGetNft>
                           <ST.SHrefNft target="_blank" href={GET_NFT_URL}>
                             LooksRare
                             <img style={{ width: '14px' }} src={IconLinkBlue} />
@@ -2437,6 +2439,10 @@ function Staking({ settings, setSetting }) {
           // timeDelay={timeDelay}
         />
       )}
+      <NftMintModal
+        visible={isOpenNftMintModal}
+        onCancel={() => setIsOpenNftMintModal(false)}
+      />
     </>
   );
 }
