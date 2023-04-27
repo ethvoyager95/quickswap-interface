@@ -345,7 +345,7 @@ function SupplySection({ asset, settings, setSetting }) {
                 type: '',
                 status: false,
                 amount: 0,
-                symbol: '',
+                symbol: ''
               }
             });
           });
@@ -375,7 +375,12 @@ function SupplySection({ asset, settings, setSetting }) {
    * Max amount
    */
   const handleMaxAmount = () => {
-    setAmount(asset.walletBalance);
+    let maxAmount = asset.walletBalance;
+    if (asset.supplyCaps.isGreaterThan(0)) {
+      if (asset.supplyCaps.isLessThan(1)) maxAmount = new BigNumber(0);
+      else maxAmount = BigNumber.min(maxAmount, asset.supplyCaps);
+    }
+    setAmount(maxAmount);
   };
 
   return (
@@ -384,7 +389,13 @@ function SupplySection({ asset, settings, setSetting }) {
         <div className="description">
           <span className="label">Wallet Balance</span>
           <span className="value">
-            {format(asset.walletBalance && getBigNumber(asset.walletBalance).dp(2, 1).toString(10))} {asset.symbol}
+            {format(
+              asset.walletBalance &&
+                getBigNumber(asset.walletBalance)
+                  .dp(2, 1)
+                  .toString(10)
+            )}{' '}
+            {asset.symbol}
           </span>
         </div>
       </div>
@@ -412,13 +423,14 @@ function SupplySection({ asset, settings, setSetting }) {
                 placeholder="0"
               />
               <span className="pointer max" onClick={() => handleMaxAmount()}>
-                MAX
+                SAFE MAX
               </span>
             </div>
           </div>
         ) : (
           <div className="notification">
-            To Supply {asset.name} to the Strike Protocol, you need to approve it first.
+            To Supply {asset.name} to the Strike Protocol, you need to approve
+            it first.
           </div>
         )}
       </div>
@@ -454,24 +466,44 @@ function SupplySection({ asset, settings, setSetting }) {
           <div className="description">
             <span className="label">Borrow Limit</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">${format(borrowLimit.dp(2, 1).toString(10))}</span>
+              <span className="value">
+                ${format(borrowLimit.dp(2, 1).toString(10))}
+              </span>
             ) : (
               <div className="flex flex-column align-center just-between">
-                <span className="value">${format(borrowLimit.dp(2, 1).toString(10))}</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">${format(newBorrowLimit.dp(2, 1).toString(10))}</span>
+                <span className="value">
+                  ${format(borrowLimit.dp(2, 1).toString(10))}
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  ${format(newBorrowLimit.dp(2, 1).toString(10))}
+                </span>
               </div>
             )}
           </div>
           <div className="description">
             <span className="label">Borrow Limit Used</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
+              <span className="value">
+                {borrowPercent.dp(2, 1).toString(10)}%
+              </span>
             ) : (
               <div className="flex flex-column align-center just-between">
-                <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">{newBorrowPercent.dp(2, 1).toString(10)}%</span>
+                <span className="value">
+                  {borrowPercent.dp(2, 1).toString(10)}%
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  {newBorrowPercent.dp(2, 1).toString(10)}%
+                </span>
               </div>
             )}
           </div>
@@ -502,7 +534,8 @@ function SupplySection({ asset, settings, setSetting }) {
                 isLoading ||
                 amount.isNaN() ||
                 amount.isZero() ||
-                amount.isGreaterThan(asset.walletBalance)
+                amount.isGreaterThan(asset.walletBalance) ||
+                asset.supplyCaps.isLessThan(1)
               }
               onClick={handleSupply}
             >

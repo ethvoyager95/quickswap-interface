@@ -36,7 +36,9 @@ function BorrowSection({ asset, settings, setSetting }) {
         setNewBorrowPercent(new BigNumber(0));
       } else {
         setBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
-        setNewBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
+        setNewBorrowPercent(
+          totalBorrowBalance.div(totalBorrowLimit).times(100)
+        );
       }
     } else {
       const temp = totalBorrowBalance.plus(amount.times(tokenPrice));
@@ -129,7 +131,17 @@ function BorrowSection({ asset, settings, setSetting }) {
         .minus(totalBorrowBalance),
       new BigNumber(0)
     );
-    setAmount(BigNumber.minimum(safeMax, asset.liquidity).div(tokenPrice));
+
+    if (asset.borrowCaps.isGreaterThan(0)) {
+      if (asset.borrowCaps.isLessThan(1)) setAmount(new BigNumber(0));
+      else
+        setAmount(
+          BigNumber.minimum(safeMax, asset.liquidity, asset.borrowCaps).div(
+            tokenPrice
+          )
+        );
+    } else
+      setAmount(BigNumber.minimum(safeMax, asset.liquidity).div(tokenPrice));
   };
 
   return (
@@ -166,7 +178,9 @@ function BorrowSection({ asset, settings, setSetting }) {
                 const totalBorrowBalance = getBigNumber(
                   settings.totalBorrowBalance
                 );
-                const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
+                const totalBorrowLimit = getBigNumber(
+                  settings.totalBorrowLimit
+                );
                 return new BigNumber(value || 0)
                   .plus(totalBorrowBalance)
                   .isLessThanOrEqualTo(totalBorrowLimit);
@@ -213,24 +227,44 @@ function BorrowSection({ asset, settings, setSetting }) {
           <div className="description">
             <span className="label">Borrow Balance</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">${format(borrowBalance.dp(2, 1).toString(10))}</span>
+              <span className="value">
+                ${format(borrowBalance.dp(2, 1).toString(10))}
+              </span>
             ) : (
               <div className="flex flex-column align-center just-between">
-                <span className="value">${format(borrowBalance.dp(2, 1).toString(10))}</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">${format(newBorrowBalance.dp(2, 1).toString(10))}</span>
+                <span className="value">
+                  ${format(borrowBalance.dp(2, 1).toString(10))}
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  ${format(newBorrowBalance.dp(2, 1).toString(10))}
+                </span>
               </div>
             )}
           </div>
           <div className="description">
             <span className="label">Borrow Limit Used</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
+              <span className="value">
+                {borrowPercent.dp(2, 1).toString(10)}%
+              </span>
             ) : (
               <div className="flex flex-column align-center just-between">
-                <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">{newBorrowPercent.dp(2, 1).toString(10)}%</span>
+                <span className="value">
+                  {borrowPercent.dp(2, 1).toString(10)}%
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  {newBorrowPercent.dp(2, 1).toString(10)}%
+                </span>
               </div>
             )}
           </div>
@@ -251,7 +285,8 @@ function BorrowSection({ asset, settings, setSetting }) {
               amount.isZero() ||
               amount.isNaN() ||
               amount.isGreaterThan(asset.liquidity.div(asset.tokenPrice)) ||
-              newBorrowPercent.isGreaterThan(100)
+              newBorrowPercent.isGreaterThan(100) ||
+              asset.borrowCaps.isLessThan(1)
             }
             onClick={handleBorrow}
           >
