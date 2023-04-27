@@ -104,21 +104,21 @@ export const getBigNumber = value => {
   return new BigNumber(value);
 };
 
-export const currencyFormatter = labelValue => {
+export const currencyFormatter = (labelValue, prefix = '$') => {
   // Nine Zeroes for Billions
   return Math.abs(Number(labelValue)) >= 1.0e9
-    ? `$${format(
+    ? `${prefix}${format(
         new BigNumber(`${Math.abs(Number(labelValue)) / 1.0e9}`).dp(2, 1)
       )}B`
     : // Six Zeroes for Millions
     Math.abs(Number(labelValue)) >= 1.0e6
-    ? `$${format(
+    ? `${prefix}${format(
         new BigNumber(`${Math.abs(Number(labelValue)) / 1.0e6}`).dp(2, 1)
       )}M`
     : // Three Zeroes for Thousands
     Math.abs(Number(labelValue)) >= 1.0e3
-    ? `$${format(
+    ? `${prefix}${format(
         new BigNumber(`${Math.abs(Number(labelValue)) / 1.0e3}`).dp(2, 1)
       )}K`
-    : `$${format(new BigNumber(`${Math.abs(Number(labelValue))}`).dp(2, 1))}`;
+    : `${prefix}${format(new BigNumber(`${Math.abs(Number(labelValue))}`).dp(2, 1))}`;
 };

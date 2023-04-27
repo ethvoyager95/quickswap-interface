@@ -565,6 +565,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               stokenAddress: constants.CONTRACT_SBEP_ADDRESS[item.id].address,
               supplyApy: new BigNumber(market.supplyApy || 0),
               borrowApy: new BigNumber(market.borrowApy || 0),
+              supplyCaps: new BigNumber(market.supplyCaps || 0),
+              borrowCaps: new BigNumber(market.borrowCaps || 0),
               strkSupplyApy: new BigNumber(market.supplyStrikeApy || 0),
               strkBorrowApy: new BigNumber(market.borrowStrikeApy || 0),
               collateralFactor: new BigNumber(market.collateralFactor || 0).div(
