@@ -286,7 +286,7 @@ function BorrowSection({ asset, settings, setSetting }) {
               amount.isNaN() ||
               amount.isGreaterThan(asset.liquidity.div(asset.tokenPrice)) ||
               newBorrowPercent.isGreaterThan(100) ||
-              asset.borrowCaps.isLessThan(1)
+              asset.borrowCaps.isEqualTo(1)
             }
             onClick={handleBorrow}
           >
