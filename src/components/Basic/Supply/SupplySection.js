@@ -535,7 +535,7 @@ function SupplySection({ asset, settings, setSetting }) {
                 amount.isNaN() ||
                 amount.isZero() ||
                 amount.isGreaterThan(asset.walletBalance) ||
-                asset.supplyCaps.isLessThan(1)
+                asset.supplyCaps.isEqualTo(1)
               }
               onClick={handleSupply}
             >
