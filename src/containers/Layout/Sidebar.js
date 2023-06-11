@@ -759,9 +759,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               asset.walletBalance = new BigNumber(walletBalance).div(
                 new BigNumber(10).pow(tokenDecimal)
               );
-              asset.isEnabled = new BigNumber(allowBalance)
-                .div(new BigNumber(10).pow(tokenDecimal))
-                .isGreaterThan(asset.walletBalance);
+              asset.isEnabled =
+                asset.walletBalance.isGreaterThan(new BigNumber(0)) &&
+                new BigNumber(allowBalance)
+                  .div(new BigNumber(10).pow(tokenDecimal))
+                  .isGreaterThanOrEqualTo(asset.walletBalance);
             } else if (window.ethereum) {
               walletBalance = await window.web3.eth.getBalance(accountAddress);
               asset.walletBalance = new BigNumber(walletBalance).div(
