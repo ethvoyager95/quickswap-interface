@@ -37,7 +37,7 @@ const MarketWrapper = styled.div`
         font-size: 17px;
         font-weight: 900;
         color: var(--color-text-main);
-        border-bottom: 1px solid #eef1fa;
+        border-bottom: 1px solid #141518;
       }
 
       .content {

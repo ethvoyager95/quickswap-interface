@@ -59,7 +59,7 @@ const Tabs = styled.div`
   display: flex;
   align-items: center;
   padding: 24px 0;
-  border-bottom: 1px solid #eef1fa;
+  border-bottom: 1px solid #141518;
 
   .tab-item {
     border-radius: 3px;

@@ -174,7 +174,7 @@ const UserDistributionWrapper = styled.div`
   .strk-info {
     padding-bottom: 41px;
     margin-bottom: 50px;
-    border-bottom: 1px solid #eef1fa;
+    border-bottom: 1px solid #141518;
 
     img {
       width: 24px;

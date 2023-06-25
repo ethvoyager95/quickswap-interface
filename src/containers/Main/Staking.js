@@ -368,7 +368,7 @@ const VaultContainer = styled.div`
 
   .divider {
     margin: 20px -20px;
-    border-bottom: 1px solid #eef1fa;
+    border-bottom: 1px solid #141518;
   }
 
   .mx-auto {

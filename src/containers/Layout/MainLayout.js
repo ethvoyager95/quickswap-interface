@@ -37,12 +37,12 @@ const MainLayoutWrapper = styled.div`
   /* Handle */
   &::-webkit-scrollbar-thumb {
     -webkit-border-radius: 3px;
-    background-color: var(--color-blue);
+    background-color: #2e2f35;
   }
 
   /* Handle on hover */
   &::-webkit-scrollbar-thumb:hover {
-    background: #539ef9;
+    background: #3e3f45;
   }
 
   ::-webkit-scrollbar-corner {

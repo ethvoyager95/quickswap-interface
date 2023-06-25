@@ -13,7 +13,7 @@ const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 24px 45px;
-  border-bottom: 1px solid #eef1fa;
+  border-bottom: 1px solid #141518;
 
   @media only screen and (max-width: 768px) {
     flex-direction: column;

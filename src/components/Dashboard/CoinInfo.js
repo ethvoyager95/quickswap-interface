@@ -14,7 +14,7 @@ import coinImg from 'assets/img/strike_32.png';
 const CardWrapper = styled.div`
   width: 100%;
   padding: 24px 45px;
-  border-bottom: 1px solid #eef1fa;
+  border-bottom: 1px solid #141518;
 
   @media only screen and (max-width: 768px) {
     padding: 24px;

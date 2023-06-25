@@ -10,7 +10,7 @@
     --color-blue: #277ee6;
     --color-dark-grey: #666771;
     /* Background colors */
-    --color-bg-main: #eef1fa;
+    --color-bg-main: #141518;
     --color-bg-primary: #ffffff;
     --color-bg-active: #f8f9fa;
     /* Typography colors */
@@ -22,14 +22,33 @@
 }
 
 @font-face {
-    font-family: AvenirNext;
-    src: url("../font/Avenir-next/AvenirNextLTPro-Regular.otf") format("opentype");
+    font-family: "Robot";
+    src: url("../font/Roboto/Roboto-Regular.ttf");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Robot";
+    src: url("../font/Roboto//Roboto-Light.ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "Robot";
+    src: url("../font/Roboto/Roboto-Medium.ttf");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Robot";
+    src: url("../font/Roboto/Roboto-Bold.ttf");
+    font-weight: 700;
 }
 
 body * {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    font-family: "AvenirNext";
+    font-family: "Robot";
     font-stretch: normal;
     font-style: normal;
 }

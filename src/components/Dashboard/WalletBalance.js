@@ -13,7 +13,7 @@ import { getBigNumber } from 'utilities/common';
 const CardWrapper = styled.div`
   width: 100%;
   padding: 24px 0 24px 45px;
-  border-bottom: 1px solid #eef1fa;
+  border-bottom: 1px solid #141518;
   display: flex;
   justify-content: space-between;
 

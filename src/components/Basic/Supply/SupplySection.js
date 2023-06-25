@@ -27,7 +27,7 @@ export const SectionWrapper = styled.div`
 
   .header {
     display: flex;
-    border-bottom: 1px solid #eef1fa;
+    border-bottom: 1px solid #141518;
 
     @media only screen and (max-width: 768px) {
       flex-direction: column;
@@ -128,12 +128,12 @@ export const SectionWrapper = styled.div`
 
     .left-content {
       width: 50%;
-      border-right: 1px solid #eef1fa;
+      border-right: 1px solid #141518;
       padding: 20px 30px;
 
       @media only screen and (max-width: 768px) {
         width: 100%;
-        border-bottom: 1px solid #eef1fa;
+        border-bottom: 1px solid #141518;
         border-right: 0;
         padding: 20px 30px;
       }
