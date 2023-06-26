@@ -8,7 +8,7 @@ import bitkeepImg from 'assets/img/bitkeep.png';
 import coinbaseImg from 'assets/img/coinbase.png';
 import walletConnectImg from 'assets/img/walletconnect.png';
 import trusteWalletImg from 'assets/img/trustwallet.png';
-import arrowRightImg from 'assets/img/arrow-right.png';
+import arrowRightImg from 'assets/img/arrow-right.svg';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
 
@@ -22,48 +22,72 @@ import { checkIsValidNetwork } from 'utilities/common';
 
 const ModalContent = styled.div`
   border-radius: 5px;
-  background-color: var(--color-bg-primary);
+  box-shadow: 0px 0px 10px 0px #1760ed;
+
   .close-btn {
     position: absolute;
     top: 23px;
     right: 23px;
   }
   .header-content {
-    margin-top: 79px;
+    margin-top: 45px;
     .logo-image {
-      margin-bottom: 43px;
+      margin-bottom: 30px;
     }
     .title {
       font-size: 24.5px;
       color: var(--color-text-main);
     }
   }
+  .connect-wallet-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 20px;
+    column-gap: 20px;
+    margin-bottom: 48px;
+  }
+
   .connect-wallet-content {
-    width: 100%;
-    padding: 25px 78px 22px 66px;
     .metamask-connect-btn {
-      width: 100%;
+      background: #1f242c;
+      padding: 20px 0px 16px;
+      width: 204px;
+      border-radius: 6px;
+      border: 1px solid #1f242c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       cursor: pointer;
-      & > div {
-        img {
-          width: 45px;
-          margin-right: 44px;
-        }
-        span {
-          color: var(--color-text-main);
-          font-weight: normal;
-          font-size: 17px;
-        }
+
+      img {
+        height: 40px;
       }
+
       span {
-        color: var(--color-text-secondary);
+        color: var(--color-text-main);
         font-weight: normal;
-        font-size: 17px;
+        font-size: 14px;
+        margin-top: 10px;
       }
+
       .arrow-icon {
-        width: 32px;
+        height: 25px;
+      }
+
+      &:hover {
+        border: 1px solid #0c8ce9;
+        background: #2b3947;
+
+        span {
+          color: white;
+        }
+
+        svg path {
+          fill: white !important;
+        }
       }
     }
+
     .metamask-status {
       margin-top: 20px;
       background-color: rgba(255, 0, 0, 0.03);
@@ -72,6 +96,29 @@ const ModalContent = styled.div`
       color: var(--color-red);
       a {
         margin-left: 5px;
+      }
+    }
+  }
+
+  .terms {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    margin-bottom: 23px;
+
+    a {
+      color: white;
+      font-weight: bold;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .connect-wallet-wrapper {
+      margin-bottom: 20px;
+    }
+    .connect-wallet-content {
+      .metamask-connect-btn {
+        padding: 20px 0px 16px;
+        width: 160px;
       }
     }
   }
@@ -275,7 +322,7 @@ function ConnectModal({
   return (
     <Modal
       className="connect-modal"
-      width={532}
+      width={480}
       visible={visible}
       onCancel={onCancel}
       footer={null}
@@ -292,121 +339,189 @@ function ConnectModal({
         />
         <div className="flex flex-column align-center just-center header-content">
           <img src={logoImg} alt="logo" className="logo-image" />
-          <p className="title">Connect to start using Strike</p>
+          {/* <p className="title">Connect to start using Strike</p> */}
         </div>
-        <div className="connect-wallet-content">
-          {isMetaMask ? (
-            <>
-              <div
-                className="flex align-center just-between metamask-connect-btn"
-                onClick={onConnectMetaMask}
-              >
-                <div className="flex align-center">
+        <div className="connect-wallet-wrapper">
+          <div className="connect-wallet-content">
+            {isMetaMask ? (
+              <>
+                <div
+                  className="metamask-connect-btn"
+                  onClick={onConnectMetaMask}
+                >
                   <img src={metamaskImg} alt="metamask" />
                   <span>MetaMask</span>
+                  <svg
+                    width="25"
+                    height="25"
+                    viewBox="0 0 25 25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                      fill="#34384C"
+                    />
+                  </svg>
                 </div>
-                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
-              </div>
-              {(error || !web3) && (
-                <div className="metamask-status">
-                  <MetaMaskStatus />
-                </div>
-              )}
-            </>
-          ) : (
-            <>
-              <div className="flex align-center just-between metamask-connect-btn">
-                <div className="flex align-center">
+                {/* {(error || !web3) && (
+                  <div className="metamask-status">
+                    <MetaMaskStatus />
+                  </div>
+                )} */}
+              </>
+            ) : (
+              <>
+                <div
+                  className="metamask-connect-btn"
+                  onClick={onConnectMetaMask}
+                >
                   <img src={metamaskImg} alt="metamask" />
                   <span>MetaMask</span>
+                  <svg
+                    width="25"
+                    height="25"
+                    viewBox="0 0 25 25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                      fill="#34384C"
+                    />
+                  </svg>
                 </div>
-                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
-              </div>
-              {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
-                <div className="metamask-status">
-                  <MetaMaskStatus />
-                </div>
-              )}
-            </>
-          )}
-        </div>
+                {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
+                  <div className="metamask-status">
+                    <MetaMaskStatus />
+                  </div>
+                )}
+              </>
+            )}
+          </div>
 
-        <div className="connect-wallet-content">
-          {isBitkeepWallet ? (
-            <>
-              <div
-                className="flex align-center just-between metamask-connect-btn"
-                onClick={onConnectMetaMask}
-              >
-                <div className="flex align-center">
+          <div className="connect-wallet-content">
+            {isBitkeepWallet ? (
+              <>
+                <div
+                  className="metamask-connect-btn"
+                  onClick={onConnectMetaMask}
+                >
                   <img className="bitkeep-img" src={bitkeepImg} alt="bitkeep" />
                   <span>Bitkeep</span>
+                  <svg
+                    width="25"
+                    height="25"
+                    viewBox="0 0 25 25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                      fill="#34384C"
+                    />
+                  </svg>
                 </div>
-                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
-              </div>
-              {(error || !web3) && (
-                <div className="metamask-status">
-                  <BitkeepStatus />
-                </div>
-              )}
-            </>
-          ) : (
-            <>
-              <div className="flex align-center just-between metamask-connect-btn">
-                <div className="flex align-center">
+                {/* {(error || !web3) && (
+                  <div className="metamask-status">
+                    <BitkeepStatus />
+                  </div>
+                )} */}
+              </>
+            ) : (
+              <>
+                <div className="metamask-connect-btn">
                   <img className="bitkeep-img" src={bitkeepImg} alt="bitkeep" />
                   <span>Bitkeep</span>
+                  <svg
+                    width="25"
+                    height="25"
+                    viewBox="0 0 25 25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                      fill="#34384C"
+                    />
+                  </svg>
                 </div>
-                <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
-              </div>
-              {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
-                <div className="metamask-status">
-                  <BitkeepStatus />
-                </div>
-              )}
-            </>
-          )}
-        </div>
-        <div className="connect-wallet-content">
-          <div
-            className="flex align-center just-between metamask-connect-btn"
-            onClick={connectCoinbase}
-          >
-            <div className="flex align-center">
+                {/* {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
+                  <div className="metamask-status">
+                    <BitkeepStatus />
+                  </div>
+                )} */}
+              </>
+            )}
+          </div>
+          <div className="connect-wallet-content">
+            <div className="metamask-connect-btn" onClick={connectCoinbase}>
               <img src={coinbaseImg} alt="metamask" />
               <span>Coinbase Wallet</span>
+              <svg
+                width="25"
+                height="25"
+                viewBox="0 0 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                  fill="#34384C"
+                />
+              </svg>
             </div>
-            <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
           </div>
-        </div>
-        <div className="connect-wallet-content">
-          <div
-            className="flex align-center just-between metamask-connect-btn"
-            onClick={connectWalletConnect}
-          >
-            <div className="flex align-center">
+          <div className="connect-wallet-content">
+            <div
+              className="metamask-connect-btn"
+              onClick={connectWalletConnect}
+            >
               <img src={walletConnectImg} alt="metamask" />
               <span>Wallet Connect</span>
+              <svg
+                width="25"
+                height="25"
+                viewBox="0 0 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                  fill="#34384C"
+                />
+              </svg>
             </div>
-            <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
           </div>
-        </div>
-        <div className="connect-wallet-content">
-          <div
-            className="flex align-center just-between metamask-connect-btn"
-            onClick={onConnectMetaMask}
-          >
-            <div className="flex align-center">
+          <div className="connect-wallet-content">
+            <div className="metamask-connect-btn" onClick={onConnectMetaMask}>
               <img src={trusteWalletImg} alt="metamask" />
               <span>Trust Wallet</span>
+              <svg
+                width="25"
+                height="25"
+                viewBox="0 0 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                  fill="#34384C"
+                />
+              </svg>
             </div>
-            <img className="arrow-icon" src={arrowRightImg} alt="arrow" />
-          </div>
-          {/* {(error || !web3) && (
+            {/* {(error || !web3) && (
             <div className="metamask-status">
               <MetaMaskStatus />
             </div>
           )} */}
+          </div>
+        </div>
+        <div className="terms">
+          By connecting, I accept Strike’s{' '}
+          <a href="https://strike.org/terms" target="_blank" rel="noreferrer">
+            Terms of Service
+          </a>
         </div>
       </ModalContent>
     </Modal>

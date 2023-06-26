@@ -40,7 +40,7 @@ body {
 .collateral-confirm-modal {
     .ant-modal-content {
         border-radius: 5px;
-        background-color: var(--color-bg-primary);
+        background-color: var(--color-bg-modal);
         .ant-modal-body {
             padding: 0;
             border-radius: 5px;
@@ -159,4 +159,17 @@ input {
 }
 .full {
     width: 100%;
+}
+
+.ant-dropdown-menu {
+    background-color: var(--color-bg-primary);
+}
+
+.ant-dropdown-menu-item {
+    &:hover {
+        background-color: transparent;
+        a span{        
+            color: white !important;
+        }
+    }
 }

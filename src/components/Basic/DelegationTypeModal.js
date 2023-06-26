@@ -11,7 +11,6 @@ import ManualVoting from './ManualVoting';
 
 const ModalContent = styled.div`
   border-radius: 5px;
-  background-color: var(--color-bg-primary);
   padding: 30px 30px 0;
 
   .close-btn {

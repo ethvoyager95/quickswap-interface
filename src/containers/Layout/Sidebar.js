@@ -38,14 +38,33 @@ const SidebarWrapper = styled.div`
   width: 100%;
   padding: 32px 105px;
   background-color: var(--color-bg-main);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 
   @media only screen and (max-width: 768px) {
     height: 60px;
     margin-right: 0px;
     padding: 0;
+  }
+`;
+
+const TopSidebarWrapper = styled.div`
+  width: 100%;
+  background-color: var(--color-bg-main);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .right-area {
+    display: flex;
+  }
+
+  @media only screen and (max-width: 768px) {
+    height: 60px;
+    margin-right: 0px;
+    padding: 0;
+
+    .right-area {
+      display: none;
+    }
   }
 `;
 
@@ -77,15 +96,23 @@ const Logo = styled.div`
 const MainMenu = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
+  margin-top: 15px;
+
+  .right-area {
+    display: none;
+  }
 
   .dropdown-link {
     font-size: 16px;
     font-weight: 900;
     color: var(--color-text-secondary);
+    cursor: pointer;
+    user-select: none;
 
     &:hover {
-      color: var(--color-blue);
+      color: var(--color-white);
     }
   }
 
@@ -100,12 +127,19 @@ const MainMenu = styled.div`
     left: ${({ isMenuOpen }) => (isMenuOpen ? 0 : '-100%')};
     opacity: 1;
     transition: all 0.5s ease;
-    background-color: #090d27;
+    background-color: var(--color-bg-primary);
     padding-top: 20px;
     padding-bottom: 20px;
     z-index: 10;
     overflow-y: auto;
     flex-wrap: nowrap;
+    margin-top: 0px;
+    justify-content: unset;
+
+    .right-area {
+      display: block;
+      margin: 0 auto;
+    }
   }
 
   a {
@@ -118,7 +152,7 @@ const MainMenu = styled.div`
 
     &:hover {
       span {
-        color: var(--color-blue);
+        color: var(--color-white);
       }
     }
 
@@ -132,7 +166,7 @@ const MainMenu = styled.div`
   }
   .active {
     span {
-      color: var(--color-blue);
+      color: var(--color-white);
     }
   }
 `;
@@ -161,8 +195,13 @@ const ConnectButton = styled.div`
   .connect-btn {
     width: 150px;
     height: 32px;
-    box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
-    background-color: rgba(39, 126, 230, 0.7);
+    background: linear-gradient(
+      242deg,
+      #246cf9 0%,
+      #1e68f6 0.01%,
+      #0047d0 100%,
+      #0047d0 100%
+    );
 
     @media only screen and (max-width: 768px) {
       width: 100px;
@@ -192,8 +231,13 @@ const UserInfoButton = styled.div`
   .user-info-btn {
     padding: 0 8px;
     height: 32px;
-    box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
-    background-color: rgba(39, 126, 230, 0.7);
+    background: linear-gradient(
+      242deg,
+      #246cf9 0%,
+      #1e68f6 0.01%,
+      #0047d0 100%,
+      #0047d0 100%
+    );
     display: flex;
     align-items: center;
     @media only screen and (max-width: 768px) {
@@ -967,14 +1011,56 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   return (
     <SidebarWrapper>
-      <Logo>
-        <NavLink to="/" activeClassName="active">
-          <img src={logoImg} alt="logo" className="logo-text" />
-        </NavLink>
-      </Logo>
-      <MobileIcon onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        {isMenuOpen ? <FaTimes /> : <FaBars />}
-      </MobileIcon>
+      <TopSidebarWrapper>
+        <Logo>
+          <NavLink to="/" activeClassName="active">
+            <img src={logoImg} alt="logo" className="logo-text" />
+          </NavLink>
+        </Logo>
+        <MobileIcon onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          {isMenuOpen ? <FaTimes color="white" /> : <FaBars color="white" />}
+        </MobileIcon>
+        <div className="right-area">
+          {settings.selectedAddress && (
+            <UserInfoButton>
+              <Button
+                className="user-info-btn"
+                onClick={() => setIsOpenInfoModal(true)}
+              >
+                <div>{balance || '0'}</div>
+                <img src={`${process.env.PUBLIC_URL}/icon16.png`} alt="" />
+              </Button>
+            </UserInfoButton>
+          )}
+          <ConnectButton>
+            {settings.selectedAddress ? (
+              <Button
+                className="connect-btn"
+                onClick={() => {
+                  setIsOpenAccountModal(true);
+                }}
+              >
+                {`${settings.selectedAddress.substr(
+                  0,
+                  4
+                )}...${settings.selectedAddress.substr(
+                  settings.selectedAddress.length - 4,
+                  4
+                )}`}
+              </Button>
+            ) : (
+              <Button
+                className="connect-btn"
+                onClick={() => {
+                  setIsOpenModal(true);
+                }}
+              >
+                Connect
+              </Button>
+            )}
+          </ConnectButton>
+        </div>
+      </TopSidebarWrapper>
       <MainMenu isMenuOpen={isMenuOpen}>
         <NavLink
           className="flex flex-start align-center"
@@ -1011,14 +1097,14 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         >
           <Label>History</Label>
         </NavLink>
-        {!isMenuOpen && width < 1600 && (
+        {!isMenuOpen && width < 1200 && (
           <Dropdown overlay={menu} trigger={['click']}>
-            <a className="dropdown-link" onClick={e => e.preventDefault()}>
+            <span className="dropdown-link" onClick={e => e.preventDefault()}>
               Earning <Icon type="down" />
-            </a>
+            </span>
           </Dropdown>
         )}
-        {(width >= 1600 || isMenuOpen) && (
+        {(width >= 1200 || isMenuOpen) && (
           <>
             <NavLink
               className="flex flex-start align-center"
@@ -1052,65 +1138,47 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             <Label>Faucet</Label>
           </NavLink>
         )} */}
-        {settings.selectedAddress && (
-          <UserInfoButton>
-            <Button
-              className="user-info-btn"
-              onClick={() => setIsOpenInfoModal(true)}
-            >
-              <div>{balance || '0'}</div>
-              <img src={`${process.env.PUBLIC_URL}/icon16.png`} alt="" />
-            </Button>
-          </UserInfoButton>
-        )}
-        <ConnectButton>
-          {settings.selectedAddress ? (
-            <Button
-              className="connect-btn"
-              onClick={() => {
-                setIsOpenAccountModal(true);
-              }}
-            >
-              {`${settings.selectedAddress.substr(
-                0,
-                4
-              )}...${settings.selectedAddress.substr(
-                settings.selectedAddress.length - 4,
-                4
-              )}`}
-            </Button>
-          ) : (
-            <Button
-              className="connect-btn"
-              onClick={() => {
-                setIsOpenModal(true);
-              }}
-            >
-              Connect
-            </Button>
+        <div className="right-area">
+          {settings.selectedAddress && (
+            <UserInfoButton>
+              <Button
+                className="user-info-btn"
+                onClick={() => setIsOpenInfoModal(true)}
+              >
+                <div>{balance || '0'}</div>
+                <img src={`${process.env.PUBLIC_URL}/icon16.png`} alt="" />
+              </Button>
+            </UserInfoButton>
           )}
-        </ConnectButton>
-        {/* {settings.selectedAddress && (
-          <UserInfoButton>
-            <Button className="user-info-btn" onClick={handleDisconnect}>
-              Disconnect
-            </Button>
-          </UserInfoButton>
-        )} */}
+          <ConnectButton>
+            {settings.selectedAddress ? (
+              <Button
+                className="connect-btn"
+                onClick={() => {
+                  setIsOpenAccountModal(true);
+                }}
+              >
+                {`${settings.selectedAddress.substr(
+                  0,
+                  4
+                )}...${settings.selectedAddress.substr(
+                  settings.selectedAddress.length - 4,
+                  4
+                )}`}
+              </Button>
+            ) : (
+              <Button
+                className="connect-btn"
+                onClick={() => {
+                  setIsOpenModal(true);
+                }}
+              >
+                Connect
+              </Button>
+            )}
+          </ConnectButton>
+        </div>
       </MainMenu>
-      {/* {settings.selectedAddress && (
-        <TotalValue>
-          <div className="flex flex-column align-center just-center">
-            <Label primary>
-              $
-              {format(
-                new BigNumber(settings.totalLiquidity).dp(2, 1).toString(10)
-              )}
-            </Label>
-            <Label className="center">Total Value Locked</Label>
-          </div>
-        </TotalValue>
-      )} */}
       {isOpenModal && (
         <ConnectModal
           visible={isOpenModal}

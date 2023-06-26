@@ -14,7 +14,6 @@ import DegenApeLogo from 'assets/img/degen_ape_logo.svg';
 
 const ModalContent = styled.div`
   border-radius: 5px;
-  background-color: var(--color-bg-primary);
   padding: 0 24px 32px;
   user-select: none;
 

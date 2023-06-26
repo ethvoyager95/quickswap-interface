@@ -16,7 +16,6 @@ import closeImg from 'assets/img/close.png';
 
 const ModalContent = styled.div`
   border-radius: 5px;
-  background-color: var(--color-bg-primary);
 
   .close-btn {
     position: absolute;
@@ -27,7 +26,6 @@ const ModalContent = styled.div`
   .header-content {
     width: 100%;
     height: 80px;
-    background-color: var(--color-bg-primary);
     font-weight: bold;
     font-size: 20px;
     color: var(--color-text-main);

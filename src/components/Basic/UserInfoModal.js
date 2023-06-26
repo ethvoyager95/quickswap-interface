@@ -13,7 +13,6 @@ import commaNumber from 'comma-number';
 
 const ModalContent = styled.div`
   border-radius: 5px;
-  background-color: var(--color-bg-primary);
   padding: 0 64px 32px;
   .close-btn {
     position: absolute;
@@ -24,6 +23,7 @@ const ModalContent = styled.div`
     padding: 24px;
     font-size: 16px;
     font-weight: bold;
+    color: white;
   }
   .header-content {
     margin-top: 16px;

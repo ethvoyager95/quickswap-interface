@@ -3,19 +3,18 @@ import { initOnRamp } from '@coinbase/cbpay-js/dist/index.js';
 // import { initOnRamp } from '@coinbase/cbpay-js';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import { connectAccount } from 'core';
 import { compose } from 'recompose';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { message } from 'antd';
 import coinbaseImg from 'assets/img/coinbase_pay.svg';
 import buyCryptoWithFiatImg from 'assets/img/buy_crypto_banner.svg';
+import closeImg from 'assets/img/close.png';
 
 const ModalContent = styled.div`
   border-radius: 5px;
-  background-color: var(--color-bg-primary);
   padding: 27px 32px 23px 32px;
-  color: black;
+  color: white;
   gap: 25px;
   user-select: none;
 
@@ -55,7 +54,7 @@ const ModalContent = styled.div`
     width: 100%;
     height: 212px;
     border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--color-text-secondary);
   }
 
   .disconnect-button {
@@ -64,7 +63,7 @@ const ModalContent = styled.div`
     font-size: 18px;
     padding: 10px 0px;
     border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--color-text-secondary);
     text-align: center;
     cursor: pointer;
   }
@@ -80,7 +79,7 @@ const StyledPayment = styled.div`
   margin: auto;
   width: 90%;
   height: 41px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-text-secondary);
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -92,11 +91,12 @@ const StyledPayment = styled.div`
 const StyledPaymentSelect = styled.div`
   position: absolute;
   left: 50%;
-  top: 50px;
+  top: 45px;
   transform: translate(-50%, 0%);
   margin: auto;
   width: 90%;
   background: #eeeeee;
+  color: black;
   border-radius: 5px;
 `;
 
@@ -106,7 +106,7 @@ const StyledPaymentItem = styled.div`
   justify-content: space-between;
   padding: 0 15px;
   cursor: pointer;
-  height: 50px;
+  height: 40px;
   width: 100%;
 
   &:not(:last-child) {
@@ -253,20 +253,12 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
       centered
     >
       <ModalContent className="flex flex-column align-center just-center">
-        <div className="close-btn pointer" onClick={onCancel}>
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 15 15"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1.37608 0L0 1.37608L6.12392 7.5L0 13.6239L1.37608 15L7.5 8.87608L13.6239 15L15 13.6239L8.87608 7.5L15 1.37608L13.6239 0L7.5 6.12392L1.37608 0Z"
-              fill="black"
-            />
-          </svg>
-        </div>
+        <img
+          className="close-btn pointer"
+          src={closeImg}
+          alt="close"
+          onClick={onCancel}
+        />
 
         <div className="header">
           <div className="flex">
@@ -296,7 +288,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
             >
               <path
                 d="M1.66667 0C0.755208 0 0 0.755208 0 1.66667V13.3333C0 14.2448 0.755208 15 1.66667 15H13.3333C14.2448 15 15 14.2448 15 13.3333V7.5H13.3333V13.3333H1.66667V1.66667H7.5V0H1.66667ZM9.16667 0V1.66667H12.1549L4.41081 9.41081L5.58919 10.5892L13.3333 2.84505V5.83333H15V0H9.16667Z"
-                fill="black"
+                fill="white"
               />
             </svg>
           </div>
@@ -317,7 +309,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
               >
                 <path
                   d="M1.5 0C0.670898 0 0 0.670898 0 1.5V12H1.5V1.5H12V0H1.5ZM4.5 3C3.6709 3 3 3.6709 3 4.5V13.5C3 14.3291 3.6709 15 4.5 15H13.5C14.3291 15 15 14.3291 15 13.5V4.5C15 3.6709 14.3291 3 13.5 3H4.5ZM4.5 4.5H13.5V13.5H4.5V4.5Z"
-                  fill="black"
+                  fill="white"
                 />
               </svg>
             </div>
@@ -346,7 +338,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
                 >
                   <path
                     d="M7.5 0L0 7.5L1.85328 9.35328L7.5 3.70656L13.1467 9.35328L15 7.5L7.5 0Z"
-                    fill="black"
+                    fill="white"
                   />
                 </svg>
               ) : (
@@ -359,7 +351,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
                 >
                   <path
                     d="M7.5 9.35327L15 1.85327L13.1467 -1.04904e-05L7.5 5.64671L1.85328 -1.04904e-05L0 1.85327L7.5 9.35327Z"
-                    fill="black"
+                    fill="white"
                   />
                 </svg>
               )}
