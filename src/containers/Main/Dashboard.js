@@ -12,52 +12,84 @@ import SupplyCard from 'components/Dashboard/SupplyCard';
 import { connectAccount, accountActionCreators } from 'core';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Row, Column } from 'components/Basic/Style';
+import Toggle from 'components/Basic/Toggle';
+import { Tooltip } from 'antd';
+import { Label } from 'components/Basic/Label';
+import IconQuestion from 'assets/img/question.png';
 import BigNumber from 'bignumber.js';
 import * as constants from 'utilities/constants';
 
 const DashboardWrapper = styled.div`
   height: 100%;
 
-  .overview-column {
-    height: calc(100% - 20px);
+  .apy-toggle {
+    margin: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 
-    @media only screen and (max-width: 992px) {
-      height: auto;
+    .toggel-label {
+      margin: 5px 10px;
     }
   }
 `;
 
-const SpinnerWrapper = styled.div`
-  height: 85vh;
-  width: 100%;
-
-  @media only screen and (max-width: 1440px) {
-    height: 70vh;
+const SQuestion = styled.img`
+  margin: 0px 20px 0px 10px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
   }
 `;
 
-const HomePageWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-`;
-
-function Dashboard({ settings }) {
+function Dashboard({ settings, setSetting }) {
   const [currentMarket, setCurrentMarket] = useState('');
+  const [withSTRK, setWithSTRK] = useState(true);
 
   useEffect(() => {
     setCurrentMarket('supply');
   }, []);
 
+  useEffect(() => {
+    setSetting({
+      withSTRK
+    });
+  }, [withSTRK]);
+
   return (
     <MainLayout title="Dashboard">
       <DashboardWrapper className="flex">
         <Row>
-          <Column xs="12" sm="12" md="5" className="overview-column">
+          <Column xs="12">
+            <div className="apy-toggle">
+              <Label size="14" primary className="toggel-label">
+                <div className="flex align-center">
+                  <p className="pointer">
+                    APY with Strike&nbsp;
+                    <Tooltip
+                      placement="bottom"
+                      title={
+                        <span>
+                          Choose whether to include the STRK distribution APR in
+                          calculations
+                        </span>
+                      }
+                    >
+                      <SQuestion src={IconQuestion} />
+                    </Tooltip>
+                  </p>
+                </div>
+              </Label>
+              <Toggle
+                checked={withSTRK}
+                onChecked={() => setWithSTRK(!withSTRK)}
+              />
+            </div>
+          </Column>
+          <Column xs="12">
             <Overview currentMarket={currentMarket} />
           </Column>
-          <Column xs="12" sm="12" md="7">
+          <Column xs="12">
             <Row>
               <Column xs="12">
                 <Market

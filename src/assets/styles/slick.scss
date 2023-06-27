@@ -55,6 +55,7 @@ iframe {
 }
 button.ant-switch {
   background: #dfdfdf;
+  min-width: 36px;
 }
 .ant-switch::after {
   background: #b8b8b8;
@@ -64,7 +65,7 @@ button.ant-switch {
   background: #b8b8b8 !important;
 }
 .ant-switch-checked::after {
-  background: #06c270 !important;
+  background: #fff !important;
 }
 button.ant-switch.ant-switch-checked:hover {
   background: #dfdfdf !important;

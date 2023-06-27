@@ -4,70 +4,80 @@ import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
-import CircleProgressBar from 'components/Basic/CircleProgressBar';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import AnimatedNumber from 'animated-number-react';
 import { getBigNumber } from 'utilities/common';
+import { Tooltip } from 'antd';
+import IconQuestion from 'assets/img/question.png';
 
 const CardWrapper = styled.div`
   width: 100%;
-  padding: 24px 0 24px 45px;
-  border-bottom: 1px solid #141518;
+  margin: 0 auto;
+  padding: 24px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 700px;
 
-  @media only screen and (max-width: 768px) {
-    padding: 24px;
+  .divider {
+    border-bottom: 1px solid #34384c;
   }
 
   .balance-value {
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    min-width: 220px;
+    justify-content: center;
+    gap: 50px;
+
+    .divider {
+      border-left: 1px solid #d1d5db;
+      border-bottom: 0px;
+      width: unset;
+      margin: auto 0;
+      height: 80%;
+    }
+
+    .balance-area {
+      min-width: 120px;
+      text-align: center;
+    }
 
     .label {
-      font-size: 15px;
-      font-weight: 900;
-      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-text-main);
     }
 
     .value {
-      font-size: 25px;
-      font-weight: 900;
-      color: var(--color-text-main);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--color-blue);
       margin-top: 10px;
     }
   }
 
-  .progress {
+  .apy-area {
+    width: 100%;
     display: flex;
     align-items: center;
-    margin: 10px 0;
-    flex: 1 1 0%;
-    .apy-toggle {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 20px 0;
+    justify-content: space-between;
+    margin: 0 auto;
+    padding: 20px 40px;
+    background: var(--color-bg-main);
+    border-radius: 10px;
+    max-width: 550px;
 
-      .toggel-label {
-        margin-top: 15px;
-        .emoji {
-          color: transparent;
-          text-shadow: 0 0 0 grey;
-        }
-      }
-    }
-  }
-
-  @media only screen and (max-width: 768px) {
     .label {
-      font-size: 16px;
+      color: var(--color-text-main);
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 24px;
     }
+
     .value {
-      font-size: 20px;
+      color: #01ffb4;
+      font-size: 36px;
+      line-height: 120%;
     }
   }
 
@@ -78,6 +88,76 @@ const CardWrapper = styled.div`
     .value {
       font-size: 20px;
     }
+
+    .balance-value {
+      gap: 20px;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    padding: 0px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .balance-value {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .divider {
+        display: none;
+      }
+
+      .balance-area {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        min-width: unset;
+        padding: 0px 20px;
+      }
+
+      .label {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--color-text-main);
+      }
+
+      .value {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--color-blue);
+        margin-top: 0px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 480px) {
+    .apy-area {
+      margin: 0 auto;
+      padding: 20px 20px;
+
+      .label {
+        color: var(--color-text-main);
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 20px;
+      }
+
+      .value {
+        color: #01ffb4;
+        font-size: 28px;
+        line-height: 120%;
+      }
+    }
+  }
+`;
+
+const SQuestion = styled.img`
+  margin: 0px 20px 0px 10px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+    height: 15px;
   }
 `;
 
@@ -102,8 +182,12 @@ function WalletBalance({ settings, setSetting }) {
         strkSupplyApy,
         strkBorrowApy
       } = asset;
-      const supplyBalanceUSD = getBigNumber(supplyBalance).times(getBigNumber(tokenPrice));
-      const borrowBalanceUSD = getBigNumber(borrowBalance).times(getBigNumber(tokenPrice));
+      const supplyBalanceUSD = getBigNumber(supplyBalance).times(
+        getBigNumber(tokenPrice)
+      );
+      const borrowBalanceUSD = getBigNumber(borrowBalance).times(
+        getBigNumber(tokenPrice)
+      );
       totalSupplied = totalSupplied.plus(supplyBalanceUSD);
       totalBorrowed = totalSupplied.plus(borrowBalanceUSD);
 
@@ -171,8 +255,41 @@ function WalletBalance({ settings, setSetting }) {
 
   return (
     <CardWrapper>
+      <div className="apy-area">
+        <div className="flex align-center">
+          <p className="pointer label">
+            Net APY&nbsp;
+            <Tooltip
+              placement="bottom"
+              title={
+                <span>
+                  Percentage of your total supply balance received as yearly
+                  interests
+                </span>
+              }
+            >
+              <SQuestion src={IconQuestion} />
+            </Tooltip>
+          </p>
+        </div>
+        <p className="value">{netAPY}%</p>
+      </div>
+      <div className="divider" />
       <div className="balance-value">
-        <div className="wallet-balance">
+        <div className="balance-area">
+          <div className="label">Daily Earnings</div>
+          <div className="value">
+            <AnimatedNumber
+              value="0"
+              formatValue={formatValue}
+              duration={2000}
+            />
+          </div>
+        </div>
+
+        <div className="divider" />
+
+        <div className="balance-area">
           <div className="label">Supply Balance</div>
           <div className="value">
             <AnimatedNumber
@@ -184,7 +301,10 @@ function WalletBalance({ settings, setSetting }) {
             />
           </div>
         </div>
-        <div className="borrow-balance">
+
+        <div className="divider" />
+
+        <div className="balance-area">
           <div className="label">Borrow Balance</div>
           <div className="value">
             <AnimatedNumber
@@ -196,19 +316,6 @@ function WalletBalance({ settings, setSetting }) {
             />
           </div>
         </div>
-      </div>
-      <div className="progress">
-        <CircleProgressBar
-          percent={netAPY}
-          width={150}
-          label="Net APY"
-          borrow={getBigNumber(settings.totalBorrowBalance)
-            .dp(2, 1)
-            .toString(10)}
-          supply={getBigNumber(settings.totalSupplyBalance)
-            .dp(2, 1)
-            .toString(10)}
-        />
       </div>
     </CardWrapper>
   );

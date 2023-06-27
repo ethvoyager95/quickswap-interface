@@ -19,6 +19,24 @@ const CardWrapper = styled.div`
   width: 100%;
   border-radius: 5px;
   background-color: var(--color-bg-primary);
+  display: grid;
+  grid-template-columns: 2fr 1px 1fr;
+  column-gap: 20px;
+  padding: 25px 30px;
+
+  .divider {
+    border-left: 1px solid #34384c;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    padding: 16px 16px;
+    grid-template-columns: 1fr;
+
+    .divider {
+      width: 100%;
+      border-bottom: 1px solid #34384c;
+    }
+  }
 `;
 
 const OverviewWrapper = styled.div`
@@ -59,7 +77,8 @@ const OverviewWrapper = styled.div`
     margin-top: 24px;
 
     .price {
-      color: #277ee6;  font-size: 17px;
+      color: #277ee6;
+      font-size: 17px;
       font-weight: 900;
     }
 
@@ -158,7 +177,11 @@ function Overview({ currentMarket, settings, getMarketHistory }) {
   }, [getGovernanceData]);
 
   useEffect(() => {
-    setCurrentAsset(settings.selectedAsset && settings.selectedAsset.id ? settings.selectedAsset.id : 'usdc');
+    setCurrentAsset(
+      settings.selectedAsset && settings.selectedAsset.id
+        ? settings.selectedAsset.id
+        : 'usdc'
+    );
   }, [settings.selectedAsset]);
 
   useEffect(() => {
@@ -210,19 +233,26 @@ function Overview({ currentMarket, settings, getMarketHistory }) {
   return (
     <Card>
       <CardWrapper>
-        <BorrowLimit />
-        <CoinInfo />
         <WalletBalance />
-        <OverviewWrapper>
+        <div className="divider" />
+        <BorrowLimit />
+        {/* <CoinInfo /> */}
+        {/* <OverviewWrapper>
           <div className="flex align-center just-between">
             <div className="flex align-center just-between asset-select-wrapper">
-              <AssetSelectWrapper className="flex align-center just-end" id="asset">
+              <AssetSelectWrapper
+                className="flex align-center just-end"
+                id="asset"
+              >
                 <img
                   className="asset-img"
                   src={constants.CONTRACT_TOKEN_ADDRESS[currentAsset].asset}
                   alt="asset"
                 />{' '}
-                <div className="value">{constants.CONTRACT_TOKEN_ADDRESS[currentAsset].symbol} Overview</div>
+                <div className="value">
+                  {constants.CONTRACT_TOKEN_ADDRESS[currentAsset].symbol}{' '}
+                  Overview
+                </div>
               </AssetSelectWrapper>
             </div>
           </div>
@@ -232,15 +262,20 @@ function Overview({ currentMarket, settings, getMarketHistory }) {
                 {`$${new BigNumber(marketInfo.underlyingPrice || 0)
                   .div(
                     new BigNumber(10).pow(
-                      18 + 18 - parseInt(settings.decimals[currentAsset].token || 0)
+                      18 +
+                        18 -
+                        parseInt(settings.decimals[currentAsset].token || 0)
                     )
                   )
                   .dp(2, 1)
-                  .toString(10)}`} USD
+                  .toString(10)}`}{' '}
+                USD
               </p>
               <p className="apy-value">{currentAPY}%</p>
               <p className="apy-label">
-                {(currentMarket || 'supply') === 'supply' ? 'Deposit APY' : 'Borrow APY'}
+                {(currentMarket || 'supply') === 'supply'
+                  ? 'Deposit APY'
+                  : 'Borrow APY'}
               </p>
             </div>
             <div className="historic-label">Historical rates</div>
@@ -248,10 +283,15 @@ function Overview({ currentMarket, settings, getMarketHistory }) {
           <OverviewChart marketType={currentMarket || 'supply'} data={data} />
           <div className="description">
             <p className="label">Market Liquidity</p>
-            <p className="value">{`${format(new BigNumber(marketInfo.cash || 0)
-              .div(new BigNumber(10).pow(settings.decimals[currentAsset].token))
-              .dp(4, 1)
-              .toString(10))} ${marketInfo.underlyingSymbol || ''}`}
+            <p className="value">
+              {`${format(
+                new BigNumber(marketInfo.cash || 0)
+                  .div(
+                    new BigNumber(10).pow(settings.decimals[currentAsset].token)
+                  )
+                  .dp(4, 1)
+                  .toString(10)
+              )} ${marketInfo.underlyingSymbol || ''}`}
             </p>
           </div>
           <div className="description">
@@ -264,15 +304,32 @@ function Overview({ currentMarket, settings, getMarketHistory }) {
           </div>
           <div className="description">
             <p className="label">Reserves</p>
-            <p className="value">{`${new BigNumber(marketInfo.totalReserves || 0).div(new BigNumber(10).pow(settings.decimals[currentAsset].token)).dp(8, 1).toString(10)} ${marketInfo.underlyingSymbol || ''}`}</p>
+            <p className="value">{`${new BigNumber(
+              marketInfo.totalReserves || 0
+            )
+              .div(new BigNumber(10).pow(settings.decimals[currentAsset].token))
+              .dp(8, 1)
+              .toString(10)} ${marketInfo.underlyingSymbol || ''}`}</p>
           </div>
           <div className="description">
             <p className="label">Reserve Factor</p>
-            <p className="value">{`${new BigNumber(marketInfo.reserveFactor || 0).div(new BigNumber(10).pow(18)).multipliedBy(100).dp(8, 1).toString(10)}%`}</p>
+            <p className="value">{`${new BigNumber(
+              marketInfo.reserveFactor || 0
+            )
+              .div(new BigNumber(10).pow(18))
+              .multipliedBy(100)
+              .dp(8, 1)
+              .toString(10)}%`}</p>
           </div>
           <div className="description">
             <p className="label">Collateral Factor</p>
-            <p className="value">{`${new BigNumber(marketInfo.collateralFactor || 0).div(new BigNumber(10).pow(18)).times(100).dp(2, 1).toString(10)}%`}</p>
+            <p className="value">{`${new BigNumber(
+              marketInfo.collateralFactor || 0
+            )
+              .div(new BigNumber(10).pow(18))
+              .times(100)
+              .dp(2, 1)
+              .toString(10)}%`}</p>
           </div>
           <div className="description">
             <p className="label">Total Supply</p>
@@ -289,18 +346,26 @@ function Overview({ currentMarket, settings, getMarketHistory }) {
           <div className="description">
             <p className="label">Exchange Rate</p>
             <p className="value">
-              {`1 ${marketInfo.underlyingSymbol || ''} = ${Number(new BigNumber(1).div(new BigNumber(marketInfo.exchangeRate)
-                .div(
-                  new BigNumber(10).pow(
-                    18 +
-                      +parseInt(settings.decimals[currentAsset || 'usdc'].token) -
-                      +parseInt(settings.decimals[currentAsset || 'usdc'].stoken)
+              {`1 ${marketInfo.underlyingSymbol || ''} = ${Number(
+                new BigNumber(1)
+                  .div(
+                    new BigNumber(marketInfo.exchangeRate).div(
+                      new BigNumber(10).pow(
+                        18 +
+                          +parseInt(
+                            settings.decimals[currentAsset || 'usdc'].token
+                          ) -
+                          +parseInt(
+                            settings.decimals[currentAsset || 'usdc'].stoken
+                          )
+                      )
+                    )
                   )
-                ))
-                .toString(10)).toFixed(6)} ${marketInfo.symbol || ''}`}
+                  .toString(10)
+              ).toFixed(6)} ${marketInfo.symbol || ''}`}
             </p>
           </div>
-        </OverviewWrapper>
+        </OverviewWrapper> */}
       </CardWrapper>
     </Card>
   );

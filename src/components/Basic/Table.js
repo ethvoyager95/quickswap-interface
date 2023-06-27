@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const MarketTableWrapper = styled.div`
-  border-top: 1px solid var(--color-bg-active);
+  // border-top: 1px solid var(--color-bg-active);
   .all-title {
     padding: 16px;
     font-size: 20px;

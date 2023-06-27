@@ -5,11 +5,11 @@ import { Switch } from 'antd';
 
 const ToggleWrapper = styled.div`
   height: 15px;
-  margin-top: -5px;
+  margin-top: -9px;
 
   .ant-switch {
-    background-color: var(--color-bg-main);
-    border-color: var(--color-bg-main);
+    background-color: #34384c;
+    border-color: #34384c;
     height: 14px;
     &::after {
       background-color: var(--color-dark-grey);
@@ -18,8 +18,8 @@ const ToggleWrapper = styled.div`
   }
 
   .ant-switch-checked {
-    background-color: var(--color-bg-main);
-    border-color: var(--color-bg-main);
+    background-color: #1962f0;
+    border-color: #1962f0;
     height: 14px;
     &::after {
       background-color: var(--color-blue);
