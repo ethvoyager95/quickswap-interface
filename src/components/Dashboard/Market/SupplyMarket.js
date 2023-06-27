@@ -68,10 +68,14 @@ function SupplyMarket({
             setIsCollateralConfirm(false);
           });
       } else {
-        message.error('You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.');
+        message.error(
+          'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+        );
       }
     } else {
-      message.error('You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.');
+      message.error(
+        'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+      );
     }
   };
 

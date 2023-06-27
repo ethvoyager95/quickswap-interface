@@ -21,46 +21,19 @@ import styled from 'styled-components';
 
 export const SectionWrapper = styled.div`
   .wallet-section {
-    padding: 0 30px;
-    margin-top: 20px;
   }
 
   .header {
     display: flex;
-    border-bottom: 1px solid #141518;
+    padding: 0px !important;
 
     @media only screen and (max-width: 768px) {
       flex-direction: column;
     }
 
-    .left-header {
-      width: 50%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 0;
-
-      @media only screen and (max-width: 768px) {
-        width: 100%;
-      }
-
-      img {
-        width: 40px;
-        height: 40px;
-        margin-bottom: 22px;
-      }
-
-      .title {
-        font-size: 17px;
-        font-weight: 900;
-        color: #39496a;
-      }
-    }
     .right-header {
-      width: 50%;
+      width: 100%;
       position: relative;
-      padding: 15px;
 
       @media only screen and (max-width: 768px) {
         width: 100%;
@@ -69,7 +42,6 @@ export const SectionWrapper = styled.div`
       .input-label {
         font-size: 16px;
         color: #c5cbd4;
-        margin: 10px 0;
       }
 
       .input-section {
@@ -103,49 +75,26 @@ export const SectionWrapper = styled.div`
       }
     }
     .notification {
-      width: 50%;
-      display: flex;
+      width: 100%;
       align-items: center;
       position: relative;
-      padding: 15px;
+      margin: 15px auto;
       font-size: 14px;
       font-weight: 600;
       text-align: center;
       color: #39496a;
-
-      @media only screen and (max-width: 768px) {
-        width: 100%;
-      }
     }
   }
 
   .body {
-    display: flex;
-
-    @media only screen and (max-width: 768px) {
-      flex-direction: column;
-    }
-
     .left-content {
-      width: 50%;
-      border-right: 1px solid #141518;
-      padding: 20px 30px;
-
-      @media only screen and (max-width: 768px) {
-        width: 100%;
-        border-bottom: 1px solid #141518;
-        border-right: 0;
-        padding: 20px 30px;
-      }
+      margin-top: 20px;
+      width: 100%;
     }
-    .right-content {
-      width: 50%;
-      padding: 20px 30px;
 
-      @media only screen and (max-width: 768px) {
-        width: 100%;
-        padding: 20px 30px;
-      }
+    .right-content {
+      margin-top: 20px;
+      width: 100%;
     }
   }
 
@@ -153,7 +102,7 @@ export const SectionWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 16px 0;
+    margin: 10px 0;
 
     img {
       width: 25px;
@@ -180,7 +129,6 @@ export const SectionWrapper = styled.div`
       height: 10px;
       width: 15px;
       margin: 0 10px;
-      transform: rotate(90deg);
     }
   }
 
@@ -196,7 +144,13 @@ export const SectionWrapper = styled.div`
         height: 41px;
         border-radius: 5px;
         background-color: var(--color-blue);
-        box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
+        background: linear-gradient(
+          242deg,
+          #246cf9 0%,
+          #1e68f6 0.01%,
+          #0047d0 100%,
+          #0047d0 100%
+        );
 
         .MuiButton-label {
           font-size: 16px;
@@ -385,28 +339,10 @@ function SupplySection({ asset, settings, setSetting }) {
 
   return (
     <SectionWrapper>
-      <div className="wallet-section">
-        <div className="description">
-          <span className="label">Wallet Balance</span>
-          <span className="value">
-            {format(
-              asset.walletBalance &&
-                getBigNumber(asset.walletBalance)
-                  .dp(2, 1)
-                  .toString(10)
-            )}{' '}
-            {asset.symbol}
-          </span>
-        </div>
-      </div>
       <div className="header">
-        <div className="left-header">
-          <img src={asset.img} alt="asset" />
-          <div className="title">{asset.name}</div>
-        </div>
         {asset.id === 'eth' || isEnabled ? (
           <div className="right-header">
-            <div className="input-label">Amount</div>
+            {/* <div className="input-label">Amount</div> */}
             <div className="input-section">
               <NumberFormat
                 value={amount.isZero() ? '0' : amount.toString(10)}
@@ -434,7 +370,21 @@ function SupplySection({ asset, settings, setSetting }) {
           </div>
         )}
       </div>
-      <div className="flex align-center body">
+      <div className="wallet-section">
+        <div className="description">
+          <span className="label">Wallet Balance</span>
+          <span className="value">
+            {format(
+              asset.walletBalance &&
+                getBigNumber(asset.walletBalance)
+                  .dp(2, 1)
+                  .toString(10)
+            )}{' '}
+            {asset.symbol}
+          </span>
+        </div>
+      </div>
+      <div className="body">
         <div className="left-content">
           <div className="description">
             <div className="flex align-center">
@@ -470,7 +420,7 @@ function SupplySection({ asset, settings, setSetting }) {
                 ${format(borrowLimit.dp(2, 1).toString(10))}
               </span>
             ) : (
-              <div className="flex flex-column align-center just-between">
+              <div className="flex align-center just-between">
                 <span className="value">
                   ${format(borrowLimit.dp(2, 1).toString(10))}
                 </span>
@@ -492,7 +442,7 @@ function SupplySection({ asset, settings, setSetting }) {
                 {borrowPercent.dp(2, 1).toString(10)}%
               </span>
             ) : (
-              <div className="flex flex-column align-center just-between">
+              <div className="flex align-center just-between">
                 <span className="value">
                   {borrowPercent.dp(2, 1).toString(10)}%
                 </span>

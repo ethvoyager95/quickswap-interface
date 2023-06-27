@@ -8,16 +8,12 @@ import { bindActionCreators } from 'redux';
 import MainLayout from 'containers/Layout/MainLayout';
 import Overview from 'components/Dashboard/Overview';
 import Market from 'components/Dashboard/Market';
-import SupplyCard from 'components/Dashboard/SupplyCard';
 import { connectAccount, accountActionCreators } from 'core';
-import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Row, Column } from 'components/Basic/Style';
 import Toggle from 'components/Basic/Toggle';
 import { Tooltip } from 'antd';
 import { Label } from 'components/Basic/Label';
 import IconQuestion from 'assets/img/question.png';
-import BigNumber from 'bignumber.js';
-import * as constants from 'utilities/constants';
 
 const DashboardWrapper = styled.div`
   height: 100%;
@@ -42,7 +38,7 @@ const SQuestion = styled.img`
   }
 `;
 
-function Dashboard({ settings, setSetting }) {
+function Dashboard({ setSetting }) {
   const [currentMarket, setCurrentMarket] = useState('');
   const [withSTRK, setWithSTRK] = useState(true);
 
@@ -97,9 +93,6 @@ function Dashboard({ settings, setSetting }) {
                   setCurrentMarket={setCurrentMarket}
                 />
               </Column>
-              <Column xs="12">
-                <SupplyCard currentMarket={currentMarket} />
-              </Column>
             </Row>
           </Column>
         </Row>
@@ -109,15 +102,10 @@ function Dashboard({ settings, setSetting }) {
 }
 
 Dashboard.propTypes = {
-  history: PropTypes.object,
-  settings: PropTypes.object,
   setSetting: PropTypes.func.isRequired
 };
 
-Dashboard.defaultProps = {
-  history: {},
-  settings: {}
-};
+Dashboard.defaultProps = {};
 
 const mapStateToProps = ({ account }) => ({
   settings: account.setting

@@ -42,7 +42,9 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
         setNewBorrowPercent(new BigNumber(0));
       } else {
         setBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
-        setNewBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
+        setNewBorrowPercent(
+          totalBorrowBalance.div(totalBorrowLimit).times(100)
+        );
       }
     } else {
       const temp = totalBorrowBalance.minus(amount.times(tokenPrice));
@@ -181,22 +183,10 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
 
   return (
     <SectionWrapper>
-      <div className="wallet-section">
-        <div className="description">
-          <span className="label">Wallet Balance</span>
-          <span className="value">
-            {format(asset.walletBalance && getBigNumber(asset.walletBalance).dp(2, 1).toString(10))} {asset.symbol}
-          </span>
-        </div>
-      </div>
       <div className="header">
-        <div className="left-header">
-          <img src={asset.img} alt="asset" />
-          <div className="title">{asset.name}</div>
-        </div>
         {asset.id === 'eth' || isEnabled ? (
           <div className="right-header">
-            <div className="input-label">Amount</div>
+            {/* <div className="input-label">Amount</div> */}
             <div className="input-section">
               <NumberFormat
                 autoFocus
@@ -221,11 +211,26 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
           </div>
         ) : (
           <div className="notification">
-            To Repay {asset.name} to the Strike Protocol, you need to enable it first.
+            To Repay {asset.name} to the Strike Protocol, you need to enable it
+            first.
           </div>
         )}
       </div>
-      <div className="flex align-center body">
+      <div className="wallet-section">
+        <div className="description">
+          <span className="label">Wallet Balance</span>
+          <span className="value">
+            {format(
+              asset.walletBalance &&
+                getBigNumber(asset.walletBalance)
+                  .dp(2, 1)
+                  .toString(10)
+            )}{' '}
+            {asset.symbol}
+          </span>
+        </div>
+      </div>
+      <div className="body">
         <div className="left-content">
           <div className="description">
             <div className="flex align-center">
@@ -257,28 +262,44 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
           <div className="description">
             <span className="label">Borrow Balance</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">${format(borrowBalance.dp(2, 1).toString(10))}</span>
+              <span className="value">
+                ${format(borrowBalance.dp(2, 1).toString(10))}
+              </span>
             ) : (
-              <div className="flex flex-column align-center just-between">
-                <span className="value">${format(borrowBalance.dp(2, 1).toString(10))}</span>
+              <div className="flex align-center just-between">
+                <span className="value">
+                  ${format(borrowBalance.dp(2, 1).toString(10))}
+                </span>
                 <img
                   className="arrow-right-img"
                   src={arrowRightImg}
                   alt="arrow"
                 />
-                <span className="value">${newBorrowBalance.dp(2, 1).toString(10)}</span>
+                <span className="value">
+                  ${newBorrowBalance.dp(2, 1).toString(10)}
+                </span>
               </div>
             )}
           </div>
           <div className="description">
             <span className="label">Borrow Limit Used</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
+              <span className="value">
+                {borrowPercent.dp(2, 1).toString(10)}%
+              </span>
             ) : (
-              <div className="flex flex-column align-center just-between">
-                <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">{newBorrowPercent.dp(2, 1).toString(10)}%</span>
+              <div className="flex align-center just-between">
+                <span className="value">
+                  {borrowPercent.dp(2, 1).toString(10)}%
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  {newBorrowPercent.dp(2, 1).toString(10)}%
+                </span>
               </div>
             )}
           </div>

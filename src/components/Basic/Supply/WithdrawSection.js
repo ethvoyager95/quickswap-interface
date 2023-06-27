@@ -47,7 +47,9 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
     setSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
 
     if (tokenPrice && !amount.isZero() && !amount.isNaN()) {
-      const temp = totalBorrowLimit.minus(amount.times(tokenPrice).times(collateralFactor));
+      const temp = totalBorrowLimit.minus(
+        amount.times(tokenPrice).times(collateralFactor)
+      );
       setNewBorrowLimit(temp);
       setNewBorrowPercent(totalBorrowBalance.div(temp).times(100));
       if (totalBorrowLimit.isZero()) {
@@ -65,7 +67,9 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
         setNewBorrowPercent(new BigNumber(0));
       } else {
         setBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
-        setNewBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
+        setNewBorrowPercent(
+          totalBorrowBalance.div(totalBorrowLimit).times(100)
+        );
       }
     }
   }, [settings.selectedAddress, amount]);
@@ -151,21 +155,9 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
 
   return (
     <SectionWrapper>
-      <div className="wallet-section">
-        <div className="description">
-          <span className="label">Protocol Balance</span>
-          <span className="value">
-            {format(asset.supplyBalance && asset.supplyBalance.dp(2, 1).toString(10))} {asset.symbol}
-          </span>
-        </div>
-      </div>
       <div className="header">
-        <div className="left-header">
-          <img src={asset.img} alt="asset" />
-          <div className="title">{asset.name}</div>
-        </div>
         <div className="right-header">
-          <div className="input-label">Amount</div>
+          {/* <div className="input-label">Amount</div> */}
           <div className="input-section">
             <NumberFormat
               autoFocus
@@ -194,7 +186,18 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
           </div>
         </div>
       </div>
-      <div className="flex align-center body">
+      <div className="wallet-section">
+        <div className="description">
+          <span className="label">Protocol Balance</span>
+          <span className="value">
+            {format(
+              asset.supplyBalance && asset.supplyBalance.dp(2, 1).toString(10)
+            )}{' '}
+            {asset.symbol}
+          </span>
+        </div>
+      </div>
+      <div className="body">
         <div className="left-content">
           <div className="description">
             <div className="flex align-center">
@@ -226,24 +229,44 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
           <div className="description">
             <span className="label">Borrow Limit</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">${format(borrowLimit.dp(2, 1).toString(10))}</span>
+              <span className="value">
+                ${format(borrowLimit.dp(2, 1).toString(10))}
+              </span>
             ) : (
-              <div className="flex flex-column align-center just-between">
-                <span className="value">${format(borrowLimit.dp(2, 1).toString(10))}</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">${format(newBorrowLimit.dp(2, 1).toString(10))}</span>
+              <div className="flex align-center just-between">
+                <span className="value">
+                  ${format(borrowLimit.dp(2, 1).toString(10))}
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  ${format(newBorrowLimit.dp(2, 1).toString(10))}
+                </span>
               </div>
             )}
           </div>
           <div className="description">
             <span className="label">Borrow Limit Used</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
+              <span className="value">
+                {borrowPercent.dp(2, 1).toString(10)}%
+              </span>
             ) : (
-              <div className="flex flex-column align-center just-between">
-                <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">{newBorrowPercent.dp(2, 1).toString(10)}%</span>
+              <div className="flex align-center just-between">
+                <span className="value">
+                  {borrowPercent.dp(2, 1).toString(10)}%
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  {newBorrowPercent.dp(2, 1).toString(10)}%
+                </span>
               </div>
             )}
           </div>

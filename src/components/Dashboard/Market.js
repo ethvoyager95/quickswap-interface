@@ -8,12 +8,28 @@ import SupplyMarket from 'components/Dashboard/Market/SupplyMarket';
 import BorrowMarket from 'components/Dashboard/Market/BorrowMarket';
 import { Card } from 'components/Basic/Card';
 import { getBigNumber } from 'utilities/common';
+import SupplyModal from 'components/Basic/Supply/SupplyModal';
+import BorrowModal from 'components/Basic/Borrow/BorrowModal';
 
 const MarketWrapper = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 20px;
+  margin-top: 20px;
+
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const MarketWrapperMobile = styled.div`
+  display: none;
+
+  @media only screen and (max-width: 768px) {
+    display: block;
+    width: 100%;
+  }
 `;
 
 const CardWrapper = styled.div`
@@ -52,16 +68,15 @@ const Tabs = styled.div`
     cursor: pointer;
     width: 48%;
     height: 41px;
-    color: var(--color-text-main);
-    background-color: var(--color-bg-main);
-    margin: 1%;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-text-secondary);
+    margin: 1% 0px;
     font-size: 17px;
     font-weight: 600;
   }
   .tab-active {
     color: var(--color-white);
-    background-color: var(--color-blue);
-    box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
+    border-bottom: 1px solid var(--color-white);
   }
 `;
 
@@ -79,6 +94,8 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
   const [borrowedAssets, setBorrowedAssets] = useState([]);
   const [nonBorrowedAssets, setNonBorrowedAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState({});
+  const [isOpenSupplyModal, setIsOpenSupplyModal] = useState(false);
+  const [isOpenBorrowModal, setIsOpenBorrowModal] = useState(false);
 
   const updateMarketTable = async () => {
     const tempArr = [];
@@ -172,59 +189,81 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
           <SupplyMarket
             suppliedAssets={suppliedAssets}
             remainAssets={nonSuppliedAssets}
-            setSelectedAsset={setSelectedAsset}
+            setSelectedAsset={asset => {
+              setSelectedAsset(asset);
+              setIsOpenSupplyModal(true);
+            }}
           />
         </CardWrapper>
         <CardWrapper>
           <BorrowMarket
             borrowedAssets={borrowedAssets}
             remainAssets={nonBorrowedAssets}
-            setSelectedAsset={setSelectedAsset}
+            setSelectedAsset={asset => {
+              setSelectedAsset(asset);
+              setIsOpenBorrowModal(true);
+            }}
           />
         </CardWrapper>
       </MarketWrapper>
-      {/* <CardWrapper>
-        <TabContainer>
-          <Tabs>
-            <div
-              className={`tab-item center ${
-                currentMarket === 'supply' ? 'tab-active' : ''
-              }`}
-              onClick={() => {
-                setCurrentMarket('supply');
-              }}
-            >
-              Supply Market
-            </div>
-            <div
-              className={`tab-item center ${
-                currentMarket === 'borrow' ? 'tab-active' : ''
-              }`}
-              onClick={() => {
-                setCurrentMarket('borrow');
-              }}
-            >
-              Borrow Market
-            </div>
-          </Tabs>
-        </TabContainer>
-        <TabContent>
-          {currentMarket === 'supply' && (
-            <SupplyMarket
-              suppliedAssets={suppliedAssets}
-              remainAssets={nonSuppliedAssets}
-              setSelectedAsset={setSelectedAsset}
-            />
-          )}
-          {currentMarket === 'borrow' && (
-            <BorrowMarket
-              borrowedAssets={borrowedAssets}
-              remainAssets={nonBorrowedAssets}
-              setSelectedAsset={setSelectedAsset}
-            />
-          )}
-        </TabContent>
-      </CardWrapper> */}
+      <MarketWrapperMobile>
+        <CardWrapper>
+          <TabContainer>
+            <Tabs>
+              <div
+                className={`tab-item center ${
+                  currentMarket === 'supply' ? 'tab-active' : ''
+                }`}
+                onClick={() => {
+                  setCurrentMarket('supply');
+                }}
+              >
+                Supply Market
+              </div>
+              <div
+                className={`tab-item center ${
+                  currentMarket === 'borrow' ? 'tab-active' : ''
+                }`}
+                onClick={() => {
+                  setCurrentMarket('borrow');
+                }}
+              >
+                Borrow Market
+              </div>
+            </Tabs>
+          </TabContainer>
+          <TabContent>
+            {currentMarket === 'supply' && (
+              <SupplyMarket
+                suppliedAssets={suppliedAssets}
+                remainAssets={nonSuppliedAssets}
+                setSelectedAsset={asset => {
+                  setSelectedAsset(asset);
+                  setIsOpenSupplyModal(true);
+                }}
+              />
+            )}
+            {currentMarket === 'borrow' && (
+              <BorrowMarket
+                borrowedAssets={borrowedAssets}
+                remainAssets={nonBorrowedAssets}
+                setSelectedAsset={asset => {
+                  setSelectedAsset(asset);
+                  setIsOpenBorrowModal(true);
+                }}
+              />
+            )}
+          </TabContent>
+        </CardWrapper>
+      </MarketWrapperMobile>
+      <SupplyModal
+        visible={isOpenSupplyModal}
+        onCancel={() => setIsOpenSupplyModal(false)}
+      />
+      <BorrowModal
+        visible={isOpenBorrowModal}
+        onCancel={() => setIsOpenBorrowModal(false)}
+      />
     </Card>
   );
 };

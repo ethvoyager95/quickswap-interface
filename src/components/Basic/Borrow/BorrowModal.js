@@ -1,16 +1,74 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Card } from 'components/Basic/Card';
-import SupplySection from 'components/Basic/Supply/SupplySection';
-import WithdrawSection from 'components/Basic/Supply/WithdrawSection';
-import BorrowSection from 'components/Basic/Borrow/BorrowSection';
-import RepaySection from 'components/Basic/Borrow/RepaySection';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { compose } from 'recompose';
 import { connectAccount } from 'core';
 import metaMaskImg from 'assets/img/metamask.png';
 import { addToken, getBigNumber } from 'utilities/common';
+import { Modal } from 'antd';
+import closeImg from 'assets/img/close.png';
+import BorrowSection from './BorrowSection';
+import RepaySection from './RepaySection';
+
+const ModalContent = styled.div`
+  border-radius: 5px;
+  padding: 27px 32px 23px 32px;
+  color: white;
+  gap: 25px;
+  user-select: none;
+
+  .close-btn {
+    position: absolute;
+    top: 30px;
+    right: 32px;
+    z-index: 2;
+  }
+
+  .header {
+    width: 100%;
+    font-size: 18px;
+    font-weight: 500;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+
+    &:hover {
+      transition: all 0.3s;
+      color: rgba(39, 126, 230, 0.7);
+
+      svg path {
+        transition: all 0.3s;
+        fill: rgba(39, 126, 230, 0.7);
+      }
+    }
+  }
+
+  .fiat-option {
+    width: 100%;
+    height: 212px;
+    border-radius: 5px;
+    border: 1px solid var(--color-text-secondary);
+  }
+
+  .disconnect-button {
+    width: 100%;
+    font-weight: 500;
+    font-size: 18px;
+    padding: 10px 0px;
+    border-radius: 5px;
+    border: 1px solid var(--color-text-secondary);
+    text-align: center;
+    cursor: pointer;
+  }
+`;
 
 const CardWrapper = styled.div`
   position: relative;
@@ -18,14 +76,13 @@ const CardWrapper = styled.div`
   height: 100%;
   border-radius: 5px;
   background-color: var(--color-bg-primary);
-  padding: 20px;
 
   .header {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 0;
+    padding-bottom: 40px;
     gap: 10px;
 
     img {
@@ -48,7 +105,7 @@ const CardWrapper = styled.div`
   }
 
   .add-token-wrapper {
-    justify-content: flex-end;
+    justify-content: flex-start;
     color: var(--color-text-main);
 
     @media only screen and (max-width: 1496px) {
@@ -96,15 +153,9 @@ const Tabs = styled.div`
   }
 `;
 
-function SupplyCard({ currentMarket, settings }) {
-  const [currentTab, setCurrentTab] = useState('supply');
+function BorrowModal({ visible, onCancel, settings }) {
+  const [currentTab, setCurrentTab] = useState('borrow');
   const [currentAsset, setCurrentAsset] = useState({});
-
-  useEffect(() => {
-    if (currentMarket) {
-      setCurrentTab(currentMarket);
-    }
-  }, [currentMarket]);
 
   useEffect(() => {
     const asset = settings.selectedAsset;
@@ -124,108 +175,75 @@ function SupplyCard({ currentMarket, settings }) {
     }
   }, [settings.selectedAsset]);
 
-  useEffect(() => {
-    if (currentAsset.id === 'ust' && currentMarket === 'supply') {
-      setCurrentTab('withdraw');
-    } else if (currentAsset.borrowPaused && currentMarket === 'borrow') {
-      setCurrentTab('repay');
-    } else {
-      setCurrentTab(currentMarket);
-    }
-  }, [currentAsset.id, currentMarket]);
-
   return (
-    <Card>
-      <CardWrapper>
-        <div className="header">
-          <img src={currentAsset.img} alt="asset" />
-          <div className="title">{currentAsset.name}</div>
-        </div>
-        {window.ethereum && window.ethereum.networkVersion && currentAsset.id && (
-          <div className="flex align-center add-token-wrapper">
-            {currentAsset.id !== 'eth' && (
-              <div className="flex align-center underlying-asset">
-                {currentAsset.id.toUpperCase()}
-                <img
-                  className="add-token pointer"
-                  src={metaMaskImg}
-                  onClick={() =>
-                    addToken(
-                      currentAsset.id,
-                      settings.decimals[currentAsset.id].token,
-                      'token'
-                    )
-                  }
-                  alt=""
-                />
+    <Modal
+      id="info-modal"
+      className="info-modal"
+      visible={visible}
+      onCancel={onCancel}
+      footer={null}
+      closable={false}
+      maskClosable
+      centered
+    >
+      <ModalContent className="flex flex-column align-center just-center">
+        <img
+          className="close-btn pointer"
+          src={closeImg}
+          alt="close"
+          onClick={onCancel}
+        />
+
+        <CardWrapper>
+          <div className="header">
+            <img src={currentAsset.img} alt="asset" />
+            <div className="title">{currentAsset.name}</div>
+          </div>
+          {window.ethereum &&
+            window.ethereum.networkVersion &&
+            currentAsset.id && (
+              <div className="flex align-center add-token-wrapper">
+                {currentAsset.id !== 'eth' && (
+                  <div className="flex align-center underlying-asset">
+                    {currentAsset.id.toUpperCase()}
+                    <img
+                      className="add-token pointer"
+                      src={metaMaskImg}
+                      onClick={() =>
+                        addToken(
+                          currentAsset.id,
+                          settings.decimals[currentAsset.id].token,
+                          'token'
+                        )
+                      }
+                      alt=""
+                    />
+                  </div>
+                )}
+                <div className="flex align-center stoken-asset">
+                  {`s${
+                    currentAsset.id === 'wbtc'
+                      ? 'BTC'
+                      : currentAsset.id.toUpperCase()
+                  }`}
+                  <img
+                    className="add-token pointer"
+                    src={metaMaskImg}
+                    onClick={() =>
+                      addToken(
+                        currentAsset.id,
+                        settings.decimals[currentAsset.id].stoken,
+                        'stoken'
+                      )
+                    }
+                    alt=""
+                  />
+                </div>
               </div>
             )}
-            <div className="flex align-center stoken-asset">
-              {`s${
-                currentAsset.id === 'wbtc'
-                  ? 'BTC'
-                  : currentAsset.id.toUpperCase()
-              }`}
-              <img
-                className="add-token pointer"
-                src={metaMaskImg}
-                onClick={() =>
-                  addToken(
-                    currentAsset.id,
-                    settings.decimals[currentAsset.id].stoken,
-                    'stoken'
-                  )
-                }
-                alt=""
-              />
-            </div>
-          </div>
-        )}
-        {currentMarket === 'supply' ? (
           <>
             <Tabs>
               {currentAsset.id !== 'ust' && (
-                <div
-                  className={`tab-item center ${
-                    currentTab === 'supply' ? 'tab-active' : ''
-                  }`}
-                  onClick={() => {
-                    setCurrentTab('supply');
-                  }}
-                >
-                  Supply
-                </div>
-              )}
-              <div
-                className={`tab-item center ${
-                  currentTab === 'withdraw' ? 'tab-active' : ''
-                }`}
-                onClick={() => {
-                  setCurrentTab('withdraw');
-                }}
-              >
-                Withdraw
-              </div>
-            </Tabs>
-            {!currentAsset || Object.keys(currentAsset).length === 0 ? (
-              <div className="loading-section">
-                <LoadingSpinner />
-              </div>
-            ) : (
-              <>
-                {currentTab === 'supply' && (
-                  <SupplySection asset={currentAsset} />
-                )}
-                {currentTab === 'withdraw' && (
-                  <WithdrawSection asset={currentAsset} />
-                )}
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <Tabs>
-              {!currentAsset.borrowPaused && (
                 <div
                   className={`tab-item center ${
                     currentTab === 'borrow' ? 'tab-active' : ''
@@ -263,18 +281,21 @@ function SupplyCard({ currentMarket, settings }) {
               </>
             )}
           </>
-        )}
-      </CardWrapper>
-    </Card>
+        </CardWrapper>
+      </ModalContent>
+    </Modal>
   );
 }
 
-SupplyCard.propTypes = {
-  currentMarket: PropTypes.string.isRequired,
+BorrowModal.propTypes = {
+  visible: PropTypes.bool,
+  onCancel: PropTypes.func,
   settings: PropTypes.object
 };
 
-SupplyCard.defaultProps = {
+BorrowModal.defaultProps = {
+  visible: false,
+  onCancel: () => {},
   settings: {}
 };
 
@@ -282,4 +303,4 @@ const mapStateToProps = ({ account }) => ({
   settings: account.setting
 });
 
-export default compose(connectAccount(mapStateToProps, null))(SupplyCard);
+export default compose(connectAccount(mapStateToProps, null))(BorrowModal);

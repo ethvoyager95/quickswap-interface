@@ -146,27 +146,9 @@ function BorrowSection({ asset, settings, setSetting }) {
 
   return (
     <SectionWrapper>
-      <div className="wallet-section">
-        <div className="description">
-          <span className="label">Protocol Balance</span>
-          <span className="value">
-            {asset.borrowBalance &&
-              format(
-                getBigNumber(asset.borrowBalance)
-                  .dp(2, 1)
-                  .toString(10)
-              )}{' '}
-            {asset.symbol}
-          </span>
-        </div>
-      </div>
       <div className="header">
-        <div className="left-header">
-          <img src={asset.img} alt="asset" />
-          <div className="title">{asset.name}</div>
-        </div>
         <div className="right-header">
-          <div className="input-label">Amount</div>
+          {/* <div className="input-label">Amount</div> */}
           <div className="input-section">
             <NumberFormat
               value={amount.isZero() ? '0' : amount.toString(10)}
@@ -195,7 +177,21 @@ function BorrowSection({ asset, settings, setSetting }) {
           </div>
         </div>
       </div>
-      <div className="flex align-center body">
+      <div className="wallet-section">
+        <div className="description">
+          <span className="label">Protocol Balance</span>
+          <span className="value">
+            {asset.borrowBalance &&
+              format(
+                getBigNumber(asset.borrowBalance)
+                  .dp(2, 1)
+                  .toString(10)
+              )}{' '}
+            {asset.symbol}
+          </span>
+        </div>
+      </div>
+      <div className="body">
         <div className="left-content">
           <div className="description">
             <div className="flex align-center">
@@ -253,7 +249,7 @@ function BorrowSection({ asset, settings, setSetting }) {
                 {borrowPercent.dp(2, 1).toString(10)}%
               </span>
             ) : (
-              <div className="flex flex-column align-center just-between">
+              <div className="flex align-center just-between">
                 <span className="value">
                   {borrowPercent.dp(2, 1).toString(10)}%
                 </span>
