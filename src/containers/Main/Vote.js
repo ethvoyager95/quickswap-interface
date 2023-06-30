@@ -198,22 +198,26 @@ function Vote({ settings, history, getProposals, setSetting }) {
   return (
     <MainLayout title="Vote">
       <VoteWrapper>
-        {(!settings.selectedAddress || settings.accountLoading) && (
+        {/* {(!settings.selectedAddress || settings.accountLoading) && (
           <SpinnerWrapper>
             <LoadingSpinner />
           </SpinnerWrapper>
-        )}
-        {settings.selectedAddress && !settings.accountLoading && (
-          <>
-            <Row>
+        )} */}
+
+        <>
+          {/* <Row>
               <Column xs="12" sm="12" md="5">
                 <CoinInfo
                   balance={balance !== '0' ? `${balance}` : '0.00000000'}
                   address={
                     settings.selectedAddress ? settings.selectedAddress : ''
                   }
-                  ensName={settings.selectedENSName ? settings.selectedENSName: ''}
-                  ensAvatar={settings.selectedENSAvatar ? settings.selectedENSAvatar : ''}
+                  ensName={
+                    settings.selectedENSName ? settings.selectedENSName : ''
+                  }
+                  ensAvatar={
+                    settings.selectedENSAvatar ? settings.selectedENSAvatar : ''
+                  }
                 />
               </Column>
               <Column xs="12" sm="12" md="7">
@@ -225,31 +229,42 @@ function Vote({ settings, history, getProposals, setSetting }) {
                   }
                 />
               </Column>
-            </Row>
-            <Row>
-              <Column xs="12" sm="12" md="5">
-                <VotingWallet
-                  balance={balance !== '0' ? `${balance}` : '0.00000000'}
-                  earnedBalance={earnedBalance}
-                  pageType=""
-                />
-              </Column>
-              <Column xs="12" sm="12" md="7" style={{ height: '100%' }}>
-                <Proposals
-                  address={
-                    settings.selectedAddress ? settings.selectedAddress : ''
-                  }
-                  isLoadingProposal={isLoadingProposal}
-                  pageNumber={current}
-                  proposals={proposals.result}
-                  total={proposals.total || 0}
-                  votingWeight={Number(votingWeight)}
-                  onChangePage={handleChangePage}
-                />
-              </Column>
-            </Row>
-          </>
-        )}
+            </Row> */}
+          <Row>
+            <Column xs="12" sm="12" md="8" style={{ height: '100%' }}>
+              <Proposals
+                address={
+                  settings.selectedAddress ? settings.selectedAddress : ''
+                }
+                isLoadingProposal={isLoadingProposal}
+                pageNumber={current}
+                proposals={proposals.result}
+                total={proposals.total || 0}
+                votingWeight={Number(votingWeight)}
+                onChangePage={handleChangePage}
+              />
+            </Column>
+            <Column xs="12" sm="12" md="4">
+              <VotingPower
+                power={
+                  votingWeight !== '0'
+                    ? `${new BigNumber(votingWeight).dp(8, 1).toString(10)}`
+                    : '0.00000000'
+                }
+              />
+              <VotingWallet
+                balance={balance !== '0' ? `${balance}` : '0.00000000'}
+                earnedBalance={earnedBalance}
+                power={
+                  votingWeight !== '0'
+                    ? `${new BigNumber(votingWeight).dp(8, 1).toString(10)}`
+                    : '0.00000000'
+                }
+                pageType=""
+              />
+            </Column>
+          </Row>
+        </>
       </VoteWrapper>
     </MainLayout>
   );

@@ -7,8 +7,8 @@ import { withRouter } from 'react-router-dom';
 import arrowRightImg from 'assets/img/arrow-right.png';
 
 const HeaderWrapper = styled.div`
-  height: 50px;
-  margin: 20px 15px 0;
+  // height: 50px;
+  // margin: 20px 15px 0;
   .title-wrapper {
     img {
       height: 16px;
@@ -39,21 +39,23 @@ function Header({ title, history }) {
 
   return (
     <HeaderWrapper className="flex align-center just-between">
-      <div
-        className="flex align-center pointer title-wrapper"
-        onClick={handleRoute}
-      >
-        {(title === 'Overview' ||
-          title === 'Details' ||
-          title === 'Market') && <img src={arrowRightImg} alt="arrow-left" />}
-        <p
-          className={`${
-            title === 'Overview' || title === 'Details' ? 'highlight' : ''
-          }`}
+      {(title === 'Overview' || title === 'Details' || title === 'Market') && (
+        <div
+          className="flex align-center pointer title-wrapper"
+          onClick={handleRoute}
         >
-          {title}
-        </p>
-      </div>
+          <>
+            <img src={arrowRightImg} alt="arrow-left" />
+            <p
+              className={`${
+                title === 'Overview' || title === 'Details' ? 'highlight' : ''
+              }`}
+            >
+              {title}
+            </p>
+          </>
+        </div>
+      )}
     </HeaderWrapper>
   );
 }

@@ -65,7 +65,7 @@ const RewardsInfoWrapper = styled.div`
   position: relative;
   width: 100%;
   border-radius: 5px;
-  background-color: #ffffff;
+  background-color: var(--color-bg-primary);
 `;
 
 const TableWrapper = styled.div`
@@ -121,7 +121,7 @@ const TableWrapper = styled.div`
         border-left: 2px solid var(--color-blue);
       }
       div {
-        color: #39496a;
+        color: white;
         max-width: 100%;
       }
       .mobile-label {
@@ -160,7 +160,7 @@ const UserDistributionWrapper = styled.div`
   width: 100%;
   height: calc(100% - 30px);
   border-radius: 5px;
-  background-color: #ffffff;
+  background-color: var(--color-bg-primary);
   padding: 29px 32px;
   margin-top: 10px;
 

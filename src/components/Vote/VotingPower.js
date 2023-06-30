@@ -10,8 +10,13 @@ const VotingPowerWrapper = styled.div`
   height: 100%;
   padding: 14px 56px 14px 56px;
   border-radius: 5px;
-  background-color: var(--color-blue);
-  box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
+  background: linear-gradient(
+    242deg,
+    #246cf9 0%,
+    #1e68f6 0.01%,
+    #0047d0 100%,
+    #0047d0 100%
+  );
 
   .title {
     font-size: 20px;
@@ -48,7 +53,7 @@ function VotingPower({ power }) {
 
   return (
     <Row>
-      <Column sm="12" md="8">
+      <Column sm="12" md="12">
         <Card>
           <VotingPowerWrapper className="flex flex-column">
             <p className="title">Voting Weight</p>

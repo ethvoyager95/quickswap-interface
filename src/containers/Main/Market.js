@@ -158,7 +158,7 @@ const TableWrapper = styled.div`
         border-left: 2px solid var(--color-blue);
       }
       div {
-        color: #39496a
+        color: white;
         max-width: 100%;
       }
       .mobile-label {
@@ -171,7 +171,7 @@ const TableWrapper = styled.div`
       .item-title {
         font-weight: 600;
         font-size: 16px;
-        color: #39496a
+        color: white;
       }
       .item-value {
         font-weight: 600;

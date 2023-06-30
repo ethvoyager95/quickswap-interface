@@ -70,8 +70,13 @@ const VotingWrapper = styled.div`
       width: 100%;
       height: 48px;
       border-radius: 5px;
-      background-color: var(--color-blue);
-      box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
+      background: linear-gradient(
+        242deg,
+        #246cf9 0%,
+        #1e68f6 0.01%,
+        #0047d0 100%,
+        #0047d0 100%
+      );
 
       .MuiButton-label {
         font-size: 13px;

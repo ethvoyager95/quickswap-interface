@@ -11,6 +11,7 @@ import { getVoteContract, methods } from 'utilities/ContractService';
 import dashImg from 'assets/img/dash.png';
 import { Row, Column } from 'components/Basic/Style';
 import { Label } from './Label';
+import { connectAccount } from 'core';
 
 const ProposalWrapper = styled.div`
   width: 100%;
@@ -78,8 +79,13 @@ const ProposalWrapper = styled.div`
     button {
       height: 32px;
       border-radius: 5px;
-      background-color: var(--color-blue);
-      box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
+      background: linear-gradient(
+        242deg,
+        #246cf9 0%,
+        #1e68f6 0.01%,
+        #0047d0 100%,
+        #0047d0 100%
+      );
 
       .MuiButton-label {
         font-size: 12px;
@@ -108,7 +114,8 @@ function Proposal({
   delegateAddress,
   proposal,
   votingWeight,
-  history
+  history,
+  settings
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [voteType, setVoteType] = useState('like');
@@ -130,11 +137,19 @@ function Proposal({
   const getRemainTime = item => {
     if (item.state === 'Active') {
       const diffBlock = item.endBlock - item.blockNumber;
-      const duration = moment.duration(diffBlock < 0 ? 0 : diffBlock * 15, 'seconds');
+      const duration = moment.duration(
+        diffBlock < 0 ? 0 : diffBlock * 15,
+        'seconds'
+      );
       const days = Math.floor(duration.asDays());
       const hours = Math.floor(duration.asHours()) - days * 24;
-      const minutes = Math.floor(duration.asMinutes()) - days * 24 * 60 - hours * 60;
-      return `${days > 0 ? `${days} ${days > 1 ? 'days' : 'day'},` : ''} ${hours} ${hours > 1 ? 'hrs' : 'hr'} ${days === 0 ? `, ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}` : ''} left`;
+      const minutes =
+        Math.floor(duration.asMinutes()) - days * 24 * 60 - hours * 60;
+      return `${
+        days > 0 ? `${days} ${days > 1 ? 'days' : 'day'},` : ''
+      } ${hours} ${hours > 1 ? 'hrs' : 'hr'} ${
+        days === 0 ? `, ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}` : ''
+      } left`;
     }
     if (item.state === 'Pending') {
       return `${moment(item.createdTimestamp * 1000).format('MMMM DD, YYYY')}`;
@@ -190,12 +205,13 @@ function Proposal({
   return (
     <ProposalWrapper
       className="flex flex-column pointer"
-      onClick={() => history.push(`/vote/proposal/${proposal.id}`)}>
+      onClick={() => history.push(`/vote/proposal/${proposal.id}`)}
+    >
       <div className="title">
         <ReactMarkdown source={proposal.description.split('\n')[0]} />
       </div>
       <Row className="detail">
-        <Column xs="12" sm="9">
+        <Column xs="12" sm={settings.selectedAddress ? '9' : '12'}>
           <Row>
             <Column xs="12" sm="7" className="description">
               <Label size="16">{proposal.id}</Label>
@@ -212,53 +228,62 @@ function Proposal({
             </Column>
           </Row>
         </Column>
-        <Column xs="12" sm="3" className="vote-status">
-          {voteStatus &&
-            voteStatus === 'novoted' &&
-            proposal.state !== 'Active' && (
+        {settings.selectedAddress && (
+          <Column xs="12" sm="3" className="vote-status">
+            {voteStatus &&
+              voteStatus === 'novoted' &&
+              proposal.state !== 'Active' && (
+                <div className="flex align-center">
+                  <img src={dashImg} alt="dash" />
+                  <p className="orange-text">NO VOTE</p>
+                </div>
+              )}
+            {voteStatus && voteStatus === 'voted' && (
               <div className="flex align-center">
-                <img src={dashImg} alt="dash" />
-                <p className="orange-text">NO VOTE</p>
+                <p className="orange-text">VOTED</p>
               </div>
             )}
-          {voteStatus && voteStatus === 'voted' && (
-            <div className="flex align-center">
-              <p className="orange-text">VOTED</p>
-            </div>
-          )}
-          {voteStatus &&
-            voteStatus === 'novoted' &&
-            proposal.state === 'Active' &&
-            delegateAddress !== '0x0000000000000000000000000000000000000000' && (
-              <div
-                className="flex align-center"
-                onClick={e => e.stopPropagation()}
-              >
-                <Button
-                  className="vote-btn"
-                  disabled={
-                    votingWeight === '0' ||
-                    !proposal ||
-                    (proposal && proposal.state !== 'Active')
-                  }
-                  onClick={() => handleVote('like')}
+            {voteStatus &&
+              voteStatus === 'novoted' &&
+              proposal.state === 'Active' &&
+              delegateAddress !==
+                '0x0000000000000000000000000000000000000000' && (
+                <div
+                  className="flex align-center"
+                  onClick={e => e.stopPropagation()}
                 >
-                  {isLoading && voteType === 'like' && <Icon type="loading" />} For
-                </Button>
-                <Button
-                  className="vote-btn"
-                  disabled={
-                    votingWeight === '0' ||
-                    !proposal ||
-                    (proposal && proposal.state !== 'Active')
-                  }
-                  onClick={() => handleVote('dislike')}
-                >
-                  {isLoading && voteType === 'dislike' && <Icon type="loading" />} Against
-                </Button>
-              </div>
-            )}
-        </Column>
+                  <Button
+                    className="vote-btn"
+                    disabled={
+                      votingWeight === '0' ||
+                      !proposal ||
+                      (proposal && proposal.state !== 'Active')
+                    }
+                    onClick={() => handleVote('like')}
+                  >
+                    {isLoading && voteType === 'like' && (
+                      <Icon type="loading" />
+                    )}{' '}
+                    For
+                  </Button>
+                  <Button
+                    className="vote-btn"
+                    disabled={
+                      votingWeight === '0' ||
+                      !proposal ||
+                      (proposal && proposal.state !== 'Active')
+                    }
+                    onClick={() => handleVote('dislike')}
+                  >
+                    {isLoading && voteType === 'dislike' && (
+                      <Icon type="loading" />
+                    )}{' '}
+                    Against
+                  </Button>
+                </div>
+              )}
+          </Column>
+        )}
       </Row>
     </ProposalWrapper>
   );
@@ -277,13 +302,22 @@ Proposal.propTypes = {
     voted: PropTypes.bool,
     createdAt: PropTypes.string
   }),
-  history: PropTypes.object
+  history: PropTypes.object,
+  settings: PropTypes.object
 };
 
 Proposal.defaultProps = {
   address: '',
   proposal: {},
-  history: {}
+  history: {},
+  settings: {}
 };
 
-export default compose(withRouter)(Proposal);
+const mapStateToProps = ({ account }) => ({
+  settings: account.setting
+});
+
+export default compose(
+  withRouter,
+  connectAccount(mapStateToProps, null)
+)(Proposal);

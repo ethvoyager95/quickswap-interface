@@ -116,8 +116,13 @@ const VotingWalletWrapper = styled.div`
     width: 50%;
     height: 46px;
     border-radius: 5px;
-    background-color: var(--color-blue);
-    box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
+    background: linear-gradient(
+      242deg,
+      #246cf9 0%,
+      #1e68f6 0.01%,
+      #0047d0 100%,
+      #0047d0 100%
+    );
     .MuiButton-label {
       font-size: 17px;
       font-weight: 500;
@@ -153,7 +158,7 @@ const SQuestion = styled.img`
 let timeStamp = 0;
 const format = commaNumber.bindWith(',', '.');
 
-function VotingWallet({ balance, pageType, settings, earnedBalance }) {
+function VotingWallet({ balance, pageType, settings, earnedBalance, power }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [delegateAddress, setDelegateAddress] = useState('');
   const [delegateStatus, setDelegateStatus] = useState('');

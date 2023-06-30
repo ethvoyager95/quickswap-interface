@@ -24,6 +24,7 @@ import ProposalDetail from 'components/Vote/VoteOverview/ProposalDetail';
 import ProposalHistory from 'components/Vote/VoteOverview/ProposalHistory';
 import { promisify } from 'utilities';
 import { Row, Column } from 'components/Basic/Style';
+import { Card } from 'components/Basic/Card';
 
 const VoteOverviewWrapper = styled.div`
   width: 100%;
@@ -33,8 +34,13 @@ const VoteOverviewWrapper = styled.div`
     button {
       width: 120px;
       height: 40px;
-      background-color: var(--color-blue);
-      box-shadow: 0px 4px 13px 0 rgba(39, 126, 230, 0.64);
+      background: linear-gradient(
+        242deg,
+        #246cf9 0%,
+        #1e68f6 0.01%,
+        #0047d0 100%,
+        #0047d0 100%
+      );
       border-radius: 10px;
       .MuiButton-label {
         font-size: 16px;
@@ -87,6 +93,13 @@ const VoteOverviewWrapper = styled.div`
     flex: 1;
     margin-left: 19px;
   }
+`;
+
+const CardWrapper = styled.div`
+  width: 100%;
+  background-color: var(--color-bg-primary);
+  border-radius: 5px;
+  padding: 38px 41px;
 `;
 
 function VoteOverview({ settings, getVoters, getProposalById, match }) {
@@ -268,14 +281,19 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
     <MainLayout title="Overview">
       <VoteOverviewWrapper className="flex">
         <Row>
-          <Column xs="12" sm="9">
+          <Column xs="12" sm="12">
             <Row>
-              <Column xs="12" sm="6">
-                <ProposalInfo proposalInfo={proposalInfo} />
-              </Column>
-              <Column xs="12" sm="6">
-                <ProposalUser proposalInfo={proposalInfo} />
-              </Column>
+              <Card>
+                <CardWrapper>
+                  <Column xs="12" md="8">
+                    <ProposalInfo proposalInfo={proposalInfo} />
+                  </Column>
+                  <Column xs="12" md="4">
+                    <ProposalHistory proposalInfo={proposalInfo} />
+                    {/* <ProposalUser proposalInfo={proposalInfo} /> */}
+                  </Column>
+                </CardWrapper>
+              </Card>
             </Row>
             <Row>
               <Column xs="12" sm="6">
@@ -418,9 +436,6 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                 <ProposalDetail proposalInfo={proposalInfo} />
               </Column>
             </Row>
-          </Column>
-          <Column xs="12" sm="3">
-            <ProposalHistory proposalInfo={proposalInfo} />
           </Column>
         </Row>
       </VoteOverviewWrapper>
