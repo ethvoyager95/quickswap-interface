@@ -12,7 +12,7 @@ import CollateralConfirmModal from 'components/Basic/CollateralConfirmModal';
 import Toggle from 'components/Basic/Toggle';
 import MarketTable from 'components/Basic/Table';
 import PendingTransaction from 'components/Basic/PendingTransaction';
-import { currencyFormatter } from 'utilities/common';
+import { currencyFormatter, shortenNumberFormatter } from 'utilities/common';
 
 const SupplyMarketWrapper = styled.div`
   width: 100%;
@@ -68,10 +68,14 @@ function SupplyMarket({
             setIsCollateralConfirm(false);
           });
       } else {
-        message.error('You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.');
+        message.error(
+          'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+        );
       }
     } else {
-      message.error('You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.');
+      message.error(
+        'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+      );
     }
   };
 
@@ -111,7 +115,7 @@ function SupplyMarket({
             <div className="apy-content">
               <span />
               <div className="apy-green-label">
-                {apy.dp(2, 1).toString(10)}%
+                {shortenNumberFormatter(apy.dp(2, 1).toString(10))}%
               </div>
             </div>
           )
@@ -185,7 +189,7 @@ function SupplyMarket({
             <div className="apy-content">
               <span />
               <div className="apy-green-label">
-                {apy.dp(2, 1).toString(10)}%
+                {shortenNumberFormatter(apy.dp(2, 1).toString(10))}%
               </div>
             </div>
           )
