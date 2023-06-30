@@ -19,6 +19,7 @@ import MainLayout from 'containers/Layout/MainLayout';
 import VotingWallet from 'components/Vote/VotingWallet';
 import * as constants from 'utilities/constants';
 import coinImg from 'assets/img/strike_32.png';
+import { shortenNumberFormatter } from 'utilities/common';
 
 const STRKLayout = styled.div`
   .main-content {
@@ -621,7 +622,9 @@ function STRK({ settings }) {
                           className="supply-apy right"
                         >
                           <p className="mobile-label">Supply APY</p>
-                          <p className="apy-value">{item.supplyAPY}%</p>
+                          <p className="apy-value">
+                            {shortenNumberFormatter(item.supplyAPY)}%
+                          </p>
                           <p>
                             {new BigNumber(item.supplierDailyStrike)
                               .div(new BigNumber(10).pow(18))
@@ -636,7 +639,9 @@ function STRK({ settings }) {
                           className="borrow-apy right"
                         >
                           <p className="mobile-label">Borrow APY</p>
-                          <p className="apy-value">{item.borrowAPY}%</p>
+                          <p className="apy-value">
+                            {shortenNumberFormatter(item.borrowAPY)}%
+                          </p>
                           <p>
                             {new BigNumber(item.borrowerDailyStrike)
                               .div(new BigNumber(10).pow(18))

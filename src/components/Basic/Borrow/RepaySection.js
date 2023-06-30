@@ -16,7 +16,7 @@ import commaNumber from 'comma-number';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import coinImg from 'assets/img/strike_32.png';
 import { Icon, Progress } from 'antd';
-import { getBigNumber } from 'utilities/common';
+import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { SectionWrapper } from 'components/Basic/Supply/SupplySection';
 
 const format = commaNumber.bindWith(',', '.');
@@ -251,9 +251,11 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
               <span className="label">Interest APY</span>
             </div>
             <span className="value">
-              {getBigNumber(asset.strkBorrowApy)
-                .dp(2, 1)
-                .toString(10)}
+              {shortenNumberFormatter(
+                getBigNumber(asset.strkBorrowApy)
+                  .dp(2, 1)
+                  .toString(10)
+              )}
               %
             </span>
           </div>

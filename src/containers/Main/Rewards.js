@@ -12,6 +12,7 @@ import { connectAccount, accountActionCreators } from 'core';
 import MainLayout from 'containers/Layout/MainLayout';
 import * as constants from 'utilities/constants';
 import coinImg from 'assets/img/strike_32.png';
+import { shortenNumberFormatter } from 'utilities/common';
 
 const RewardsLayout = styled.div`
   .main-content {
@@ -340,11 +341,13 @@ function Rewards({ settings }) {
                       >
                         <p className="mobile-label">Supply APY</p>
                         <p>
-                          {new BigNumber(item.supplyStrikeApy).isLessThan(0.01)
-                            ? '0.01'
-                            : new BigNumber(item.supplyStrikeApy)
-                                .dp(2, 1)
-                                .toString(10)}
+                          {shortenNumberFormatter(
+                            new BigNumber(item.supplyStrikeApy).isLessThan(0.01)
+                              ? '0.01'
+                              : new BigNumber(item.supplyStrikeApy)
+                                  .dp(2, 1)
+                                  .toString(10)
+                          )}
                           %
                         </p>
                       </Col>
@@ -355,11 +358,13 @@ function Rewards({ settings }) {
                       >
                         <p className="mobile-label">Borrow APY</p>
                         <p>
-                          {new BigNumber(item.borrowStrikeApy).isLessThan(0.01)
-                            ? '0.01'
-                            : new BigNumber(item.borrowStrikeApy)
-                                .dp(2, 1)
-                                .toString(10)}
+                          {shortenNumberFormatter(
+                            new BigNumber(item.borrowStrikeApy).isLessThan(0.01)
+                              ? '0.01'
+                              : new BigNumber(item.borrowStrikeApy)
+                                  .dp(2, 1)
+                                  .toString(10)
+                          )}
                           %
                         </p>
                       </Col>

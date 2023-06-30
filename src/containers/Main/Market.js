@@ -10,7 +10,7 @@ import { connectAccount } from 'core';
 import MainLayout from 'containers/Layout/MainLayout';
 import * as constants from 'utilities/constants';
 import LineProgressBar from 'components/Basic/LineProgressBar';
-import { currencyFormatter } from 'utilities/common';
+import { currencyFormatter, shortenNumberFormatter } from 'utilities/common';
 
 const MarketWrapper = styled.div`
   width: 100%;
@@ -594,11 +594,15 @@ function Market({ history, settings }) {
                           className="supply-apy right"
                         >
                           <p className="mobile-label">Supply APY</p>
-                          <p className="item-title">{item.sAPY}%</p>
+                          <p className="item-title">
+                            {shortenNumberFormatter(item.sAPY)}%
+                          </p>
                           <p className="item-value">
-                            {new BigNumber(item.supplyStrikeApy)
-                              .dp(2, 1)
-                              .toString(10)}
+                            {shortenNumberFormatter(
+                              new BigNumber(item.supplyStrikeApy)
+                                .dp(2, 1)
+                                .toString(10)
+                            )}
                             %
                           </p>
                         </Col>
@@ -627,11 +631,15 @@ function Market({ history, settings }) {
                           className="borrow-apy right"
                         >
                           <p className="mobile-label">Borrow APY</p>
-                          <p className="item-title">{item.bAPY}%</p>
+                          <p className="item-title">
+                            {shortenNumberFormatter(item.bAPY)}%
+                          </p>
                           <p className="item-value">
-                            {new BigNumber(item.borrowStrikeApy)
-                              .dp(2, 1)
-                              .toString(10)}
+                            {shortenNumberFormatter(
+                              new BigNumber(item.borrowStrikeApy)
+                                .dp(2, 1)
+                                .toString(10)
+                            )}
                             %
                           </p>
                         </Col>

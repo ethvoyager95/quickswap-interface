@@ -11,7 +11,7 @@ import { getSbepContract, methods } from 'utilities/ContractService';
 import commaNumber from 'comma-number';
 import coinImg from 'assets/img/strike_32.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
-import { getBigNumber } from 'utilities/common';
+import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { SectionWrapper } from 'components/Basic/Supply/SupplySection';
 
 const format = commaNumber.bindWith(',', '.');
@@ -218,9 +218,11 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
               <span className="label">Interest APY</span>
             </div>
             <span className="value">
-              {getBigNumber(asset.strkSupplyApy)
-                .dp(2, 1)
-                .toString(10)}
+              {shortenNumberFormatter(
+                getBigNumber(asset.strkSupplyApy)
+                  .dp(2, 1)
+                  .toString(10)
+              )}
               %
             </span>
           </div>
