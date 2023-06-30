@@ -9,7 +9,11 @@ import commaNumber from 'comma-number';
 import { Label } from 'components/Basic/Label';
 import MarketTable from 'components/Basic/Table';
 import PendingTransaction from 'components/Basic/PendingTransaction';
-import { getBigNumber, currencyFormatter } from 'utilities/common';
+import {
+  getBigNumber,
+  currencyFormatter,
+  shortenNumberFormatter
+} from 'utilities/common';
 import BigNumber from 'bignumber.js';
 
 const BorrowMarketWrapper = styled.div`
@@ -61,16 +65,34 @@ function BorrowMarket({
           children: (
             <div className="apy-content">
               {settings.withSTRK ? (
-                getBigNumber(asset.strkBorrowApy).minus(borrowApy).isNegative() ? <span className="red" /> : <span />
+                getBigNumber(asset.strkBorrowApy)
+                  .minus(borrowApy)
+                  .isNegative() ? (
+                  <span className="red" />
+                ) : (
+                  <span />
+                )
               ) : (
                 <span className="red" />
               )}
               <div
                 className={
-                  settings.withSTRK ? (getBigNumber(asset.strkBorrowApy).minus(borrowApy).isNegative() ? 'apy-red-label' : 'apy-green-label') : 'apy-red-label'
+                  settings.withSTRK
+                    ? getBigNumber(asset.strkBorrowApy)
+                        .minus(borrowApy)
+                        .isNegative()
+                      ? 'apy-red-label'
+                      : 'apy-green-label'
+                    : 'apy-red-label'
                 }
               >
-                {apy.absoluteValue().dp(2, 1).toString(10)}%
+                {shortenNumberFormatter(
+                  apy
+                    .absoluteValue()
+                    .dp(2, 1)
+                    .toString(10)
+                )}
+                %
               </div>
             </div>
           )
@@ -136,18 +158,32 @@ function BorrowMarket({
       key: 'borrowApy',
       render(borrowApy, asset) {
         const apy = settings.withSTRK
-          ? getBigNumber(asset.strkBorrowApy).minus(borrowApy).absoluteValue()
+          ? getBigNumber(asset.strkBorrowApy)
+              .minus(borrowApy)
+              .absoluteValue()
           : borrowApy;
         return {
           children: (
             <div className="apy-content">
-              {settings.withSTRK && !getBigNumber(asset.strkBorrowApy).minus(borrowApy).isNegative() ? <span /> : <span className="red" />}
+              {settings.withSTRK &&
+              !getBigNumber(asset.strkBorrowApy)
+                .minus(borrowApy)
+                .isNegative() ? (
+                <span />
+              ) : (
+                <span className="red" />
+              )}
               <div
                 className={
-                  settings.withSTRK && !getBigNumber(asset.strkBorrowApy).minus(borrowApy).isNegative() ? 'apy-green-label' : 'apy-red-label'
+                  settings.withSTRK &&
+                  !getBigNumber(asset.strkBorrowApy)
+                    .minus(borrowApy)
+                    .isNegative()
+                    ? 'apy-green-label'
+                    : 'apy-red-label'
                 }
               >
-                {apy.dp(2, 1).toString(10)}%
+                {shortenNumberFormatter(apy.dp(2, 1).toString(10))}%
               </div>
             </div>
           )
@@ -179,7 +215,11 @@ function BorrowMarket({
       key: 'percentOfLimit',
       render(percentOfLimit) {
         return {
-          children: <Label size="14" primary>{percentOfLimit}%</Label>
+          children: (
+            <Label size="14" primary>
+              {percentOfLimit}%
+            </Label>
+          )
         };
       }
     }

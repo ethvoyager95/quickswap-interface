@@ -11,7 +11,7 @@ import { getSbepContract, methods } from 'utilities/ContractService';
 import commaNumber from 'comma-number';
 import coinImg from 'assets/img/strike_32.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
-import { getBigNumber } from 'utilities/common';
+import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { SectionWrapper } from 'components/Basic/Supply/SupplySection';
 
 const format = commaNumber.bindWith(',', '.');
@@ -47,7 +47,9 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
     setSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
 
     if (tokenPrice && !amount.isZero() && !amount.isNaN()) {
-      const temp = totalBorrowLimit.minus(amount.times(tokenPrice).times(collateralFactor));
+      const temp = totalBorrowLimit.minus(
+        amount.times(tokenPrice).times(collateralFactor)
+      );
       setNewBorrowLimit(temp);
       setNewBorrowPercent(totalBorrowBalance.div(temp).times(100));
       if (totalBorrowLimit.isZero()) {
@@ -65,7 +67,9 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
         setNewBorrowPercent(new BigNumber(0));
       } else {
         setBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
-        setNewBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
+        setNewBorrowPercent(
+          totalBorrowBalance.div(totalBorrowLimit).times(100)
+        );
       }
     }
   }, [settings.selectedAddress, amount]);
@@ -155,7 +159,10 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
         <div className="description">
           <span className="label">Protocol Balance</span>
           <span className="value">
-            {format(asset.supplyBalance && asset.supplyBalance.dp(2, 1).toString(10))} {asset.symbol}
+            {format(
+              asset.supplyBalance && asset.supplyBalance.dp(2, 1).toString(10)
+            )}{' '}
+            {asset.symbol}
           </span>
         </div>
       </div>
@@ -215,9 +222,11 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
               <span className="label">Interest APY</span>
             </div>
             <span className="value">
-              {getBigNumber(asset.strkSupplyApy)
-                .dp(2, 1)
-                .toString(10)}
+              {shortenNumberFormatter(
+                getBigNumber(asset.strkSupplyApy)
+                  .dp(2, 1)
+                  .toString(10)
+              )}
               %
             </span>
           </div>
@@ -226,24 +235,44 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
           <div className="description">
             <span className="label">Borrow Limit</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">${format(borrowLimit.dp(2, 1).toString(10))}</span>
+              <span className="value">
+                ${format(borrowLimit.dp(2, 1).toString(10))}
+              </span>
             ) : (
               <div className="flex flex-column align-center just-between">
-                <span className="value">${format(borrowLimit.dp(2, 1).toString(10))}</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">${format(newBorrowLimit.dp(2, 1).toString(10))}</span>
+                <span className="value">
+                  ${format(borrowLimit.dp(2, 1).toString(10))}
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  ${format(newBorrowLimit.dp(2, 1).toString(10))}
+                </span>
               </div>
             )}
           </div>
           <div className="description">
             <span className="label">Borrow Limit Used</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
+              <span className="value">
+                {borrowPercent.dp(2, 1).toString(10)}%
+              </span>
             ) : (
               <div className="flex flex-column align-center just-between">
-                <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">{newBorrowPercent.dp(2, 1).toString(10)}%</span>
+                <span className="value">
+                  {borrowPercent.dp(2, 1).toString(10)}%
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  {newBorrowPercent.dp(2, 1).toString(10)}%
+                </span>
               </div>
             )}
           </div>

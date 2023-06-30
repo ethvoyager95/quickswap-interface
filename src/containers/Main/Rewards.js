@@ -12,6 +12,7 @@ import { connectAccount, accountActionCreators } from 'core';
 import MainLayout from 'containers/Layout/MainLayout';
 import * as constants from 'utilities/constants';
 import coinImg from 'assets/img/strike_32.png';
+import { shortenNumberFormatter } from 'utilities/common';
 
 const RewardsLayout = styled.div`
   .main-content {
@@ -184,7 +185,9 @@ function Rewards({ settings }) {
   useEffect(() => {
     if (settings.markets && settings.dailyStrike) {
       const sum = (settings.markets || []).reduce((accumulator, market) => {
-        return new BigNumber(accumulator).plus(new BigNumber(market.totalDistributed));
+        return new BigNumber(accumulator).plus(
+          new BigNumber(market.totalDistributed)
+        );
       }, 0);
       setTotalDistributed(sum.toString(10));
       const daily = (settings.markets || []).reduce((acc, market) => {
@@ -247,7 +250,9 @@ function Rewards({ settings }) {
                 </div>
               </div>
               <Progress
-                percent={new BigNumber(totalDistributed).dividedBy(new BigNumber(mintedAmount)).multipliedBy(100)}
+                percent={new BigNumber(totalDistributed)
+                  .dividedBy(new BigNumber(mintedAmount))
+                  .multipliedBy(100)}
                 strokeColor="#f8b94b"
                 strokeWidth={7}
                 showInfo={false}
@@ -263,54 +268,116 @@ function Rewards({ settings }) {
               <Col xs={{ span: 6 }} lg={{ span: 4 }} className="per-day right">
                 <img src={coinImg} alt="strk" /> Per Day
               </Col>
-              <Col xs={{ span: 6 }} lg={{ span: 4 }} className="supply-apy right">
-                Supply<img src={coinImg} alt="strk" />APY
+              <Col
+                xs={{ span: 6 }}
+                lg={{ span: 4 }}
+                className="supply-apy right"
+              >
+                Supply
+                <img src={coinImg} alt="strk" />
+                APY
               </Col>
-              <Col xs={{ span: 6 }} lg={{ span: 4 }} className="borrow-apy right">
-                Borrow<img src={coinImg} alt="strk" />APY
+              <Col
+                xs={{ span: 6 }}
+                lg={{ span: 4 }}
+                className="borrow-apy right"
+              >
+                Borrow
+                <img src={coinImg} alt="strk" />
+                APY
               </Col>
-              <Col xs={{ span: 6 }} lg={{ span: 4 }} className="total-distributed right">
+              <Col
+                xs={{ span: 6 }}
+                lg={{ span: 4 }}
+                className="total-distributed right"
+              >
                 Total Distributed
               </Col>
             </Row>
             <div className="table_content">
               {settings.markets &&
                 (settings.markets || [])
-                .filter(m => m.underlyingSymbol !== 'ZRX' && m.underlyingSymbol !== 'BAT')
-                .map((item, index) => (
-                  <Row className="table_item pointer" key={index}>
-                    <Col xs={{ span: 24 }} lg={{ span: 8 }} className="flex align-center market">
-                      <img
-                        className="asset-img"
-                        src={constants.CONTRACT_TOKEN_ADDRESS[item.underlyingSymbol.toLowerCase()].asset}
-                        alt="asset"
-                      />
-                      <p>{item.underlyingName}</p>
-                    </Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 4 }} className="per-day right">
-                      <p className="mobile-label">Per day</p>
-                      <p>
-                        {new BigNumber(item.supplierDailyStrike).plus(new BigNumber(item.borrowerDailyStrike)).div(new BigNumber(10).pow(18)).dp(2, 1).toString(10)}
-                      </p>
-                    </Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 4 }} className="supply-apy right">
-                      <p className="mobile-label">Supply APY</p>
-                      <p>
-                        {new BigNumber(item.supplyStrikeApy).isLessThan(0.01) ? '0.01' : new BigNumber(item.supplyStrikeApy).dp(2, 1).toString(10)}%
-                      </p>
-                    </Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 4 }} className="borrow-apy right">
-                      <p className="mobile-label">Borrow APY</p>
-                      <p>
-                        {new BigNumber(item.borrowStrikeApy).isLessThan(0.01) ? '0.01' : new BigNumber(item.borrowStrikeApy).dp(2, 1).toString(10)}%
-                      </p>
-                    </Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 4 }} className="total-distributed right">
-                      <p className="mobile-label">Total Distributed</p>
-                      <p>{format(item.totalDistributed.toString())}</p>
-                    </Col>
-                  </Row>
-                ))}
+                  .filter(
+                    m =>
+                      m.underlyingSymbol !== 'ZRX' &&
+                      m.underlyingSymbol !== 'BAT'
+                  )
+                  .map((item, index) => (
+                    <Row className="table_item pointer" key={index}>
+                      <Col
+                        xs={{ span: 24 }}
+                        lg={{ span: 8 }}
+                        className="flex align-center market"
+                      >
+                        <img
+                          className="asset-img"
+                          src={
+                            constants.CONTRACT_TOKEN_ADDRESS[
+                              item.underlyingSymbol.toLowerCase()
+                            ].asset
+                          }
+                          alt="asset"
+                        />
+                        <p>{item.underlyingName}</p>
+                      </Col>
+                      <Col
+                        xs={{ span: 24 }}
+                        lg={{ span: 4 }}
+                        className="per-day right"
+                      >
+                        <p className="mobile-label">Per day</p>
+                        <p>
+                          {new BigNumber(item.supplierDailyStrike)
+                            .plus(new BigNumber(item.borrowerDailyStrike))
+                            .div(new BigNumber(10).pow(18))
+                            .dp(2, 1)
+                            .toString(10)}
+                        </p>
+                      </Col>
+                      <Col
+                        xs={{ span: 24 }}
+                        lg={{ span: 4 }}
+                        className="supply-apy right"
+                      >
+                        <p className="mobile-label">Supply APY</p>
+                        <p>
+                          {shortenNumberFormatter(
+                            new BigNumber(item.supplyStrikeApy).isLessThan(0.01)
+                              ? '0.01'
+                              : new BigNumber(item.supplyStrikeApy)
+                                  .dp(2, 1)
+                                  .toString(10)
+                          )}
+                          %
+                        </p>
+                      </Col>
+                      <Col
+                        xs={{ span: 24 }}
+                        lg={{ span: 4 }}
+                        className="borrow-apy right"
+                      >
+                        <p className="mobile-label">Borrow APY</p>
+                        <p>
+                          {shortenNumberFormatter(
+                            new BigNumber(item.borrowStrikeApy).isLessThan(0.01)
+                              ? '0.01'
+                              : new BigNumber(item.borrowStrikeApy)
+                                  .dp(2, 1)
+                                  .toString(10)
+                          )}
+                          %
+                        </p>
+                      </Col>
+                      <Col
+                        xs={{ span: 24 }}
+                        lg={{ span: 4 }}
+                        className="total-distributed right"
+                      >
+                        <p className="mobile-label">Total Distributed</p>
+                        <p>{format(item.totalDistributed.toString())}</p>
+                      </Col>
+                    </Row>
+                  ))}
             </div>
           </TableWrapper>
         </RewardsWrapper>

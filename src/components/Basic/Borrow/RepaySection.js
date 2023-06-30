@@ -16,7 +16,7 @@ import commaNumber from 'comma-number';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import coinImg from 'assets/img/strike_32.png';
 import { Icon, Progress } from 'antd';
-import { getBigNumber } from 'utilities/common';
+import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { SectionWrapper } from 'components/Basic/Supply/SupplySection';
 
 const format = commaNumber.bindWith(',', '.');
@@ -42,7 +42,9 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
         setNewBorrowPercent(new BigNumber(0));
       } else {
         setBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
-        setNewBorrowPercent(totalBorrowBalance.div(totalBorrowLimit).times(100));
+        setNewBorrowPercent(
+          totalBorrowBalance.div(totalBorrowLimit).times(100)
+        );
       }
     } else {
       const temp = totalBorrowBalance.minus(amount.times(tokenPrice));
@@ -185,7 +187,13 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
         <div className="description">
           <span className="label">Wallet Balance</span>
           <span className="value">
-            {format(asset.walletBalance && getBigNumber(asset.walletBalance).dp(2, 1).toString(10))} {asset.symbol}
+            {format(
+              asset.walletBalance &&
+                getBigNumber(asset.walletBalance)
+                  .dp(2, 1)
+                  .toString(10)
+            )}{' '}
+            {asset.symbol}
           </span>
         </div>
       </div>
@@ -221,7 +229,8 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
           </div>
         ) : (
           <div className="notification">
-            To Repay {asset.name} to the Strike Protocol, you need to enable it first.
+            To Repay {asset.name} to the Strike Protocol, you need to enable it
+            first.
           </div>
         )}
       </div>
@@ -246,9 +255,11 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
               <span className="label">Interest APY</span>
             </div>
             <span className="value">
-              {getBigNumber(asset.strkBorrowApy)
-                .dp(2, 1)
-                .toString(10)}
+              {shortenNumberFormatter(
+                getBigNumber(asset.strkBorrowApy)
+                  .dp(2, 1)
+                  .toString(10)
+              )}
               %
             </span>
           </div>
@@ -257,28 +268,44 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
           <div className="description">
             <span className="label">Borrow Balance</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">${format(borrowBalance.dp(2, 1).toString(10))}</span>
+              <span className="value">
+                ${format(borrowBalance.dp(2, 1).toString(10))}
+              </span>
             ) : (
               <div className="flex flex-column align-center just-between">
-                <span className="value">${format(borrowBalance.dp(2, 1).toString(10))}</span>
+                <span className="value">
+                  ${format(borrowBalance.dp(2, 1).toString(10))}
+                </span>
                 <img
                   className="arrow-right-img"
                   src={arrowRightImg}
                   alt="arrow"
                 />
-                <span className="value">${newBorrowBalance.dp(2, 1).toString(10)}</span>
+                <span className="value">
+                  ${newBorrowBalance.dp(2, 1).toString(10)}
+                </span>
               </div>
             )}
           </div>
           <div className="description">
             <span className="label">Borrow Limit Used</span>
             {amount.isZero() || amount.isNaN() ? (
-              <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
+              <span className="value">
+                {borrowPercent.dp(2, 1).toString(10)}%
+              </span>
             ) : (
               <div className="flex flex-column align-center just-between">
-                <span className="value">{borrowPercent.dp(2, 1).toString(10)}%</span>
-                <img className="arrow-right-img" src={arrowRightImg} alt="arrow" />
-                <span className="value">{newBorrowPercent.dp(2, 1).toString(10)}%</span>
+                <span className="value">
+                  {borrowPercent.dp(2, 1).toString(10)}%
+                </span>
+                <img
+                  className="arrow-right-img"
+                  src={arrowRightImg}
+                  alt="arrow"
+                />
+                <span className="value">
+                  {newBorrowPercent.dp(2, 1).toString(10)}%
+                </span>
               </div>
             )}
           </div>
