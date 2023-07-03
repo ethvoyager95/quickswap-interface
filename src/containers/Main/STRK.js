@@ -28,6 +28,7 @@ const STRKLayout = styled.div`
 `;
 const STRKWrapper = styled.div`
   width: 100%;
+  padding: 15px;
 
   @media (max-width: 1300px) {
     flex-direction: column;

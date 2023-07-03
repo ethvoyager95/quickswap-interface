@@ -111,10 +111,10 @@ const TableWrapper = styled.div`
   box-sizing: content-box;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
   border-radius: 8px;
-  margin: 20px;
+  margin: 20px 0px 20px 20px;
   max-width: 1200px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 991px) {
     margin: 0;
   }
 

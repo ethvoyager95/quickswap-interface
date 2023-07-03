@@ -8,23 +8,21 @@ export const TabsWrapper = styled.div`
   align-items: center;
   font-style: normal;
   font-weight: 900;
-  font-size: 25px;
-  line-height: 27px;
-  color: #0b0f23;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  margin: 0 16px 20px;
-  padding-top: 44px;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-text-secondary);
+  margin: 0 16px;
+  padding-top: 20px;
 
   div {
-    opacity: 0.5;
     padding-bottom: 8px;
     cursor: pointer;
   }
 
   .active {
-    opacity: 1;
-    border-bottom: 3px solid #107def;
+    color: var(--color-text-main);
+    border-bottom: 1px solid white;
   }
 
   @media only screen and (max-width: 768px) {

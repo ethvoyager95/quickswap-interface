@@ -6,13 +6,27 @@ import ReactApexChart from 'react-apexcharts';
 import { connectAccount } from 'core';
 import moment from 'moment';
 import { currencyFormatter } from 'utilities/common';
+import commaNumber from 'comma-number';
+import BigNumber from 'bignumber.js';
 
 const ChartWrapper = styled.div`
   width: 100% + 40px;
   margin: -10px -20px 10px;
+
+  .info-bar {
+    display: flex;
+    gap: 40px;
+    color: white;
+    padding-left: 20px;
+
+    .label {
+      color: var(--color-text-secondary);
+    }
+  }
 `;
 
-function OverviewChart({ marketType, data, graphType }) {
+const format = commaNumber.bindWith(',', '.');
+function OverviewChart({ marketType, marketInfo, data, graphType }) {
   const [areaSeries, setAreaSeries] = useState([
     {
       name: marketType === 'supply' ? 'Supply APY' : 'Borrow APY',
@@ -200,6 +214,65 @@ function OverviewChart({ marketType, data, graphType }) {
 
   return (
     <ChartWrapper>
+      <div className="info-bar">
+        <div className="total-supply">
+          <p className="label">
+            Total {marketType === 'supply' ? 'Supply' : 'Borrow'}
+          </p>
+          <p className="value">
+            $
+            {format(
+              new BigNumber(
+                marketType === 'supply'
+                  ? marketInfo.totalSupplyUsd
+                  : marketInfo.totalBorrowsUsd
+              )
+                .dp(2, 1)
+                .toString(10)
+            )}
+          </p>
+        </div>
+
+        <div className="supply-apy">
+          <p className="label">APY</p>
+          <p className="value">
+            {marketType === 'supply'
+              ? new BigNumber(
+                  +marketInfo.supplyApy < 0.01 ? 0.01 : marketInfo.supplyApy
+                )
+                  .dp(2, 1)
+                  .toString(10)
+              : new BigNumber(
+                  +marketInfo.borrowApy < 0.01 ? 0.01 : marketInfo.borrowApy
+                )
+                  .dp(2, 1)
+                  .toString(10)}
+            %
+          </p>
+        </div>
+
+        <div className="distribution-apy">
+          <p className="label">Distribution APY</p>
+          <p className="value">
+            {marketType === 'supply'
+              ? new BigNumber(
+                  +marketInfo.supplyStrikeApy < 0.01
+                    ? 0.01
+                    : marketInfo.supplyStrikeApy
+                )
+                  .dp(2, 1)
+                  .toString(10)
+              : new BigNumber(
+                  marketInfo.borrowStrikeApy < 0.01
+                    ? 0.01
+                    : marketInfo.borrowStrikeApy
+                )
+                  .dp(2, 1)
+                  .toString(10)}
+            %
+          </p>
+        </div>
+      </div>
       {graphType !== 'composed' && areaSeries[0].data.length !== 0 && (
         <div id="aa">
           <ReactApexChart
@@ -211,35 +284,40 @@ function OverviewChart({ marketType, data, graphType }) {
           />
         </div>
       )}
-      {graphType === 'composed' && areaSeries[0].data.length !== 0 && barSeries[0].data.length !== 0 && (
-        <div id="aa">
-          <ReactApexChart
-            id="area-datetime"
-            options={areaOptions}
-            series={areaSeries}
-            type="area"
-            height={180}
-          />
-        </div>
-      )}
-      {graphType === 'composed' && areaSeries[0].data.length !== 0 && barSeries[0].data.length !== 0 && (
-        <div id="bb">
-          <ReactApexChart
-            id="bar-datetime"
-            options={barOptions}
-            series={barSeries}
-            height={180}
-            type="area"
-          />
-        </div>
-      )}
+      {graphType === 'composed' &&
+        areaSeries[0].data.length !== 0 &&
+        barSeries[0].data.length !== 0 && (
+          <div id="aa">
+            <ReactApexChart
+              id="area-datetime"
+              options={areaOptions}
+              series={areaSeries}
+              type="area"
+              height={180}
+            />
+          </div>
+        )}
+      {graphType === 'composed' &&
+        areaSeries[0].data.length !== 0 &&
+        barSeries[0].data.length !== 0 && (
+          <div id="bb">
+            <ReactApexChart
+              id="bar-datetime"
+              options={barOptions}
+              series={barSeries}
+              height={180}
+              type="area"
+            />
+          </div>
+        )}
     </ChartWrapper>
   );
 }
 
 OverviewChart.propTypes = {
-  settings: PropTypes.object,
   marketType: PropTypes.string,
+  marketInfo: PropTypes.object,
+  graphType: PropTypes.string,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
@@ -251,7 +329,8 @@ OverviewChart.propTypes = {
 OverviewChart.defaultProps = {
   marketType: 'supply',
   data: [],
-  settings: {}
+  marketInfo: {},
+  graphType: 'composed'
 };
 
 const mapStateToProps = ({ account }) => ({

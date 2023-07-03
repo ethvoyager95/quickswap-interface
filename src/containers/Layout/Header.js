@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
+import * as constants from 'utilities/constants';
 // import { Input } from 'antd';
 import arrowRightImg from 'assets/img/arrow-right.png';
 
 const HeaderWrapper = styled.div`
   // height: 50px;
-  // margin: 20px 15px 0;
+  margin: 20px 15px 0;
   .title-wrapper {
-    img {
+    .arrow-left {
       height: 16px;
       transform: rotate(180deg);
       margin-right: 18px;
@@ -22,12 +23,18 @@ const HeaderWrapper = styled.div`
     }
   }
 
+  .asset-img {
+    width: 36px;
+    height: 36px;
+    margin-right: 5px;
+  }
+
   @media only screen and (max-width: 768px) {
     display: none;
   }
 `;
 
-function Header({ title, history }) {
+function Header({ title, history, currentAsset }) {
   const handleRoute = () => {
     if (title === 'Overview' || title === 'Details') {
       history.go(-1);
@@ -39,34 +46,51 @@ function Header({ title, history }) {
 
   return (
     <HeaderWrapper className="flex align-center just-between">
-      {(title === 'Overview' || title === 'Details' || title === 'Market') && (
-        <div
-          className="flex align-center pointer title-wrapper"
-          onClick={handleRoute}
+      <div
+        className="flex align-center pointer title-wrapper"
+        onClick={handleRoute}
+      >
+        {(title === 'Overview' ||
+          title === 'Details' ||
+          title === 'Market') && (
+          <img className="arrow-left" src={arrowRightImg} alt="arrow-left" />
+        )}
+        <p
+          className={`${
+            title === 'Overview' || title === 'Details' ? 'highlight' : ''
+          }`}
         >
-          <>
-            <img src={arrowRightImg} alt="arrow-left" />
-            <p
-              className={`${
-                title === 'Overview' || title === 'Details' ? 'highlight' : ''
-              }`}
-            >
-              {title}
-            </p>
-          </>
-        </div>
-      )}
+          {title === 'Market' ? (
+            <div className="flex align-center">
+              <img
+                className="asset-img"
+                src={
+                  constants.CONTRACT_TOKEN_ADDRESS[currentAsset]
+                    ? constants.CONTRACT_TOKEN_ADDRESS[currentAsset].asset
+                    : null
+                }
+                alt="asset"
+              />
+              <p>{currentAsset.toUpperCase()}</p>
+            </div>
+          ) : (
+            title
+          )}
+        </p>
+      </div>
     </HeaderWrapper>
   );
 }
 
 Header.propTypes = {
   title: PropTypes.string,
+  currentAsset: PropTypes.string,
   history: PropTypes.object
 };
 
 Header.defaultProps = {
   title: '',
+  currentAsset: '',
   history: {}
 };
 export default compose(withRouter)(Header);

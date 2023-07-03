@@ -959,7 +959,7 @@ function History({ settings, setSetting }) {
   };
 
   return (
-    <MainLayout>
+    <MainLayout title="History">
       <TabsWrapper>
         {tabsTransaction.map(tab => (
           <div

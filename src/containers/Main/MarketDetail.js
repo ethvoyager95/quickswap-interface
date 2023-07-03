@@ -22,28 +22,17 @@ const MarketDetailWrapper = styled.div`
 
   .market-detail-content {
     width: 100%;
-    padding: 20px 40px 20px 0px;
+    padding: 20px 0px;
+    gap: 20px;
 
     @media only screen and (max-width: 1440px) {
       flex-direction: column;
     }
     @media only screen and (max-width: 768px) {
-      padding: 20px;
-    }
-    .column1 {
-      width: 440px;
-      min-width: 440px;
-      height: 100%;
-      margin-right: 10px;
-      @media only screen and (max-width: 1440px) {
-        width: 100%;
-        min-width: unset;
-        margin-right: 0px;
-        margin-bottom: 20px;
-      }
+      padding: 20px 0px;
     }
 
-    .column2 {
+    .column1 {
       width: calc(100% - 440px);
       height: 100%;
       margin-left: 10px;
@@ -78,7 +67,6 @@ const MarketDetailWrapper = styled.div`
           background-color: var(--color-bg-primary);
           padding: 25px 32px;
           flex: 1;
-          margin-right: 10px;
           @media only screen and (max-width: 768px) {
             margin-right: 0px;
             margin-bottom: 20px;
@@ -91,6 +79,19 @@ const MarketDetailWrapper = styled.div`
             margin-left: 0px;
           }
         }
+      }
+    }
+
+    .column2 {
+      width: 440px;
+      min-width: 440px;
+      height: 100%;
+      margin-right: 10px;
+      @media only screen and (max-width: 1440px) {
+        width: 100%;
+        min-width: unset;
+        margin-right: 0px;
+        margin-bottom: 20px;
       }
     }
   }
@@ -214,28 +215,27 @@ function MarketDetail({
   }, [currentAsset]);
 
   return (
-    <MainLayout title="Market">
+    <MainLayout title="Market" currentAsset={currentAsset}>
       <MarketDetailWrapper className="flex">
-        {(!settings.selectedAddress ||
+        {/* {(!settings.selectedAddress ||
           !settings.markets ||
           !currentAsset ||
           settings.accountLoading) && (
           <SpinnerWrapper>
             <LoadingSpinner />
           </SpinnerWrapper>
-        )}
-        {settings.selectedAddress &&
-          settings.markets &&
+        )} */}
+        {settings.markets &&
           settings.decimals &&
           currentAsset &&
           !settings.accountLoading && (
             <div className="flex market-detail-content">
-              <div className="column1">
+              {/* <div className="column1">
                 <CardWrapper>
                   <MarketInfo marketInfo={marketInfo} marketType={marketType} />
                 </CardWrapper>
-              </div>
-              <div className="column2">
+              </div> */}
+              <div className="column1">
                 <div className="row1">
                   <CardWrapper>
                     <div className="flex align-center market-tab-wrapper">
@@ -245,7 +245,7 @@ function MarketDetail({
                         }`}
                         onClick={() => setMarketType('supply')}
                       >
-                        Supply
+                        Supply Info
                       </div>
                       <div
                         className={`tab-item pointer ${
@@ -253,27 +253,32 @@ function MarketDetail({
                         }`}
                         onClick={() => setMarketType('borrow')}
                       >
-                        Borrow
+                        Borrow Info
                       </div>
                     </div>
                     <OverviewChart
                       marketType={marketType}
+                      marketInfo={marketInfo}
                       graphType="composed"
                       data={data}
                     />
                   </CardWrapper>
                 </div>
+
                 <div className="flex row2">
                   <div className="interest-rate-modal">
                     <InterestRateModel currentAsset={currentAsset} />
                   </div>
-                  <CardWrapper className="market-summary">
-                    <MarketSummary
-                      marketInfo={marketInfo}
-                      currentAsset={currentAsset}
-                    />
-                  </CardWrapper>
                 </div>
+              </div>
+
+              <div className="column2">
+                <CardWrapper className="market-summary">
+                  <MarketSummary
+                    marketInfo={marketInfo}
+                    currentAsset={currentAsset}
+                  />
+                </CardWrapper>
               </div>
             </div>
           )}
