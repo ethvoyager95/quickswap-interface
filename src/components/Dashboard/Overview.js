@@ -12,7 +12,7 @@ import WalletBalance from 'components/Dashboard/WalletBalance';
 import { promisify } from 'utilities';
 import * as constants from 'utilities/constants';
 import commaNumber from 'comma-number';
-import { getBigNumber, currencyFormatter } from 'utilities/common';
+import { getBigNumber, currencyFormatter, shortenNumberFormatter } from 'utilities/common';
 import { Card } from 'components/Basic/Card';
 
 const CardWrapper = styled.div`
@@ -271,7 +271,7 @@ function Overview({ currentMarket, settings, getMarketHistory }) {
                   .toString(10)}`}{' '}
                 USD
               </p>
-              <p className="apy-value">{currentAPY}%</p>
+              <p className="apy-value">{shortenNumberFormatter(currentAPY)}%</p>
               <p className="apy-label">
                 {(currentMarket || 'supply') === 'supply'
                   ? 'Deposit APY'

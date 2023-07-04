@@ -200,9 +200,11 @@ function BorrowSection({ asset, settings, setSetting }) {
             </div>
             <span className="value green">
               {asset.borrowApy &&
-                getBigNumber(asset.borrowApy)
-                  .dp(2, 1)
-                  .toString(10)}
+                shortenNumberFormatter(
+                  getBigNumber(asset.borrowApy)
+                    .dp(2, 1)
+                    .toString(10)
+                )}
               %
             </span>
           </div>
