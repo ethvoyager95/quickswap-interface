@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Chart from 'react-apexcharts';
+import { shortenNumberFormatter } from 'utilities/common';
 
 const CircleProgressBarWrapper = styled.div`
   width: 100%;
@@ -117,7 +118,7 @@ function CircleProgressBar({ label, percent, borrow, supply }) {
     <CircleProgressBarWrapper>
       <Chart options={options} series={series} type="donut" />
       <div className="circle-label">
-        <p className="percent">{percent}%</p>
+        <p className="percent">{shortenNumberFormatter(percent)}%</p>
         <p className="label">{label}</p>
       </div>
     </CircleProgressBarWrapper>
