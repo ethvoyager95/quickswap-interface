@@ -165,6 +165,27 @@ input {
     background-color: var(--color-bg-primary);
 }
 
+.ant-table-placeholder {
+    background: var(--color-bg-primary);
+}
+
+.ant-pagination-item-link {
+    background: var(--color-bg-primary) !important;
+    color: var(--color-text-main) !important;
+}
+
+.ant-pagination-item {
+    background-color: unset;
+}
+.ant-pagination-item a {
+    background: var(--color-bg-primary) !important;
+    color: var(--color-text-main) !important;
+}
+
+.ant-pagination-item-ellipsis {
+    color: var(--color-text-main) !important;
+}
+
 .ant-dropdown-menu-item {
     &:hover {
         background-color: transparent;

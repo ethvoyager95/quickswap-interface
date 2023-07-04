@@ -156,9 +156,10 @@ function Liquidator({ settings, setSetting }) {
 
   const getDataUsers = async () => {
     const res = await axios.get(
-      `${process.env.REACT_APP_ENV === 'dev'
-        ? `${process.env.REACT_APP_DEVELOPMENT_API}`
-        : `${process.env.REACT_APP_PRODUCTION_API}`
+      `${
+        process.env.REACT_APP_ENV === 'dev'
+          ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+          : `${process.env.REACT_APP_PRODUCTION_API}`
       }/get_liquidators`,
       {
         params: {}
@@ -168,11 +169,12 @@ function Liquidator({ settings, setSetting }) {
     return data;
   };
 
-  const getDataUsersAssets = async (userAddress) => {
+  const getDataUsersAssets = async userAddress => {
     const res = await axios.get(
-      `${process.env.REACT_APP_ENV === 'dev'
-        ? `${process.env.REACT_APP_DEVELOPMENT_API}`
-        : `${process.env.REACT_APP_PRODUCTION_API}`
+      `${
+        process.env.REACT_APP_ENV === 'dev'
+          ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+          : `${process.env.REACT_APP_PRODUCTION_API}`
       }/get_liquidator`,
       {
         params: {
@@ -186,9 +188,10 @@ function Liquidator({ settings, setSetting }) {
 
   const getDataUsersDetail = async (userAddress, borrowToken, seizeToken) => {
     const res = await axios.get(
-      `${process.env.REACT_APP_ENV === 'dev'
-        ? `${process.env.REACT_APP_DEVELOPMENT_API}`
-        : `${process.env.REACT_APP_PRODUCTION_API}`
+      `${
+        process.env.REACT_APP_ENV === 'dev'
+          ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+          : `${process.env.REACT_APP_PRODUCTION_API}`
       }/get_liquidator_detail`,
       {
         params: {
@@ -204,9 +207,10 @@ function Liquidator({ settings, setSetting }) {
 
   const getCurrentBlock = async () => {
     const res = await axios.get(
-      `${process.env.REACT_APP_ENV === 'dev'
-        ? `${process.env.REACT_APP_DEVELOPMENT_API}`
-        : `${process.env.REACT_APP_PRODUCTION_API}`
+      `${
+        process.env.REACT_APP_ENV === 'dev'
+          ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+          : `${process.env.REACT_APP_PRODUCTION_API}`
       }/liquidator/block_number`
     );
     setBlockNumber(res.data.blockNumber);
@@ -219,7 +223,11 @@ function Liquidator({ settings, setSetting }) {
 
   const getUserInfo = async (address, borrowToken, seizeToken) => {
     if (Web3.utils.isAddress(selectedUserAddress)) {
-      const dataUser = await getDataUsersDetail(address, borrowToken, seizeToken);
+      const dataUser = await getDataUsersDetail(
+        address,
+        borrowToken,
+        seizeToken
+      );
       if (dataUser) {
         setUserInfo(formatUserInfo(dataUser));
       } else {
@@ -331,38 +339,53 @@ function Liquidator({ settings, setSetting }) {
   const handleLiquidate = async () => {
     try {
       setTypeModal('loading');
-      const tokenContract = selectedAssetRepay === 'ETH' ? null : getTokenContract(selectedAssetRepay.toLowerCase());
+      const tokenContract =
+        selectedAssetRepay === 'ETH'
+          ? null
+          : getTokenContract(selectedAssetRepay.toLowerCase());
       const sbepContract = getSbepContract(selectedAssetRepay.toLowerCase());
       setIsOpenModalLoading(true);
       setAction('Liquidating');
-      const decimals = selectedAssetRepay === 'ETH' ? 18 : await methods.call(tokenContract.methods.decimals, []);
-      const resLiquidate = selectedAssetRepay === 'ETH' ? await liquidateBorrow(settings.selectedAddress,
-        selectedUserAddress,
-        constants.CONTRACT_SBEP_ADDRESS[selectedAssetSeize.toLowerCase()].address,
-        new BigNumber(+repayValue)
-          .times(new BigNumber(10).pow(decimals))
-          .integerValue()
-          .toString(10)) : await methods.send(
-            sbepContract.methods.liquidateBorrow,
-            [
+      const decimals =
+        selectedAssetRepay === 'ETH'
+          ? 18
+          : await methods.call(tokenContract.methods.decimals, []);
+      const resLiquidate =
+        selectedAssetRepay === 'ETH'
+          ? await liquidateBorrow(
+              settings.selectedAddress,
               selectedUserAddress,
+              constants.CONTRACT_SBEP_ADDRESS[selectedAssetSeize.toLowerCase()]
+                .address,
               new BigNumber(+repayValue)
                 .times(new BigNumber(10).pow(decimals))
                 .integerValue()
-                .toString(10),
-              constants.CONTRACT_SBEP_ADDRESS[selectedAssetSeize.toLowerCase()].address
-            ],
-            settings.selectedAddress
-          );
+                .toString(10)
+            )
+          : await methods.send(
+              sbepContract.methods.liquidateBorrow,
+              [
+                selectedUserAddress,
+                new BigNumber(+repayValue)
+                  .times(new BigNumber(10).pow(decimals))
+                  .integerValue()
+                  .toString(10),
+                constants.CONTRACT_SBEP_ADDRESS[
+                  selectedAssetSeize.toLowerCase()
+                ].address
+              ],
+              settings.selectedAddress
+            );
 
       if (resLiquidate.status) {
         setTypeModal('transaction success');
         setRepayValue('');
 
         const res = await axios.get(
-          `${process.env.REACT_APP_ENV === 'dev'
-            ? `${process.env.REACT_APP_DEVELOPMENT_API}`
-            : `${process.env.REACT_APP_PRODUCTION_API}`
+          `${
+            process.env.REACT_APP_ENV === 'dev'
+              ? `${process.env.REACT_APP_DEVELOPMENT_API}`
+              : `${process.env.REACT_APP_PRODUCTION_API}`
           }/liquidated`,
           {
             params: {
@@ -589,16 +612,17 @@ function Liquidator({ settings, setSetting }) {
       render(_, asset) {
         return {
           children: (
-            <a href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.account}`} target='_blank'>
+            <a
+              href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${asset.account}`}
+              target="_blank"
+              rel="noreferrer"
+            >
               <Address>
                 {asset.account
-                  ? `${asset.account.substr(
-                    0,
-                    4
-                  )}...${asset.account.substr(
-                    asset.account.length - 4,
-                    4
-                  )}`
+                  ? `${asset.account.substr(0, 4)}...${asset.account.substr(
+                      asset.account.length - 4,
+                      4
+                    )}`
                   : '-'}
               </Address>
             </a>
@@ -636,8 +660,7 @@ function Liquidator({ settings, setSetting }) {
               {asset.logoRepay && <img src={asset.logoRepay} alt="" />}
               <div>
                 <span className="black">
-                  {formatNumber(asset.maxRepayAmountEther)}{' '}
-                  {asset.assetToRepay}
+                  {formatNumber(asset.maxRepayAmountEther)} {asset.assetToRepay}
                 </span>
                 <span className="gray">${asset.maxRepayAmountUsd}</span>
               </div>
@@ -672,8 +695,7 @@ function Liquidator({ settings, setSetting }) {
               {asset.logoSeize && <img src={asset.logoSeize} alt="" />}
               <div>
                 <span className="black">
-                  {formatNumber(asset.maxSeizeAmountEther)}{' '}
-                  {asset.assetToSeize}
+                  {formatNumber(asset.maxSeizeAmountEther)} {asset.assetToSeize}
                 </span>
               </div>
             </SeizedAndRepay>
@@ -722,8 +744,9 @@ function Liquidator({ settings, setSetting }) {
         </div>
         <div className="address">
           <div
-            className={`${mess === 'This account can be liquidated' ? 'text-green' : ''
-              } message`}
+            className={`${
+              mess === 'This account can be liquidated' ? 'text-green' : ''
+            } message`}
           >
             {mess && selectedUserAddress ? mess : null}
           </div>
@@ -748,8 +771,9 @@ function Liquidator({ settings, setSetting }) {
           <div className="item">
             <div>Account Health</div>
             <div
-              className={`${!userInfo.accHealth ? 'gray-value' : ''} ${userInfo.accHealth < 1 ? 'red-value' : ''
-                } ${userInfo.accHealth >= 1 ? 'green-value' : ''}`}
+              className={`${!userInfo.accHealth ? 'gray-value' : ''} ${
+                userInfo.accHealth < 1 ? 'red-value' : ''
+              } ${userInfo.accHealth >= 1 ? 'green-value' : ''}`}
             >
               {isLoadingInfo ? '-' : userInfo.accHealth || '-'}
             </div>
@@ -780,9 +804,7 @@ function Liquidator({ settings, setSetting }) {
                       }
                       alt=""
                     />
-                    <div>
-                      {selectedAssetRepay || userInfo.repayAsset}
-                    </div>
+                    <div>{selectedAssetRepay || userInfo.repayAsset}</div>
                     <img src={iconDropdown} alt="" className="dropdown" />
                   </div>
                 </SButton>

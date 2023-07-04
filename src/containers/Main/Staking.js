@@ -104,9 +104,10 @@ const VaultContainer = styled.div`
   .gap {
     gap: 20px;
   }
+
   .container {
     padding: 24px;
-    background: white;
+    background: var(--color-bg-primary);
     border-radius: 5px;
     margin-bottom: 20px;
   }
@@ -273,7 +274,7 @@ const VaultContainer = styled.div`
 
   input {
     // font-size: 26px;
-    color: var(--color-text-main);
+    color: black;
     background: transparent;
     border: none;
 
@@ -288,7 +289,6 @@ const VaultContainer = styled.div`
 
   .input-bg {
     padding: 16px;
-
     background: #f0f0f0;
     border-radius: 5px;
   }
@@ -368,7 +368,7 @@ const VaultContainer = styled.div`
 
   .divider {
     margin: 20px -20px;
-    border-bottom: 1px solid #141518;
+    border-bottom: 1px solid var(--color-text-secondary);
   }
 
   .mx-auto {
@@ -385,11 +385,11 @@ const VaultContainer = styled.div`
   .balance_row {
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-text-main);
+    color: black;
   }
 
   .fee_list {
-    color: var(--color-text-main);
+    color: black;
     display: flex;
     flex-direction: column;
     gap: 20px;

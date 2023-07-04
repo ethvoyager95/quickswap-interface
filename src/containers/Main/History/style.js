@@ -46,8 +46,8 @@ export const SDivFlex = styled.div`
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
-  color: #0b0f23;
-  margin: 0 16px 28px;
+  color: var(--color-text-main);
+  margin: 10px 16px 28px;
   gap: 16px;
   flex-wrap: wrap;
 
@@ -58,7 +58,7 @@ export const SDivFlex = styled.div`
     line-height: 22px;
     display: flex;
     align-items: center;
-    color: #0b0f23;
+    color: var(--color-text-main);
   }
 `;
 
@@ -75,7 +75,7 @@ export const THeadWrapper = styled.div`
 `;
 
 export const STable = styled(Table)`
-  background: #ffffff;
+  background: var(--color-bg-primary);
   border-radius: 5px;
   padding-left: 40px;
   padding-right: 40px;
@@ -132,7 +132,7 @@ export const STable = styled(Table)`
       }
     }
     tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
-      background: #ffffff;
+      background: var(--color-bg-primary);
     }
   }
 `;
@@ -177,7 +177,7 @@ export const Value = styled.div`
   font-weight: 500;
   font-size: 18px;
   line-height: 28px;
-  color: #000000;
+  color: var(--color-text-main);
   text-transform: ${props => (props.uppercase ? 'uppercase' : 'lowercase')};
 `;
 
@@ -406,6 +406,7 @@ export const NoData = styled.div`
   margin: 100px auto;
   gap: 24px;
   align-items: center;
+  background: var(--color-bg-primary);
 
   div {
     font-style: normal;

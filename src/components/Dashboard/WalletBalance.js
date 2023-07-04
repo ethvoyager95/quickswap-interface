@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import AnimatedNumber from 'animated-number-react';
-import { getBigNumber } from 'utilities/common';
+import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { Tooltip } from 'antd';
 import IconQuestion from 'assets/img/question.png';
 
@@ -272,7 +272,7 @@ function WalletBalance({ settings, setSetting }) {
             </Tooltip>
           </p>
         </div>
-        <p className="value">{netAPY}%</p>
+        <p className="value">{shortenNumberFormatter(netAPY)}%</p>
       </div>
       <div className="divider" />
       <div className="balance-value">

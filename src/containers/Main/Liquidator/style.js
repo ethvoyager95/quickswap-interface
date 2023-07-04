@@ -8,7 +8,7 @@ export const STableWrapper = styled.div`
 `;
 
 export const STable = styled(Table)`
-  background: #ffffff;
+  background: var(--color-bg-primary);
   border-radius: 5px;
   overflow-x: auto;
   overflow-y: auto;
@@ -67,7 +67,7 @@ export const STable = styled(Table)`
     }
 
     tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
-      background: #ffffff;
+      background: var(--color-bg-primary);
     }
   }
 
@@ -100,7 +100,7 @@ export const THeadWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #9d9fa7;
+  color: var(--color-text-secondary);
   cursor: ${props => (props.sorted ? 'pointer' : 'unset')};
 
   .asc {
@@ -147,7 +147,7 @@ export const SearchBar = styled.div`
       font-size: 16px;
       line-height: 24px;
       text-decoration-line: underline;
-      color: #6d6f7b;
+      color: var(--color-text-main);
       align-self: flex-end;
       cursor: pointer;
     }
@@ -185,7 +185,13 @@ export const SearchBar = styled.div`
     .recent-btn {
       width: 228px;
       height: 50px;
-      background: #3b54b5;
+      background: linear-gradient(
+        242deg,
+        #246cf9 0%,
+        #1e68f6 0.01%,
+        #0047d0 100%,
+        #0047d0 100%
+      );
       border-radius: 8px;
       font-style: normal;
       font-weight: 900;
@@ -195,12 +201,19 @@ export const SearchBar = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 0px;
 
       &:hover,
       &:active,
       &:visited,
       &:focus {
-        background: #3b54b5 !important;
+        background: linear-gradient(
+          242deg,
+          #246cf9 0%,
+          #1e68f6 0.01%,
+          #0047d0 100%,
+          #0047d0 100%
+        ) !important;
         opacity: 0.8;
       }
     }
@@ -252,7 +265,7 @@ export const WalletInfo = styled.div`
   margin-bottom: 30px;
 
   .details {
-    background: #ffffff;
+    background: var(--color-bg-primary);
     border-radius: 5px;
     font-style: normal;
     font-weight: 500;
@@ -266,6 +279,7 @@ export const WalletInfo = styled.div`
       align-items: center;
       justify-content: space-between;
       margin-bottom: 28px;
+      color: var(--color-text-secondary);
 
       .flex-gap6 {
         display: flex;
@@ -322,7 +336,7 @@ export const WalletInfo = styled.div`
     justify-content: center;
     width: 100%;
     height: 100%;
-    background: #ffffff;
+    background: var(--color-bg-primary);
     border-radius: 5px;
 
     .mess-liquidator {
@@ -349,7 +363,7 @@ export const WalletInfo = styled.div`
         font-weight: 500;
         font-size: 16px;
         line-height: 24px;
-        color: #0b0f23;
+        color: var(--color-text-main);
         margin-bottom: 12px;
 
         img {
@@ -420,14 +434,20 @@ export const WalletInfo = styled.div`
           font-weight: 500;
           font-size: 16px;
           line-height: 24px;
-          color: #0b0f23;
+          color: var(--color-text-main);
         }
 
         button {
           width: 140px;
           height: 50px;
-          background: #107def;
-          box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
+          background: linear-gradient(
+            242deg,
+            #246cf9 0%,
+            #1e68f6 0.01%,
+            #0047d0 100%,
+            #0047d0 100%
+          );
+          border: 0px;
           border-radius: 8px;
           font-style: normal;
           font-weight: 900;
@@ -527,7 +547,7 @@ export const TdWithImg = styled.div`
   font-weight: 500;
   font-size: 18px;
   line-height: 28px;
-  color: #0b0f23;
+  color: var(--color-text-main);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -539,16 +559,22 @@ export const TdWithImg = styled.div`
 
 export const CustomModal = styled(Modal)`
   .ant-modal-content {
+    background-color: unset;
     border-radius: ${props => (props.loading ? '20px' : 'unset')};
   }
   .ant-modal-body {
     padding: 70px 24px;
-    background: ${props => (props.loading ? '#FFFFFF' : '#eceff9')};
+    background: ${props => (props.loading ? '#141518' : '#141518')};
     border-radius: ${props => (props.loading ? '20px' : 'unset')};
+  }
+
+  .ant-modal-close {
+    color: var(--color-text-main);
   }
 
   .ant-modal-close:hover {
     background-color: transparent !important;
+    color: var(--color-text-main);
   }
 
   @media only screen and (max-width: 768px) {
@@ -568,7 +594,7 @@ export const ModalContent = styled.div`
     font-weight: 500;
     font-size: 31px;
     line-height: 120%;
-    color: #0b0f23;
+    color: var(--color-text-main);
     margin-bottom: 36px;
   }
 
@@ -577,7 +603,7 @@ export const ModalContent = styled.div`
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
-    color: #0b0f23;
+    color: var(--color-text-main);
     margin-bottom: 12px;
     align-self: flex-start;
   }
@@ -664,8 +690,14 @@ export const ModalContent = styled.div`
     .search-btn {
       width: 120px;
       height: 50px;
-      background: #1272ec;
-      box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
+      background: linear-gradient(
+        242deg,
+        #246cf9 0%,
+        #1e68f6 0.01%,
+        #0047d0 100%,
+        #0047d0 100%
+      );
+      border: 0px;
       border-radius: 8px;
       color: #ffffff;
       font-style: normal;
@@ -732,7 +764,7 @@ export const ModalLoadingContent = styled.div`
     font-weight: 500;
     font-size: 31px;
     line-height: 120%;
-    color: #0b0f23;
+    color: var(--color-text-main);
   }
 
   .content {
@@ -746,7 +778,7 @@ export const ModalLoadingContent = styled.div`
       font-weight: 500;
       font-size: 31px;
       line-height: 120%;
-      color: #0b0f23;
+      color: var(--color-text-main);
     }
 
     .sub-title {
@@ -763,7 +795,7 @@ export const ModalLoadingContent = styled.div`
     font-weight: 500;
     font-size: 18px;
     line-height: 28px;
-    color: #0b0f23;
+    color: var(--color-text-main);
     padding: 16px 0;
     background: #eeeeee;
     border-radius: 8px;
@@ -798,7 +830,7 @@ export const Timestamp = styled.div`
   font-weight: 500;
   font-size: 18px;
   line-height: 28px;
-  color: #0b0f23;
+  color: var(--color-text-main);
 `;
 
 export const BorrowerAndLiquidator = styled.div`
@@ -829,7 +861,7 @@ export const SeizedAndRepay = styled.div`
     line-height: 28px;
 
     .black {
-      color: #0b0f23;
+      color: var(--color-text-main);
     }
 
     .gray {
