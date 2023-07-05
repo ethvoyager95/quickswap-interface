@@ -1514,7 +1514,7 @@ function Staking({ settings, setSetting }) {
     <>
       <MainLayout>
         <ST.SMain>
-          <ST.SHr />
+          {/* <ST.SHr /> */}
           <Row className="all-section">
             <Col xs={{ span: 24 }} lg={{ span: 24 }}>
               <DashboardStaking amount={countNFT} txh={txhash} />

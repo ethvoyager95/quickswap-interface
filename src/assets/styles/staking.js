@@ -14,7 +14,7 @@ export const SMain = styled.div`
 `;
 export const SDivPadding = styled.div`
   width: 100%;
-  background: #fff;
+  background: var(--color-bg-primary);
   margin-top: 20px;
   padding: 10px 15px;
   border-radius: 8px;
@@ -30,7 +30,7 @@ export const SDivPadding = styled.div`
 `;
 export const SDivPaddingMT = styled.div`
   width: 100%;
-  background: #fff;
+  background: var(--color-bg-primary);
   margin-top: 20px;
   padding: 10px 15px;
   border-radius: 8px;
@@ -46,7 +46,7 @@ export const SDivPaddingMT = styled.div`
 `;
 export const SDiv = styled.div`
   width: 100%;
-  background: #fff;
+  background: var(--color-bg-primary);
   padding: 10px 15px;
   margin-top: 20px;
   border-radius: 8px;
@@ -74,7 +74,7 @@ export const SHeader = styled.div`
   }
 `;
 export const SText = styled.div`
-  color: #000000;
+  color: var(--color-text-main);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,7 +93,7 @@ export const SText = styled.div`
 `;
 
 export const STextLeft = styled.div`
-  color: #000000;
+  color: var(--color-text-main);
   font-weight: 700;
   font-size: 20px;
   line-height: 27px;
@@ -116,7 +116,7 @@ export const SDivHarvest = styled.div`
   }
 `;
 export const STextModel = styled.div`
-  color: #000000;
+  color: var(--color-text-main);
   font-weight: 700;
   font-size: 20px;
   line-height: 27px;
@@ -743,7 +743,7 @@ export const SInforValue = styled.div`
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
-  color: #0b0f23;
+  color: var(--color-text-main);
   display: flex;
   margin-right: 10%;
   @media only screen and (max-width: 768px) {
@@ -754,7 +754,7 @@ export const SInforValueNoMargin = styled.div`
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
-  color: #0b0f23;
+  color: var(--color-text-main);
   display: flex;
   @media only screen and (max-width: 768px) {
     margin-right: 0%;
@@ -764,7 +764,7 @@ export const SInforValueUn = styled.div`
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
-  color: #0b0f23;
+  color: var(--color-text-main);
   display: flex;
 `;
 export const SIconSmall = styled.div`
@@ -773,7 +773,7 @@ export const SIconSmall = styled.div`
 `;
 export const STotalClaim = styled.div`
   font-weight: 900;
-  color: #0b0f23;
+  color: var(--color-text-main);
   display: flex;
   @media only screen and (max-width: 768px) {
     font-size: 16px;

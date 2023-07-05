@@ -69,7 +69,7 @@ const SLogoLP = styled.img`
   }
 `;
 const STitle = styled.div`
-  color: #0b0f23;
+  color: var(--color-text-main);
   font-weight: 900;
   font-size: 31px;
   margin-left: 30px;
@@ -115,7 +115,7 @@ const STextBox = styled.div`
   }
 `;
 const SValueBox = styled.div`
-  color: #0b0f23;
+  color: var(--color-text-main);
   font-size: 20px;
   line-height: 27px;
   font-weight: 900;

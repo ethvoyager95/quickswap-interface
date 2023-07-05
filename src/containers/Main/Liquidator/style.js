@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 import { Table, Modal } from 'antd';
 
+export const Wrapper = styled.div`
+  margin: 0 16px;
+`;
+
 export const STableWrapper = styled.div`
   @media only screen and (max-width: 768px) {
     margin: 0 12px;
@@ -110,7 +114,7 @@ export const THeadWrapper = styled.div`
 
 export const SearchBar = styled.div`
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding-top: 30px;
+  padding-top: 20px;
   margin-bottom: 28px;
 
   .label {
@@ -118,7 +122,7 @@ export const SearchBar = styled.div`
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
-    color: #0b0f23;
+    color: var(--color-text-main);
     margin-bottom: 12px;
   }
 

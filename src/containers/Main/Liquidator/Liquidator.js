@@ -24,6 +24,7 @@ import {
 import ModalLiquidations from './ModalLiquidations';
 import ModalLoading from './ModalLoading';
 import {
+  Wrapper,
   STable,
   THeadWrapper,
   Health,
@@ -381,7 +382,7 @@ function Liquidator({ settings, setSetting }) {
         setTypeModal('transaction success');
         setRepayValue('');
 
-        const res = await axios.get(
+        await axios.get(
           `${
             process.env.REACT_APP_ENV === 'dev'
               ? `${process.env.REACT_APP_DEVELOPMENT_API}`
@@ -717,23 +718,48 @@ function Liquidator({ settings, setSetting }) {
   };
 
   return (
-    <MainLayout>
-      <SearchBar>
-        <div className="label">Search address to liquidate</div>
-        <div className="address">
-          <div className="text-input">
-            <Input
-              placeholder="E.g 0xbfr2zs203..."
-              value={userAddressInput}
-              onChange={e => handleInputAddressChange(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSearchUserAddress()}
-            />
-            <Button className="search-btn" onClick={handleSearchUserAddress}>
-              <img src={iconSearch} alt="" />
+    <MainLayout title="Liquidator">
+      <Wrapper>
+        <SearchBar>
+          <div className="label">Search address to liquidate</div>
+          <div className="address">
+            <div className="text-input">
+              <Input
+                placeholder="E.g 0xbfr2zs203..."
+                value={userAddressInput}
+                onChange={e => handleInputAddressChange(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSearchUserAddress()}
+              />
+              <Button className="search-btn" onClick={handleSearchUserAddress}>
+                <img src={iconSearch} alt="" />
+              </Button>
+            </div>
+            <Button
+              className="recent-btn"
+              onClick={e => {
+                e.currentTarget.blur();
+                setIsOpenModal(true);
+              }}
+            >
+              Recent Liquidations
             </Button>
           </div>
+          <div className="address">
+            <div
+              className={`${
+                mess === 'This account can be liquidated' ? 'text-green' : ''
+              } message`}
+            >
+              {mess && selectedUserAddress ? mess : null}
+            </div>
+            {selectedUserAddress && Web3.utils.isAddress(selectedUserAddress) && (
+              <div className="refresh" onClick={handleRefresh}>
+                Refresh
+              </div>
+            )}
+          </div>
           <Button
-            className="recent-btn"
+            className="recent-btn-mob"
             onClick={e => {
               e.currentTarget.blur();
               setIsOpenModal(true);
@@ -741,261 +767,241 @@ function Liquidator({ settings, setSetting }) {
           >
             Recent Liquidations
           </Button>
-        </div>
-        <div className="address">
-          <div
-            className={`${
-              mess === 'This account can be liquidated' ? 'text-green' : ''
-            } message`}
-          >
-            {mess && selectedUserAddress ? mess : null}
-          </div>
-          {selectedUserAddress && Web3.utils.isAddress(selectedUserAddress) && (
-            <div className="refresh" onClick={handleRefresh}>
-              Refresh
-            </div>
-          )}
-        </div>
-        <Button
-          className="recent-btn-mob"
-          onClick={e => {
-            e.currentTarget.blur();
-            setIsOpenModal(true);
-          }}
-        >
-          Recent Liquidations
-        </Button>
-      </SearchBar>
-      <WalletInfo>
-        <div className="details">
-          <div className="item">
-            <div>Account Health</div>
-            <div
-              className={`${!userInfo.accHealth ? 'gray-value' : ''} ${
-                userInfo.accHealth < 1 ? 'red-value' : ''
-              } ${userInfo.accHealth >= 1 ? 'green-value' : ''}`}
-            >
-              {isLoadingInfo ? '-' : userInfo.accHealth || '-'}
-            </div>
-          </div>
-          <div className="item">
-            <div>Asset to Repay</div>
-            {isLoadingInfo ? (
-              <div>-</div>
-            ) : userInfo.repayAsset ? (
-              <Dropdown
-                overlay={dropdownAssetRepay}
-                trigger={['click']}
-                onVisibleChange={handleVisibleDropdownRepayChange}
-                visible={visibleDropdownRepay}
-                getPopupContainer={() => document.getElementById('repay')}
-                placement="bottomRight"
+        </SearchBar>
+        <WalletInfo>
+          <div className="details">
+            <div className="item">
+              <div>Account Health</div>
+              <div
+                className={`${!userInfo.accHealth ? 'gray-value' : ''} ${
+                  userInfo.accHealth < 1 ? 'red-value' : ''
+                } ${userInfo.accHealth >= 1 ? 'green-value' : ''}`}
               >
-                <SButton
-                  onClick={e => {
-                    e.preventDefault();
-                  }}
-                >
-                  <div className="black-value flex-gap6" id="repay">
-                    <img
-                      src={
-                        renderLogo(selectedAssetRepay) ||
-                        renderLogo(userInfo.repayAsset)
-                      }
-                      alt=""
-                    />
-                    <div>{selectedAssetRepay || userInfo.repayAsset}</div>
-                    <img src={iconDropdown} alt="" className="dropdown" />
-                  </div>
-                </SButton>
-              </Dropdown>
-            ) : (
-              <div>-</div>
-            )}
-          </div>
-          <div className="item">
-            <div>Asset to Seize</div>
-            {isLoadingInfo ? (
-              <div>-</div>
-            ) : userInfo.seizeAsset ? (
-              <Dropdown
-                overlay={dropdownAssetSeize}
-                trigger={['click']}
-                onVisibleChange={handleVisibleDropdownSeizeChange}
-                visible={visibleDropdownSeize}
-                getPopupContainer={() => document.getElementById('seize')}
-                placement="bottomRight"
-              >
-                <SButton
-                  onClick={e => {
-                    e.preventDefault();
-                  }}
-                >
-                  <div className="black-value flex-gap6" id="seize">
-                    <img
-                      src={
-                        renderLogo(selectedAssetSeize) ||
-                        renderLogo(userInfo.seizeAsset)
-                      }
-                      alt=""
-                    />
-                    <div>{selectedAssetSeize || userInfo.seizeAsset}</div>
-                    <img src={iconDropdown} alt="" className="dropdown" />
-                  </div>
-                </SButton>
-              </Dropdown>
-            ) : (
-              <div>-</div>
-            )}
-          </div>
-          <div className="item">
-            <div>Max Repay Amount</div>
-            <div className="flex-value">
+                {isLoadingInfo ? '-' : userInfo.accHealth || '-'}
+              </div>
+            </div>
+            <div className="item">
+              <div>Asset to Repay</div>
               {isLoadingInfo ? (
-                '-'
-              ) : userInfo.maxRepayAmountEther ? (
-                <>
-                  <div className="blue-value">
-                    {formatNumber(userInfo.maxRepayAmountEther)}{' '}
-                    {userInfo.repayAsset}
-                  </div>
-                  <div>${userInfo.maxRepayAmountUsd}</div>
-                </>
-              ) : (
-                '-'
-              )}
-            </div>
-          </div>
-          <div className="item">
-            <div>Max Seize Amount</div>
-            <div className="flex-value">
-              {isLoadingInfo ? (
-                '-'
-              ) : userInfo.maxSeizeAmountEther ? (
-                <div className="blue-value">
-                  {formatNumber(userInfo.maxSeizeAmountEther)}{' '}
-                  {userInfo.seizeAsset}
-                </div>
-              ) : (
-                '-'
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="liquidate-wrapper">
-          {!settings.selectedAddress || !settings.isConnected ? (
-            <div className="mess-liquidator">
-              You need to connect your wallet
-            </div>
-          ) : selectedUserAddress && userInfo.healthFactor ? (
-            <div className="liquidate">
-              <div className="title">
-                Amount you want to repay in{' '}
-                <img
-                  src={
-                    renderLogo(selectedAssetRepay) ||
-                    renderLogo(userInfo.symbolBorrowToken)
-                  }
-                  alt=""
-                />{' '}
-                {selectedAssetRepay || userInfo.symbolBorrowToken}
-              </div>
-              <div className="text-input">
-                <Input
-                  tabIndex={-1}
-                  placeholder="0"
-                  onChange={e => handleInputAmountChange(e.target.value)}
-                  value={repayValue}
-                />
-                <div className="max-btn" onClick={handleClickMaxBtn}>
-                  Max
-                </div>
-              </div>
-              <div className="balance">
-                Wallet balance{' '}
-                <span>
-                  {isLoadingInfo
-                    ? '-'
-                    : formatNumber(balanceSelectedRepay) || '-'}{' '}
-                  {selectedAssetRepay}
-                </span>
-              </div>
-              <div className="liquidate-btn-wrapper">
-                <div>
-                  {repayValue && +repayValue !== 0 && !errMess && (
-                    <>
-                      You will repay{' '}
-                      <span className="text-blue">
-                        {repayAmount.toEth} {selectedAssetRepay}
-                      </span>{' '}
-                      <span className="text-gray">${repayAmount.toUsd}</span>{' '}
-                      and seize{' '}
-                      <span className="text-blue">
-                        {seizeAmount} {selectedAssetSeize}
-                      </span>
-                    </>
-                  )}
-                  {errMess && <div className="err">{errMess}</div>}
-                </div>
-                {isApprove ? (
-                  <Button
-                    disabled={
-                      errMess ||
-                      !repayValue ||
-                      +repayValue === 0 ||
-                      userInfo.accHealth >= 1 ||
-                      disableBtnLiquidate
-                    }
-                    onClick={handleLiquidate}
+                <div>-</div>
+              ) : userInfo.repayAsset ? (
+                <Dropdown
+                  overlay={dropdownAssetRepay}
+                  trigger={['click']}
+                  onVisibleChange={handleVisibleDropdownRepayChange}
+                  visible={visibleDropdownRepay}
+                  getPopupContainer={() => document.getElementById('repay')}
+                  placement="bottomRight"
+                >
+                  <SButton
+                    onClick={e => {
+                      e.preventDefault();
+                    }}
                   >
-                    Liquidate
-                  </Button>
+                    <div className="black-value flex-gap6" id="repay">
+                      <img
+                        src={
+                          renderLogo(selectedAssetRepay) ||
+                          renderLogo(userInfo.repayAsset)
+                        }
+                        alt=""
+                      />
+                      <div>{selectedAssetRepay || userInfo.repayAsset}</div>
+                      <img src={iconDropdown} alt="" className="dropdown" />
+                    </div>
+                  </SButton>
+                </Dropdown>
+              ) : (
+                <div>-</div>
+              )}
+            </div>
+            <div className="item">
+              <div>Asset to Seize</div>
+              {isLoadingInfo ? (
+                <div>-</div>
+              ) : userInfo.seizeAsset ? (
+                <Dropdown
+                  overlay={dropdownAssetSeize}
+                  trigger={['click']}
+                  onVisibleChange={handleVisibleDropdownSeizeChange}
+                  visible={visibleDropdownSeize}
+                  getPopupContainer={() => document.getElementById('seize')}
+                  placement="bottomRight"
+                >
+                  <SButton
+                    onClick={e => {
+                      e.preventDefault();
+                    }}
+                  >
+                    <div className="black-value flex-gap6" id="seize">
+                      <img
+                        src={
+                          renderLogo(selectedAssetSeize) ||
+                          renderLogo(userInfo.seizeAsset)
+                        }
+                        alt=""
+                      />
+                      <div>{selectedAssetSeize || userInfo.seizeAsset}</div>
+                      <img src={iconDropdown} alt="" className="dropdown" />
+                    </div>
+                  </SButton>
+                </Dropdown>
+              ) : (
+                <div>-</div>
+              )}
+            </div>
+            <div className="item">
+              <div>Max Repay Amount</div>
+              <div className="flex-value">
+                {isLoadingInfo ? (
+                  '-'
+                ) : userInfo.maxRepayAmountEther ? (
+                  <>
+                    <div className="blue-value">
+                      {formatNumber(userInfo.maxRepayAmountEther)}{' '}
+                      {userInfo.repayAsset}
+                    </div>
+                    <div>${userInfo.maxRepayAmountUsd}</div>
+                  </>
                 ) : (
-                  <Button onClick={handleApprove}>Approve</Button>
+                  '-'
                 )}
               </div>
-              <div className="gas-price">
-                <div>Account health is updated every 2 seconds</div>
-                {/* <img src={iconFilter} alt="" /> */}
+            </div>
+            <div className="item">
+              <div>Max Seize Amount</div>
+              <div className="flex-value">
+                {isLoadingInfo ? (
+                  '-'
+                ) : userInfo.maxSeizeAmountEther ? (
+                  <div className="blue-value">
+                    {formatNumber(userInfo.maxSeizeAmountEther)}{' '}
+                    {userInfo.seizeAsset}
+                  </div>
+                ) : (
+                  '-'
+                )}
               </div>
             </div>
-          ) : (
-            <div className="mess-liquidator">
-              Search an account you want to liquidate
-            </div>
-          )}
-        </div>
-      </WalletInfo>
-      <BlockLabel>block# {blockNumber}</BlockLabel>
-      <STableWrapper>
-        <STable
-          locale={locale}
-          columns={columns}
-          dataSource={dataUsersTable}
-          pagination={false}
-          rowKey={record => record.account}
-          onRow={record => {
-            return {
-              onClick: () => {
-                setSelectedUserAddress(record.account);
-                setUserAddressInput(record.account);
-              } // click row
-            };
-          }}
-        />
-      </STableWrapper>
-      {isOpenModal && (
-        <ModalLiquidations isOpenModal={isOpenModal} onCancel={handleCancel} />
-      )}
-      {isOpenModalLoading && (
-        <ModalLoading
-          isOpenModal={isOpenModalLoading}
-          action={action}
-          type={typeModal}
-          txh={transactionHash}
-          onCancel={handleCancelModalLoading}
-        />
-      )}
+          </div>
+          <div className="liquidate-wrapper">
+            {!settings.selectedAddress || !settings.isConnected ? (
+              <div className="mess-liquidator">
+                You need to connect your wallet
+              </div>
+            ) : selectedUserAddress && userInfo.healthFactor ? (
+              <div className="liquidate">
+                <div className="title">
+                  Amount you want to repay in{' '}
+                  <img
+                    src={
+                      renderLogo(selectedAssetRepay) ||
+                      renderLogo(userInfo.symbolBorrowToken)
+                    }
+                    alt=""
+                  />{' '}
+                  {selectedAssetRepay || userInfo.symbolBorrowToken}
+                </div>
+                <div className="text-input">
+                  <Input
+                    tabIndex={-1}
+                    placeholder="0"
+                    onChange={e => handleInputAmountChange(e.target.value)}
+                    value={repayValue}
+                  />
+                  <div className="max-btn" onClick={handleClickMaxBtn}>
+                    Max
+                  </div>
+                </div>
+                <div className="balance">
+                  Wallet balance{' '}
+                  <span>
+                    {isLoadingInfo
+                      ? '-'
+                      : formatNumber(balanceSelectedRepay) || '-'}{' '}
+                    {selectedAssetRepay}
+                  </span>
+                </div>
+                <div className="liquidate-btn-wrapper">
+                  <div>
+                    {repayValue && +repayValue !== 0 && !errMess && (
+                      <>
+                        You will repay{' '}
+                        <span className="text-blue">
+                          {repayAmount.toEth} {selectedAssetRepay}
+                        </span>{' '}
+                        <span className="text-gray">${repayAmount.toUsd}</span>{' '}
+                        and seize{' '}
+                        <span className="text-blue">
+                          {seizeAmount} {selectedAssetSeize}
+                        </span>
+                      </>
+                    )}
+                    {errMess && <div className="err">{errMess}</div>}
+                  </div>
+                  {isApprove ? (
+                    <Button
+                      disabled={
+                        errMess ||
+                        !repayValue ||
+                        +repayValue === 0 ||
+                        userInfo.accHealth >= 1 ||
+                        disableBtnLiquidate
+                      }
+                      onClick={handleLiquidate}
+                    >
+                      Liquidate
+                    </Button>
+                  ) : (
+                    <Button onClick={handleApprove}>Approve</Button>
+                  )}
+                </div>
+                <div className="gas-price">
+                  <div>Account health is updated every 2 seconds</div>
+                  {/* <img src={iconFilter} alt="" /> */}
+                </div>
+              </div>
+            ) : (
+              <div className="mess-liquidator">
+                Search an account you want to liquidate
+              </div>
+            )}
+          </div>
+        </WalletInfo>
+        <BlockLabel>block# {blockNumber}</BlockLabel>
+        <STableWrapper>
+          <STable
+            locale={locale}
+            columns={columns}
+            dataSource={dataUsersTable}
+            pagination={false}
+            rowKey={record => record.account}
+            onRow={record => {
+              return {
+                onClick: () => {
+                  setSelectedUserAddress(record.account);
+                  setUserAddressInput(record.account);
+                } // click row
+              };
+            }}
+          />
+        </STableWrapper>
+        {isOpenModal && (
+          <ModalLiquidations
+            isOpenModal={isOpenModal}
+            onCancel={handleCancel}
+          />
+        )}
+        {isOpenModalLoading && (
+          <ModalLoading
+            isOpenModal={isOpenModalLoading}
+            action={action}
+            type={typeModal}
+            txh={transactionHash}
+            onCancel={handleCancelModalLoading}
+          />
+        )}
+      </Wrapper>
     </MainLayout>
   );
 }
