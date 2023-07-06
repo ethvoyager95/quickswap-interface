@@ -160,6 +160,9 @@ input {
 .full {
     width: 100%;
 }
+.gap-menu {
+    gap: 10px;
+}
 
 .ant-dropdown-menu {
     background-color: var(--color-bg-primary);
@@ -191,6 +194,42 @@ input {
         background-color: transparent;
         a span{        
             color: white !important;
+        }
+    }
+}
+
+.ant-table-placeholder {
+    border-bottom: 0px !important;
+}
+
+.ant-table-tbody > tr > td {
+    border-bottom: 1px solid var(--color-text-inactive) !important;
+}
+
+.ant-dropdown-menu-item > a {
+    display: flex !important;
+
+    &:hover {
+        svg path {
+            fill: #107def;
+        }
+    }
+
+    .active {
+        color: var(--color-white) !important;
+        svg path {
+            fill: #107def;
+        }
+    }
+}
+
+.ant-dropdown-menu-item {
+    .active {
+        span {
+            color: var(--color-white);
+        }
+        svg path {
+            fill: #107def;
         }
     }
 }

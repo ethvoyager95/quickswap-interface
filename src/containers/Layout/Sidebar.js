@@ -34,6 +34,15 @@ import { FaBars, FaTimes } from 'react-icons/fa';
 import { ACCOUNT_MARKET_INFO } from 'apollo/queries';
 import { client } from 'apollo/client';
 
+import { ReactComponent as DashboardImg } from 'assets/img/menu-dashboard.svg';
+import { ReactComponent as VoteImg } from 'assets/img/menu-vote.svg';
+import { ReactComponent as RewardsImg } from 'assets/img/menu-reward.svg';
+import { ReactComponent as MarketImg } from 'assets/img/menu-market.svg';
+import { ReactComponent as HistoryImg } from 'assets/img/menu-history.svg';
+import { ReactComponent as StakingImg } from 'assets/img/menu-staking.svg';
+import { ReactComponent as LiquidatorImg } from 'assets/img/menu-liquidator.svg';
+import { ReactComponent as VaultImg } from 'assets/img/menu-vault.svg';
+
 const SidebarWrapper = styled.div`
   width: 100%;
   padding: 32px 105px;
@@ -154,6 +163,10 @@ const MainMenu = styled.div`
       span {
         color: var(--color-white);
       }
+
+      svg path {
+        fill: #107def;
+      }
     }
 
     @media only screen and (max-width: 768px) {
@@ -167,6 +180,10 @@ const MainMenu = styled.div`
   .active {
     span {
       color: var(--color-white);
+    }
+
+    svg path {
+      fill: #107def;
     }
   }
 `;
@@ -272,29 +289,32 @@ const menu = (
   <Menu>
     <Menu.Item key="0">
       <NavLink
-        className="flex flex-start align-center"
+        className="flex flex-start align-center gap-menu"
         to="/staking"
         activeClassName="active"
       >
+        <StakingImg />
         <Label>Staking</Label>
       </NavLink>
     </Menu.Item>
-    <Menu.Item key="0">
+    <Menu.Item key="1">
       <NavLink
-        className="flex flex-start align-center"
-        to="/vault"
-        activeClassName="active"
-      >
-        <Label>DeFi Vault 3.0</Label>
-      </NavLink>
-    </Menu.Item>
-    <Menu.Item key="0">
-      <NavLink
-        className="flex flex-start align-center"
+        className="flex flex-start align-center gap-menu"
         to="/liquidator"
         activeClassName="active"
       >
+        <LiquidatorImg />
         <Label>Liquidator</Label>
+      </NavLink>
+    </Menu.Item>
+    <Menu.Item key="2">
+      <NavLink
+        className="flex flex-start align-center gap-menu"
+        to="/vault"
+        activeClassName="active"
+      >
+        <VaultImg />
+        <Label>DeFi Vault 3.0</Label>
       </NavLink>
     </Menu.Item>
   </Menu>
@@ -1063,38 +1083,43 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       </TopSidebarWrapper>
       <MainMenu isMenuOpen={isMenuOpen}>
         <NavLink
-          className="flex flex-start align-center"
+          className="flex flex-start align-center gap-menu"
           to="/dashboard"
           activeClassName="active"
         >
+          <DashboardImg />
           <Label>Dashboard</Label>
         </NavLink>
         <NavLink
-          className="flex flex-start align-center"
+          className="flex flex-start align-center gap-menu"
           to="/vote"
           activeClassName="active"
         >
+          <VoteImg />
           <Label>Vote</Label>
         </NavLink>
         <NavLink
-          className="flex flex-start align-center"
+          className="flex flex-start align-center gap-menu"
           to="/strk"
           activeClassName="active"
         >
+          <RewardsImg />
           <Label>Rewards</Label>
         </NavLink>
         <NavLink
-          className="flex flex-start align-center"
+          className="flex flex-start align-center gap-menu"
           to="/market"
           activeClassName="active"
         >
+          <MarketImg />
           <Label>Market</Label>
         </NavLink>
         <NavLink
-          className="flex flex-start align-center"
+          className="flex flex-start align-center gap-menu"
           to="/history"
           activeClassName="active"
         >
+          <HistoryImg />
           <Label>History</Label>
         </NavLink>
         {!isMenuOpen && width < 1200 && (
@@ -1107,24 +1132,27 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         {(width >= 1200 || isMenuOpen) && (
           <>
             <NavLink
-              className="flex flex-start align-center"
+              className="flex flex-start align-center gap-menu"
               to="/staking"
               activeClassName="active"
             >
+              <StakingImg />
               <Label>Staking</Label>
             </NavLink>
             <NavLink
-              className="flex flex-start align-center"
+              className="flex flex-start align-center gap-menu"
               to="/liquidator"
               activeClassName="active"
             >
+              <LiquidatorImg />
               <Label>Liquidator</Label>
             </NavLink>
             <NavLink
-              className="flex flex-start align-center"
+              className="flex flex-start align-center gap-menu"
               to="/vault"
               activeClassName="active"
             >
+              <VaultImg />
               <Label>DeFi Vault 3.0</Label>
             </NavLink>
           </>

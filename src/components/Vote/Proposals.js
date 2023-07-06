@@ -66,26 +66,20 @@ const ProposalsWrapper = styled.div`
       flex-direction: column;
     }
 
-    .ant-pagination-prev,
-    .ant-pagination-next {
-      display: none;
+    .ant-pagination-item {
+      border: none;
     }
 
-    .ant-pagination-item a {
-      color: var(--color-text-main);
+    .ant-pagination-next .ant-pagination-item-link {
+      border: none;
     }
 
-    .ant-pagination-item:focus a,
-    .ant-pagination-item:hover a {
-      color: var(--color-blue);
+    .ant-pagination-prev .ant-pagination-item-link {
+      border: none;
     }
 
     .ant-pagination-item-active {
-      background: transparent;
-      border-color: transparent;
-      a {
-        color: var(--color-blue);
-      }
+      border: 1px solid #107def;
     }
 
     .button {
@@ -294,17 +288,15 @@ function Proposals({
           )}
         </div>
         {proposals && proposals.length !== 0 && (
-          <div className="flex align-center just-between footer">
+          <div className="flex align-center just-end footer">
             <Pagination
-              size="small"
               defaultCurrent={1}
               defaultPageSize={5}
               current={current}
-              pageSize={pageSize}
+              onChange={e => handleChangePage(e)}
               total={total}
-              onChange={handleChangePage}
             />
-            <div className="flex just-between align-center button">
+            {/* <div className="flex just-between align-center button">
               {current * pageSize < total && (
                 <div className="flex align-center button-next" onClick={onNext}>
                   <span>Next</span>
@@ -317,7 +309,7 @@ function Proposals({
                   <span>Prev</span>
                 </div>
               )}
-            </div>
+            </div> */}
           </div>
         )}
         <ProposalModal
