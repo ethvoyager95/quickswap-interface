@@ -126,7 +126,7 @@ function BorrowSection({ asset, settings, setSetting }) {
     const tokenPrice = getBigNumber(asset.tokenPrice);
     const safeMax = BigNumber.maximum(
       totalBorrowLimit
-        .times(40)
+        .times(80)
         .div(100)
         .minus(totalBorrowBalance),
       new BigNumber(0)
