@@ -985,11 +985,11 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     });
   };
 
-  useEffect(() => {
-    if (!settings.isConnected && location.pathname !== '/history') {
-      setIsOpenModal(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!settings.isConnected && location.pathname !== '/history') {
+  //     setIsOpenModal(true);
+  //   }
+  // }, []);
 
   const updateBalance = async () => {
     if (window.ethereum && checkIsValidNetwork() && settings.selectedAddress) {

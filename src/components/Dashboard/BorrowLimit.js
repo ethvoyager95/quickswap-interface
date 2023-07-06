@@ -79,7 +79,17 @@ function BorrowLimit({ settings }) {
         <div className="usd-price">${format(available)}</div>
       </div>
       <div className="progress">
-        <LineProgressBar label="Borrow Limit" percent={borrowPercent} />
+        <LineProgressBar
+          label="Borrow Limit"
+          percent={borrowPercent}
+          borrowLimit={format(
+            new BigNumber(available)
+              .times(80)
+              .div(100)
+              .dp(2)
+              .toString(10)
+          )}
+        />
       </div>
     </CardWrapper>
   );

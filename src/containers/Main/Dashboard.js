@@ -32,10 +32,6 @@ const DashboardWrapper = styled.div`
 
 const SQuestion = styled.img`
   margin: 0px 20px 0px 10px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-    height: 15px;
-  }
 `;
 
 function Dashboard({ setSetting }) {
@@ -61,7 +57,7 @@ function Dashboard({ setSetting }) {
               <Label size="14" primary className="toggel-label">
                 <div className="flex align-center">
                   <p className="pointer">
-                    APY with Strike&nbsp;
+                    APY with STRK&nbsp;
                     <Tooltip
                       placement="bottom"
                       title={

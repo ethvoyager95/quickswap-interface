@@ -397,14 +397,9 @@ const VaultContainer = styled.div`
 `;
 
 const SQuestion = styled.img`
-  width: 23px !important;
-  height: 23px !important;
+  width: 14px !important;
+  height: 14px !important;
   margin-left: 10px;
-  @media only screen and (max-width: 768px) {
-    width: 15px !important;
-    height: 15px !important;
-    margin-right: 0;
-  }
 `;
 
 const format = commaNumber.bindWith(',', '.');

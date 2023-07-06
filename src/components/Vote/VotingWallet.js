@@ -145,14 +145,7 @@ const VotingWalletWrapper = styled.div`
 `;
 
 const SQuestion = styled.img`
-  width: 23px;
-  height: 23px;
-  margin-right: 10px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-    height: 15px;
-    margin-right: 0;
-  }
+  margin: 0px 20px 0px 10px;
 `;
 
 let timeStamp = 0;

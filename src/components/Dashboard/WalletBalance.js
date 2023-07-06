@@ -155,10 +155,6 @@ const CardWrapper = styled.div`
 
 const SQuestion = styled.img`
   margin: 0px 20px 0px 10px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-    height: 15px;
-  }
 `;
 
 const format = commaNumber.bindWith(',', '.');

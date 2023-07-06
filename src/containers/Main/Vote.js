@@ -231,7 +231,7 @@ function Vote({ settings, history, getProposals, setSetting }) {
               </Column>
             </Row> */}
           <Row>
-            <Column xs="12" sm="12" md="8" style={{ height: '100%' }}>
+            <Column xs="12" md="12" lg="8" style={{ height: '100%' }}>
               <Proposals
                 address={
                   settings.selectedAddress ? settings.selectedAddress : ''
@@ -244,7 +244,7 @@ function Vote({ settings, history, getProposals, setSetting }) {
                 onChangePage={handleChangePage}
               />
             </Column>
-            <Column xs="12" sm="12" md="4">
+            <Column xs="12" md="12" lg="4">
               <VotingPower
                 power={
                   votingWeight !== '0'
