@@ -4,32 +4,36 @@ import styled from 'styled-components';
 import { Switch } from 'antd';
 
 const ToggleWrapper = styled.div`
-  height: 15px;
-  margin-top: -9px;
+  height: 20px;
 
   .ant-switch {
     background-color: #34384c;
     border-color: #34384c;
-    height: 14px;
+    width: 24px;
+    height: 20px;
+    border-radius: 6px;
+    padding: 0px 4px;
+
     &::after {
+      width: 11px;
+      height: 16px;
+      border-radius: 4px;
       background-color: var(--color-dark-grey);
-      margin-top: -4px;
     }
   }
 
   .ant-switch-checked {
-    background-color: #1962f0;
-    border-color: #1962f0;
-    height: 14px;
+    background-color: ${props => props.bgColor};
+    border-color: ${props => props.bgColor};
     &::after {
       background-color: var(--color-blue);
     }
   }
 `;
 
-function Toggle({ checked, onChecked }) {
+function Toggle({ checked, onChecked, bgColor }) {
   return (
-    <ToggleWrapper onClick={e => e.stopPropagation()}>
+    <ToggleWrapper onClick={e => e.stopPropagation()} bgColor={bgColor}>
       <Switch checked={checked} onChange={onChecked} />
     </ToggleWrapper>
   );
@@ -37,12 +41,14 @@ function Toggle({ checked, onChecked }) {
 
 Toggle.propTypes = {
   checked: PropTypes.bool,
-  onChecked: PropTypes.func
+  onChecked: PropTypes.func,
+  bgColor: PropTypes.string
 };
 
 Toggle.defaultProps = {
   checked: true,
-  onChecked: () => {}
+  onChecked: () => {},
+  bgColor: '#1962f0'
 };
 
 export default Toggle;

@@ -240,7 +240,7 @@ function SupplyMarket({
         <MarketTable
           columns={suppliedColumns}
           data={suppliedAssets}
-          title="Supply"
+          title="Supplied"
           handleClickRow={row => setSelectedAsset(row)}
         />
       )}
@@ -253,7 +253,7 @@ function SupplyMarket({
         <MarketTable
           columns={supplyColumns}
           data={remainAssets}
-          title="All Markets"
+          title="Supply"
           handleClickRow={row => setSelectedAsset(row)}
         />
       )}

@@ -233,3 +233,8 @@ input {
         }
     }
 }
+
+button:disabled {
+    background: var(--color-text-secondary) !important;
+    color: #a5accf !important;
+}

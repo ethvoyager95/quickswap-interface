@@ -75,6 +75,7 @@ function Dashboard({ setSetting }) {
               <Toggle
                 checked={withSTRK}
                 onChecked={() => setWithSTRK(!withSTRK)}
+                bgColor="#1BA27A"
               />
             </div>
           </Column>

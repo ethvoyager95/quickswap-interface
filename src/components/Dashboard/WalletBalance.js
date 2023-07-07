@@ -162,6 +162,7 @@ const abortController = new AbortController();
 
 function WalletBalance({ settings, setSetting }) {
   const [netAPY, setNetAPY] = useState('0');
+  const [dailyEarning, setDailyEarning] = useState('0');
 
   const updateNetAPY = useCallback(async () => {
     let totalSum = new BigNumber(0);
@@ -241,6 +242,50 @@ function WalletBalance({ settings, setSetting }) {
     };
   }, [settings.selectedAddress, updateNetAPY]);
 
+  useEffect(() => {
+    const dailyBlockCount = 86400 / 12;
+
+    const strkMarket = settings.markets.find(
+      ele => ele.underlyingSymbol === 'STRK'
+    );
+    const strkPrice = strkMarket?.tokenPrice || new BigNumber(0);
+
+    let tempDailyEarning = new BigNumber(0);
+    const { assetList, markets } = settings;
+    assetList.forEach(asset => {
+      const market = markets.find(
+        ele => ele.address === asset.stokenAddress.toString().toLowerCase()
+      );
+
+      if (market) {
+        let supplyDailyEarning = new BigNumber(0);
+        if (new BigNumber(market.totalSupplyUsd).gt(0))
+          supplyDailyEarning = new BigNumber(asset.supplyBalance)
+            .times(asset.tokenPrice)
+            .div(market.totalSupplyUsd)
+            .times(market.strikeSupplySpeeds)
+            .div(1e18)
+            .times(dailyBlockCount)
+            .times(strkPrice);
+
+        let borrowDailyEarning = new BigNumber(0);
+        if (new BigNumber(market.totalBorrowsUsd).gt(0))
+          borrowDailyEarning = new BigNumber(asset.borrowBalance)
+            .times(asset.tokenPrice)
+            .div(market.totalBorrowsUsd)
+            .times(market.strikeBorrowSpeeds)
+            .div(1e18)
+            .times(dailyBlockCount)
+            .times(strkPrice);
+
+        tempDailyEarning = tempDailyEarning
+          .plus(supplyDailyEarning)
+          .plus(borrowDailyEarning);
+      }
+    });
+    setDailyEarning(tempDailyEarning.toString(10));
+  }, [settings.assetList, settings.markets]);
+
   const formatValue = value => {
     return `$${format(
       getBigNumber(value)
@@ -276,7 +321,7 @@ function WalletBalance({ settings, setSetting }) {
           <div className="label">Daily Earnings</div>
           <div className="value">
             <AnimatedNumber
-              value="0"
+              value={dailyEarning}
               formatValue={formatValue}
               duration={2000}
             />

@@ -37,7 +37,7 @@ const MarketWrapper = styled.div`
         font-size: 17px;
         font-weight: 900;
         color: var(--color-text-main);
-        border-bottom: 1px solid #141518;
+        // border-bottom: 1px solid #141518;
       }
 
       .content {
@@ -46,10 +46,11 @@ const MarketWrapper = styled.div`
           display: flex;
           align-items: center;
           .total-value {
+            width: 100%;
             font-size: 23px;
             font-weight: 900;
-            color: var(--color-text-main);
-            margin-right: 20px;
+            color: var(--color-blue);
+            text-align: right;
           }
 
           .percent {
@@ -91,7 +92,7 @@ const MarketWrapper = styled.div`
           .value {
             font-size: 23px;
             font-weight: 900;
-            color: var(--color-text-main);
+            color: var(--color-blue);
           }
           .label {
             font-size: 15px;
@@ -111,8 +112,6 @@ const TableWrapper = styled.div`
   box-sizing: content-box;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
   border-radius: 8px;
-  margin: 20px 0px 20px 20px;
-  max-width: 1200px;
 
   @media (max-width: 991px) {
     margin: 0;
@@ -243,123 +242,139 @@ function Market({ history, settings }) {
     <MainLayout title="Market Overview">
       <MarketWrapper>
         <Row className="all-section">
-          <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-            <div className="total-section">
-              <div className="title">Total Supply</div>
-              <div className="content">
-                <div className="header">
-                  <div className="total-value">${format(totalSupply)}</div>
-                  {/* <div className="percent">
+          <Col xs={{ span: 24 }}>
+            <Row gutter={12}>
+              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <div className="total-section">
+                  <div className="title">Total Supply</div>
+                  <div className="content">
+                    <div className="header">
+                      <div className="total-value">${format(totalSupply)}</div>
+                      {/* <div className="percent">
                     <Icon type="arrow-up" />
                     <span>—</span>
                   </div> */}
-                </div>
-                <div className="markets">
-                  <div className="caption">Top 3 Markets</div>
-                  {settings.markets &&
-                    (settings.markets || [])
-                      .filter(
-                        m =>
-                          m.underlyingSymbol !== 'ZRX' &&
-                          m.underlyingSymbol !== 'BAT'
-                      )
-                      .sort((a, b) => {
-                        return +new BigNumber(b.totalSupplyUsd)
-                          .minus(new BigNumber(a.totalSupplyUsd))
-                          .toString(10);
-                      })
-                      .slice(0, 3)
-                      .map(item => (
-                        <div className="progress" key={item.underlyingSymbol}>
-                          <LineProgressBar
-                            label={item.underlyingSymbol}
-                            percent={
-                              !new BigNumber(totalSupply).isZero()
-                                ? new BigNumber(item.totalSupplyUsd)
-                                    .div(new BigNumber(totalSupply))
-                                    .times(100)
-                                    .dp(2, 1)
-                                    .toNumber()
-                                : 0
-                            }
-                            type="market"
-                          />
-                        </div>
-                      ))}
-                </div>
-                <div className="footer">
-                  <div className="volume">
-                    <div className="value">
-                      {`$${format(new BigNumber(supplyVolume).toFormat(2))}`}
                     </div>
-                    <div className="label">24H Supply Volume</div>
-                  </div>
-                  <div className="suppliers">
-                    <div className="value">{supplierCount}</div>
-                    <div className="label"># of Suppliers</div>
+                    <div className="markets">
+                      <div className="caption">Top 3 Markets</div>
+                      {settings.markets &&
+                        (settings.markets || [])
+                          .filter(
+                            m =>
+                              m.underlyingSymbol !== 'ZRX' &&
+                              m.underlyingSymbol !== 'BAT'
+                          )
+                          .sort((a, b) => {
+                            return +new BigNumber(b.totalSupplyUsd)
+                              .minus(new BigNumber(a.totalSupplyUsd))
+                              .toString(10);
+                          })
+                          .slice(0, 3)
+                          .map(item => (
+                            <div
+                              className="progress"
+                              key={item.underlyingSymbol}
+                            >
+                              <LineProgressBar
+                                label={item.underlyingSymbol}
+                                percent={
+                                  !new BigNumber(totalSupply).isZero()
+                                    ? new BigNumber(item.totalSupplyUsd)
+                                        .div(new BigNumber(totalSupply))
+                                        .times(100)
+                                        .dp(2, 1)
+                                        .toNumber()
+                                    : 0
+                                }
+                                type="market"
+                              />
+                            </div>
+                          ))}
+                    </div>
+                    <div className="footer">
+                      <div className="volume">
+                        <div className="value">
+                          {`$${format(
+                            new BigNumber(supplyVolume).toFormat(2)
+                          )}`}
+                        </div>
+                        <div className="label">24H Supply Volume</div>
+                      </div>
+                      <div className="suppliers">
+                        <div className="value">{supplierCount}</div>
+                        <div className="label"># of Suppliers</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="total-section">
-              <div className="title">Total Borrow</div>
-              <div className="content">
-                <div className="header">
-                  <div className="total-value">${format(totalBorrow)}</div>
-                  {/* <div className="percent">
+              </Col>
+              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <div className="total-section">
+                  <div className="title">Total Borrow</div>
+                  <div className="content">
+                    <div className="header">
+                      <div className="total-value">${format(totalBorrow)}</div>
+                      {/* <div className="percent">
                     <Icon type="arrow-up" />
                     <span>—</span>
                   </div> */}
-                </div>
-                <div className="markets">
-                  <div className="caption">Top 3 Markets</div>
-                  {settings.markets &&
-                    (settings.markets || [])
-                      .filter(
-                        m =>
-                          m.underlyingSymbol !== 'ZRX' &&
-                          m.underlyingSymbol !== 'BAT'
-                      )
-                      .sort((a, b) => {
-                        return +new BigNumber(b.totalBorrowsUsd)
-                          .minus(new BigNumber(a.totalBorrowsUsd))
-                          .toString(10);
-                      })
-                      .slice(0, 3)
-                      .map(item => (
-                        <div className="progress" key={item.underlyingSymbol}>
-                          <LineProgressBar
-                            label={item.underlyingSymbol}
-                            percent={
-                              !new BigNumber(totalBorrow).isZero()
-                                ? new BigNumber(item.totalBorrowsUsd)
-                                    .div(new BigNumber(totalBorrow))
-                                    .times(100)
-                                    .dp(2, 1)
-                                    .toNumber()
-                                : 0
-                            }
-                            type="market"
-                          />
-                        </div>
-                      ))}
-                </div>
-                <div className="footer">
-                  <div className="volume">
-                    <div className="value">
-                      {`$${format(new BigNumber(borrowVolume).toFormat(2))}`}
                     </div>
-                    <div className="label">24H Borrow Volume</div>
-                  </div>
-                  <div className="suppliers">
-                    <div className="value">{borrowerCount}</div>
-                    <div className="label"># of Borrowers</div>
+                    <div className="markets">
+                      <div className="caption">Top 3 Markets</div>
+                      {settings.markets &&
+                        (settings.markets || [])
+                          .filter(
+                            m =>
+                              m.underlyingSymbol !== 'ZRX' &&
+                              m.underlyingSymbol !== 'BAT'
+                          )
+                          .sort((a, b) => {
+                            return +new BigNumber(b.totalBorrowsUsd)
+                              .minus(new BigNumber(a.totalBorrowsUsd))
+                              .toString(10);
+                          })
+                          .slice(0, 3)
+                          .map(item => (
+                            <div
+                              className="progress"
+                              key={item.underlyingSymbol}
+                            >
+                              <LineProgressBar
+                                label={item.underlyingSymbol}
+                                percent={
+                                  !new BigNumber(totalBorrow).isZero()
+                                    ? new BigNumber(item.totalBorrowsUsd)
+                                        .div(new BigNumber(totalBorrow))
+                                        .times(100)
+                                        .dp(2, 1)
+                                        .toNumber()
+                                    : 0
+                                }
+                                type="market"
+                              />
+                            </div>
+                          ))}
+                    </div>
+                    <div className="footer">
+                      <div className="volume">
+                        <div className="value">
+                          {`$${format(
+                            new BigNumber(borrowVolume).toFormat(2)
+                          )}`}
+                        </div>
+                        <div className="label">24H Borrow Volume</div>
+                      </div>
+                      <div className="suppliers">
+                        <div className="value">{borrowerCount}</div>
+                        <div className="label"># of Borrowers</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </Col>
+            </Row>
           </Col>
-          <Col xs={{ span: 24 }} lg={{ span: 16 }}>
+          <Col xs={{ span: 24 }}>
             <TableWrapper>
               <div className="table-title">Market Distribution</div>
               <Row className="table_header">

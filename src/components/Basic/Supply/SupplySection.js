@@ -54,10 +54,10 @@ export const SectionWrapper = styled.div`
           height: 48px;
           font-size: 15px;
           font-weight: 900;
-          color: #181c3a;
-          background-color: #f5f7fb;
+          color: var(--color-text-main);
+          background-color: var(--color-bg-main);
           border-radius: 5px;
-          border: solid 1px #eeeff0;
+          border: solid 1px var(--color-bg-main);
           padding: 0 48px 0 24px;
           &:focus {
             outline: none;
@@ -65,12 +65,20 @@ export const SectionWrapper = styled.div`
         }
         .max {
           position: absolute;
-          right: 25px;
+          right: 10px;
           text-align: center;
           font-weight: 600;
           font-size: 14px;
-          color: #39496a;
-          width: 40px;
+          color: var(--color-text-main);
+          background: linear-gradient(
+            242deg,
+            #246cf9 0%,
+            #1e68f6 0.01%,
+            #0047d0 100%,
+            #0047d0 100%
+          );
+          border-radius: 6px;
+          padding: 4px 10px;
         }
       }
     }
@@ -121,7 +129,7 @@ export const SectionWrapper = styled.div`
       color: #39496a;
 
       &.green {
-        color: #9dd562;
+        color: #1ba27a;
       }
     }
 

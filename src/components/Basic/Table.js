@@ -22,13 +22,13 @@ const MarketTableWrapper = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    color: #9dd562;
+    color: #1ba27a;
 
     span {
       margin: 5px 0 0;
       padding: 5px;
-      border-top: 2px solid #9dd562;
-      border-right: 2px solid #9dd562;
+      border-top: 2px solid #1ba27a;
+      border-right: 2px solid #1ba27a;
       transform: rotate(-45deg);
 
       &.red {
@@ -151,7 +151,7 @@ const MarketTableWrapper = styled.div`
 
             span:nth-child(2) {
               display: block;
-              color: #9dd562;
+              color: #1ba27a;
             }
           }
           &:nth-child(2) {

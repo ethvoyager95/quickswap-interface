@@ -234,7 +234,7 @@ function BorrowMarket({
         <MarketTable
           columns={borrowColumns}
           data={borrowedAssets}
-          title="Borrowing"
+          title="Borrowed"
           handleClickRow={row => setSelectedAsset(row)}
         />
       )}
@@ -247,7 +247,7 @@ function BorrowMarket({
         <MarketTable
           columns={remainColumns}
           data={remainAssets}
-          title="All Markets"
+          title="Borrow"
           handleClickRow={row => setSelectedAsset(row)}
         />
       )}

@@ -79,7 +79,7 @@ function LineProgressBar({ label, percent, type, borrowLimit }) {
           strokeWidth={7}
           showInfo={false}
         />
-        <div className="limit-mark" />
+        {type !== 'market' && <div className="limit-mark" />}
       </div>
       {type !== 'market' && (
         <div className="safe-line">

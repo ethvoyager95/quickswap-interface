@@ -23,7 +23,7 @@ import PenaltyModal from 'components/Basic/PenaltyModal';
 import TotalStakedImg from 'assets/img/total_staked.svg';
 import TotalLockedImg from 'assets/img/total_locked.svg';
 import AccumulatedFeesImg from 'assets/img/accumulated_fees.svg';
-import IconQuestion from 'assets/img/question.png';
+import IconQuestion from 'assets/img/question-blue.svg';
 
 const VaultContainer = styled.div`
   img {
@@ -34,6 +34,7 @@ const VaultContainer = styled.div`
     padding: 30px 20px 10px 20px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    align-items: center;
 
     .title {
       font-size: 20px;
@@ -45,6 +46,10 @@ const VaultContainer = styled.div`
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: var(--color-bg-primary);
+      border-radius: 5px;
+      padding: 12px 24px;
+      margin-left: 10px;
 
       .item {
         text-align: center;
@@ -62,6 +67,10 @@ const VaultContainer = styled.div`
 
     @media (max-width: 1280px) {
       display: block;
+
+      .info {
+        margin-left: 0px;
+      }
 
       .title {
         margin-bottom: 10px;
@@ -135,12 +144,13 @@ const VaultContainer = styled.div`
 
     .subtitle {
       padding-left: 20px;
-      font-size: 18px;
+      font-size: 16px;
+      color: var(--color-text-main);
     }
 
     .text {
       font-weight: 600;
-      font-size: 20px;
+      font-size: 18px;
       line-height: 100%;
       color: var(--color-text-main);
     }
@@ -211,12 +221,17 @@ const VaultContainer = styled.div`
   }
 
   .border {
-    border: 1px solid #30374f;
+    border: 1px solid var(--color-bg-main);
     border-radius: 5px;
     padding: 24px;
   }
   .mb {
     margin-bottom: 20px;
+  }
+
+  .header {
+    border-bottom: 1px solid var(--color-text-secondary);
+    padding-bottom: 10px;
   }
 
   .title {
@@ -242,7 +257,7 @@ const VaultContainer = styled.div`
     color: var(--color-blue);
     line-height: 100%;
     border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid #a5accf;
   }
 
   .button {
@@ -257,15 +272,15 @@ const VaultContainer = styled.div`
 
   .button-disable {
     width: 100%;
-    background-color: #f0f0f0;
-    color: rgba(0, 0, 0, 0.5);
+    background-color: var(--color-text-secondary);
+    color: #a5accf;
     text-align: center;
     padding: 12px;
     border: none;
     border-radius: 5px;
 
     &:hover {
-      background: #f0f0f0 !important;
+      background: var(--color-text-secondary) !important;
     }
   }
   .w-100 {
@@ -274,7 +289,7 @@ const VaultContainer = styled.div`
 
   input {
     // font-size: 26px;
-    color: black;
+    color: var(--color-text-main);
     background: transparent;
     border: none;
 
@@ -289,15 +304,20 @@ const VaultContainer = styled.div`
 
   .input-bg {
     padding: 16px;
-    background: #f0f0f0;
+    background: var(--color-bg-main);
     border-radius: 5px;
   }
 
   .max-button {
-    padding: 10px 20px;
-    color: var(--color-blue);
-
-    background: #e4e4e4;
+    padding: 5px 20px;
+    color: var(--color-text-main);
+    background: linear-gradient(
+      242deg,
+      #246cf9 0%,
+      #1e68f6 0.01%,
+      #0047d0 100%,
+      #0047d0 100%
+    );
     border-radius: 5px;
     border: none;
     cursor: pointer;
@@ -343,7 +363,7 @@ const VaultContainer = styled.div`
   }
 
   .apr {
-    color: var(--color-text-main);
+    color: var(--color-blue);
     font-weight: bold;
     font-size: 14px;
     line-height: 140%;
@@ -385,11 +405,11 @@ const VaultContainer = styled.div`
   .balance_row {
     font-size: 14px;
     font-weight: 600;
-    color: black;
+    color: var(--color-text-main);
   }
 
   .fee_list {
-    color: black;
+    color: var(--color-text-main);
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -787,7 +807,7 @@ const Staking = ({ settings }) => {
 
             {input.map((e, index) => (
               <div key={e.name} className="container">
-                <div className="flex space-between mb-3">
+                <div className="flex space-between mb-2 header">
                   <div className="flex">
                     <p className="title mr-1">{e.name}</p>
                     {/* <Tooltip
@@ -810,7 +830,7 @@ const Staking = ({ settings }) => {
                   </div>
                   <div className="APR">APR {e.apr}</div>
                 </div>
-                <div className="mb-1">
+                <div className="mb-3">
                   {e.text.map((it, i) => (
                     <>
                       <span key={i} className="lock-text">
@@ -821,7 +841,7 @@ const Staking = ({ settings }) => {
                   ))}
                 </div>
                 <div className="input-bg mb-2">
-                  <div className="flex align-center space-between balance_row">
+                  <div className="flex align-center space-between balance_row mb-1">
                     <p className="amount">Amount</p>
                     <p className="balance">
                       Balance{' '}
@@ -894,7 +914,7 @@ const Staking = ({ settings }) => {
             ))}
 
             <div className="container">
-              <div className="flex space-between mb">
+              <div className="flex space-between mb header">
                 <p className="title">Claimable Fees</p>
                 <p className="value">
                   <span className="span-total">Total</span>{' '}
@@ -918,14 +938,14 @@ const Staking = ({ settings }) => {
                         alt=""
                         className="mr-1 max-20"
                       />
-                      <p1>{['STRK', 'USDC'][index]}</p1>
+                      <p>{['STRK', 'USDC'][index]}</p>
                     </div>
-                    <p1>
+                    <p>
                       {e
                         .div(index === 1 ? 1e6 : 1e18)
                         .toNumber()
                         .toLocaleString('en-US', { maximumFractionDigits: 2 })}
-                    </p1>
+                    </p>
                   </div>
                 ))}
               </div>
@@ -981,7 +1001,7 @@ const Staking = ({ settings }) => {
             </div>
 
             <div className="container">
-              <div className="flex space-between mb">
+              <div className="flex space-between mb header">
                 <p className="title">STRK Vests</p>
                 <div className="flex align-center">
                   <p className="apr">
@@ -1014,23 +1034,23 @@ const Staking = ({ settings }) => {
                   >
                     <div className="flex align-center">
                       <img src="icon.png" alt="" className="mr-1 max-20" />
-                      <p1 className="mr-1 align-center">
+                      <p className="mr-1 align-center">
                         {e.amount
                           .div(1e18)
                           .toNumber()
                           .toLocaleString('en-US', {
                             maximumFractionDigits: 3
                           })}
-                      </p1>{' '}
-                      <p1>STRK</p1>
+                      </p>{' '}
+                      <p>STRK</p>
                     </div>
-                    {/* <p1 className="mobile-show">
+                    {/* <p className="mobile-show">
                       {moment.unix(e.unlockTime).format('DD/MM HH:mm')}
-                    </p1> */}
-                    <p1 className="desktop-show">
+                    </p> */}
+                    <p className="desktop-show">
                       Expired at{' '}
                       {moment.unix(e.unlockTime).format('DD/MM/YYYY HH:mm:ss')}
-                    </p1>
+                    </p>
                   </div>
                 ))}
                 {!vests.length && (
@@ -1050,7 +1070,7 @@ const Staking = ({ settings }) => {
                       >
                         <path
                           d="M4.27102 25C4.18047 25 4.08993 24.9796 4.00391 24.9344C3.75944 24.8053 3.64173 24.5224 3.72322 24.2598L6.60934 14.8001H0.574514C0.352678 14.8001 0.153479 14.6733 0.056143 14.4741C-0.038929 14.2749 -0.0117657 14.0395 0.126315 13.8652L11.0777 0.215542C11.2498 0.000497638 11.5463 -0.0606205 11.7885 0.0638792C12.0353 0.190642 12.153 0.469069 12.0783 0.731649L9.38682 10.2004H15.1953C15.4171 10.2004 15.6186 10.3272 15.7137 10.5264C15.8087 10.7256 15.7816 10.9632 15.6457 11.1353L4.71922 24.785C4.6083 24.9253 4.44079 25 4.27102 25Z"
-                          fill="black"
+                          fill="#5D6588"
                         />
                       </svg>
 
@@ -1062,7 +1082,7 @@ const Staking = ({ settings }) => {
             </div>
 
             <div className="container">
-              <div className="flex space-between mb">
+              <div className="flex space-between mb header">
                 <p className="title">STRK Locks</p>
                 <div className="flex align-center">
                   <p className="apr">
@@ -1095,23 +1115,23 @@ const Staking = ({ settings }) => {
                   >
                     <div className="flex align-center">
                       <img src="icon.png" alt="" className="mr-1 max-20" />
-                      <p1 className="mr-1 align-center">
+                      <p className="mr-1 align-center">
                         {e.amount
                           .div(1e18)
                           .toNumber()
                           .toLocaleString('en-US', {
                             maximumFractionDigits: 3
                           })}
-                      </p1>{' '}
-                      <p1>STRK</p1>
+                      </p>{' '}
+                      <p>STRK</p>
                     </div>
-                    {/* <p1 className="mobile-show">
+                    {/* <p className="mobile-show">
                       {moment.unix(e.unlockTime).format('DD/MM HH:mm')}
-                    </p1> */}
-                    <p1 className="desktop-show">
+                    </p> */}
+                    <p className="desktop-show">
                       Expired at{' '}
                       {moment.unix(e.unlockTime).format('DD/MM/YYYY HH:mm:ss')}
-                    </p1>
+                    </p>
                   </div>
                 ))}
                 {!locks.length && (
@@ -1131,7 +1151,7 @@ const Staking = ({ settings }) => {
                       >
                         <path
                           d="M4.27102 25C4.18047 25 4.08993 24.9796 4.00391 24.9344C3.75944 24.8053 3.64173 24.5224 3.72322 24.2598L6.60934 14.8001H0.574514C0.352678 14.8001 0.153479 14.6733 0.056143 14.4741C-0.038929 14.2749 -0.0117657 14.0395 0.126315 13.8652L11.0777 0.215542C11.2498 0.000497638 11.5463 -0.0606205 11.7885 0.0638792C12.0353 0.190642 12.153 0.469069 12.0783 0.731649L9.38682 10.2004H15.1953C15.4171 10.2004 15.6186 10.3272 15.7137 10.5264C15.8087 10.7256 15.7816 10.9632 15.6457 11.1353L4.71922 24.785C4.6083 24.9253 4.44079 25 4.27102 25Z"
-                          fill="black"
+                          fill="#5D6588"
                         />
                       </svg>
 
