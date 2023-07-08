@@ -910,7 +910,7 @@ function Liquidator({ settings, setSetting }) {
                     value={repayValue}
                   />
                   <div className="max-btn" onClick={handleClickMaxBtn}>
-                    Max
+                    MAX
                   </div>
                 </div>
                 <div className="balance">

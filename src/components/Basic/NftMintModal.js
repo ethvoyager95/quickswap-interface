@@ -206,7 +206,7 @@ function NftMintModal({ visible, onCancel, settings }) {
             <div className="amount_area">
               <Icon
                 type="minus"
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', color: 'white' }}
                 onClick={() => {
                   if (amount > 1) setAmount(amount - 1);
                 }}
@@ -214,7 +214,7 @@ function NftMintModal({ visible, onCancel, settings }) {
               <span className="label">{amount}</span>
               <Icon
                 type="plus"
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', color: 'white' }}
                 onClick={() => {
                   if (amount < 30) setAmount(amount + 1);
                 }}

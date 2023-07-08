@@ -147,8 +147,11 @@ export const SInput = styled.div`
   margin-bottom: 10px;
   display: flex;
   justify-content: flex-start;
+
   input {
-    border: 1px solid #ccc !important;
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
+    border: 0px;
     width: 90%;
     padding: 8px;
     border-radius: 8px;
@@ -157,7 +160,6 @@ export const SInput = styled.div`
     &:active,
     &:focus,
     &:focus-visible {
-      border: 1px solid #ccc !important;
       outline: none;
     }
   }
@@ -174,7 +176,10 @@ export const SInputUnStake = styled.div`
   display: flex;
   justify-content: flex-end;
   input {
-    border: 1px solid #ccc !important;
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
+    border: 0px;
+    border: 0px;
     width: 90%;
     padding: 8px;
     border-radius: 8px;
@@ -183,7 +188,6 @@ export const SInputUnStake = styled.div`
     &:active,
     &:focus,
     &:focus-visible {
-      border: 1px solid #ccc !important;
       outline: none;
     }
   }
@@ -270,13 +274,13 @@ export const SMax = styled.button`
   border: none;
   position: absolute;
   top: 15%;
-  right: 12%;
+  right: 11%;
   :disabled {
     cursor: not-allowed;
     color: #fff;
   }
   @media only screen and (max-width: 768px) {
-    right: 5%;
+    right: 4%;
   }
 `;
 export const SMaxUn = styled.button`
@@ -293,13 +297,13 @@ export const SMaxUn = styled.button`
   border: none;
   position: absolute;
   top: 15%;
-  right: 2%;
+  right: 1%;
   :disabled {
     cursor: not-allowed;
     color: #fff;
   }
   @media only screen and (max-width: 768px) {
-    right: 5%;
+    right: 4%;
   }
 `;
 export const SBoxOne = styled.div`

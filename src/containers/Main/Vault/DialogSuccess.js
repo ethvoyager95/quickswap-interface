@@ -19,7 +19,8 @@ const useStyles = makeStyles({
       borderRadius: '20px',
       position: 'relative',
       width: '700px',
-      color: '#ffffff'
+      color: '#ffffff',
+      background: '#141518'
     }
   },
   closeBtn: {
@@ -67,7 +68,6 @@ const STitle = styled.div`
   font-size: 28px;
   line-height: 33px;
   letter-spacing: 0.015em;
-  color: rgba(0, 28, 78, 0.87);
   text-align: center;
   margin-top: 20px;
   @media only screen and (max-width: 768px) {
@@ -79,7 +79,7 @@ const SText = styled.div`
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.25px;
-  color: #9d9fa7;
+  color: var(--color-text-secondary);
   text-align: center;
   margin-top: 20px;
 `;

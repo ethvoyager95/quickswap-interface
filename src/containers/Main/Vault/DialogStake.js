@@ -18,7 +18,8 @@ const useStyles = makeStyles({
       borderRadius: '20px',
       position: 'relative',
       width: '700px',
-      color: '#ffffff'
+      color: '#ffffff',
+      background: '#141518'
     }
   },
   closeBtn: {
@@ -87,7 +88,6 @@ const SMainColor = styled.div`
   margin-top: 20px;
 `;
 const STitle = styled.div`
-  color: #0b0f23;
   text-align: center;
   font-style: normal;
   font-weight: 700;
@@ -105,7 +105,7 @@ const SRowText = styled.div`
   align-items: center;
 `;
 const STack = styled.div`
-  color: #6d6f7b;
+  color: var(--color-text-secondary);
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -119,7 +119,7 @@ const STack = styled.div`
   }
 `;
 const STitleInput = styled.div`
-  color: #6d6f7b;
+  color: var(--color-text-secondary);
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -285,8 +285,9 @@ const SInput = styled.div`
   justify-content: space-between;
   align-items: center;
   input {
-    color: #6d6f7b;
-    border: 1px solid #ccc !important;
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
+    border: 0px;
     width: 100%;
     padding: 8px;
     border-radius: 8px;
@@ -295,7 +296,6 @@ const SInput = styled.div`
     &:active,
     &:focus,
     &:focus-visible {
-      border: 1px solid #ccc !important;
       outline: none;
     }
     &:disabled {

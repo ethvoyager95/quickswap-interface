@@ -192,7 +192,7 @@ export const SButton = styled.button`
 `;
 
 export const DropdownBlock = styled.div`
-  background: #ffffff;
+  background: var(--color-bg-primary);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -202,18 +202,27 @@ export const DropdownBlock = styled.div`
   gap: 10px;
   padding: 20px;
 
+  .ant-calendar-picker-icon {
+    color: white !important;
+  }
+
   .item {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;
 
+    input {
+      background: var(--color-bg-main);
+      color: var(--color-text-main);
+    }
+
     div {
       font-style: normal;
       font-weight: 500;
       font-size: 16px;
       line-height: 24px;
-      color: #141414;
+      color: var(--color-text-main);
     }
   }
 
@@ -299,7 +308,7 @@ export const DropdownBlock = styled.div`
 `;
 
 export const DropdownAddress = styled.div`
-  background: #ffffff;
+  background: var(--color-bg-primary);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -353,6 +362,8 @@ export const DropdownAddress = styled.div`
   }
 
   .input-address {
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
     width: 308px;
   }
 `;

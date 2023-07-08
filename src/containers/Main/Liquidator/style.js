@@ -165,7 +165,8 @@ export const SearchBar = styled.div`
       input {
         padding-left: 20px;
         height: 50px;
-        background: #ffffff;
+        background: var(--color-bg-main);
+        color: var(--color-text-main);
         border: 1px solid #e5e5e5;
         box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
         border-radius: 8px 0 0 8px;
@@ -173,7 +174,6 @@ export const SearchBar = styled.div`
         font-weight: 500;
         font-size: 16px;
         line-height: 24px;
-        color: #6d6f7b;
         border-right: 0;
       }
 
@@ -241,7 +241,13 @@ export const SearchBar = styled.div`
       display: flex;
       width: 100%;
       height: 50px;
-      background: #3b54b5;
+      background: linear-gradient(
+        242deg,
+        #246cf9 0%,
+        #1e68f6 0.01%,
+        #0047d0 100%,
+        #0047d0 100%
+      );
       border-radius: 8px;
       font-style: normal;
       font-weight: 900;
@@ -250,12 +256,20 @@ export const SearchBar = styled.div`
       color: #ffffff;
       align-items: center;
       justify-content: center;
+      border: 0px;
 
       &:hover,
       &:active,
       &:visited,
       &:focus {
-        background: #3b54b5 !important;
+        background: linear-gradient(
+          242deg,
+          #246cf9 0%,
+          #1e68f6 0.01%,
+          #0047d0 100%,
+          #0047d0 100%
+        );
+        color: #ffffff;
         opacity: 0.8;
       }
     }
@@ -385,8 +399,9 @@ export const WalletInfo = styled.div`
           font-weight: 500;
           font-size: 16px;
           line-height: 24px;
-          background: #ffffff;
-          border: 1px solid #e5e5e5;
+          background: var(--color-bg-main);
+          color: var(--color-text-main);
+          border: 0px;
           box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
           border-radius: 8px;
         }
@@ -395,12 +410,14 @@ export const WalletInfo = styled.div`
           position: absolute;
           font-style: normal;
           font-weight: 500;
-          font-size: 16px;
-          line-height: 50px;
-          text-decoration-line: underline;
-          color: #6d6f7b;
-          right: 20px;
-          bottom: 0;
+          font-size: 12px;
+          background: #107def;
+          border-radius: 5px;
+          color: #fff;
+          font-size: 14px;
+          padding: 5px 15px;
+          right: 8px;
+          top: 6px;
           cursor: pointer;
         }
       }
@@ -645,7 +662,7 @@ export const ModalContent = styled.div`
       input {
         padding-left: 20px;
         height: 50px;
-        background: #ffffff;
+        background: var(--color-bg-main);
         border: 1px solid #e5e5e5;
         box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
         border-radius: 8px;
@@ -653,7 +670,7 @@ export const ModalContent = styled.div`
         font-weight: 500;
         font-size: 16px;
         line-height: 24px;
-        color: #6d6f7b;
+        color: var(--color-text-main);
       }
     }
 
@@ -682,7 +699,12 @@ export const ModalContent = styled.div`
           width: 100%;
         }
 
+        .ant-calendar-picker-icon {
+          color: white !important;
+        }
+
         input {
+          background: var(--color-bg-main);
           height: 50px;
           border: 1px solid #e5e5e5;
           box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
@@ -875,9 +897,10 @@ export const SeizedAndRepay = styled.div`
 `;
 
 export const DropdownAsset = styled.div`
-  background: #ffffff;
+  background: var(--color-bg-main);
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
+  border: 1px solid var(--color-text-secondary);
 
   div {
     display: flex;
@@ -885,10 +908,10 @@ export const DropdownAsset = styled.div`
     gap: 6px;
     padding: 16px;
     padding-right: 40px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     img {
@@ -900,7 +923,7 @@ export const DropdownAsset = styled.div`
       font-weight: 500;
       font-size: 18px;
       line-height: 28px;
-      color: #000000;
+      color: var(--color-text-main);
     }
   }
 `;

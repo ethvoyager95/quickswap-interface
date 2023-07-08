@@ -58,7 +58,7 @@ const VotingWrapper = styled.div`
     .ant-input {
       margin-top: 35px;
       height: 48px;
-      background-color: #ffffff;
+      background-color: var(--color-bg-main);
       border: 1px solid #797979;
       font-size: 13.5px;
       text-align: center;
