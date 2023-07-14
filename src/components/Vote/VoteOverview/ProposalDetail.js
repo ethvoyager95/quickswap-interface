@@ -8,7 +8,7 @@ import { Label } from 'components/Basic/Label';
 
 const ProposalDetailWrapper = styled.div`
   width: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: 27px 41px;
   color: var(--color-text-main);

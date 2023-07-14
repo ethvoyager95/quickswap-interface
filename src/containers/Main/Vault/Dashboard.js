@@ -36,7 +36,7 @@ import IconLpSmall from '../../../assets/img/lp_small.svg';
 const SMain = styled.div`
   width: 100%;
   padding: 15px;
-  border-radius: 8px;
+  border-radius: 6px;
   box-sizing: content-box;
   @media only screen and (max-width: 768px) {
     padding: 0;

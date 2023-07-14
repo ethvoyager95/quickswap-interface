@@ -101,7 +101,7 @@ const ButtonWrapper = styled.div`
   .button {
     width: 150px;
     height: 40px;
-    border-radius: 5px;
+    border-radius: 6px;
     background: linear-gradient(
       242deg,
       #246cf9 0%,

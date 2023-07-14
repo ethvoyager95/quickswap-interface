@@ -16,7 +16,7 @@ const CardWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: 20px;
 

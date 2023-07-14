@@ -15,7 +15,7 @@ import { encodeParameters, getArgs } from 'utilities/common';
 import closeImg from 'assets/img/close.png';
 
 const ModalContent = styled.div`
-  border-radius: 5px;
+  border-radius: 6px;
 
   .close-btn {
     position: absolute;
@@ -29,7 +29,7 @@ const ModalContent = styled.div`
     font-weight: bold;
     font-size: 20px;
     color: var(--color-text-main);
-    border-radius: 5px;
+    border-radius: 6px;
   }
 
   .max-operations {
@@ -77,6 +77,12 @@ const ModalContent = styled.div`
       .proposal-content {
         width: 100%;
         padding: 0px 20px;
+
+        .ant-input {
+          background: var(--color-bg-main);
+          color: var(--color-text-main);
+        }
+
         .input-wrapper {
           input {
             width: 350px;
@@ -102,7 +108,7 @@ const ModalContent = styled.div`
               #0047d0 100%,
               #0047d0 100%
             );
-            border-radius: 10px;
+            border-radius: 6px;
             .MuiButton-label {
               font-size: 16px;
               font-weight: bold;
@@ -139,7 +145,7 @@ const ModalContent = styled.div`
           #0047d0 100%,
           #0047d0 100%
         );
-        border-radius: 10px;
+        border-radius: 6px;
         .MuiButton-label {
           font-size: 16px;
           font-weight: bold;

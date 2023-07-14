@@ -17,7 +17,7 @@ import { Card } from 'components/Basic/Card';
 
 const CardWrapper = styled.div`
   width: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   display: grid;
   grid-template-columns: 2fr 1px 1fr;

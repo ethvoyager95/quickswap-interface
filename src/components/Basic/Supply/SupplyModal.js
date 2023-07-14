@@ -12,7 +12,7 @@ import { Modal } from 'antd';
 import closeImg from 'assets/img/close.png';
 
 const ModalContent = styled.div`
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 27px 32px 23px 32px;
   color: white;
   gap: 25px;
@@ -54,7 +54,7 @@ const ModalContent = styled.div`
   .fiat-option {
     width: 100%;
     height: 212px;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 1px solid var(--color-text-secondary);
   }
 
@@ -63,7 +63,7 @@ const ModalContent = styled.div`
     font-weight: 500;
     font-size: 18px;
     padding: 10px 0px;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 1px solid var(--color-text-secondary);
     text-align: center;
     cursor: pointer;
@@ -74,7 +74,7 @@ const CardWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
 
   .header {

@@ -47,7 +47,7 @@ const VaultContainer = styled.div`
       align-items: center;
       justify-content: space-between;
       background: var(--color-bg-primary);
-      border-radius: 5px;
+      border-radius: 6px;
       padding: 12px 24px;
       margin-left: 10px;
 
@@ -117,7 +117,7 @@ const VaultContainer = styled.div`
   .container {
     padding: 24px;
     background: var(--color-bg-primary);
-    border-radius: 5px;
+    border-radius: 6px;
     margin-bottom: 20px;
   }
 
@@ -222,7 +222,7 @@ const VaultContainer = styled.div`
 
   .border {
     border: 1px solid var(--color-bg-main);
-    border-radius: 5px;
+    border-radius: 6px;
     padding: 24px;
   }
   .mb {
@@ -256,7 +256,7 @@ const VaultContainer = styled.div`
     font-size: 14px;
     color: var(--color-blue);
     line-height: 100%;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 1px solid #a5accf;
   }
 
@@ -267,7 +267,7 @@ const VaultContainer = styled.div`
     text-align: center;
     padding: 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
   }
 
   .button-disable {
@@ -277,7 +277,7 @@ const VaultContainer = styled.div`
     text-align: center;
     padding: 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
 
     &:hover {
       background: var(--color-text-secondary) !important;
@@ -305,7 +305,7 @@ const VaultContainer = styled.div`
   .input-bg {
     padding: 16px;
     background: var(--color-bg-main);
-    border-radius: 5px;
+    border-radius: 6px;
   }
 
   .max-button {
@@ -318,7 +318,7 @@ const VaultContainer = styled.div`
       #0047d0 100%,
       #0047d0 100%
     );
-    border-radius: 5px;
+    border-radius: 6px;
     border: none;
     cursor: pointer;
     font-size: 12px;

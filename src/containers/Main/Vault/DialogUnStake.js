@@ -229,7 +229,7 @@ const SBtnCancel = styled.div`
   text-align: center;
   color: #107def;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 15px 12px;
   display: flex;
   justify-content: center;
@@ -253,7 +253,7 @@ const SBtnUnStake = styled.button`
   color: #f84960;
   background: transparent;
   border: 1px solid #f84960;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 15px 12px;
   display: flex;
   justify-content: center;
@@ -289,7 +289,7 @@ const SInput = styled.div`
     border: 0px;
     width: 100%;
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     outline: none;
     &:hover,
     &:active,

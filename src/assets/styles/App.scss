@@ -39,11 +39,11 @@ body {
 .connect-modal,
 .collateral-confirm-modal {
     .ant-modal-content {
-        border-radius: 5px;
+        border-radius: 6px;
         background-color: var(--color-bg-modal);
         .ant-modal-body {
             padding: 0;
-            border-radius: 5px;
+            border-radius: 6px;
         }
     }
 }
@@ -63,7 +63,7 @@ body {
 
     /* Handle */
     &::-webkit-scrollbar-thumb {
-        -webkit-border-radius: 3px;
+        -webkit-border-radius: 6px;
         background-color: var(--color-blue);
     }
 
@@ -237,4 +237,30 @@ input {
 button:disabled {
     background: var(--color-text-secondary) !important;
     color: #a5accf !important;
+}
+
+
+
+.rc-md-editor .editor-container .sec-md .input {
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
+}
+
+.rc-md-editor .editor-container .sec-html .html-wrap {
+    background: var(--color-bg-main);
+    .custom-html-style {
+        color: var(--color-text-main);
+    }
+}
+
+.rc-md-editor .rc-md-navigation {
+    background: var(--color-bg-main);
+}
+
+.rc-md-editor .editor-container>.section {
+    border: 0px;
+}
+
+.rc-md-editor .rc-md-navigation .button-wrap .button i {
+    color: var(--color-text-main);
 }

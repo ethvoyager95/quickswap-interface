@@ -11,7 +11,7 @@ import { Card } from 'components/Basic/Card';
 const VoteCardWrapper = styled.div`
   width: 100%;
   background-color: var(--color-bg-primary);
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 38px 41px;
 
   .header-card {

@@ -25,7 +25,7 @@ const SBoxTime = styled.button`
   cursor: pointer;
   background: #fff;
   color: #f84960;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 16px;
   margin-right: 10px;
   width: 280px;
@@ -68,7 +68,7 @@ const SBtnUnstake = styled.button`
   cursor: pointer;
   color: #f84960;
   background: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   width: 280px;
   text-align: center;
@@ -94,7 +94,7 @@ export const SClaim = styled.button`
   background: #107def;
   color: #fff;
   font-weight: 700;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 8px 20px;
   width: 280px;
   text-align: center;
@@ -115,7 +115,7 @@ export const SSUnTaked = styled.button`
   cursor: pointer;
   color: #f84960;
   background: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 150px;
   text-align: center;
@@ -145,7 +145,7 @@ export const SApproving = styled.button`
   background: #107def;
   color: #fff;
   font-weight: 700;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 8px 20px;
   width: 280px;
   text-align: center;

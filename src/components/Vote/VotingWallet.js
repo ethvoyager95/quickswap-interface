@@ -21,7 +21,7 @@ import IconQuestion from 'assets/img/question.png';
 
 const VotingWalletWrapper = styled.div`
   width: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: ${props => (props.pageType !== 'strk' ? '36px 22px 48px 15px' : '')};
 
@@ -115,7 +115,7 @@ const VotingWalletWrapper = styled.div`
     margin-top: 30px;
     width: 50%;
     height: 46px;
-    border-radius: 5px;
+    border-radius: 6px;
     background: linear-gradient(
       242deg,
       #246cf9 0%,

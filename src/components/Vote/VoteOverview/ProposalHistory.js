@@ -8,7 +8,7 @@ import { Card } from 'components/Basic/Card';
 const ProposalHistoryWrapper = styled.div`
   width: 100%;
   // background: var(--color-bg-active);
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 38px 20px;
 
   .title {

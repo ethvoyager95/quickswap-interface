@@ -80,7 +80,7 @@ const MarketTableWrapper = styled.div`
         }
 
         ::-webkit-scrollbar-track {
-          -webkit-border-radius: 3px;
+          -webkit-border-radius: 6px;
           background: var(--color-bg-main);
         }
 

@@ -236,7 +236,7 @@ const SBtnCancel = styled.div`
   text-align: center;
   color: #107def;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 15px 12px;
   display: flex;
   justify-content: center;
@@ -259,7 +259,7 @@ const SBtnStake = styled.button`
   text-align: center;
   color: #fff;
   background: #107def;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 15px 12px;
   display: flex;
   justify-content: center;
@@ -269,7 +269,7 @@ const SBtnStake = styled.button`
   outline: none;
   border: none;
   box-shadow: 0px 3px 20px rgba(18, 114, 236, 0.4);
-  border-radius: 8px;
+  border-radius: 6px;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
     padding: 10px 12px;
@@ -290,7 +290,7 @@ const SInput = styled.div`
     border: 0px;
     width: 100%;
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     outline: none;
     &:hover,
     &:active,

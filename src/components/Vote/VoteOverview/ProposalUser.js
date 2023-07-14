@@ -7,7 +7,7 @@ import { Card } from 'components/Basic/Card';
 const ProposalUserWrapper = styled.div`
   width: 100%;
   height: 67px;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: 0 52px;
 

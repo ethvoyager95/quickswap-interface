@@ -69,7 +69,7 @@ const VotingWrapper = styled.div`
       margin-top: 45px;
       width: 100%;
       height: 48px;
-      border-radius: 5px;
+      border-radius: 6px;
       background: linear-gradient(
         242deg,
         #246cf9 0%,

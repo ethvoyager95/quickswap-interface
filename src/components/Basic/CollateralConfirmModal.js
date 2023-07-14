@@ -6,7 +6,7 @@ import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
 
 const ModalContent = styled.div`
-  border-radius: 5px;
+  border-radius: 6px;
 
   .close-btn {
     position: absolute;

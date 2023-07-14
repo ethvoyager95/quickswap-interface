@@ -76,7 +76,7 @@ export const THeadWrapper = styled.div`
 
 export const STable = styled(Table)`
   background: var(--color-bg-primary);
-  border-radius: 5px;
+  border-radius: 6px;
   padding-left: 40px;
   padding-right: 40px;
   margin: 0 16px 20px;
@@ -157,7 +157,7 @@ export const Method = styled.div`
     justify-content: center;
     gap: 6px;
     background: ${props => renderBgColor(props.action)};
-    border-radius: 5px;
+    border-radius: 6px;
     padding: 4px 14px;
     text-align: center;
     font-style: normal;
@@ -195,7 +195,7 @@ export const DropdownBlock = styled.div`
   background: var(--color-bg-primary);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  border-radius: 6px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -227,7 +227,7 @@ export const DropdownBlock = styled.div`
   }
 
   button {
-    border-radius: 8px;
+    border-radius: 6px;
     width: 100%;
     height: 40px;
 
@@ -289,7 +289,7 @@ export const DropdownBlock = styled.div`
     background-color: #fff;
     background-image: none;
     border: 1px solid #d9d9d9;
-    border-radius: 4px;
+    border-radius: 6px;
     transition: all 0.3s;
     width: 215px;
 
@@ -311,7 +311,7 @@ export const DropdownAddress = styled.div`
   background: var(--color-bg-primary);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  border-radius: 6px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -319,7 +319,7 @@ export const DropdownAddress = styled.div`
   padding: 30px;
 
   button {
-    border-radius: 8px;
+    border-radius: 6px;
     width: 100%;
     height: 40px;
 
@@ -473,7 +473,7 @@ export const TagFilterWrapper = styled.div`
   align-items: center;
   color: #6d6f7b;
   background: #f9f9f9;
-  border-radius: 20px;
+  border-radius: 6px;
 
   img {
     cursor: pointer;

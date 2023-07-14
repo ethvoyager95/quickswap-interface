@@ -17,7 +17,7 @@ const ToggleWrapper = styled.div`
     &::after {
       width: 11px;
       height: 16px;
-      border-radius: 4px;
+      border-radius: 6px;
       background-color: var(--color-dark-grey);
     }
   }

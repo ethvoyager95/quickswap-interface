@@ -41,7 +41,7 @@ const VoteOverviewWrapper = styled.div`
         #0047d0 100%,
         #0047d0 100%
       );
-      border-radius: 10px;
+      border-radius: 6px;
       .MuiButton-label {
         font-size: 16px;
         font-weight: bold;
@@ -98,7 +98,7 @@ const VoteOverviewWrapper = styled.div`
 const CardWrapper = styled.div`
   width: 100%;
   background-color: var(--color-bg-primary);
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 38px 41px;
 `;
 

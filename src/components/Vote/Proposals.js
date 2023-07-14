@@ -20,7 +20,7 @@ import { Card } from 'components/Basic/Card';
 const ProposalsWrapper = styled.div`
   width: 100%;
   min-height: 555px;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: 20px 30px;
 
@@ -34,7 +34,7 @@ const ProposalsWrapper = styled.div`
     .create-proposal-btn {
       width: 210px;
       height: 40px;
-      border-radius: 5px;
+      border-radius: 6px;
       background: linear-gradient(
         242deg,
         #246cf9 0%,

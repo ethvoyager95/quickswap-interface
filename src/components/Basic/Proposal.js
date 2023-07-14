@@ -78,7 +78,7 @@ const ProposalWrapper = styled.div`
     }
     button {
       height: 32px;
-      border-radius: 5px;
+      border-radius: 6px;
       background: linear-gradient(
         242deg,
         #246cf9 0%,

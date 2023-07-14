@@ -36,7 +36,7 @@ const CardWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: 15px 14px;
 `;
@@ -61,7 +61,7 @@ const Tabs = styled.div`
   display: flex;
   align-items: center;
   .tab-item {
-    border-radius: 3px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;

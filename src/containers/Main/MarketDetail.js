@@ -63,7 +63,7 @@ const MarketDetailWrapper = styled.div`
         }
         .interest-rate-modal {
           width: 100%;
-          border-radius: 5px;
+          border-radius: 6px;
           background-color: var(--color-bg-primary);
           padding: 25px 32px;
           flex: 1;
@@ -100,7 +100,7 @@ const MarketDetailWrapper = styled.div`
 const CardWrapper = styled.div`
   width: 100%;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: 25px 32px;
 `;

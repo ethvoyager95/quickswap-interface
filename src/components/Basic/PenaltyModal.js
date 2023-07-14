@@ -10,7 +10,7 @@ import { useStakingData, useWithdrawCallback } from 'hooks/useStaking';
 import closeImg from 'assets/img/close.png';
 
 const ModalContent = styled.div`
-  border-radius: 20px;
+  border-radius: 6px;
   padding: 25px;
 
   .close-btn {
@@ -62,25 +62,19 @@ const ModalContent = styled.div`
 
   .input-bg {
     padding: 16px;
-
-    background: #f0f0f0;
-    border-radius: 5px;
+    background: var(--color-bg-main);
+    border-radius: 6px;
   }
 
   .max-button {
     padding: 10px 20px;
-    color: var(--color-blue);
-
-    background: #e4e4e4;
-    border-radius: 5px;
+    background: var(--color-blue);
+    color: var(--color-text-main);
+    border-radius: 6px;
     border: none;
     cursor: pointer;
     font-size: 12px;
     font-weight: 600;
-
-    &:hover {
-      color: white;
-    }
   }
 
   .mb-1 {
@@ -167,12 +161,10 @@ const ModalContent = styled.div`
     text-align: center;
     padding: 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
 
     &:disabled {
-      background: #f0f0f0 !important;
-      color: rgba(0, 0, 0, 0.5);
-      cursor: not-allowed;
+      // cursor: not-allowed;
     }
   }
 `;

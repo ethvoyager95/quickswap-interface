@@ -13,7 +13,7 @@ import { nftMint } from 'utilities/EthContract';
 import DegenApeLogo from 'assets/img/degen_ape_logo.svg';
 
 const ModalContent = styled.div`
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 0 24px 32px;
   user-select: none;
 
@@ -59,7 +59,7 @@ const ModalContent = styled.div`
     padding: 5px 0px;
     font-weight: bold;
     font-size: 17px;
-    border-radius: 4px;
+    border-radius: 6px;
     text-align: center;
     cursor: pointer;
   }
@@ -69,7 +69,7 @@ const ModalContent = styled.div`
     padding: 5px 15px;
     font-weight: bold;
     font-size: 17px;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
   }
   .info-wrapper {

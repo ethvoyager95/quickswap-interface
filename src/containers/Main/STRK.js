@@ -66,7 +66,7 @@ const STRKWrapper = styled.div`
 const RewardsInfoWrapper = styled.div`
   position: relative;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
 `;
 
@@ -77,7 +77,7 @@ const TableWrapper = styled.div`
   border: 1px solid var(--color-bg-primary);
   box-sizing: content-box;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
-  border-radius: 8px;
+  border-radius: 6px;
   margin: 20px 0;
 
   @media (max-width: 768px) {
@@ -161,7 +161,7 @@ const TableWrapper = styled.div`
 const UserDistributionWrapper = styled.div`
   width: 100%;
   height: calc(100% - 30px);
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: 29px 32px;
   margin-top: 10px;

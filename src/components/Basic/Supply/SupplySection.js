@@ -56,7 +56,7 @@ export const SectionWrapper = styled.div`
           font-weight: 900;
           color: var(--color-text-main);
           background-color: var(--color-bg-main);
-          border-radius: 5px;
+          border-radius: 6px;
           border: solid 1px var(--color-bg-main);
           padding: 0 48px 0 24px;
           &:focus {
@@ -150,7 +150,7 @@ export const SectionWrapper = styled.div`
       .action-button {
         width: 248px;
         height: 41px;
-        border-radius: 5px;
+        border-radius: 6px;
         background-color: var(--color-blue);
         background: linear-gradient(
           242deg,

@@ -12,7 +12,7 @@ import buyCryptoWithFiatImg from 'assets/img/buy_crypto_banner.svg';
 import closeImg from 'assets/img/close.png';
 
 const ModalContent = styled.div`
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 27px 32px 23px 32px;
   color: white;
   gap: 25px;
@@ -53,7 +53,7 @@ const ModalContent = styled.div`
   .fiat-option {
     width: 100%;
     height: 212px;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 1px solid var(--color-text-secondary);
   }
 
@@ -62,7 +62,7 @@ const ModalContent = styled.div`
     font-weight: 500;
     font-size: 18px;
     padding: 10px 0px;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 1px solid var(--color-text-secondary);
     text-align: center;
     cursor: pointer;
@@ -80,7 +80,7 @@ const StyledPayment = styled.div`
   width: 90%;
   height: 41px;
   border: 1px solid var(--color-text-secondary);
-  border-radius: 5px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -97,7 +97,7 @@ const StyledPaymentSelect = styled.div`
   width: 90%;
   background: #eeeeee;
   color: black;
-  border-radius: 5px;
+  border-radius: 6px;
 `;
 
 const StyledPaymentItem = styled.div`

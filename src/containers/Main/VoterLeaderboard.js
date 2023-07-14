@@ -27,7 +27,7 @@ const TableWrapper = styled.div`
   border: 1px solid var(--color-bg-primary);
   box-sizing: content-box;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
-  border-radius: 8px;
+  border-radius: 6px;
   margin: 20px 0;
   max-width: 1200px;
 

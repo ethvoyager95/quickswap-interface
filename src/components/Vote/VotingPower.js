@@ -9,7 +9,7 @@ const VotingPowerWrapper = styled.div`
   width: 100%;
   height: 100%;
   padding: 14px 56px 14px 56px;
-  border-radius: 5px;
+  border-radius: 6px;
   background: linear-gradient(
     242deg,
     #246cf9 0%,

@@ -17,7 +17,7 @@ export const SDivPadding = styled.div`
   background: var(--color-bg-primary);
   margin-top: 20px;
   padding: 10px 15px;
-  border-radius: 8px;
+  border-radius: 6px;
   box-sizing: content-box;
   box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
   .box-staking {
@@ -33,7 +33,7 @@ export const SDivPaddingMT = styled.div`
   background: var(--color-bg-primary);
   margin-top: 20px;
   padding: 10px 15px;
-  border-radius: 8px;
+  border-radius: 6px;
   box-sizing: content-box;
   box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
   .box-staking {
@@ -49,7 +49,7 @@ export const SDiv = styled.div`
   background: var(--color-bg-primary);
   padding: 10px 15px;
   margin-top: 20px;
-  border-radius: 8px;
+  border-radius: 6px;
   box-sizing: content-box;
   box-shadow: 0px 4px 4px rgb(0 0 0 / 3%);
   .box-staking {
@@ -154,7 +154,7 @@ export const SInput = styled.div`
     border: 0px;
     width: 90%;
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     outline: none;
     &:hover,
     &:active,
@@ -182,7 +182,7 @@ export const SInputUnStake = styled.div`
     border: 0px;
     width: 90%;
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     outline: none;
     &:hover,
     &:active,
@@ -266,7 +266,7 @@ export const SMax = styled.button`
   color: #107def;
   font-weight: 700;
   background: #107def;
-  border-radius: 5px;
+  border-radius: 6px;
   color: #fff;
   font-size: 12px;
   padding: 5px 15px;
@@ -289,7 +289,7 @@ export const SMaxUn = styled.button`
   color: #107def;
   font-weight: 700;
   background: #107def;
-  border-radius: 5px;
+  border-radius: 6px;
   color: #fff;
   font-size: 12px;
   padding: 5px 15px;
@@ -337,7 +337,7 @@ export const SBtnDisabled = styled.div`
   color: #107def;
   font-weight: 700;
   background: #9d9fa7;
-  border-radius: 5px;
+  border-radius: 6px;
   color: #fff;
   padding: 5px;
   cursor: not-allowed;
@@ -367,7 +367,7 @@ export const SBtnStake = styled.button`
   cursor: pointer;
   background: #107def;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 280px;
   text-align: center;
@@ -393,7 +393,7 @@ export const SBtnApprove = styled.button`
   cursor: pointer;
   background: #107def;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 280px;
   text-align: center;
@@ -418,7 +418,7 @@ export const SBtnLoadding = styled.button`
   cursor: pointer;
   background: #107def;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 280px;
   text-align: center;
@@ -438,7 +438,7 @@ export const SBtnUnstake = styled.button`
   cursor: pointer;
   color: #f84960;
   background: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 280px;
   text-align: center;
@@ -464,7 +464,7 @@ export const SSTake = styled.button`
   cursor: pointer;
   background: #107def;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 9px 20px;
   min-width: 150px;
   min-height: 38px;
@@ -486,7 +486,7 @@ export const SSTaked = styled.button`
   cursor: pointer;
   background: #107def;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 150px;
   text-align: center;
@@ -507,7 +507,7 @@ export const SSUnSTakedWeb = styled.button`
   cursor: pointer;
   color: #f84960;
   background: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 150px;
   text-align: center;
@@ -531,7 +531,7 @@ export const SSUnTake = styled.button`
   cursor: pointer;
   background: #fff;
   color: #f84960;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 280px;
   text-align: center;
@@ -882,7 +882,7 @@ export const SClaim = styled.button`
   background: #107def;
   color: #fff;
   font-weight: 700;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 280px;
   text-align: center;
@@ -903,7 +903,7 @@ export const SUnClaim = styled.div`
   font-weight: 700;
   color: #fff;
   opacity: 0.5;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 8px 20px;
   min-width: 280px;
   text-align: center;
@@ -1222,7 +1222,7 @@ export const SSUnSTakedMobile = styled.button`
     cursor: pointer;
     color: #f84960;
     background: #fff;
-    border-radius: 5px;
+    border-radius: 6px;
     padding: 8px 20px;
     min-width: 125px;
     text-align: center;

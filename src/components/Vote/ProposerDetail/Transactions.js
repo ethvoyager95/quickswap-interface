@@ -13,7 +13,7 @@ import { Card } from 'components/Basic/Card';
 const TransactionsWrapper = styled.div`
   width: 100%;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: 27px 36px 29px 30px;
 

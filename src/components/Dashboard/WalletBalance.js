@@ -64,7 +64,7 @@ const CardWrapper = styled.div`
     margin: 0 auto;
     padding: 20px 40px;
     background: var(--color-bg-main);
-    border-radius: 10px;
+    border-radius: 6px;
     max-width: 550px;
 
     .label {

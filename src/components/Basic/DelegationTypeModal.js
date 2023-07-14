@@ -10,7 +10,7 @@ import DelegationVoting from './DelegationVoting';
 import ManualVoting from './ManualVoting';
 
 const ModalContent = styled.div`
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 30px 30px 0;
 
   .close-btn {

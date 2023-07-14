@@ -12,7 +12,7 @@ import { getBigNumber } from 'utilities/common';
 import commaNumber from 'comma-number';
 
 const ModalContent = styled.div`
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 0 64px 32px;
   .close-btn {
     position: absolute;

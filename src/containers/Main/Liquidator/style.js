@@ -13,7 +13,7 @@ export const STableWrapper = styled.div`
 
 export const STable = styled(Table)`
   background: var(--color-bg-primary);
-  border-radius: 5px;
+  border-radius: 6px;
   overflow-x: auto;
   overflow-y: auto;
   width: 100%;
@@ -169,7 +169,7 @@ export const SearchBar = styled.div`
         color: var(--color-text-main);
         border: 1px solid #e5e5e5;
         box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
-        border-radius: 8px 0 0 8px;
+        border-radius: 6px 0 0 6px;
         font-style: normal;
         font-weight: 500;
         font-size: 16px;
@@ -181,7 +181,7 @@ export const SearchBar = styled.div`
         width: 50px;
         height: 50px;
         background: #107def;
-        border-radius: 0px 8px 8px 0px;
+        border-radius: 0px 6px 6px 0px;
         border-left: 0;
       }
     }
@@ -196,7 +196,7 @@ export const SearchBar = styled.div`
         #0047d0 100%,
         #0047d0 100%
       );
-      border-radius: 8px;
+      border-radius: 6px;
       font-style: normal;
       font-weight: 900;
       font-size: 18px;
@@ -248,7 +248,7 @@ export const SearchBar = styled.div`
         #0047d0 100%,
         #0047d0 100%
       );
-      border-radius: 8px;
+      border-radius: 6px;
       font-style: normal;
       font-weight: 900;
       font-size: 18px;
@@ -284,7 +284,7 @@ export const WalletInfo = styled.div`
 
   .details {
     background: var(--color-bg-primary);
-    border-radius: 5px;
+    border-radius: 6px;
     font-style: normal;
     font-weight: 500;
     font-size: 18px;
@@ -355,7 +355,7 @@ export const WalletInfo = styled.div`
     width: 100%;
     height: 100%;
     background: var(--color-bg-primary);
-    border-radius: 5px;
+    border-radius: 6px;
 
     .mess-liquidator {
       font-style: normal;
@@ -403,7 +403,7 @@ export const WalletInfo = styled.div`
           color: var(--color-text-main);
           border: 0px;
           box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
-          border-radius: 8px;
+          border-radius: 6px;
         }
 
         .max-btn {
@@ -412,7 +412,7 @@ export const WalletInfo = styled.div`
           font-weight: 500;
           font-size: 12px;
           background: #107def;
-          border-radius: 5px;
+          border-radius: 6px;
           color: #fff;
           font-size: 14px;
           padding: 5px 15px;
@@ -469,7 +469,7 @@ export const WalletInfo = styled.div`
             #0047d0 100%
           );
           border: 0px;
-          border-radius: 8px;
+          border-radius: 6px;
           font-style: normal;
           font-weight: 900;
           font-size: 18px;
@@ -581,12 +581,12 @@ export const TdWithImg = styled.div`
 export const CustomModal = styled(Modal)`
   .ant-modal-content {
     background-color: unset;
-    border-radius: ${props => (props.loading ? '20px' : 'unset')};
+    border-radius: ${props => (props.loading ? '6px' : 'unset')};
   }
   .ant-modal-body {
     padding: 70px 24px;
     background: ${props => (props.loading ? '#141518' : '#141518')};
-    border-radius: ${props => (props.loading ? '20px' : 'unset')};
+    border-radius: ${props => (props.loading ? '6px' : 'unset')};
   }
 
   .ant-modal-close {
@@ -665,7 +665,7 @@ export const ModalContent = styled.div`
         background: var(--color-bg-main);
         border: 1px solid #e5e5e5;
         box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
-        border-radius: 8px;
+        border-radius: 6px;
         font-style: normal;
         font-weight: 500;
         font-size: 16px;
@@ -708,7 +708,7 @@ export const ModalContent = styled.div`
           height: 50px;
           border: 1px solid #e5e5e5;
           box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.03);
-          border-radius: 8px;
+          border-radius: 6px;
         }
       }
     }
@@ -724,7 +724,7 @@ export const ModalContent = styled.div`
         #0047d0 100%
       );
       border: 0px;
-      border-radius: 8px;
+      border-radius: 6px;
       color: #ffffff;
       font-style: normal;
       font-weight: 900;
@@ -824,7 +824,7 @@ export const ModalLoadingContent = styled.div`
     color: var(--color-text-main);
     padding: 16px 0;
     background: #eeeeee;
-    border-radius: 8px;
+    border-radius: 6px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -899,7 +899,7 @@ export const SeizedAndRepay = styled.div`
 export const DropdownAsset = styled.div`
   background: var(--color-bg-main);
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid var(--color-text-secondary);
 
   div {

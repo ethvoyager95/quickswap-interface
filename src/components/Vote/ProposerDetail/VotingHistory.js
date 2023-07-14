@@ -12,7 +12,7 @@ import { Card } from 'components/Basic/Card';
 const VotingHistoryWrapper = styled.div`
   width: 100%;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: var(--color-bg-primary);
   padding: 28px 30px 30px;
 

@@ -21,7 +21,7 @@ import { compose } from 'recompose';
 import { checkIsValidNetwork } from 'utilities/common';
 
 const ModalContent = styled.div`
-  border-radius: 5px;
+  border-radius: 6px;
   box-shadow: 0px 0px 10px 0px #1760ed;
 
   .close-btn {
@@ -92,7 +92,7 @@ const ModalContent = styled.div`
       margin-top: 20px;
       background-color: rgba(255, 0, 0, 0.03);
       padding: 5px 10px;
-      border-radius: 4px;
+      border-radius: 6px;
       color: var(--color-red);
       a {
         margin-left: 5px;

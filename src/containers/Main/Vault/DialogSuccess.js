@@ -91,7 +91,7 @@ const SLink = styled.div`
 const SView = styled.div``;
 const SCopy = styled.div`
   background: #eeeeee;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 5px 10px;
 `;
 const SAddress = styled.div`
