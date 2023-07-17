@@ -855,26 +855,25 @@ const Staking = ({ settings }) => {
                     </p>
                   </div>
                   <div className="flex align-center space-between">
-                    <div className="flex align-center">
-                      <input
-                        placeholder="0.00"
-                        value={lockAmount}
-                        onChange={event => {
-                          // if (
-                          //   index === 0 &&
-                          //   (!event.target.value.length ||
-                          //     Number(event.target.value) >= 0)
-                          // )
-                          //   setStakeAmount(event.target.value);
-                          if (
-                            index === 0 &&
-                            (!event.target.value.length ||
-                              Number(event.target.value) >= 0)
-                          )
-                            setLockAmount(event.target.value);
-                        }}
-                      />
-                    </div>
+                    <input
+                      style={{ width: '100%' }}
+                      placeholder="0.00"
+                      value={lockAmount}
+                      onChange={event => {
+                        // if (
+                        //   index === 0 &&
+                        //   (!event.target.value.length ||
+                        //     Number(event.target.value) >= 0)
+                        // )
+                        //   setStakeAmount(event.target.value);
+                        if (
+                          index === 0 &&
+                          (!event.target.value.length ||
+                            Number(event.target.value) >= 0)
+                        )
+                          setLockAmount(event.target.value);
+                      }}
+                    />
                     <button
                       type="button"
                       className="max-button"
@@ -882,7 +881,12 @@ const Staking = ({ settings }) => {
                         // if (index === 0)
                         //   setStakeAmount(strkBalance.div(1e18).toString());
                         // else
-                        setLockAmount(strkBalance.div(1e18).toString());
+                        setLockAmount(
+                          strkBalance
+                            .div(1e18)
+                            .dp(18, 0)
+                            .toString()
+                        );
                       }}
                     >
                       MAX

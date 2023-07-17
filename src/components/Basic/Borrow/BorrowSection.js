@@ -128,7 +128,8 @@ function BorrowSection({ asset, settings, setSetting }) {
       totalBorrowLimit
         .times(80)
         .div(100)
-        .minus(totalBorrowBalance),
+        .minus(totalBorrowBalance)
+        .dp(settings.decimals[asset.id].token, 0),
       new BigNumber(0)
     );
 

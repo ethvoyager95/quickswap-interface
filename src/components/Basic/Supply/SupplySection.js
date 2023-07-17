@@ -340,7 +340,11 @@ function SupplySection({ asset, settings, setSetting }) {
     let maxAmount = asset.walletBalance;
     if (asset.supplyCaps.isGreaterThan(0)) {
       if (asset.supplyCaps.isLessThan(1)) maxAmount = new BigNumber(0);
-      else maxAmount = BigNumber.min(maxAmount, asset.supplyCaps);
+      else
+        maxAmount = BigNumber.min(
+          maxAmount,
+          asset.supplyCaps.dp(settings.decimals[asset.id].token, 0)
+        );
     }
     setAmount(maxAmount);
   };

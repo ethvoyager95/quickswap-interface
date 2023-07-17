@@ -112,31 +112,65 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
           symbol: asset.symbol
         }
       });
-      if (asset.id !== 'eth') {
-        if (amount.eq(asset.borrowBalance)) {
-          await methods.send(
-            appContract.methods.repayBorrow,
-            [
-              new BigNumber(2)
-                .pow(256)
-                .minus(1)
-                .toString(10)
-            ],
-            settings.selectedAddress
-          );
+      try {
+        if (asset.id !== 'eth') {
+          if (amount.eq(asset.borrowBalance)) {
+            await methods.send(
+              appContract.methods.repayBorrow,
+              [
+                new BigNumber(2)
+                  .pow(256)
+                  .minus(1)
+                  .toString(10)
+              ],
+              settings.selectedAddress
+            );
+          } else {
+            await methods.send(
+              appContract.methods.repayBorrow,
+              [
+                amount
+                  .times(
+                    new BigNumber(10).pow(settings.decimals[asset.id].token)
+                  )
+                  .integerValue()
+                  .toString(10)
+              ],
+              settings.selectedAddress
+            );
+          }
+          setAmount(new BigNumber(0));
+          setIsLoading(false);
+          setSetting({
+            pendingInfo: {
+              type: '',
+              status: false,
+              amount: 0,
+              symbol: ''
+            }
+          });
         } else {
-          await methods.send(
-            appContract.methods.repayBorrow,
-            [
-              amount
-                .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
-                .integerValue()
-                .toString(10)
-            ],
-            settings.selectedAddress
+          sendRepay(
+            settings.selectedAddress,
+            amount
+              .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
+              .integerValue()
+              .toString(10),
+            () => {
+              setAmount(new BigNumber(0));
+              setIsLoading(false);
+              setSetting({
+                pendingInfo: {
+                  type: '',
+                  status: false,
+                  amount: 0,
+                  symbol: ''
+                }
+              });
+            }
           );
         }
-        setAmount(new BigNumber(0));
+      } catch (error) {
         setIsLoading(false);
         setSetting({
           pendingInfo: {
@@ -146,26 +180,6 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
             symbol: ''
           }
         });
-      } else {
-        sendRepay(
-          settings.selectedAddress,
-          amount
-            .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
-            .integerValue()
-            .toString(10),
-          () => {
-            setAmount(new BigNumber(0));
-            setIsLoading(false);
-            setSetting({
-              pendingInfo: {
-                type: '',
-                status: false,
-                amount: 0,
-                symbol: ''
-              }
-            });
-          }
-        );
       }
     }
   };
@@ -174,7 +188,12 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
    * Max amount
    */
   const handleMaxAmount = () => {
-    setAmount(BigNumber.minimum(asset.walletBalance, asset.borrowBalance));
+    setAmount(
+      BigNumber.minimum(
+        asset.walletBalance.dp(settings.decimals[asset.id].token, 0),
+        asset.borrowBalance.dp(settings.decimals[asset.id].token, 0)
+      )
+    );
   };
 
   useEffect(() => {

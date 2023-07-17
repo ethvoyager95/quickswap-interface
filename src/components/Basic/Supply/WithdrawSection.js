@@ -41,7 +41,8 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
       totalBorrowLimit
         .minus(totalBorrowBalance.div(40).times(100))
         .div(collateralFactor)
-        .div(tokenPrice),
+        .div(tokenPrice)
+        .dp(settings.decimals[asset.id].token, 0),
       new BigNumber(0)
     );
     setSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
