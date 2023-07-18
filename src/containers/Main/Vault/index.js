@@ -759,6 +759,21 @@ function Staking({ settings, setSetting }) {
       setVal(0);
     } else if (Number(number) >= 0) {
       const valueFormat = event?.target.value.replace(/,/g, '.');
+
+      if (
+        valueFormat.length > 1 &&
+        valueFormat[1] !== '.' &&
+        Number(valueFormat) === 0
+      ) {
+        setVal('0');
+        return;
+      }
+
+      if (Number(valueFormat) > Number(userInfo?.availableNumber)) {
+        setVal(val);
+        return;
+      }
+
       const lstValueFormat = valueFormat?.toString().split('.');
       if (lstValueFormat.length > 1) {
         const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(
@@ -820,6 +835,21 @@ function Staking({ settings, setSetting }) {
       setValUnStake(0);
     } else if (Number(number) >= 0) {
       const valueFormat = event?.target.value.replace(/,/g, '.');
+
+      if (
+        valueFormat.length > 1 &&
+        valueFormat[1] !== '.' &&
+        Number(valueFormat) === 0
+      ) {
+        setValUnStake('0');
+        return;
+      }
+
+      if (Number(valueFormat) > Number(userInfo?.amountNumber)) {
+        setValUnStake(valUnStake);
+        return;
+      }
+
       const lstValueFormat = valueFormat?.toString().split('.');
       if (lstValueFormat.length > 1) {
         const result = `${lstValueFormat[0]}.${lstValueFormat[1]?.slice(

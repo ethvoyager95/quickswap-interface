@@ -179,7 +179,6 @@ export const SInputUnStake = styled.div`
     background: var(--color-bg-main);
     color: var(--color-text-main);
     border: 0px;
-    border: 0px;
     width: 90%;
     padding: 8px;
     border-radius: 6px;
@@ -436,18 +435,15 @@ export const SBtnLoadding = styled.button`
 `;
 export const SBtnUnstake = styled.button`
   cursor: pointer;
-  color: #f84960;
-  background: #fff;
+  background: #107def;
+  color: #fff;
   border-radius: 6px;
+  border: none;
   padding: 8px 20px;
   min-width: 280px;
   text-align: center;
-  border: 1px solid #f84960;
   margin-right: 15px;
   outline: none;
-  &:hover {
-    background: #fff !important;
-  }
   @media only screen and (max-width: 768px) {
     width: 100%;
     margin-top: 0;
@@ -455,9 +451,6 @@ export const SBtnUnstake = styled.button`
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
-    &:hover {
-      background: #d9d9d9 !important;
-    }
   }
 `;
 export const SSTake = styled.button`
@@ -505,23 +498,17 @@ export const SSTaked = styled.button`
 `;
 export const SSUnSTakedWeb = styled.button`
   cursor: pointer;
-  color: #f84960;
-  background: #fff;
+  background: #107def;
+  color: #fff;
   border-radius: 6px;
+  border: none;
   padding: 8px 20px;
   min-width: 150px;
   text-align: center;
-  border: 1px solid #f84960;
   outline: none;
-  :hover {
-    background-color: #fff !important;
-  }
   :disabled {
     color: #fff !important;
     cursor: not-allowed;
-  }
-  :hover {
-    background-color: #fff !important;
   }
   @media only screen and (max-width: 768px) {
     display: none;
@@ -529,13 +516,13 @@ export const SSUnSTakedWeb = styled.button`
 `;
 export const SSUnTake = styled.button`
   cursor: pointer;
-  background: #fff;
-  color: #f84960;
+  background: #107def;
+  color: #fff;
   border-radius: 6px;
   padding: 8px 20px;
   min-width: 280px;
   text-align: center;
-  border: 1px solid #f84960;
+  border: none;
   outline: none;
   margin-right: 15px;
   .mg-10:disabled {
@@ -1220,13 +1207,13 @@ export const SSUnSTakedMobile = styled.button`
     float: right;
     width: 125px;
     cursor: pointer;
-    color: #f84960;
-    background: #fff;
+    background: #107def;
+    color: #fff;
     border-radius: 6px;
+    border: none;
     padding: 8px 20px;
     min-width: 125px;
     text-align: center;
-    border: 1px solid #f84960;
     outline: none;
     :hover {
       background-color: #fff !important;
