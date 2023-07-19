@@ -870,8 +870,21 @@ const Staking = ({ settings }) => {
                           index === 0 &&
                           (!event.target.value.length ||
                             Number(event.target.value) >= 0)
-                        )
-                          setLockAmount(event.target.value);
+                        ) {
+                          const regex = /([0-9]*[\.|\,]{0,1}[0-9]{0,18})/s;
+                          const value = event.target.value.match(regex)[0];
+
+                          if (
+                            value.length > 1 &&
+                            value[0] === '0' &&
+                            value[1] !== '.'
+                          ) {
+                            setLockAmount('0');
+                            return;
+                          }
+
+                          setLockAmount(value);
+                        }
                       }}
                     />
                     <button
