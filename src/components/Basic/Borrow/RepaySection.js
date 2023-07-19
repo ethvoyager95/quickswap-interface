@@ -214,6 +214,7 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
                   const { value } = values;
                   setAmount(new BigNumber(value));
                 }}
+                decimalScale={settings.decimals[asset.id].token}
                 isAllowed={({ value }) => {
                   return new BigNumber(value || 0).isLessThanOrEqualTo(
                     BigNumber.minimum(asset.walletBalance, asset.borrowBalance)

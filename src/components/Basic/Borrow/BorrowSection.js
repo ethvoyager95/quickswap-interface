@@ -157,6 +157,7 @@ function BorrowSection({ asset, settings, setSetting }) {
                 const { value } = values;
                 setAmount(new BigNumber(value));
               }}
+              decimalScale={settings.decimals[asset.id].token}
               isAllowed={({ value }) => {
                 const totalBorrowBalance = getBigNumber(
                   settings.totalBorrowBalance

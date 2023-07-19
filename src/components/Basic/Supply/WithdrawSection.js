@@ -166,6 +166,7 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
               onValueChange={({ value }) => {
                 setAmount(new BigNumber(value));
               }}
+              decimalScale={settings.decimals[asset.id].token}
               isAllowed={({ value }) => {
                 const temp = new BigNumber(value || 0);
                 const { totalBorrowLimit } = settings;

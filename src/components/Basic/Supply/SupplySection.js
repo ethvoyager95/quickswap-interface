@@ -361,6 +361,7 @@ function SupplySection({ asset, settings, setSetting }) {
                 onValueChange={({ value }) => {
                   setAmount(new BigNumber(value));
                 }}
+                decimalScale={settings.decimals[asset.id].token}
                 isAllowed={({ value }) => {
                   return new BigNumber(value || 0).isLessThanOrEqualTo(
                     asset.walletBalance
