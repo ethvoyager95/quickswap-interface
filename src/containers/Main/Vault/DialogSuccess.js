@@ -218,7 +218,7 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
             <SIconSucsess src={IconSuccess} />
             <STitle>{text}</STitle>
             <SText>Your transaction has been executed successfully</SText>
-            <SLink>
+            {/* <SLink>
               <SView>View on explorer</SView>
               <SCopy>
                 {address && (
@@ -236,7 +236,7 @@ function DialogSuccess({ isSuccess, close, address, txh, text }) {
                   </SAddress>
                 )}
               </SCopy>
-            </SLink>
+            </SLink> */}
             <SGoto
               target="_blank"
               href={getEthScanLink(chainId, txh, 'transaction')}

@@ -81,7 +81,7 @@ function BorrowLimit({ settings }) {
       <div className="progress">
         <LineProgressBar
           label="Borrow Limit"
-          percent={borrowPercent}
+          percent={Number(borrowPercent)}
           borrowLimit={format(
             new BigNumber(available)
               .times(80)
