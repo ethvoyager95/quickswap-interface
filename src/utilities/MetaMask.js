@@ -24,7 +24,8 @@ export default class MetaMask {
       window.ethereum.on('chainChanged', chainId => {
         window.location.reload();
       });
-      await window.ethereum.enable();
+      // await window.ethereum.enable();
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
       return window.web3;
     }
     throw new Error(constants.NOT_INSTALLED);
