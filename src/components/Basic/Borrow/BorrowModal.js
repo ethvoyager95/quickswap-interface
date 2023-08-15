@@ -158,6 +158,12 @@ function BorrowModal({ visible, onCancel, settings }) {
   const [currentAsset, setCurrentAsset] = useState({});
 
   useEffect(() => {
+    if (currentAsset.id === 'ust' || currentAsset.borrowPaused)
+      setCurrentTab('repay');
+    else setCurrentTab('borrow');
+  }, [currentAsset]);
+
+  useEffect(() => {
     const asset = settings.selectedAsset;
     if (asset) {
       setCurrentAsset({
@@ -243,7 +249,7 @@ function BorrowModal({ visible, onCancel, settings }) {
             )}
           <>
             <Tabs>
-              {currentAsset.id !== 'ust' && (
+              {currentAsset.id !== 'ust' && !currentAsset.borrowPaused && (
                 <div
                   className={`tab-item center ${
                     currentTab === 'borrow' ? 'tab-active' : ''

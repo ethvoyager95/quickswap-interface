@@ -158,6 +158,11 @@ function SupplyModal({ visible, onCancel, settings }) {
   const [currentAsset, setCurrentAsset] = useState({});
 
   useEffect(() => {
+    if (currentAsset.id === 'ust') setCurrentTab('withdraw');
+    else setCurrentTab('supply');
+  }, [currentAsset]);
+
+  useEffect(() => {
     const asset = settings.selectedAsset;
     if (asset) {
       setCurrentAsset({
