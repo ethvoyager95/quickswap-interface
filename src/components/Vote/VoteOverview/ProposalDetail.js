@@ -60,7 +60,7 @@ function ProposalDetail({ proposalInfo }) {
             Description
           </Label>
           <Label size="16">
-            <ReactMarkdown source={proposalInfo.description} />
+            <ReactMarkdown>{proposalInfo.description}</ReactMarkdown>
           </Label>
         </div>
       </ProposalDetailWrapper>

@@ -152,7 +152,9 @@ function Voting({ proposal, support, history }) {
             <Column xs="12" sm="8">
               <div className="flex flex-column proposal-info ">
                 <div className="title">
-                  <ReactMarkdown source={proposal.description.split('\n')[0]} />
+                  <ReactMarkdown>
+                    {proposal.description.split('\n')[0]}
+                  </ReactMarkdown>
                 </div>
                 <div className="flex detail">
                   <div className="flex detail-content">

@@ -208,7 +208,7 @@ function Proposal({
       onClick={() => history.push(`/vote/proposal/${proposal.id}`)}
     >
       <div className="title">
-        <ReactMarkdown source={proposal.description.split('\n')[0]} />
+        <ReactMarkdown>{proposal.description.split('\n')[0]}</ReactMarkdown>
       </div>
       <Row className="detail">
         <Column xs="12" sm={settings.selectedAddress ? '9' : '12'}>

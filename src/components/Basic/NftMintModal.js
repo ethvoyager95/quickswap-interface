@@ -123,12 +123,17 @@ function NftMintModal({ visible, onCancel, settings }) {
   const nftContract = getNFTContract();
 
   const fetchEthBalance = async () => {
-    const balance = await window.web3.eth.getBalance(settings.selectedAddress);
-    setEthBalance(new BigNumber(balance));
+    if (window.web3 && window.web3.eth) {
+      const balance = await window.web3.eth.getBalance(
+        settings.selectedAddress
+      );
+      setEthBalance(new BigNumber(balance));
+    }
   };
 
   useEffect(() => {
-    if (window.web3.eth && settings.selectedAddress) fetchEthBalance();
+    if (window.web3 && window.web3.eth && settings.selectedAddress)
+      fetchEthBalance();
   }, [settings.selectedAddress, window.web3]);
 
   useEffect(() => {
