@@ -18,7 +18,6 @@ import {
 import { connectAccount, accountActionCreators } from 'core';
 import MainLayout from 'containers/Layout/MainLayout';
 import ProposalInfo from 'components/Vote/VoteOverview/ProposalInfo';
-import ProposalUser from 'components/Vote/VoteOverview/ProposalUser';
 import VoteCard from 'components/Vote/VoteOverview/VoteCard';
 import ProposalDetail from 'components/Vote/VoteOverview/ProposalDetail';
 import ProposalHistory from 'components/Vote/VoteOverview/ProposalHistory';
@@ -300,22 +299,22 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                 <VoteCard
                   label="For"
                   forNumber={
-                    isNaN(BigNumber(agreeVotes.sumVotes))
+                    BigNumber(agreeVotes.sumVotes).isNaN()
                       ? '0'
                       : agreeVotes.sumVotes
                   }
                   againstNumber={
-                    isNaN(BigNumber(againstVotes.sumVotes))
+                    BigNumber(againstVotes.sumVotes).isNaN()
                       ? '0'
                       : againstVotes.sumVotes
                   }
                   type="agree"
                   addressNumber={
-                    isNaN(BigNumber(agreeVotes.total)) ? 0 : agreeVotes.total
+                    BigNumber(agreeVotes.total).isNaN() ? 0 : agreeVotes.total
                   }
                   emptyNumber={
                     4 -
-                    (isNaN(BigNumber(agreeVotes.total)) ? 0 : agreeVotes.total)
+                    (BigNumber(agreeVotes.total).isNaN() ? 0 : agreeVotes.total)
                   }
                   list={
                     agreeVotes.result &&
@@ -331,24 +330,24 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                 <VoteCard
                   label="Against"
                   forNumber={
-                    isNaN(BigNumber(agreeVotes.sumVotes))
+                    BigNumber(agreeVotes.sumVotes).isNaN()
                       ? '0'
                       : agreeVotes.sumVotes
                   }
                   againstNumber={
-                    isNaN(BigNumber(againstVotes.sumVotes))
+                    BigNumber(againstVotes.sumVotes).isNaN()
                       ? '0'
                       : againstVotes.sumVotes
                   }
                   type="against"
                   addressNumber={
-                    isNaN(BigNumber(againstVotes.total))
+                    BigNumber(againstVotes.total).isNaN()
                       ? 0
                       : againstVotes.total
                   }
                   emptyNumber={
                     4 -
-                    (isNaN(BigNumber(againstVotes.total))
+                    (BigNumber(againstVotes.total).isNaN()
                       ? 0
                       : againstVotes.total)
                   }
@@ -426,7 +425,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                 proposalInfo.state !== 'Canceled' &&
                 proposerVotingWeight >= proposalThreshold && (
                   <p className="center warning">
-                    You can't cancel the proposal while the proposer voting
+                    You can&apos;t cancel the proposal while the proposer voting
                     weight meets proposal threshold
                   </p>
                 )}
@@ -444,7 +443,6 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
 }
 
 VoteOverview.propTypes = {
-  history: PropTypes.object,
   match: PropTypes.object,
   settings: PropTypes.object,
   getProposalById: PropTypes.func.isRequired,
@@ -452,7 +450,6 @@ VoteOverview.propTypes = {
 };
 
 VoteOverview.defaultProps = {
-  history: {},
   match: {},
   settings: {}
 };

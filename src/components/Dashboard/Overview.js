@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { compose } from 'recompose';
 import BigNumber from 'bignumber.js';
 import { bindActionCreators } from 'redux';
+import commaNumber from 'comma-number';
 import { connectAccount, accountActionCreators } from 'core';
 import OverviewChart from 'components/Basic/OverviewChart';
 import CoinInfo from 'components/Dashboard/CoinInfo';
@@ -11,8 +12,11 @@ import BorrowLimit from 'components/Dashboard/BorrowLimit';
 import WalletBalance from 'components/Dashboard/WalletBalance';
 import { promisify } from 'utilities';
 import * as constants from 'utilities/constants';
-import commaNumber from 'comma-number';
-import { getBigNumber, currencyFormatter, shortenNumberFormatter } from 'utilities/common';
+import {
+  getBigNumber,
+  currencyFormatter,
+  shortenNumberFormatter
+} from 'utilities/common';
 import { Card } from 'components/Basic/Card';
 
 const CardWrapper = styled.div`

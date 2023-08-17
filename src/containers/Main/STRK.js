@@ -249,7 +249,7 @@ function STRK({ settings }) {
       Object.values(constants.CONTRACT_SBEP_ADDRESS).map(
         async (item, index) => {
           const sBepContract = getSbepContract(item.id);
-          let [
+          const [
             supplyState,
             supplierIndex,
             supplierTokens,
@@ -273,10 +273,11 @@ function STRK({ settings }) {
             methods.call(sBepContract.methods.borrowIndex, [])
           ]);
           const supplyIndex = supplyState.index;
-          if (+supplierIndex === 0 && +supplyIndex > 0) {
-            supplierIndex = strikeInitialIndex;
-          }
-          let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
+          let deltaIndex = new BigNumber(supplyIndex).minus(
+            +supplierIndex === 0 && +supplyIndex > 0
+              ? strikeInitialIndex
+              : supplierIndex
+          );
 
           const supplierDelta = new BigNumber(supplierTokens)
             .multipliedBy(deltaIndex)

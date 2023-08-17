@@ -70,10 +70,16 @@ function ProposerDetail({ match, getVoterDetail, getVoterHistory }) {
       .then(res => {
         if (res.data) {
           setHoldingInfo({
-            balance: new BigNumber(res.data.balance).div(new BigNumber(10).pow(18)).dp(4, 1).toString(10),
+            balance: new BigNumber(res.data.balance)
+              .div(new BigNumber(10).pow(18))
+              .dp(4, 1)
+              .toString(10),
             delegates: res.data.delegates.toLowerCase(),
             delegateCount: res.data.delegateCount || 0,
-            votes: new BigNumber(res.data.votes).div(new BigNumber(10).pow(18)).dp(4, 1).toString(10),
+            votes: new BigNumber(res.data.votes)
+              .div(new BigNumber(10).pow(18))
+              .dp(4, 1)
+              .toString(10)
           });
           setTransactions(res.data.txs);
         }

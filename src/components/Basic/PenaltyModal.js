@@ -345,11 +345,13 @@ function PenaltyModal({ visible, onCancel, settings }) {
 
 PenaltyModal.propTypes = {
   visible: PropTypes.bool,
+  settings: PropTypes.object,
   onCancel: PropTypes.func
 };
 
 PenaltyModal.defaultProps = {
   visible: false,
+  settings: {},
   onCancel: () => {}
 };
 

@@ -10,7 +10,7 @@ export const Row = styled.div`
 `;
 
 function getWidthString(span) {
-  if (!span) return;
+  if (!span) return '';
 
   const width = (span / 12) * 100;
   return `width: ${width}%;`;

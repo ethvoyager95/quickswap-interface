@@ -5,10 +5,10 @@ import PropTypes, { func } from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
-import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
 import { Row, Col, Switch } from 'antd';
 import _ from 'lodash';
+import { connectAccount, accountActionCreators } from 'core';
 import { MAX_STAKE_NFT, LIST_BLOCK_VALUE, ZERO } from './helper';
 import IconClose from '../../../assets/img/close.svg';
 

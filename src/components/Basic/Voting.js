@@ -113,9 +113,19 @@ function Voting({ proposal, support, history }) {
   const [againstPercent, setAgainstPercent] = useState(0);
 
   useEffect(() => {
-    const total = new BigNumber(proposal.forVotes).plus(new BigNumber(proposal.againstVotes));
-    setForPercent(isNaN(new BigNumber(proposal.forVotes * 100).div(total)) ? '0' : new BigNumber(proposal.forVotes * 100).div(total).toString());
-    setAgainstPercent(isNaN(new BigNumber(proposal.againstVotes * 100).div(total)) ? '0' : new BigNumber(proposal.againstVotes * 100).div(total).toString());
+    const total = new BigNumber(proposal.forVotes).plus(
+      new BigNumber(proposal.againstVotes)
+    );
+    setForPercent(
+      new BigNumber(proposal.forVotes * 100).div(total).isNaN()
+        ? '0'
+        : new BigNumber(proposal.forVotes * 100).div(total).toString()
+    );
+    setAgainstPercent(
+      new BigNumber(proposal.againstVotes * 100).div(total).isNaN()
+        ? '0'
+        : new BigNumber(proposal.againstVotes * 100).div(total).toString()
+    );
   }, [proposal]);
 
   const getStatus = p => {

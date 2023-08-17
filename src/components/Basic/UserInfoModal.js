@@ -2,14 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
-import closeImg from 'assets/img/close.png';
-import logoImg from 'assets/img/strike_32.png';
-import { connectAccount, accountActionCreators } from 'core';
 import { bindActionCreators } from 'redux';
 import { compose } from 'recompose';
 import AnimatedNumber from 'animated-number-react';
-import { getBigNumber } from 'utilities/common';
 import commaNumber from 'comma-number';
+import { connectAccount, accountActionCreators } from 'core';
+import { getBigNumber } from 'utilities/common';
+import closeImg from 'assets/img/close.png';
+import logoImg from 'assets/img/strike_32.png';
 
 const ModalContent = styled.div`
   border-radius: 6px;

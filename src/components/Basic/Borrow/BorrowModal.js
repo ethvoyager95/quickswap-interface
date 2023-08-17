@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { compose } from 'recompose';
-import { connectAccount } from 'core';
-import metaMaskImg from 'assets/img/metamask.png';
-import { addToken, getBigNumber } from 'utilities/common';
 import { Modal } from 'antd';
+import { connectAccount } from 'core';
+import { addToken, getBigNumber } from 'utilities/common';
+import LoadingSpinner from 'components/Basic/LoadingSpinner';
+import metaMaskImg from 'assets/img/metamask.png';
 import closeImg from 'assets/img/close.png';
 import BorrowSection from './BorrowSection';
 import RepaySection from './RepaySection';

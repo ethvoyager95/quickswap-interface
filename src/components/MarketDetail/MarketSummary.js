@@ -51,14 +51,16 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
     <MarketSummaryWrapper>
       <div className="description">
         <p className="label">Price</p>
-        <p className="value">{`$${new BigNumber(marketInfo.underlyingPrice || 0)
-          .div(
-            new BigNumber(10).pow(
-              18 + 18 - parseInt(settings.decimals[currentAsset].token)
+        <p className="value">
+          {`$${new BigNumber(marketInfo.underlyingPrice || 0)
+            .div(
+              new BigNumber(10).pow(
+                18 + 18 - parseInt(settings.decimals[currentAsset].token, 10)
+              )
             )
-          )
-          .dp(8, 1)
-          .toString(10)}`}</p>
+            .dp(8, 1)
+            .toString(10)}`}
+        </p>
       </div>
       <div className="description">
         <p className="label">Market Liquidity</p>
@@ -164,10 +166,12 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
                   new BigNumber(10).pow(
                     18 +
                       +parseInt(
-                        settings.decimals[currentAsset || 'usdc'].token
+                        settings.decimals[currentAsset || 'usdc'].token,
+                        10
                       ) -
                       +parseInt(
-                        settings.decimals[currentAsset || 'usdc'].stoken
+                        settings.decimals[currentAsset || 'usdc'].stoken,
+                        10
                       )
                   )
                 )

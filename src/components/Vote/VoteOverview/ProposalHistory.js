@@ -78,7 +78,8 @@ const STATUSES = ['Pending', 'Active', 'Succeeded', 'Queued', 'Executed'];
 
 function ProposalHistory({ proposalInfo }) {
   const getStepNumber = () => {
-    if (proposalInfo.state === 'Defeated' || proposalInfo.state === 'Canceled') return 2;
+    if (proposalInfo.state === 'Defeated' || proposalInfo.state === 'Canceled')
+      return 2;
     return STATUSES.findIndex(s => s === proposalInfo.state) + 1;
   };
   return (
@@ -94,7 +95,12 @@ function ProposalHistory({ proposalInfo }) {
                   ? moment(proposalInfo.createdTimestamp * 1000).format('LLL')
                   : ''
               }
-              icon={<Icon type="check" style={{ fontSize: '10px', color: 'white' }} />}
+              icon={
+                <Icon
+                  type="check"
+                  style={{ fontSize: '10px', color: 'white' }}
+                />
+              }
               disabled
             />
             <Step
@@ -104,7 +110,12 @@ function ProposalHistory({ proposalInfo }) {
                   ? moment(proposalInfo.startTimestamp * 1000).format('LLL')
                   : ''
               }
-              icon={<Icon type="check" style={{ fontSize: '10px', color: 'white' }} />}
+              icon={
+                <Icon
+                  type="check"
+                  style={{ fontSize: '10px', color: 'white' }}
+                />
+              }
               disabled
             />
             <Step
@@ -114,14 +125,23 @@ function ProposalHistory({ proposalInfo }) {
                   ? proposalInfo.state === 'Defeated'
                     ? 'Failed'
                     : 'Canceled'
-                  : `${proposalInfo.state === 'Succeeded' ? 'Succeeded' : 'Succeed'}`
+                  : `${
+                      proposalInfo.state === 'Succeeded'
+                        ? 'Succeeded'
+                        : 'Succeed'
+                    }`
               }
               description={
                 proposalInfo.endTimestamp
                   ? moment(proposalInfo.endTimestamp * 1000).format('LLL')
                   : ''
               }
-              icon={<Icon type="check" style={{ fontSize: '10px', color: 'white' }} />}
+              icon={
+                <Icon
+                  type="check"
+                  style={{ fontSize: '10px', color: 'white' }}
+                />
+              }
               disabled
             />
             <Step
@@ -131,19 +151,33 @@ function ProposalHistory({ proposalInfo }) {
                   ? moment(proposalInfo.queuedTimestamp * 1000).format('LLL')
                   : ''
               }
-              icon={<Icon type="check" style={{ fontSize: '10px', color: 'white' }} />}
+              icon={
+                <Icon
+                  type="check"
+                  style={{ fontSize: '10px', color: 'white' }}
+                />
+              }
               disabled
             />
             <Step
               title={
-                proposalInfo.state === 'Expired' ? proposalInfo.state : `${proposalInfo.state === 'Executed' ? 'Executed' : 'Execute'}`
+                proposalInfo.state === 'Expired'
+                  ? proposalInfo.state
+                  : `${
+                      proposalInfo.state === 'Executed' ? 'Executed' : 'Execute'
+                    }`
               }
               description={
                 proposalInfo.executedTimestamp
                   ? moment(proposalInfo.executedTimestamp * 1000).format('LLL')
                   : ''
               }
-              icon={<Icon type="check" style={{ fontSize: '10px', color: 'white' }} />}
+              icon={
+                <Icon
+                  type="check"
+                  style={{ fontSize: '10px', color: 'white' }}
+                />
+              }
               disabled
             />
           </Steps>

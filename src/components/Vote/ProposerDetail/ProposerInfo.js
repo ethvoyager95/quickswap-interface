@@ -48,7 +48,9 @@ function ProposerInfo({ address, history }) {
           {`${address.substr(0, 4)}...${address.substr(address.length - 4, 4)}`}
         </div>
         <div className="flex just-between align-center">
-          <span className="highlight pointer" onClick={() => handleLink()}>{address}</span>
+          <span className="highlight pointer" onClick={() => handleLink()}>
+            {address}
+          </span>
           <CopyToClipboard
             text={address}
             onCopy={() => {

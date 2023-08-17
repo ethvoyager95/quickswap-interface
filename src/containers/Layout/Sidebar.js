@@ -7,6 +7,8 @@ import { bindActionCreators } from 'redux';
 import { message, Dropdown, Menu, Icon } from 'antd';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
+import Button from '@material-ui/core/Button';
+import { FaBars, FaTimes } from 'react-icons/fa';
 import {
   getTokenContract,
   getSbepContract,
@@ -20,20 +22,13 @@ import ConnectModal from 'components/Basic/ConnectModal';
 import UserInfoModal from 'components/Basic/UserInfoModal';
 import AccountModal from 'components/Basic/AccountModal';
 import { Label } from 'components/Basic/Label';
-import Button from '@material-ui/core/Button';
 import { connectAccount, accountActionCreators } from 'core';
 import MetaMaskClass from 'utilities/MetaMask';
 import logoImg from 'assets/img/logo.png';
-import commaNumber from 'comma-number';
 import { checkIsValidNetwork, getBigNumber } from 'utilities/common';
 import useWindowDimensions from 'hooks/useWindowDimensions';
-
-import { check } from 'prettier';
-import { FaBars, FaTimes } from 'react-icons/fa';
-
 import { ACCOUNT_MARKET_INFO } from 'apollo/queries';
 import { client } from 'apollo/client';
-
 import { ReactComponent as DashboardImg } from 'assets/img/menu-dashboard.svg';
 import { ReactComponent as VoteImg } from 'assets/img/menu-vote.svg';
 import { ReactComponent as RewardsImg } from 'assets/img/menu-reward.svg';
@@ -281,7 +276,7 @@ const UserInfoButton = styled.div`
 
 let metamask = null;
 let accounts = [];
-let metamaskWatcher = null;
+const metamaskWatcher = null;
 let lockFlag = false;
 const abortController = new AbortController();
 
@@ -429,7 +424,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: chainId }]
+        params: [{ chainId }]
       });
       tempError = err;
       accounts = [];
@@ -547,7 +542,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   useEffect(() => {
     if (window.ethereum) {
-      if (!settings.accountLoading /* && checkIsValidNetwork()*/) {
+      if (!settings.accountLoading /* && checkIsValidNetwork() */) {
         initSettings();
       }
     }
@@ -606,7 +601,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         Object.values(constants.CONTRACT_TOKEN_ADDRESS).map(
           async (item, index) => {
             if (!settings.decimals[item.id]) {
-              return;
+              return {};
             }
 
             let market = settings.markets.find(
@@ -911,7 +906,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         Object.values(constants.CONTRACT_TOKEN_ADDRESS).map(
           async (item, index) => {
             if (!settings.decimals[item.id]) {
-              return;
+              return {};
             }
 
             let market = settings.markets.find(

@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
+import WalletLink from 'walletlink';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { Web3Provider } from '@ethersproject/providers';
+import { bindActionCreators } from 'redux';
+import { compose } from 'recompose';
+import { connectAccount, accountActionCreators } from 'core';
 import * as constants from 'utilities/constants';
+import { checkIsValidNetwork } from 'utilities/common';
 import metamaskImg from 'assets/img/metamask.png';
 import bitkeepImg from 'assets/img/bitkeep.png';
 import coinbaseImg from 'assets/img/coinbase.png';
@@ -11,14 +18,6 @@ import trusteWalletImg from 'assets/img/trustwallet.png';
 import arrowRightImg from 'assets/img/arrow-right.svg';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
-
-import WalletLink from 'walletlink';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { Web3Provider } from '@ethersproject/providers';
-import { connectAccount, accountActionCreators } from 'core';
-import { bindActionCreators } from 'redux';
-import { compose } from 'recompose';
-import { checkIsValidNetwork } from 'utilities/common';
 
 const ModalContent = styled.div`
   border-radius: 6px;
@@ -533,8 +532,11 @@ ConnectModal.propTypes = {
   web3: PropTypes.object,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   awaiting: PropTypes.bool,
+  settings: PropTypes.object,
   onCancel: PropTypes.func,
-  onConnectMetaMask: PropTypes.func.isRequired
+  onConnectMetaMask: PropTypes.func.isRequired,
+  checkNetwork: PropTypes.func.isRequired,
+  setSetting: PropTypes.func.isRequired
 };
 
 ConnectModal.defaultProps = {
@@ -542,6 +544,7 @@ ConnectModal.defaultProps = {
   web3: {},
   error: '',
   awaiting: false,
+  settings: {},
   onCancel: () => {}
 };
 

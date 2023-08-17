@@ -2,8 +2,8 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
-import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
+import { connectAccount, accountActionCreators } from 'core';
 
 const SDivLoader = styled.div`
   border: 8px solid #107def;

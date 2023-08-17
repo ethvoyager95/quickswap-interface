@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Icon } from 'antd';
 import { compose } from 'recompose';
-import { connectAccount } from 'core';
 import commaNumber from 'comma-number';
+import { connectAccount } from 'core';
 import coinImg from 'assets/img/strike_32.png';
 import { Card } from 'components/Basic/Card';
 
@@ -67,7 +67,11 @@ function CoinInfo({ address, balance, ensName, ensAvatar }) {
         >
           {ensAvatar && <img src={ensAvatar} alt="avatar" />}
           <p className="highlight">
-            {ensName || `${address.substr(0, 4)}...${address.substr(address.length - 4, 4)}`}
+            {ensName ||
+              `${address.substr(0, 4)}...${address.substr(
+                address.length - 4,
+                4
+              )}`}
           </p>
           <div className="flex align-center just-center copy-btn">
             <Icon type="arrow-right" />
@@ -80,12 +84,16 @@ function CoinInfo({ address, balance, ensName, ensAvatar }) {
 
 CoinInfo.propTypes = {
   address: PropTypes.string,
-  balance: PropTypes.string
+  balance: PropTypes.string,
+  ensName: PropTypes.string,
+  ensAvatar: PropTypes.node
 };
 
 CoinInfo.defaultProps = {
   address: '',
-  balance: '0.0000'
+  balance: '0.0000',
+  ensName: '',
+  ensAvatar: null
 };
 
 const mapStateToProps = ({ account }) => ({

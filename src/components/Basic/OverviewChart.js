@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import styled from 'styled-components';
 import ReactApexChart from 'react-apexcharts';
-import { connectAccount } from 'core';
 import moment from 'moment';
-import { currencyFormatter } from 'utilities/common';
 import commaNumber from 'comma-number';
 import BigNumber from 'bignumber.js';
+import { currencyFormatter } from 'utilities/common';
+import { connectAccount } from 'core';
 
 const ChartWrapper = styled.div`
   width: 100% + 40px;

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { compose } from 'recompose';
 import { Icon, Progress } from 'antd';
+import commaNumber from 'comma-number';
+import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import NumberFormat from 'react-number-format';
 import { bindActionCreators } from 'redux';
@@ -12,12 +14,10 @@ import {
   getSbepContract,
   methods
 } from 'utilities/ContractService';
-import commaNumber from 'comma-number';
 import { sendSupply } from 'utilities/EthContract';
 import coinImg from 'assets/img/strike_32.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
-import styled from 'styled-components';
 
 export const SectionWrapper = styled.div`
   .wallet-section {

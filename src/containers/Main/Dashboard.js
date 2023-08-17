@@ -5,13 +5,13 @@ import styled from 'styled-components';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
+import { Tooltip } from 'antd';
 import MainLayout from 'containers/Layout/MainLayout';
 import Overview from 'components/Dashboard/Overview';
 import Market from 'components/Dashboard/Market';
 import { connectAccount, accountActionCreators } from 'core';
 import { Row, Column } from 'components/Basic/Style';
 import Toggle from 'components/Basic/Toggle';
-import { Tooltip } from 'antd';
 import { Label } from 'components/Basic/Label';
 import IconQuestion from 'assets/img/question.png';
 

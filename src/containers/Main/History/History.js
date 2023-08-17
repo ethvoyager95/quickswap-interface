@@ -6,18 +6,18 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
+import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
+import dayjs from 'dayjs';
+import moment from 'moment';
+import __ from 'lodash';
+import { connectAccount, accountActionCreators } from 'core';
 import MainLayout from 'containers/Layout/MainLayout';
+import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import iconLink from 'assets/img/link.svg';
 import iconInfo from 'assets/img/info.svg';
 import iconFilter from 'assets/img/filter.svg';
 import noData from 'assets/img/no_data.svg';
 import iconClose from 'assets/img/close-tag-filter.svg';
-import { connectAccount, accountActionCreators } from 'core';
-import { Tooltip, Dropdown, Input, Button, Pagination, DatePicker } from 'antd';
-import dayjs from 'dayjs';
-import moment from 'moment';
-import LoadingSpinner from 'components/Basic/LoadingSpinner';
-import __ from 'lodash';
 import {
   formatTxn,
   initFilter,
@@ -46,7 +46,6 @@ import {
   DivFlexBetween,
   TagFilterWrapper
 } from './style';
-
 import './overide.scss';
 
 function History({ settings, setSetting }) {

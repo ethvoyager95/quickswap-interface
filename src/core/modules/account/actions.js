@@ -6,7 +6,8 @@ import { createPromiseAction } from 'core/modules/utils';
  */
 export const SET_SETTING_REQUEST = '@account/SET_SETTING_REQUEST';
 export const GET_MARKET_HISTORY_REQUEST = '@account/GET_MARKET_HISTORY_REQUEST';
-export const GET_GOVERNANCE_STRIKE_REQUEST = '@account/GET_GOVERNANCE_STRIKE_REQUEST';
+export const GET_GOVERNANCE_STRIKE_REQUEST =
+  '@account/GET_GOVERNANCE_STRIKE_REQUEST';
 export const GET_PROPOSALS_REQUEST = '@account/GET_PROPOSALS_REQUEST';
 
 export const GET_FAUCET_REQUEST = '@account/GET_FAUCET_REQUEST';

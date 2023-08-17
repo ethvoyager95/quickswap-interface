@@ -17,6 +17,7 @@ export const sendSupply = async (from, amount, callback) => {
       data: contractData
     };
     // // Send transaction
+    // eslint-disable-next-line
     await web3.eth.sendTransaction(tx, (err, transactionHash) => {
       if (!err) {
         callback(true);
@@ -45,6 +46,7 @@ export const sendRepay = async (from, amount, callback) => {
       data: contractData
     };
     // Send transaction
+    // eslint-disable-next-line
     await web3.eth.sendTransaction(tx, (err, transactionHash) => {
       if (!err) {
         callback(true);

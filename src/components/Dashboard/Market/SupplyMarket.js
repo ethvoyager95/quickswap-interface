@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { message } from 'antd';
 import { compose } from 'recompose';
 import commaNumber from 'comma-number';
 import { connectAccount } from 'core';
 import { getComptrollerContract, methods } from 'utilities/ContractService';
+import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Label } from 'components/Basic/Label';
 import CollateralConfirmModal from 'components/Basic/CollateralConfirmModal';
 import Toggle from 'components/Basic/Toggle';

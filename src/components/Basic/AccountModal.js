@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { initOnRamp } from '@coinbase/cbpay-js/dist/index.js';
+import { initOnRamp } from '@coinbase/cbpay-js';
 // import { initOnRamp } from '@coinbase/cbpay-js';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal, message } from 'antd';
-import { connectAccount } from 'core';
 import { compose } from 'recompose';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { connectAccount } from 'core';
 import coinbaseImg from 'assets/img/coinbase_pay.svg';
 import buyCryptoWithFiatImg from 'assets/img/buy_crypto_banner.svg';
 import closeImg from 'assets/img/close.png';

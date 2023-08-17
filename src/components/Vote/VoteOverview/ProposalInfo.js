@@ -76,12 +76,20 @@ function ProposalInfo({ proposalInfo }) {
   const getRemainTime = item => {
     if (item.state === 'Active') {
       const diffBlock = item.endBlock - item.blockNumber;
-      const duration = moment.duration(diffBlock < 0 ? 0 : diffBlock * 15, 'seconds');
+      const duration = moment.duration(
+        diffBlock < 0 ? 0 : diffBlock * 15,
+        'seconds'
+      );
       const days = Math.floor(duration.asDays());
       const hours = Math.floor(duration.asHours()) - days * 24;
-      const minutes = Math.floor(duration.asMinutes()) - days * 24 * 60 - hours * 60;
+      const minutes =
+        Math.floor(duration.asMinutes()) - days * 24 * 60 - hours * 60;
 
-      return `${days > 0 ? `${days} ${days > 1 ? 'days' : 'day'},` : ''} ${hours} ${hours > 1 ? 'hrs' : 'hr'} ${days === 0 ? `, ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}` : ''} left`;
+      return `${
+        days > 0 ? `${days} ${days > 1 ? 'days' : 'day'},` : ''
+      } ${hours} ${hours > 1 ? 'hrs' : 'hr'} ${
+        days === 0 ? `, ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}` : ''
+      } left`;
     }
     if (item.state === 'Pending') {
       return `${moment(item.createdTimestamp * 1000).format('MMMM DD, YYYY')}`;
@@ -112,10 +120,14 @@ function ProposalInfo({ proposalInfo }) {
         )}
         <div className="flex align-center just-start proposal-status">
           <p>
-            {`${proposalInfo.id} ${getStatus(proposalInfo)} ${moment(proposalInfo.updatedAt).format('MMMM DD, YYYY')}`}
+            {`${proposalInfo.id} ${getStatus(proposalInfo)} ${moment(
+              proposalInfo.updatedAt
+            ).format('MMMM DD, YYYY')}`}
           </p>
           <div
-            className={`flex align-center just-center status ${getStatus(proposalInfo)}`}
+            className={`flex align-center just-center status ${getStatus(
+              proposalInfo
+            )}`}
           >
             {getStatus(proposalInfo)}
           </div>

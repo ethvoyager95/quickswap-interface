@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import { Modal, Icon } from 'antd';
-import closeImg from 'assets/img/close.png';
-import { connectAccount, accountActionCreators } from 'core';
 import { bindActionCreators } from 'redux';
 import { compose } from 'recompose';
-import { getNFTContract, methods } from 'utilities/ContractService';
 import BigNumber from 'bignumber.js';
+import { connectAccount, accountActionCreators } from 'core';
+import { getNFTContract, methods } from 'utilities/ContractService';
 import { nftMint } from 'utilities/EthContract';
+import closeImg from 'assets/img/close.png';
 import DegenApeLogo from 'assets/img/degen_ape_logo.svg';
 
 const ModalContent = styled.div`

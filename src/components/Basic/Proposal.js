@@ -8,10 +8,10 @@ import { Icon } from 'antd';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import { getVoteContract, methods } from 'utilities/ContractService';
-import dashImg from 'assets/img/dash.png';
 import { Row, Column } from 'components/Basic/Style';
-import { Label } from './Label';
 import { connectAccount } from 'core';
+import dashImg from 'assets/img/dash.png';
+import { Label } from './Label';
 
 const ProposalWrapper = styled.div`
   width: 100%;

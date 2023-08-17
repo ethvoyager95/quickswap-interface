@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
@@ -871,7 +872,7 @@ const Staking = ({ settings }) => {
                           (!event.target.value.length ||
                             Number(event.target.value) >= 0)
                         ) {
-                          const regex = /([0-9]*[\.|\,]{0,1}[0-9]{0,18})/s;
+                          const regex = /([0-9]*[.|,]{0,1}[0-9]{0,18})/s;
                           const value = event.target.value.match(regex)[0];
 
                           if (
@@ -1187,6 +1188,14 @@ const Staking = ({ settings }) => {
       />
     </MainLayout>
   );
+};
+
+Staking.propTypes = {
+  settings: PropTypes.object
+};
+
+Staking.defaultProps = {
+  settings: {}
 };
 
 const mapStateToProps = ({ account }) => ({

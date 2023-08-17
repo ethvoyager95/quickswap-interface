@@ -1,11 +1,12 @@
+/* eslint-disable react/jsx-indent */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Icon } from 'antd';
 import { compose } from 'recompose';
-import { connectAccount } from 'core';
 import commaNumber from 'comma-number';
+import { connectAccount } from 'core';
+import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Label } from 'components/Basic/Label';
 import MarketTable from 'components/Basic/Table';
 import PendingTransaction from 'components/Basic/PendingTransaction';
@@ -14,7 +15,6 @@ import {
   currencyFormatter,
   shortenNumberFormatter
 } from 'utilities/common';
-import BigNumber from 'bignumber.js';
 
 const BorrowMarketWrapper = styled.div`
   width: 100%;

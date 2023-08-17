@@ -6,9 +6,9 @@ import { compose } from 'recompose';
 import { Form, Input, Modal, Icon, Collapse } from 'antd';
 import Button from '@material-ui/core/Button';
 import { bindActionCreators } from 'redux';
-import { connectAccount, accountActionCreators } from 'core';
 import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
+import { connectAccount, accountActionCreators } from 'core';
 import 'react-markdown-editor-lite/lib/index.css';
 import { getVoteContract, methods } from 'utilities/ContractService';
 import { encodeParameters, getArgs } from 'utilities/common';
@@ -234,6 +234,7 @@ function ProposalModal({
 
             for (let j = 0; j < formData[i].callData.length; j += 1) {
               if (callDataTypes[j].toLowerCase() === 'bool') {
+                /* eslint-disable no-unneeded-ternary */
                 callDataValues.push(
                   formValues[`calldata_${i}_${j}`].toLowerCase() === 'true'
                     ? true
@@ -267,7 +268,7 @@ function ProposalModal({
             setIsLoading(false);
             onCancel();
           })
-          .catch(err => {
+          .catch(error => {
             setErrorMsg('Creating proposal is failed!');
             setIsLoading(false);
           });

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { Tooltip, Icon } from 'antd';
-import { connectAccount } from 'core';
 import Button from '@material-ui/core/Button';
 import commaNumber from 'comma-number';
+import { connectAccount } from 'core';
 import {
   getTokenContract,
   getComptrollerContract,
@@ -151,7 +151,7 @@ const SQuestion = styled.img`
 let timeStamp = 0;
 const format = commaNumber.bindWith(',', '.');
 
-function VotingWallet({ balance, pageType, settings, earnedBalance, power }) {
+function VotingWallet({ balance, pageType, settings, earnedBalance }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [delegateAddress, setDelegateAddress] = useState('');
   const [delegateStatus, setDelegateStatus] = useState('');
@@ -229,6 +229,7 @@ function VotingWallet({ balance, pageType, settings, earnedBalance, power }) {
             <img
               className="add-token pointer"
               src={metaMaskImg}
+              alt="metamask"
               onClick={() =>
                 addToken('strk', settings.decimals['strk'].token, 'token')
               }

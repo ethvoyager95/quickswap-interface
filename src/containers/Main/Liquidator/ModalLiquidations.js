@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { connectAccount, accountActionCreators } from 'core';
 import { Input, Button, DatePicker } from 'antd';
+import moment from 'moment';
+import { connectAccount, accountActionCreators } from 'core';
 import iconSort from 'assets/img/icon-sort.svg';
 import iconSortActive from 'assets/img/sort-highlight.svg';
 import noData from 'assets/img/no_data.svg';
-import moment from 'moment';
 
 import {
   STable,
@@ -65,7 +65,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     );
     const { data } = res.data;
 
-    setDataRecentTable(formatRecentRecord(data));    
+    setDataRecentTable(formatRecentRecord(data));
   };
 
   useEffect(() => {
@@ -288,7 +288,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
           )
         };
       }
-    },
+    }
     // {
     //   title: () => <THeadWrapper>Asset To Repay</THeadWrapper>,
     //   dataIndex: 'repay',

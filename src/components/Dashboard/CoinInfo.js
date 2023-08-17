@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Icon } from 'antd';
 import { compose } from 'recompose';
-import { connectAccount } from 'core';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
+import { connectAccount } from 'core';
 import { getTokenContract, methods } from 'utilities/ContractService';
 import * as constants from 'utilities/constants';
 import { checkIsValidNetwork } from 'utilities/common';
@@ -117,7 +117,11 @@ function CoinInfo({ settings }) {
       >
         {ensAvatar && <img src={ensAvatar} alt="avatar" />}
         <p className="highlight">
-          {ensName || `${address.substr(0, 4)}...${address.substr(address.length - 4, 4)}`}
+          {ensName ||
+            `${address.substr(0, 4)}...${address.substr(
+              address.length - 4,
+              4
+            )}`}
         </p>
         <div className="flex align-center just-center copy-btn">
           <Icon type="arrow-right" />

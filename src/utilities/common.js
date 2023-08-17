@@ -1,5 +1,5 @@
-import * as constants from 'utilities/constants';
 import BigNumber from 'bignumber.js';
+import * as constants from 'utilities/constants';
 
 const ethers = require('ethers');
 const commaNumber = require('comma-number');

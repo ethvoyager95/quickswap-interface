@@ -145,7 +145,8 @@ export function* asyncGetVoterHistoryRequest({ payload, resolve, reject }) {
   const { offset, limit, address } = payload;
   try {
     const response = yield call(restService, {
-      api: `/voters/history/${address}?offset=${offset || 0}&limit=${limit || 5}`,
+      api: `/voters/history/${address}?offset=${offset || 0}&limit=${limit ||
+        5}`,
       method: 'GET',
       params: {}
     });

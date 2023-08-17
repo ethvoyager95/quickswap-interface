@@ -4,8 +4,8 @@ import PropTypes, { func } from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
-import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
+import { connectAccount, accountActionCreators } from 'core';
 import IconClose from '../../../assets/img/close.svg';
 import Loadding from './Loadding';
 

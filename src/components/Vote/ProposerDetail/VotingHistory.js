@@ -119,7 +119,11 @@ function VotingHistory({ data, pageNumber, total, onChangePage }) {
         <div className="header">Voting History</div>
         <div className="body">
           {data.map((item, index) => (
-            <Voting proposal={item.proposal} support={item.support} key={index} />
+            <Voting
+              proposal={item.proposal}
+              support={item.support}
+              key={index}
+            />
           ))}
         </div>
         {data && data.length !== 0 && (

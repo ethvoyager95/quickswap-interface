@@ -1,9 +1,8 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
-import * as constants from 'utilities/constants';
 import moment from 'moment';
 import { multicall } from 'utilities/ContractService';
-
+import * as constants from 'utilities/constants';
 import useRefresh from './useRefresh';
 import { useStakingContract, useStrkContract } from './useContract';
 
@@ -236,7 +235,6 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
           ).div(1e6)
         );
 
-        const startIndex = 4;
         if (account) {
           setWithdrawableBalance(
             new BigNumber(

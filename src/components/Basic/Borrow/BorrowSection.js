@@ -5,14 +5,14 @@ import { Icon, Progress } from 'antd';
 import Button from '@material-ui/core/Button';
 import NumberFormat from 'react-number-format';
 import { bindActionCreators } from 'redux';
-import { connectAccount, accountActionCreators } from 'core';
 import BigNumber from 'bignumber.js';
-import { getSbepContract, methods } from 'utilities/ContractService';
 import commaNumber from 'comma-number';
-import arrowRightImg from 'assets/img/arrow-right.png';
-import coinImg from 'assets/img/strike_32.png';
+import { connectAccount, accountActionCreators } from 'core';
+import { getSbepContract, methods } from 'utilities/ContractService';
 import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { SectionWrapper } from 'components/Basic/Supply/SupplySection';
+import arrowRightImg from 'assets/img/arrow-right.png';
+import coinImg from 'assets/img/strike_32.png';
 
 const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();

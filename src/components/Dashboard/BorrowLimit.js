@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import LineProgressBar from 'components/Basic/LineProgressBar';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import { compose } from 'recompose';
 import { connectAccount } from 'core';
+import LineProgressBar from 'components/Basic/LineProgressBar';
 import { getBigNumber } from 'utilities/common';
 
 const CardWrapper = styled.div`

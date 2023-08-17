@@ -21,6 +21,11 @@ module.exports = {
       "react/jsx-wrap-multilines": 0,
       "jsx-a11y/no-noninteractive-element-interactions": 0,
       "camelcase": 0,
+      "no-nested-ternary": 0,
+      "no-underscore-dangle": 0,
+      "no-unused-vars": 0,
+      "dot-notation": 0,
+      "array-callback-return": 0,
     },
     "settings": {
       "import/resolver": {

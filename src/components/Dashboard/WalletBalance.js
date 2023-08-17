@@ -2,13 +2,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
-import { connectAccount, accountActionCreators } from 'core';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import AnimatedNumber from 'animated-number-react';
-import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { Tooltip } from 'antd';
+import { connectAccount, accountActionCreators } from 'core';
+import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import IconQuestion from 'assets/img/question.png';
 
 const CardWrapper = styled.div`
@@ -363,7 +363,8 @@ function WalletBalance({ settings, setSetting }) {
 }
 
 WalletBalance.propTypes = {
-  settings: PropTypes.object
+  settings: PropTypes.object,
+  setSetting: PropTypes.func.isRequired
 };
 
 WalletBalance.defaultProps = {

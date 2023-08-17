@@ -108,8 +108,16 @@ function VoteCard({
 
   useEffect(() => {
     const total = new BigNumber(forNumber).plus(new BigNumber(againstNumber));
-    setForPercent(isNaN(new BigNumber(forNumber * 100).div(total)) ? '0' : new BigNumber(forNumber * 100).div(total).toString(10));
-    setAgainstPercent(isNaN(new BigNumber(againstNumber * 100).div(total)) ? '0' : new BigNumber(againstNumber * 100).div(total).toString(10));
+    setForPercent(
+      new BigNumber(forNumber * 100).div(total).isNaN()
+        ? '0'
+        : new BigNumber(forNumber * 100).div(total).toString(10)
+    );
+    setAgainstPercent(
+      new BigNumber(againstNumber * 100).div(total).isNaN()
+        ? '0'
+        : new BigNumber(againstNumber * 100).div(total).toString(10)
+    );
   }, [forNumber, againstNumber]);
 
   const handleAddLink = v => {
@@ -129,7 +137,16 @@ function VoteCard({
           <div className="flex align-center just-between vote-count">
             <span>{label}</span>
             <span>
-              {format(new BigNumber(Web3.utils.fromWei(type === 'agree' ? forNumber : againstNumber, 'ether')).dp(8, 1).toString(10))}
+              {format(
+                new BigNumber(
+                  Web3.utils.fromWei(
+                    type === 'agree' ? forNumber : againstNumber,
+                    'ether'
+                  )
+                )
+                  .dp(8, 1)
+                  .toString(10)
+              )}
             </span>
           </div>
           <div
@@ -150,11 +167,20 @@ function VoteCard({
                 className="flex align-center just-between vote-item"
                 key={index}
               >
-                <span className="pointer" onClick={() => handleAddLink(l.label)}>
-                  {l.label ? `${l.label.substr(0, 5)}...${l.label.substr(-4, 4)}` : ''}
+                <span
+                  className="pointer"
+                  onClick={() => handleAddLink(l.label)}
+                >
+                  {l.label
+                    ? `${l.label.substr(0, 5)}...${l.label.substr(-4, 4)}`
+                    : ''}
                 </span>
                 <span>
-                  {format(new BigNumber(Web3.utils.fromWei(l.value, 'ether')).dp(8, 1).toString(10))}
+                  {format(
+                    new BigNumber(Web3.utils.fromWei(l.value, 'ether'))
+                      .dp(8, 1)
+                      .toString(10)
+                  )}
                 </span>
               </div>
             ))}

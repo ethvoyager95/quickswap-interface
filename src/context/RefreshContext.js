@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const FAST_INTERVAL = 10000;
 const SLOW_INTERVAL = 60000;
@@ -28,6 +29,17 @@ const RefreshContextProvider = ({ children }) => {
       {children}
     </RefreshContext.Provider>
   );
+};
+
+RefreshContextProvider.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
+
+RefreshContextProvider.defaultProps = {
+  children: null
 };
 
 export { RefreshContext, RefreshContextProvider };

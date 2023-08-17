@@ -65,7 +65,8 @@ function ManualVoting({ address, balance, isLoading }) {
       <div className="flex flex-column align-center just-center manual-voting-section">
         <p className="voting-count">
           {getBefore(balance)}
-          <span>{getAfter(balance)}</span>{` `}
+          <span>{getAfter(balance)}</span>
+          {` `}
           Votes
         </p>
         <span className="voting-address">

@@ -5,12 +5,12 @@ import { Input, Form, Select, Dropdown, Menu, message } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
-import { connectAccount, accountActionCreators } from 'core';
+import Button from '@material-ui/core/Button';
+import LoadingBar from 'react-top-loading-bar';
 import MainLayout from 'containers/Layout/MainLayout';
 import { promisify } from 'utilities';
-import Button from '@material-ui/core/Button';
+import { connectAccount, accountActionCreators } from 'core';
 import * as constants from 'utilities/constants';
-import LoadingBar from 'react-top-loading-bar';
 
 const FaucetWrapper = styled.div`
   width: 100%;
@@ -196,7 +196,9 @@ function Faucet({ form, getFromFaucet, history }) {
             } else {
               fromAddress = constants.CONTRACT_TOKEN_ADDRESS[symbol].address;
             }
-            message.success(`Funding request for ${fromAddress} into ${values.address}`);
+            message.success(
+              `Funding request for ${fromAddress} into ${values.address}`
+            );
           })
           .catch(error => {
             setProgress(100);

@@ -98,7 +98,6 @@ const InterestRateModelWrapper = styled.div`
     }
   }
 
-
   .chart-wrapper {
     padding: 0 15px;
   }
@@ -127,7 +126,7 @@ function InterestRateModel({ settings, currentAsset, history }) {
       height: '100%',
       toolbar: {
         show: false
-      },
+      }
     },
     colors: ['#277ee6', '#f9053e'],
     dataLabels: {
@@ -167,7 +166,7 @@ function InterestRateModel({ settings, currentAsset, history }) {
     //   show: false
     // },
     yaxis: {
-      show: false,
+      show: false
     },
     grid: {
       show: false
@@ -194,11 +193,20 @@ function InterestRateModel({ settings, currentAsset, history }) {
       item => item.underlyingSymbol.toLowerCase() === asset.toLowerCase()
     );
     // Get Current Utilization Rate
-    const cash = new BigNumber(cashValue).div(new BigNumber(10).pow(settings.decimals[asset].token));
+    const cash = new BigNumber(cashValue).div(
+      new BigNumber(10).pow(settings.decimals[asset].token)
+    );
     const borrows = new BigNumber(marketInfo.totalBorrows2);
-    const reserves = new BigNumber(marketInfo.totalReserves || 0).div(new BigNumber(10).pow(settings.decimals[asset].token));
-    const currentUtilizationRate = borrows.div(cash.plus(borrows).minus(reserves));
-    const tempCurrentPercent = parseInt(+currentUtilizationRate.toString(10) * 100, 10);
+    const reserves = new BigNumber(marketInfo.totalReserves || 0).div(
+      new BigNumber(10).pow(settings.decimals[asset].token)
+    );
+    const currentUtilizationRate = borrows.div(
+      cash.plus(borrows).minus(reserves)
+    );
+    const tempCurrentPercent = parseInt(
+      +currentUtilizationRate.toString(10) * 100,
+      10
+    );
 
     setCurrentPercent(tempCurrentPercent || 0);
     const lineElement = document.getElementById('line');
@@ -207,53 +215,67 @@ function InterestRateModel({ settings, currentAsset, history }) {
     }
 
     const urArray = [];
-    for (let i = 1; i <= 100; i = i + 1) {
+    for (let i = 1; i <= 100; i += 1) {
       urArray.push(i / 100);
     }
 
-    const contractCallContext = []
+    const contractCallContext = [];
     urArray.map((ur, index) => {
       contractCallContext.push(
         {
           reference: `borrowRes${index}`,
           contractAddress: interestModelContract.options.address,
           abi: interestModelContract.options.jsonInterface,
-          calls: [{
-            methodName: 'getBorrowRate', methodParameters: [
-              new BigNumber(1 / ur - 1)
-                .times(1e4)
-                .dp(0)
-                .toString(10),
-              1e4,
-              0]
-          }]
+          calls: [
+            {
+              methodName: 'getBorrowRate',
+              methodParameters: [
+                new BigNumber(1 / ur - 1)
+                  .times(1e4)
+                  .dp(0)
+                  .toString(10),
+                1e4,
+                0
+              ]
+            }
+          ]
         },
         {
           reference: `supplyRes${index}`,
           contractAddress: interestModelContract.options.address,
           abi: interestModelContract.options.jsonInterface,
-          calls: [{
-            methodName: 'getSupplyRate', methodParameters: [
-              new BigNumber(1 / ur - 1)
-                .times(1e4)
-                .dp(0)
-                .toString(10),
-              1e4,
-              0,
-              marketInfo.reserveFactor.toString(10)]
-          }]
+          calls: [
+            {
+              methodName: 'getSupplyRate',
+              methodParameters: [
+                new BigNumber(1 / ur - 1)
+                  .times(1e4)
+                  .dp(0)
+                  .toString(10),
+                1e4,
+                0,
+                marketInfo.reserveFactor.toString(10)
+              ]
+            }
+          ]
         }
-      )
-    })
+      );
+    });
 
-    const results = await multicall.call(contractCallContext)
+    const results = await multicall.call(contractCallContext);
 
-    let borrowRes = []
-    let supplyRes = []
+    const borrowRes = [];
+    const supplyRes = [];
     urArray.map((ur, index) => {
-      borrowRes.push(results.results[`borrowRes${index}`].callsReturnContext[0].returnValues[0].hex)
-      supplyRes.push(results.results[`supplyRes${index}`].callsReturnContext[0].returnValues[0].hex)
-    })
+      borrowRes.push(
+        results.results[`borrowRes${index}`].callsReturnContext[0]
+          .returnValues[0].hex
+      );
+      supplyRes.push(
+        results.results[`supplyRes${index}`].callsReturnContext[0]
+          .returnValues[0].hex
+      );
+    });
 
     // const borrowRes = await Promise.all(
     //   urArray.map(ur =>

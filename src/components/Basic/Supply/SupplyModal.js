@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { compose } from 'recompose';
+import { Modal } from 'antd';
 import SupplySection from 'components/Basic/Supply/SupplySection';
 import WithdrawSection from 'components/Basic/Supply/WithdrawSection';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
-import { compose } from 'recompose';
+import { addToken, getBigNumber } from 'utilities/common';
 import { connectAccount } from 'core';
 import metaMaskImg from 'assets/img/metamask.png';
-import { addToken, getBigNumber } from 'utilities/common';
-import { Modal } from 'antd';
 import closeImg from 'assets/img/close.png';
 
 const ModalContent = styled.div`

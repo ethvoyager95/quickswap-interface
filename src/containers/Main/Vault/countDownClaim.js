@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
-import { connectAccount, accountActionCreators } from 'core';
+import { Tooltip } from 'antd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Tooltip } from 'antd';
+import { connectAccount, accountActionCreators } from 'core';
 import IconQuestion from '../../../assets/img/error-outline.svg';
 import { UNSTAKE, CLAIMBASE, CLAIMBOOST, UNSTAKENFT } from './helper';
 

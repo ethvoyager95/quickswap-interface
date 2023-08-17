@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { compose } from 'recompose';
-import { connectAccount } from 'core';
 import moment from 'moment';
+import { connectAccount } from 'core';
+import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Label } from './Label';
 
 const PendingTransactionWrapper = styled.div`

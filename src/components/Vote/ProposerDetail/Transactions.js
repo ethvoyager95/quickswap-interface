@@ -98,14 +98,27 @@ function Transactions({ address, transactions, history }) {
         tempData.push({
           action: tx.support ? 'Received Votes' : 'Lost Votes',
           age: getDate(tx.blockTimestamp),
-          result: format(new BigNumber(tx.votes).div(new BigNumber(10).pow(18)).dp(4, 1).toString(10)),
+          result: format(
+            new BigNumber(tx.votes)
+              .div(new BigNumber(10).pow(18))
+              .dp(4, 1)
+              .toString(10)
+          ),
           isReceived: tx.support
         });
       } else {
         tempData.push({
-          action: tx.to.toLowerCase() === address.toLowerCase() ? 'Received STRK' : 'Sent STRK',
+          action:
+            tx.to.toLowerCase() === address.toLowerCase()
+              ? 'Received STRK'
+              : 'Sent STRK',
           age: getDate(tx.blockTimestamp),
-          result: format(new BigNumber(tx.amount).div(new BigNumber(10).pow(18)).dp(4, 1).toString(10)),
+          result: format(
+            new BigNumber(tx.amount)
+              .div(new BigNumber(10).pow(18))
+              .dp(4, 1)
+              .toString(10)
+          ),
           isReceived: tx.to.toLowerCase() === address.toLowerCase()
         });
       }
