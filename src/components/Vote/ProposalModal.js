@@ -39,7 +39,7 @@ const ModalContent = styled.div`
   }
 
   .invalid_msg {
-    color: var(--color-blue);
+    color: #ff0000;
     font-size: 14px;
     margin-top: 10px;
   }

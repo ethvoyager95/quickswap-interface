@@ -248,8 +248,18 @@ button:disabled {
 
 .rc-md-editor .editor-container .sec-html .html-wrap {
     background: var(--color-bg-main);
+    border-left: 1px solid white;
     .custom-html-style {
         color: var(--color-text-main);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--color-text-main);
     }
 }
 
