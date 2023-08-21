@@ -89,6 +89,7 @@ const ModalContent = styled.div`
 
     .metamask-status {
       margin-top: 20px;
+      width: 204px;
       background-color: rgba(255, 0, 0, 0.03);
       padding: 5px 10px;
       border-radius: 6px;
@@ -119,6 +120,10 @@ const ModalContent = styled.div`
         padding: 20px 0px 16px;
         width: 160px;
       }
+
+      .metamask-status {
+        width: 160px;
+      }
     }
   }
 `;
@@ -126,10 +131,12 @@ const ModalContent = styled.div`
 function ConnectModal({
   visible,
   web3,
-  error,
+  metamaskError,
+  bitkeepError,
   awaiting,
   onCancel,
   onConnectMetaMask,
+  onConnectBitKeep,
   checkNetwork,
   settings,
   setSetting
@@ -137,13 +144,12 @@ function ConnectModal({
   const [web3Library, setWeb3Library] = React.useState();
   const [web3Account, setWeb3Account] = React.useState();
   const [isBitkeepWallet, setIsBitKeepWallet] = React.useState(false);
-  const [isMetaMask, setisMetaMask] = React.useState(false);
+  const [isMetaMask, setIsMetaMask] = React.useState(false);
   const MetaMaskStatus = () => {
-    if (error && error.message === constants.NOT_INSTALLED) {
+    if (metamaskError && metamaskError.message === constants.NOT_INSTALLED) {
       return (
         <p className="center">
-          We could not locate a supported web3 browser extension. We recommend
-          using MetaMask or Coinbase.
+          We could not locate a supported web3 browser extension.
           <a
             href="https://metamask.io/"
             target="_blank"
@@ -151,33 +157,25 @@ function ConnectModal({
           >
             Download MetaMask here.
           </a>
-          <a
-            href="https://www.coinbase.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Download Coinbase here.
-          </a>
         </p>
       );
     }
-    if (error) {
-      return <span>{error.message}</span>;
+    if (metamaskError) {
+      return <span>{metamaskError.message}</span>;
     }
-    if (!web3 && awaiting) {
+    // if (!web3) {
+    //   return <span>Please open and allow MetaMask</span>;
+    // }
+    if (awaiting === 'metamask') {
       return <span>MetaMask loading...</span>;
-    }
-    if (!web3) {
-      return <span>Please open and allow MetaMask</span>;
     }
     return null;
   };
   const BitkeepStatus = () => {
-    if (error && error.message === constants.NOT_INSTALLED) {
+    if (bitkeepError && bitkeepError.message === constants.NOT_INSTALLED) {
       return (
         <p className="center">
-          We could not locate a supported web3 browser extension. We recommend
-          using Bitkeep or Coinbase.
+          We could not locate a supported web3 browser extension.
           <a
             href="https://bitkeep.com/download"
             target="_blank"
@@ -185,24 +183,17 @@ function ConnectModal({
           >
             Download Bitkeep here.
           </a>
-          <a
-            href="https://www.coinbase.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Download Coinbase here.
-          </a>
         </p>
       );
     }
-    if (error) {
-      return <span>{error.message}</span>;
+    if (bitkeepError) {
+      return <span>{bitkeepError.message}</span>;
     }
-    if (!web3 && awaiting) {
-      return <span>BitkeppStatus loading...</span>;
-    }
-    if (!web3) {
-      return <span>Please open and allow Bitkeep</span>;
+    // if (!web3) {
+    //   return <span>Please open and allow Bitkeep</span>;
+    // }
+    if (awaiting === 'bitkeep') {
+      return <span>Bitkepp loading...</span>;
     }
     return null;
   };
@@ -297,24 +288,27 @@ function ConnectModal({
   // check install meta bitkeep
   useEffect(() => {
     if (window) {
-      if (!window.isBitKeep) {
-        setIsBitKeepWallet(false);
-      }
-      setIsBitKeepWallet(window.isBitKeep);
-      if (window?.ethereum?.isMetaMask) {
-        setisMetaMask(window?.ethereum?.isMetaMask);
-      }
-      if (window?.ethereum?.isMetaMask === true && window.isBitKeep === true) {
-        setisMetaMask(false);
-        setIsBitKeepWallet(true);
-      }
-      if (
-        window?.ethereum?.isMetaMask === undefined &&
-        window.isBitKeep === undefined
-      ) {
-        setisMetaMask(false);
-        setIsBitKeepWallet(false);
-      }
+      setIsMetaMask(window.ethereum);
+      setIsBitKeepWallet(window.bitkeep && window.bitkeep.ethereum);
+
+      // if (!window.isBitKeep) {
+      //   setIsBitKeepWallet(false);
+      // }
+      // setIsBitKeepWallet(window.isBitKeep);
+      // if (window?.ethereum?.isMetaMask) {
+      //   setIsMetaMask(window?.ethereum?.isMetaMask);
+      // }
+      // if (window?.ethereum?.isMetaMask === true && window.isBitKeep === true) {
+      //   setIsMetaMask(false);
+      //   setIsBitKeepWallet(true);
+      // }
+      // if (
+      //   window?.ethereum?.isMetaMask === undefined &&
+      //   window.isBitKeep === undefined
+      // ) {
+      //   setIsMetaMask(false);
+      //   setIsBitKeepWallet(false);
+      // }
     }
   }, [window.ethereum, settings.selectedAddress]);
 
@@ -342,117 +336,53 @@ function ConnectModal({
         </div>
         <div className="connect-wallet-wrapper">
           <div className="connect-wallet-content">
-            {isMetaMask ? (
-              <>
-                <div
-                  className="metamask-connect-btn"
-                  onClick={onConnectMetaMask}
-                >
-                  <img src={metamaskImg} alt="metamask" />
-                  <span>MetaMask</span>
-                  <svg
-                    width="25"
-                    height="25"
-                    viewBox="0 0 25 25"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
-                      fill="#34384C"
-                    />
-                  </svg>
-                </div>
-                {/* {(error || !web3) && (
-                  <div className="metamask-status">
-                    <MetaMaskStatus />
-                  </div>
-                )} */}
-              </>
-            ) : (
-              <>
-                <div
-                  className="metamask-connect-btn"
-                  onClick={onConnectMetaMask}
-                >
-                  <img src={metamaskImg} alt="metamask" />
-                  <span>MetaMask</span>
-                  <svg
-                    width="25"
-                    height="25"
-                    viewBox="0 0 25 25"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
-                      fill="#34384C"
-                    />
-                  </svg>
-                </div>
-                {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
-                  <div className="metamask-status">
-                    <MetaMaskStatus />
-                  </div>
-                )}
-              </>
+            <div className="metamask-connect-btn" onClick={onConnectMetaMask}>
+              <img src={metamaskImg} alt="metamask" />
+              <span>MetaMask</span>
+              <svg
+                width="25"
+                height="25"
+                viewBox="0 0 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                  fill="#34384C"
+                />
+              </svg>
+            </div>
+            {(metamaskError || awaiting) && (
+              <div className="metamask-status">
+                <MetaMaskStatus />
+              </div>
             )}
           </div>
 
           <div className="connect-wallet-content">
-            {isBitkeepWallet ? (
-              <>
-                <div
-                  className="metamask-connect-btn"
-                  onClick={onConnectMetaMask}
-                >
-                  <img className="bitkeep-img" src={bitkeepImg} alt="bitkeep" />
-                  <span>Bitkeep</span>
-                  <svg
-                    width="25"
-                    height="25"
-                    viewBox="0 0 25 25"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
-                      fill="#34384C"
-                    />
-                  </svg>
-                </div>
-                {/* {(error || !web3) && (
-                  <div className="metamask-status">
-                    <BitkeepStatus />
-                  </div>
-                )} */}
-              </>
-            ) : (
-              <>
-                <div className="metamask-connect-btn">
-                  <img className="bitkeep-img" src={bitkeepImg} alt="bitkeep" />
-                  <span>Bitkeep</span>
-                  <svg
-                    width="25"
-                    height="25"
-                    viewBox="0 0 25 25"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
-                      fill="#34384C"
-                    />
-                  </svg>
-                </div>
-                {/* {(error || !web3) && !isMetaMask && !isBitkeepWallet && (
-                  <div className="metamask-status">
-                    <BitkeepStatus />
-                  </div>
-                )} */}
-              </>
+            <div className="metamask-connect-btn" onClick={onConnectBitKeep}>
+              <img className="bitkeep-img" src={bitkeepImg} alt="bitkeep" />
+              <span>Bitkeep</span>
+              <svg
+                width="25"
+                height="25"
+                viewBox="0 0 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                  fill="#34384C"
+                />
+              </svg>
+            </div>
+            {(bitkeepError || awaiting) && (
+              <div className="metamask-status">
+                <BitkeepStatus />
+              </div>
             )}
           </div>
+
           <div className="connect-wallet-content">
             <div className="metamask-connect-btn" onClick={connectCoinbase}>
               <img src={coinbaseImg} alt="metamask" />
@@ -471,6 +401,7 @@ function ConnectModal({
               </svg>
             </div>
           </div>
+
           <div className="connect-wallet-content">
             <div
               className="metamask-connect-btn"
@@ -492,6 +423,7 @@ function ConnectModal({
               </svg>
             </div>
           </div>
+
           <div className="connect-wallet-content">
             <div className="metamask-connect-btn" onClick={onConnectMetaMask}>
               <img src={trusteWalletImg} alt="metamask" />
@@ -530,11 +462,13 @@ function ConnectModal({
 ConnectModal.propTypes = {
   visible: PropTypes.bool,
   web3: PropTypes.object,
-  error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  awaiting: PropTypes.bool,
+  metamaskError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  bitkeepError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  awaiting: PropTypes.string,
   settings: PropTypes.object,
   onCancel: PropTypes.func,
   onConnectMetaMask: PropTypes.func.isRequired,
+  onConnectBitKeep: PropTypes.func.isRequired,
   checkNetwork: PropTypes.func.isRequired,
   setSetting: PropTypes.func.isRequired
 };
@@ -542,8 +476,9 @@ ConnectModal.propTypes = {
 ConnectModal.defaultProps = {
   visible: false,
   web3: {},
-  error: '',
-  awaiting: false,
+  metamaskError: '',
+  bitkeepError: '',
+  awaiting: '',
   settings: {},
   onCancel: () => {}
 };

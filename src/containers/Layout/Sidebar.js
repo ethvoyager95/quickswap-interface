@@ -23,7 +23,7 @@ import UserInfoModal from 'components/Basic/UserInfoModal';
 import AccountModal from 'components/Basic/AccountModal';
 import { Label } from 'components/Basic/Label';
 import { connectAccount, accountActionCreators } from 'core';
-import MetaMaskClass from 'utilities/MetaMask';
+import InjectWalletClass from 'utilities/InjectWallet';
 import logoImg from 'assets/img/logo.png';
 import { checkIsValidNetwork, getBigNumber } from 'utilities/common';
 import useWindowDimensions from 'hooks/useWindowDimensions';
@@ -275,8 +275,10 @@ const UserInfoButton = styled.div`
 `;
 
 let metamask = null;
+let bitkeep = null;
 let accounts = [];
 const metamaskWatcher = null;
+const bitkeepWatcher = null;
 let lockFlag = false;
 const abortController = new AbortController();
 
@@ -319,9 +321,10 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const [isOpenAccountModal, setIsOpenAccountModal] = useState(false);
-  const [error, setError] = useState('');
+  const [metamaskError, setMetamaskError] = useState('');
+  const [bitkeepError, setBitkeepError] = useState('');
   const [web3, setWeb3] = useState(null);
-  const [awaiting, setAwaiting] = useState(false);
+  const [awaiting, setAwaiting] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [available, setAvailable] = useState('0');
   const [balance, setBalance] = useState('');
@@ -373,7 +376,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     return Promise.race([promise, sleep]);
   };
 
-  const handleWatch = useCallback(async () => {
+  const handleMetamaskWatch = useCallback(async () => {
     if (window.ethereum) {
       const accs = await window.ethereum.request({ method: 'eth_accounts' });
       if (!accs[0]) {
@@ -382,30 +385,37 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         clearTimeout(metamaskWatcher);
         setSetting({ selectedAddress: null });
       }
+      if (!accounts.length) {
+        setAwaiting('metamask');
+      }
     }
     if (metamaskWatcher) {
       clearTimeout(metamaskWatcher);
-    }
-
-    if (!web3 || !accounts.length) {
-      setAwaiting(true);
     }
 
     let tempWeb3 = null;
     let tempAccounts = [];
     let tempENSName = null;
     let tempENSAvatar = null;
-    let tempError = error;
+    let tempError = metamaskError;
     let latestBlockNumber = 0;
     try {
-      const isLocked = error && error.message === constants.LOCKED;
+      const isLocked =
+        metamaskError && metamaskError.message === constants.LOCKED;
       if (!metamask || isLocked) {
         metamask = await withTimeoutRejection(
-          MetaMaskClass.initialize(undefined), // if option is existed, add it
+          InjectWalletClass.initialize(undefined), // if option is existed, add it
           20 * 1000 // timeout
         );
       }
       tempWeb3 = await metamask.getWeb3();
+      const currentChainId = await metamask.getChainId();
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
+      if (currentChainId !== Number(chainId))
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId }]
+        });
       tempAccounts = await metamask.getAccounts();
       // Lookup ENS name and avatar when possible
       const ethersProvider = new ethers.providers.Web3Provider(
@@ -421,11 +431,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       }
       tempError = null;
     } catch (err) {
-      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId }]
-      });
       tempError = err;
       accounts = [];
       await setSetting({ selectedAddress: null });
@@ -433,21 +438,102 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     await setSetting({
       selectedAddress: tempAccounts[0],
       selectedENSName: tempENSName,
-      selectedENSAvatar: tempENSAvatar
+      selectedENSAvatar: tempENSAvatar,
+      isConnected: 'metamask'
     });
     accounts = tempAccounts;
     setWeb3(tempWeb3);
-    setError(tempError);
-    setAwaiting(false);
-  }, [error, web3]);
+    setMetamaskError(tempError);
+    setAwaiting('');
+    localStorage.setItem('walletConnected', 'metamask');
+  }, [metamaskError, web3]);
+
+  const handleBitkeepWatch = useCallback(async () => {
+    if (window.bitkeep && window.bitkeep.ethereum) {
+      const accs = await window.bitkeep.ethereum.request({
+        method: 'eth_accounts'
+      });
+      if (!accs[0]) {
+        accounts = [];
+        lockFlag = false;
+        clearTimeout(bitkeepWatcher);
+        setSetting({ selectedAddress: null });
+      }
+      if (!accounts.length) {
+        setAwaiting('bitkeep');
+      }
+    }
+    if (bitkeepWatcher) {
+      clearTimeout(bitkeepWatcher);
+    }
+
+    let tempWeb3 = null;
+    let tempAccounts = [];
+    let tempENSName = null;
+    let tempENSAvatar = null;
+    let tempError = bitkeepError;
+    let latestBlockNumber = 0;
+    try {
+      const isLocked =
+        bitkeepError && bitkeepError.message === constants.LOCKED;
+      if (!bitkeep || isLocked) {
+        bitkeep = await withTimeoutRejection(
+          InjectWalletClass.initialize({ walletType: 'bitkeep' }), // if option is existed, add it
+          20 * 1000 // timeout
+        );
+      }
+      tempWeb3 = await bitkeep.getWeb3();
+      const currentChainId = await bitkeep.getChainId();
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
+      if (currentChainId !== Number(chainId))
+        await window.bitkeep.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId }]
+        });
+      tempAccounts = await bitkeep.getAccounts();
+      // Lookup ENS name and avatar when possible
+      const ethersProvider = new ethers.providers.Web3Provider(
+        tempWeb3.currentProvider
+      );
+      tempENSName = await ethersProvider.lookupAddress(tempAccounts[0]);
+      tempENSAvatar = tempENSName
+        ? await ethersProvider.getAvatar(tempENSName)
+        : null;
+      latestBlockNumber = await metamask.getLatestBlockNumber();
+      if (latestBlockNumber) {
+        await setSetting({ latestBlockNumber });
+      }
+      tempError = null;
+    } catch (err) {
+      tempError = err;
+      accounts = [];
+      await setSetting({ selectedAddress: null });
+    }
+    await setSetting({
+      selectedAddress: tempAccounts[0],
+      selectedENSName: tempENSName,
+      selectedENSAvatar: tempENSAvatar,
+      isConnected: 'bitkeep'
+    });
+    accounts = tempAccounts;
+    setWeb3(tempWeb3);
+    setBitkeepError(tempError);
+    setAwaiting('');
+    localStorage.setItem('walletConnected', 'bitkeep');
+  }, [bitkeepError, web3]);
 
   const handleMetaMask = () => {
-    localStorage.setItem('walletConnected', JSON.stringify(true));
-    setSetting({
-      isConnected: true
-    });
-    setError(MetaMaskClass.hasWeb3() ? '' : new Error(constants.NOT_INSTALLED));
-    handleWatch();
+    setMetamaskError(window.ethereum ? '' : new Error(constants.NOT_INSTALLED));
+    handleMetamaskWatch();
+  };
+
+  const handleBitKeep = () => {
+    setBitkeepError(
+      window.bitkeep && window.bitkeep.ethereum
+        ? ''
+        : new Error(constants.NOT_INSTALLED)
+    );
+    handleBitkeepWatch();
   };
 
   const setDecimals = async () => {
@@ -504,11 +590,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     return function cleanup() {
       abortController.abort();
     };
-  }, [handleWatch, settings.accounts]);
+  }, [handleMetamaskWatch, handleBitkeepWatch, settings.accounts]);
 
   useEffect(() => {
-    if (settings.isConnected) {
-      handleWatch();
+    if (settings.isConnected === 'metamask') {
+      handleMetamaskWatch();
+    } else if (settings.isConnected === 'bitkeep') {
+      handleBitkeepWatch();
     }
     return function cleanup() {
       abortController.abort();
@@ -996,7 +1084,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     localStorage.clear();
     setSetting({
       selectedAddress: null,
-      isConnected: false
+      isConnected: ''
     });
   };
 
@@ -1067,6 +1155,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               <Button
                 className="connect-btn"
                 onClick={() => {
+                  setMetamaskError(null);
+                  setBitkeepError(null);
                   setIsOpenModal(true);
                 }}
               >
@@ -1206,10 +1296,12 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         <ConnectModal
           visible={isOpenModal}
           web3={web3}
-          error={error}
+          metamaskError={metamaskError}
+          bitkeepError={bitkeepError}
           awaiting={awaiting}
           onCancel={() => setIsOpenModal(false)}
           onConnectMetaMask={handleMetaMask}
+          onConnectBitKeep={handleBitKeep}
           checkNetwork={checkNetwork}
         />
       )}

@@ -28,9 +28,9 @@ import sust from 'assets/img/coins/sust.png';
 import sdai from 'assets/img/coins/sdai.png';
 import sxcn from 'assets/img/coins/sxcn.png';
 
-export const NOT_INSTALLED = 'MetaMask not installed';
+export const NOT_INSTALLED = 'Wallet not installed';
 export const MISSING_PROVIDER = 'Missing provider';
-export const LOCKED = 'MetaMask is locked';
+export const LOCKED = 'Wallet is locked';
 export const TIMEOUT = 'Timeout';
 
 export const NFT_ADDRESS =
