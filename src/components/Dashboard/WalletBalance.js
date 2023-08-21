@@ -254,7 +254,7 @@ function WalletBalance({ settings, setSetting }) {
     const { assetList, markets } = settings;
     assetList.forEach(asset => {
       const market = markets.find(
-        ele => ele.address === asset.stokenAddress.toString().toLowerCase()
+        ele => ele.address === asset?.stokenAddress?.toString().toLowerCase()
       );
 
       if (market) {
