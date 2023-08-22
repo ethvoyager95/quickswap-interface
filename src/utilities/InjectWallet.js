@@ -39,6 +39,16 @@ export default class InjectWallet {
       await window.bitkeep.ethereum.request({ method: 'eth_requestAccounts' });
       return window.web3;
     }
+    if (walletType === 'trustwallet' && window.trustwallet) {
+      // Modern dapp browsers
+      window.web3 = new Web3(window.trustwallet);
+      window.trustwallet.on('chainChanged', chainId => {
+        if (chainId > 0) window.location.reload();
+      });
+      // await window.trustwallet.enable();
+      await window.trustwallet.request({ method: 'eth_requestAccounts' });
+      return window.web3;
+    }
     throw new Error(constants.NOT_INSTALLED);
   }
 

@@ -133,18 +133,16 @@ function ConnectModal({
   web3,
   metamaskError,
   bitkeepError,
+  trustwalletError,
   awaiting,
   onCancel,
   onConnectMetaMask,
   onConnectBitKeep,
+  onConnectTrustWallet,
   checkNetwork,
   settings,
   setSetting
 }) {
-  const [web3Library, setWeb3Library] = React.useState();
-  const [web3Account, setWeb3Account] = React.useState();
-  const [isBitkeepWallet, setIsBitKeepWallet] = React.useState(false);
-  const [isMetaMask, setIsMetaMask] = React.useState(false);
   const MetaMaskStatus = () => {
     if (metamaskError && metamaskError.message === constants.NOT_INSTALLED) {
       return (
@@ -171,6 +169,7 @@ function ConnectModal({
     }
     return null;
   };
+
   const BitkeepStatus = () => {
     if (bitkeepError && bitkeepError.message === constants.NOT_INSTALLED) {
       return (
@@ -197,6 +196,37 @@ function ConnectModal({
     }
     return null;
   };
+
+  const TrustWalletStatus = () => {
+    if (
+      trustwalletError &&
+      trustwalletError.message === constants.NOT_INSTALLED
+    ) {
+      return (
+        <p className="center">
+          We could not locate a supported web3 browser extension.
+          <a
+            href="https://chrome.google.com/webstore/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download Trust Wallet here.
+          </a>
+        </p>
+      );
+    }
+    if (trustwalletError) {
+      return <span>{trustwalletError.message}</span>;
+    }
+    // if (!web3) {
+    //   return <span>Please open and allow Trust Wallet</span>;
+    // }
+    if (awaiting === 'trustwallet') {
+      return <span>Trust Wallet loading...</span>;
+    }
+    return null;
+  };
+
   const connectCoinbase = async () => {
     try {
       // Initialize WalletLink
@@ -282,33 +312,6 @@ function ConnectModal({
           accountLoading: true
         });
       });
-    }
-  }, [window.ethereum, settings.selectedAddress]);
-
-  // check install meta bitkeep
-  useEffect(() => {
-    if (window) {
-      setIsMetaMask(window.ethereum);
-      setIsBitKeepWallet(window.bitkeep && window.bitkeep.ethereum);
-
-      // if (!window.isBitKeep) {
-      //   setIsBitKeepWallet(false);
-      // }
-      // setIsBitKeepWallet(window.isBitKeep);
-      // if (window?.ethereum?.isMetaMask) {
-      //   setIsMetaMask(window?.ethereum?.isMetaMask);
-      // }
-      // if (window?.ethereum?.isMetaMask === true && window.isBitKeep === true) {
-      //   setIsMetaMask(false);
-      //   setIsBitKeepWallet(true);
-      // }
-      // if (
-      //   window?.ethereum?.isMetaMask === undefined &&
-      //   window.isBitKeep === undefined
-      // ) {
-      //   setIsMetaMask(false);
-      //   setIsBitKeepWallet(false);
-      // }
     }
   }, [window.ethereum, settings.selectedAddress]);
 
@@ -425,7 +428,10 @@ function ConnectModal({
           </div>
 
           <div className="connect-wallet-content">
-            <div className="metamask-connect-btn" onClick={onConnectMetaMask}>
+            <div
+              className="metamask-connect-btn"
+              onClick={onConnectTrustWallet}
+            >
               <img src={trusteWalletImg} alt="metamask" />
               <span>Trust Wallet</span>
               <svg
@@ -441,11 +447,11 @@ function ConnectModal({
                 />
               </svg>
             </div>
-            {/* {(error || !web3) && (
-            <div className="metamask-status">
-              <MetaMaskStatus />
-            </div>
-          )} */}
+            {(trustwalletError || awaiting) && (
+              <div className="metamask-status">
+                <TrustWalletStatus />
+              </div>
+            )}
           </div>
         </div>
         <div className="terms">
@@ -464,11 +470,13 @@ ConnectModal.propTypes = {
   web3: PropTypes.object,
   metamaskError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   bitkeepError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  trustwalletError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   awaiting: PropTypes.string,
   settings: PropTypes.object,
   onCancel: PropTypes.func,
   onConnectMetaMask: PropTypes.func.isRequired,
   onConnectBitKeep: PropTypes.func.isRequired,
+  onConnectTrustWallet: PropTypes.func.isRequired,
   checkNetwork: PropTypes.func.isRequired,
   setSetting: PropTypes.func.isRequired
 };
@@ -478,6 +486,7 @@ ConnectModal.defaultProps = {
   web3: {},
   metamaskError: '',
   bitkeepError: '',
+  trustwalletError: '',
   awaiting: '',
   settings: {},
   onCancel: () => {}

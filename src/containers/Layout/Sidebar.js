@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
-import { NavLink, withRouter, useLocation } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { message, Dropdown, Menu, Icon } from 'antd';
 import BigNumber from 'bignumber.js';
-import { ethers } from 'ethers';
 import Button from '@material-ui/core/Button';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import {
@@ -18,12 +17,9 @@ import {
 } from 'utilities/ContractService';
 import { promisify } from 'utilities';
 import * as constants from 'utilities/constants';
-import ConnectModal from 'components/Basic/ConnectModal';
 import UserInfoModal from 'components/Basic/UserInfoModal';
-import AccountModal from 'components/Basic/AccountModal';
 import { Label } from 'components/Basic/Label';
 import { connectAccount, accountActionCreators } from 'core';
-import InjectWalletClass from 'utilities/InjectWallet';
 import logoImg from 'assets/img/logo.png';
 import { checkIsValidNetwork, getBigNumber } from 'utilities/common';
 import useWindowDimensions from 'hooks/useWindowDimensions';
@@ -37,6 +33,7 @@ import { ReactComponent as HistoryImg } from 'assets/img/menu-history.svg';
 import { ReactComponent as StakingImg } from 'assets/img/menu-staking.svg';
 import { ReactComponent as LiquidatorImg } from 'assets/img/menu-liquidator.svg';
 import { ReactComponent as VaultImg } from 'assets/img/menu-vault.svg';
+import ConnectButton from './ConnectButton';
 
 const SidebarWrapper = styled.div`
   width: 100%;
@@ -194,40 +191,6 @@ const MobileIcon = styled.div`
   }
 `;
 
-const ConnectButton = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-left: 40px;
-
-  @media only screen and (max-width: 768px) {
-    width: 100%;
-    margin: 20px 0 0;
-  }
-
-  .connect-btn {
-    width: 150px;
-    height: 32px;
-    background: linear-gradient(
-      242deg,
-      #246cf9 0%,
-      #1e68f6 0.01%,
-      #0047d0 100%,
-      #0047d0 100%
-    );
-
-    @media only screen and (max-width: 768px) {
-      width: 100px;
-    }
-
-    .MuiButton-label {
-      font-size: 13.5px;
-      font-weight: 500;
-      color: var(--color-white);
-      text-transform: capitalize;
-    }
-  }
-`;
-
 const UserInfoButton = styled.div`
   display: flex;
   justify-content: center;
@@ -274,11 +237,6 @@ const UserInfoButton = styled.div`
   }
 `;
 
-let metamask = null;
-let bitkeep = null;
-let accounts = [];
-const metamaskWatcher = null;
-const bitkeepWatcher = null;
 let lockFlag = false;
 const abortController = new AbortController();
 
@@ -318,223 +276,11 @@ const menu = (
 );
 
 function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
-  const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
-  const [isOpenAccountModal, setIsOpenAccountModal] = useState(false);
-  const [metamaskError, setMetamaskError] = useState('');
-  const [bitkeepError, setBitkeepError] = useState('');
-  const [web3, setWeb3] = useState(null);
-  const [awaiting, setAwaiting] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [available, setAvailable] = useState('0');
   const [balance, setBalance] = useState('');
-  const location = useLocation();
   const { width } = useWindowDimensions();
-
-  const checkNetwork = () => {
-    const netId = window.ethereum.networkVersion
-      ? +window.ethereum.networkVersion
-      : +window.ethereum.chainId;
-    setSetting({
-      accountLoading: true
-    });
-    if (netId) {
-      if (netId === 1 || netId === 5) {
-        if (netId === 5 && process.env.REACT_APP_ENV === 'prod') {
-          message.error(
-            'You are currently visiting the Goerli Test Network for Strike Finance. Please change your metamask to access the Ethereum Mainnet.'
-          );
-        } else if (netId === 1 && process.env.REACT_APP_ENV === 'dev') {
-          message.error(
-            'You are currently visiting the Main Network for Strike Finance. Please change your metamask to access the Goerli Test Network.'
-          );
-        } else {
-          setSetting({
-            accountLoading: false
-          });
-        }
-      } else {
-        message.error(
-          'You are currently connected to another network. Please connect to Ethereum Network'
-        );
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (window.ethereum) {
-      window.addEventListener('load', event => {
-        checkNetwork();
-      });
-    }
-  }, [window.ethereum]);
-
-  const withTimeoutRejection = async (promise, timeout) => {
-    const sleep = new Promise((resolve, reject) =>
-      setTimeout(() => reject(new Error(constants.TIMEOUT)), timeout)
-    );
-    return Promise.race([promise, sleep]);
-  };
-
-  const handleMetamaskWatch = useCallback(async () => {
-    if (window.ethereum) {
-      const accs = await window.ethereum.request({ method: 'eth_accounts' });
-      if (!accs[0]) {
-        accounts = [];
-        lockFlag = false;
-        clearTimeout(metamaskWatcher);
-        setSetting({ selectedAddress: null });
-      }
-      if (!accounts.length) {
-        setAwaiting('metamask');
-      }
-    }
-    if (metamaskWatcher) {
-      clearTimeout(metamaskWatcher);
-    }
-
-    let tempWeb3 = null;
-    let tempAccounts = [];
-    let tempENSName = null;
-    let tempENSAvatar = null;
-    let tempError = metamaskError;
-    let latestBlockNumber = 0;
-    try {
-      const isLocked =
-        metamaskError && metamaskError.message === constants.LOCKED;
-      if (!metamask || isLocked) {
-        metamask = await withTimeoutRejection(
-          InjectWalletClass.initialize(undefined), // if option is existed, add it
-          20 * 1000 // timeout
-        );
-      }
-      tempWeb3 = await metamask.getWeb3();
-      const currentChainId = await metamask.getChainId();
-      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
-      if (currentChainId !== Number(chainId))
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId }]
-        });
-      tempAccounts = await metamask.getAccounts();
-      // Lookup ENS name and avatar when possible
-      const ethersProvider = new ethers.providers.Web3Provider(
-        tempWeb3.currentProvider
-      );
-      tempENSName = await ethersProvider.lookupAddress(tempAccounts[0]);
-      tempENSAvatar = tempENSName
-        ? await ethersProvider.getAvatar(tempENSName)
-        : null;
-      latestBlockNumber = await metamask.getLatestBlockNumber();
-      if (latestBlockNumber) {
-        await setSetting({ latestBlockNumber });
-      }
-      tempError = null;
-    } catch (err) {
-      tempError = err;
-      accounts = [];
-      await setSetting({ selectedAddress: null });
-    }
-    await setSetting({
-      selectedAddress: tempAccounts[0],
-      selectedENSName: tempENSName,
-      selectedENSAvatar: tempENSAvatar,
-      isConnected: 'metamask'
-    });
-    accounts = tempAccounts;
-    setWeb3(tempWeb3);
-    setMetamaskError(tempError);
-    setAwaiting('');
-    localStorage.setItem('walletConnected', 'metamask');
-  }, [metamaskError, web3]);
-
-  const handleBitkeepWatch = useCallback(async () => {
-    if (window.bitkeep && window.bitkeep.ethereum) {
-      const accs = await window.bitkeep.ethereum.request({
-        method: 'eth_accounts'
-      });
-      if (!accs[0]) {
-        accounts = [];
-        lockFlag = false;
-        clearTimeout(bitkeepWatcher);
-        setSetting({ selectedAddress: null });
-      }
-      if (!accounts.length) {
-        setAwaiting('bitkeep');
-      }
-    }
-    if (bitkeepWatcher) {
-      clearTimeout(bitkeepWatcher);
-    }
-
-    let tempWeb3 = null;
-    let tempAccounts = [];
-    let tempENSName = null;
-    let tempENSAvatar = null;
-    let tempError = bitkeepError;
-    let latestBlockNumber = 0;
-    try {
-      const isLocked =
-        bitkeepError && bitkeepError.message === constants.LOCKED;
-      if (!bitkeep || isLocked) {
-        bitkeep = await withTimeoutRejection(
-          InjectWalletClass.initialize({ walletType: 'bitkeep' }), // if option is existed, add it
-          20 * 1000 // timeout
-        );
-      }
-      tempWeb3 = await bitkeep.getWeb3();
-      const currentChainId = await bitkeep.getChainId();
-      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
-      if (currentChainId !== Number(chainId))
-        await window.bitkeep.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId }]
-        });
-      tempAccounts = await bitkeep.getAccounts();
-      // Lookup ENS name and avatar when possible
-      const ethersProvider = new ethers.providers.Web3Provider(
-        tempWeb3.currentProvider
-      );
-      tempENSName = await ethersProvider.lookupAddress(tempAccounts[0]);
-      tempENSAvatar = tempENSName
-        ? await ethersProvider.getAvatar(tempENSName)
-        : null;
-      latestBlockNumber = await metamask.getLatestBlockNumber();
-      if (latestBlockNumber) {
-        await setSetting({ latestBlockNumber });
-      }
-      tempError = null;
-    } catch (err) {
-      tempError = err;
-      accounts = [];
-      await setSetting({ selectedAddress: null });
-    }
-    await setSetting({
-      selectedAddress: tempAccounts[0],
-      selectedENSName: tempENSName,
-      selectedENSAvatar: tempENSAvatar,
-      isConnected: 'bitkeep'
-    });
-    accounts = tempAccounts;
-    setWeb3(tempWeb3);
-    setBitkeepError(tempError);
-    setAwaiting('');
-    localStorage.setItem('walletConnected', 'bitkeep');
-  }, [bitkeepError, web3]);
-
-  const handleMetaMask = () => {
-    setMetamaskError(window.ethereum ? '' : new Error(constants.NOT_INSTALLED));
-    handleMetamaskWatch();
-  };
-
-  const handleBitKeep = () => {
-    setBitkeepError(
-      window.bitkeep && window.bitkeep.ethereum
-        ? ''
-        : new Error(constants.NOT_INSTALLED)
-    );
-    handleBitkeepWatch();
-  };
 
   const setDecimals = async () => {
     const decimals = {};
@@ -582,26 +328,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       }
     });
   };
-
-  useEffect(() => {
-    if (accounts.length !== 0) {
-      setIsOpenModal(false);
-    }
-    return function cleanup() {
-      abortController.abort();
-    };
-  }, [handleMetamaskWatch, handleBitkeepWatch, settings.accounts]);
-
-  useEffect(() => {
-    if (settings.isConnected === 'metamask') {
-      handleMetamaskWatch();
-    } else if (settings.isConnected === 'bitkeep') {
-      handleBitkeepWatch();
-    }
-    return function cleanup() {
-      abortController.abort();
-    };
-  }, [history]);
 
   useEffect(() => {
     if (settings.isConnected) {
@@ -1080,14 +806,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     };
   }, [settings.totalBorrowLimit, settings.selectedAddress]);
 
-  const handleDisconnect = () => {
-    localStorage.clear();
-    setSetting({
-      selectedAddress: null,
-      isConnected: ''
-    });
-  };
-
   // useEffect(() => {
   //   if (!settings.isConnected && location.pathname !== '/history') {
   //     setIsOpenModal(true);
@@ -1135,35 +853,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               </Button>
             </UserInfoButton>
           )}
-          <ConnectButton>
-            {settings.selectedAddress ? (
-              <Button
-                className="connect-btn"
-                onClick={() => {
-                  setIsOpenAccountModal(true);
-                }}
-              >
-                {`${settings.selectedAddress.substr(
-                  0,
-                  4
-                )}...${settings.selectedAddress.substr(
-                  settings.selectedAddress.length - 4,
-                  4
-                )}`}
-              </Button>
-            ) : (
-              <Button
-                className="connect-btn"
-                onClick={() => {
-                  setMetamaskError(null);
-                  setBitkeepError(null);
-                  setIsOpenModal(true);
-                }}
-              >
-                Connect
-              </Button>
-            )}
-          </ConnectButton>
+          <ConnectButton />
         </div>
       </TopSidebarWrapper>
       <MainMenu isMenuOpen={isMenuOpen}>
@@ -1263,57 +953,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               </Button>
             </UserInfoButton>
           )}
-          <ConnectButton>
-            {settings.selectedAddress ? (
-              <Button
-                className="connect-btn"
-                onClick={() => {
-                  setIsOpenAccountModal(true);
-                }}
-              >
-                {`${settings.selectedAddress.substr(
-                  0,
-                  4
-                )}...${settings.selectedAddress.substr(
-                  settings.selectedAddress.length - 4,
-                  4
-                )}`}
-              </Button>
-            ) : (
-              <Button
-                className="connect-btn"
-                onClick={() => {
-                  setIsOpenModal(true);
-                }}
-              >
-                Connect
-              </Button>
-            )}
-          </ConnectButton>
+          <ConnectButton />
         </div>
       </MainMenu>
-      {isOpenModal && (
-        <ConnectModal
-          visible={isOpenModal}
-          web3={web3}
-          metamaskError={metamaskError}
-          bitkeepError={bitkeepError}
-          awaiting={awaiting}
-          onCancel={() => setIsOpenModal(false)}
-          onConnectMetaMask={handleMetaMask}
-          onConnectBitKeep={handleBitKeep}
-          checkNetwork={checkNetwork}
-        />
-      )}
       <UserInfoModal
         visible={isOpenInfoModal}
         onCancel={() => setIsOpenInfoModal(false)}
         available={available}
-      />
-      <AccountModal
-        visible={isOpenAccountModal}
-        onCancel={() => setIsOpenAccountModal(false)}
-        onDisconnect={() => handleDisconnect()}
       />
     </SidebarWrapper>
   );

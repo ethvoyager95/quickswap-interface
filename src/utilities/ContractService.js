@@ -3,9 +3,18 @@ import { Multicall } from 'ethereum-multicall';
 
 import * as constants from './constants';
 
-const instance = new Web3(
-  window.web3 ? window.web3.currentProvider : window.ethereum
-);
+const getInstance = () => {
+  const walletConnected = localStorage.getItem('walletConnected');
+  if (walletConnected === 'bitkeep') return new Web3(window.bitkeep.ethereum);
+  if (walletConnected === 'trustwallet') return new Web3(window.trustwallet);
+  return new Web3(window.ethereum);
+};
+const instance = getInstance();
+
+// const instance = new Web3(
+//   window.web3 ? window.web3.currentProvider : window.ethereum
+// );
+
 // const instance = new Web3('http://3.10.133.254:8575');
 
 export const multicall = new Multicall({
