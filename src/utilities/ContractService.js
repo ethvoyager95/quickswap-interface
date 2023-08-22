@@ -5,8 +5,10 @@ import * as constants from './constants';
 
 const getInstance = () => {
   const walletConnected = localStorage.getItem('walletConnected');
-  if (walletConnected === 'bitkeep') return new Web3(window.bitkeep.ethereum);
-  if (walletConnected === 'trustwallet') return new Web3(window.trustwallet);
+  if (walletConnected === 'bitkeep' && window.bitkeep)
+    return new Web3(window.bitkeep.ethereum);
+  if (walletConnected === 'trustwallet' && window.trustwallet)
+    return new Web3(window.trustwallet);
   return new Web3(window.ethereum);
 };
 const instance = getInstance();
