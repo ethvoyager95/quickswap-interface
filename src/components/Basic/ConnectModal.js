@@ -130,15 +130,16 @@ const ModalContent = styled.div`
 
 function ConnectModal({
   visible,
-  web3,
   metamaskError,
   bitkeepError,
   trustwalletError,
+  coinbasewalletError,
   awaiting,
   onCancel,
   onConnectMetaMask,
   onConnectBitKeep,
   onConnectTrustWallet,
+  onConnectCoinbaseWallet,
   checkNetwork,
   settings,
   setSetting
@@ -161,9 +162,6 @@ function ConnectModal({
     if (metamaskError) {
       return <span>{metamaskError.message}</span>;
     }
-    // if (!web3) {
-    //   return <span>Please open and allow MetaMask</span>;
-    // }
     if (awaiting === 'metamask') {
       return <span>MetaMask loading...</span>;
     }
@@ -188,9 +186,6 @@ function ConnectModal({
     if (bitkeepError) {
       return <span>{bitkeepError.message}</span>;
     }
-    // if (!web3) {
-    //   return <span>Please open and allow Bitkeep</span>;
-    // }
     if (awaiting === 'bitkeep') {
       return <span>Bitkepp loading...</span>;
     }
@@ -218,50 +213,74 @@ function ConnectModal({
     if (trustwalletError) {
       return <span>{trustwalletError.message}</span>;
     }
-    // if (!web3) {
-    //   return <span>Please open and allow Trust Wallet</span>;
-    // }
     if (awaiting === 'trustwallet') {
       return <span>Trust Wallet loading...</span>;
     }
     return null;
   };
 
-  const connectCoinbase = async () => {
-    try {
-      // Initialize WalletLink
-      const walletLink = new WalletLink({
-        appName: 'STRIKE-APP',
-        darkMode: true
-      });
-
-      const provider = walletLink.makeWeb3Provider(
-        'https://rinkeby.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4',
-        1
+  const CoinbaseStatus = () => {
+    if (
+      coinbasewalletError &&
+      coinbasewalletError.message === constants.NOT_INSTALLED
+    ) {
+      return (
+        <p className="center">
+          We could not locate a supported web3 browser extension.
+          <a
+            href="https://chrome.google.com/webstore/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download Coinbase Wallet here.
+          </a>
+        </p>
       );
-      // setWalletlinkProvider(provider);
-      const accounts = await provider.request({
-        method: 'eth_requestAccounts'
-      });
-      const account = accounts[0];
-      if (!account) {
-        setSetting({
-          selectedAddress: null
-        });
-      } else {
-        console.log(account);
-        const library = new Web3Provider(provider, 'any');
-        console.log(settings);
-        console.log(library);
-        setSetting({
-          selectedAddress: account.toString()
-        });
-        onCancel();
-      }
-    } catch (ex) {
-      console.log(ex);
     }
+    if (coinbasewalletError) {
+      return <span>{coinbasewalletError.message}</span>;
+    }
+    if (awaiting === 'coinbase') {
+      return <span>Coinbase Wallet loading...</span>;
+    }
+    return null;
   };
+
+  // const connectCoinbase = async () => {
+  //   try {
+  //     // Initialize WalletLink
+  //     const walletLink = new WalletLink({
+  //       appName: 'STRIKE-APP',
+  //       darkMode: true
+  //     });
+
+  //     const provider = walletLink.makeWeb3Provider(
+  //       'https://rinkeby.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4',
+  //       1
+  //     );
+  //     // setWalletlinkProvider(provider);
+  //     const accounts = await provider.request({
+  //       method: 'eth_requestAccounts'
+  //     });
+  //     const account = accounts[0];
+  //     if (!account) {
+  //       setSetting({
+  //         selectedAddress: null
+  //       });
+  //     } else {
+  //       console.log(account);
+  //       const library = new Web3Provider(provider, 'any');
+  //       console.log(settings);
+  //       console.log(library);
+  //       setSetting({
+  //         selectedAddress: account.toString()
+  //       });
+  //       onCancel();
+  //     }
+  //   } catch (ex) {
+  //     console.log(ex);
+  //   }
+  // };
 
   const connectWalletConnect = async () => {
     try {
@@ -387,7 +406,10 @@ function ConnectModal({
           </div>
 
           <div className="connect-wallet-content">
-            <div className="metamask-connect-btn" onClick={connectCoinbase}>
+            <div
+              className="metamask-connect-btn"
+              onClick={onConnectCoinbaseWallet}
+            >
               <img src={coinbaseImg} alt="metamask" />
               <span>Coinbase Wallet</span>
               <svg
@@ -403,6 +425,11 @@ function ConnectModal({
                 />
               </svg>
             </div>
+            {(coinbasewalletError || awaiting) && (
+              <div className="metamask-status">
+                <CoinbaseStatus />
+              </div>
+            )}
           </div>
 
           <div className="connect-wallet-content">
@@ -467,26 +494,30 @@ function ConnectModal({
 
 ConnectModal.propTypes = {
   visible: PropTypes.bool,
-  web3: PropTypes.object,
   metamaskError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   bitkeepError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   trustwalletError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  coinbasewalletError: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object
+  ]),
   awaiting: PropTypes.string,
   settings: PropTypes.object,
   onCancel: PropTypes.func,
   onConnectMetaMask: PropTypes.func.isRequired,
   onConnectBitKeep: PropTypes.func.isRequired,
   onConnectTrustWallet: PropTypes.func.isRequired,
+  onConnectCoinbaseWallet: PropTypes.func.isRequired,
   checkNetwork: PropTypes.func.isRequired,
   setSetting: PropTypes.func.isRequired
 };
 
 ConnectModal.defaultProps = {
   visible: false,
-  web3: {},
   metamaskError: '',
   bitkeepError: '',
   trustwalletError: '',
+  coinbasewalletError: '',
   awaiting: '',
   settings: {},
   onCancel: () => {}

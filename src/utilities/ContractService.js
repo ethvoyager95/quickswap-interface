@@ -3,12 +3,28 @@ import { Multicall } from 'ethereum-multicall';
 
 import * as constants from './constants';
 
+export const getProvider = walletType => {
+  let provider = null;
+  if (typeof window.ethereum !== 'undefined') {
+    if (window.ethereum.providers?.length) {
+      window.ethereum.providers.forEach(async p => {
+        if (walletType === 'metamask' && p.isMetaMask) provider = p;
+        else if (walletType === 'trustwallet' && p.isTrustWallet) provider = p;
+        else if (walletType === 'coinbase' && p.isCoinbaseWallet) provider = p;
+      });
+    }
+  }
+  return provider;
+};
+
 const getInstance = () => {
   const walletConnected = localStorage.getItem('walletConnected');
   if (walletConnected === 'bitkeep' && window.bitkeep)
     return new Web3(window.bitkeep.ethereum);
-  if (walletConnected === 'trustwallet' && window.trustwallet)
-    return new Web3(window.trustwallet);
+
+  const provider = getProvider(walletConnected);
+  if (provider) return new Web3(provider);
+
   return new Web3(window.ethereum);
 };
 const instance = getInstance();

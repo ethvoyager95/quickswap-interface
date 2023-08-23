@@ -12,6 +12,7 @@ import ConnectModal from 'components/Basic/ConnectModal';
 import AccountModal from 'components/Basic/AccountModal';
 import { connectAccount, accountActionCreators } from 'core';
 import InjectWalletClass from 'utilities/InjectWallet';
+import { getProvider } from 'utilities/ContractService';
 
 const StyledConnectButton = styled.div`
   display: flex;
@@ -50,10 +51,12 @@ const StyledConnectButton = styled.div`
 let metamask = null;
 let bitkeep = null;
 let trustwallet = null;
+let coinbase = null;
 let accounts = [];
 const metamaskWatcher = null;
 const bitkeepWatcher = null;
 const trustwalletWatcher = null;
+const coinbaseWatcher = null;
 
 const abortController = new AbortController();
 
@@ -64,7 +67,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   const [metamaskError, setMetamaskError] = useState('');
   const [bitkeepError, setBitkeepError] = useState('');
   const [trustwalletError, setTrustwalletError] = useState('');
-  const [web3, setWeb3] = useState(null);
+  const [coinbasewalletError, setCoinbasewalletError] = useState('');
 
   const checkNetwork = () => {
     const netId = window.ethereum.networkVersion
@@ -168,11 +171,10 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       isConnected: 'metamask'
     });
     accounts = tempAccounts;
-    setWeb3(tempWeb3);
     setMetamaskError(tempError);
     setAwaiting('');
     localStorage.setItem('walletConnected', 'metamask');
-  }, [metamaskError, web3]);
+  }, [metamaskError]);
 
   const handleBitkeepWatch = useCallback(async () => {
     if (window.bitkeep && window.bitkeep.ethereum) {
@@ -241,11 +243,10 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       isConnected: 'bitkeep'
     });
     accounts = tempAccounts;
-    setWeb3(tempWeb3);
     setBitkeepError(tempError);
     setAwaiting('');
     localStorage.setItem('walletConnected', 'bitkeep');
-  }, [bitkeepError, web3]);
+  }, [bitkeepError]);
 
   const handleTrustWalletWatch = useCallback(async () => {
     if (window.trustwallet) {
@@ -314,14 +315,88 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       isConnected: 'trustwallet'
     });
     accounts = tempAccounts;
-    setWeb3(tempWeb3);
     setTrustwalletError(tempError);
     setAwaiting('');
     localStorage.setItem('walletConnected', 'trustwallet');
-  }, [trustwallet, web3]);
+  }, [trustwalletError]);
+
+  const handleCoinbaseWalletWatch = useCallback(async () => {
+    const provider = getProvider('coinbase');
+    if (provider) {
+      const accs = await provider.request({
+        method: 'eth_accounts'
+      });
+      if (!accs[0]) {
+        accounts = [];
+        clearTimeout(coinbaseWatcher);
+        setSetting({ selectedAddress: null });
+      }
+      if (!accounts.length) {
+        setAwaiting('coinbase');
+      }
+    }
+    if (coinbaseWatcher) {
+      clearTimeout(coinbaseWatcher);
+    }
+
+    let tempWeb3 = null;
+    let tempAccounts = [];
+    let tempENSName = null;
+    let tempENSAvatar = null;
+    let tempError = coinbasewalletError;
+    let latestBlockNumber = 0;
+    try {
+      const isLocked =
+        coinbasewalletError && coinbasewalletError.message === constants.LOCKED;
+      if (!coinbase || isLocked) {
+        coinbase = await withTimeoutRejection(
+          InjectWalletClass.initialize({ walletType: 'coinbase' }), // if option is existed, add it
+          20 * 1000 // timeout
+        );
+      }
+      tempWeb3 = await coinbase.getWeb3();
+      const currentChainId = await coinbase.getChainId();
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
+      if (currentChainId !== Number(chainId))
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId }]
+        });
+      tempAccounts = await coinbase.getAccounts();
+      // Lookup ENS name and avatar when possible
+      const ethersProvider = new ethers.providers.Web3Provider(
+        tempWeb3.currentProvider
+      );
+      tempENSName = await ethersProvider.lookupAddress(tempAccounts[0]);
+      tempENSAvatar = tempENSName
+        ? await ethersProvider.getAvatar(tempENSName)
+        : null;
+      latestBlockNumber = await coinbase.getLatestBlockNumber();
+      if (latestBlockNumber) {
+        await setSetting({ latestBlockNumber });
+      }
+      tempError = null;
+    } catch (err) {
+      tempError = err;
+      accounts = [];
+      await setSetting({ selectedAddress: null });
+    }
+    await setSetting({
+      selectedAddress: tempAccounts[0],
+      selectedENSName: tempENSName,
+      selectedENSAvatar: tempENSAvatar,
+      isConnected: 'coinbase'
+    });
+    accounts = tempAccounts;
+    setCoinbasewalletError(tempError);
+    setAwaiting('');
+    localStorage.setItem('walletConnected', 'coinbase');
+  }, [coinbasewalletError]);
 
   const handleMetaMask = () => {
-    setMetamaskError(window.ethereum ? '' : new Error(constants.NOT_INSTALLED));
+    setMetamaskError(
+      getProvider('metamask') ? '' : new Error(constants.NOT_INSTALLED)
+    );
     handleMetamaskWatch();
   };
 
@@ -336,9 +411,16 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
 
   const handleTrustWallet = () => {
     setTrustwalletError(
-      window.trustwallet ? '' : new Error(constants.NOT_INSTALLED)
+      getProvider('trustwallet') ? '' : new Error(constants.NOT_INSTALLED)
     );
     handleTrustWalletWatch();
+  };
+
+  const handleCoinbaseWallet = () => {
+    setCoinbasewalletError(
+      getProvider('coinbase') ? '' : new Error(constants.NOT_INSTALLED)
+    );
+    handleCoinbaseWalletWatch();
   };
 
   useEffect(() => {
@@ -357,6 +439,8 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       handleBitkeepWatch();
     } else if (settings.isConnected === 'trustwallet') {
       handleTrustWalletWatch();
+    } else if (settings.isConnected === 'coinbase') {
+      handleCoinbaseWalletWatch();
     }
     return function cleanup() {
       abortController.abort();
@@ -404,6 +488,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
               setMetamaskError(null);
               setBitkeepError(null);
               setTrustwalletError(null);
+              setCoinbasewalletError(null);
               setIsOpenModal(true);
             }}
           >
@@ -414,15 +499,16 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
 
       <ConnectModal
         visible={isOpenModal}
-        web3={web3}
         metamaskError={metamaskError}
         bitkeepError={bitkeepError}
         trustwalletError={trustwalletError}
+        coinbasewalletError={coinbasewalletError}
         awaiting={awaiting}
         onCancel={() => setIsOpenModal(false)}
         onConnectMetaMask={handleMetaMask}
         onConnectBitKeep={handleBitKeep}
         onConnectTrustWallet={handleTrustWallet}
+        onConnectCoinbaseWallet={handleCoinbaseWallet}
         checkNetwork={checkNetwork}
       />
       <AccountModal

@@ -1,6 +1,7 @@
 import Web3 from 'web3'; // eslint-disable-line import/no-unresolved
 
 import * as constants from './constants';
+import { getProvider } from './ContractService';
 
 export default class InjectWallet {
   static async initialize(
@@ -19,18 +20,25 @@ export default class InjectWallet {
   }
 
   static async getWeb3(walletType) {
-    if (walletType === 'metamask' && window.ethereum) {
-      // Modern dapp browsers
-      window.web3 = new Web3(window.ethereum);
-      window.ethereum.on('chainChanged', chainId => {
-        if (chainId > 0) window.location.reload();
-      });
-      // await window.ethereum.enable();
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      return window.web3;
+    if (
+      walletType === 'metamask' ||
+      walletType === 'trustwallet' ||
+      walletType === 'coinbase'
+    ) {
+      const provider = getProvider(walletType);
+      if (provider) {
+        window.web3 = new Web3(provider);
+        provider.on('chainChanged', chainId => {
+          if (chainId > 0 && walletType !== 'coinbase')
+            window.location.reload();
+        });
+        // await provider.enable();
+        await provider.request({ method: 'eth_requestAccounts' });
+        return window.web3;
+      }
     }
+
     if (walletType === 'bitkeep' && window.bitkeep && window.bitkeep.ethereum) {
-      // Modern dapp browsers
       window.web3 = new Web3(window.bitkeep.ethereum);
       window.bitkeep.ethereum.on('chainChanged', chainId => {
         if (chainId > 0) window.location.reload();
@@ -39,16 +47,7 @@ export default class InjectWallet {
       await window.bitkeep.ethereum.request({ method: 'eth_requestAccounts' });
       return window.web3;
     }
-    if (walletType === 'trustwallet' && window.trustwallet) {
-      // Modern dapp browsers
-      window.web3 = new Web3(window.trustwallet);
-      window.trustwallet.on('chainChanged', chainId => {
-        if (chainId > 0) window.location.reload();
-      });
-      // await window.trustwallet.enable();
-      await window.trustwallet.request({ method: 'eth_requestAccounts' });
-      return window.web3;
-    }
+
     throw new Error(constants.NOT_INSTALLED);
   }
 
