@@ -206,6 +206,7 @@ const UserInfoButton = styled.div`
   .user-info-btn {
     padding: 0 8px;
     height: 32px;
+    margin-right: 40px;
     background: linear-gradient(
       242deg,
       #246cf9 0%,

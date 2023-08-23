@@ -16,6 +16,8 @@ import {
 import { sendRepay } from 'utilities/EthContract';
 import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { SectionWrapper } from 'components/Basic/Supply/SupplySection';
+import ConnectButton from 'containers/Layout/ConnectButton';
+import IconQuestion from 'assets/img/question.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import coinImg from 'assets/img/strike_32.png';
 
@@ -202,167 +204,188 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
 
   return (
     <SectionWrapper>
-      <div className="header">
-        {asset.id === 'eth' || isEnabled ? (
-          <div className="right-header">
-            {/* <div className="input-label">Amount</div> */}
-            <div className="input-section">
-              <NumberFormat
-                autoFocus
-                value={amount.isZero() ? '0' : amount.toString(10)}
-                onValueChange={values => {
-                  const { value } = values;
-                  setAmount(new BigNumber(value));
-                }}
-                decimalScale={settings.decimals[asset.id].token}
-                isAllowed={({ value }) => {
-                  return new BigNumber(value || 0).isLessThanOrEqualTo(
-                    BigNumber.minimum(asset.walletBalance, asset.borrowBalance)
-                  );
-                }}
-                thousandSeparator
-                allowNegative={false}
-                placeholder="0"
-              />
-              <span className="pointer max" onClick={() => handleMaxAmount()}>
-                MAX
-              </span>
-            </div>
+      {!settings.selectedAddress ? (
+        <>
+          <div className="alert">
+            <img src={IconQuestion} alt="info" />
+            <span>Please connect your wallet to repay</span>
           </div>
-        ) : (
-          <div className="notification">
-            To Repay {asset.name} to the Strike Protocol, you need to enable it
-            first.
-          </div>
-        )}
-      </div>
-      <div className="wallet-section">
-        <div className="description">
-          <span className="label">Wallet Balance</span>
-          <span className="value">
-            {format(
-              asset.walletBalance &&
-                getBigNumber(asset.walletBalance)
-                  .dp(2, 1)
-                  .toString(10)
-            )}{' '}
-            {asset.symbol}
-          </span>
-        </div>
-      </div>
-      <div className="body">
-        <div className="left-content">
-          <div className="description">
-            <div className="flex align-center">
-              <img src={asset.img} alt="asset" />
-              <span className="label">Borrow APY</span>
-            </div>
-            <span className="value green">
-              {asset.borrowApy &&
-                getBigNumber(asset.borrowApy)
-                  .dp(2, 1)
-                  .toString(10)}
-              %
-            </span>
-          </div>
-          <div className="description">
-            <div className="flex align-center">
-              <img src={coinImg} alt="asset" />
-              <span className="label">Interest APY</span>
-            </div>
-            <span className="value">
-              {shortenNumberFormatter(
-                getBigNumber(asset.strkBorrowApy)
-                  .dp(2, 1)
-                  .toString(10)
-              )}
-              %
-            </span>
-          </div>
-        </div>
-        <div className="right-content">
-          <div className="description">
-            <span className="label">Borrow Balance</span>
-            {amount.isZero() || amount.isNaN() ? (
-              <span className="value">
-                ${format(borrowBalance.dp(2, 1).toString(10))}
-              </span>
+          <ConnectButton />
+        </>
+      ) : (
+        <>
+          <div className="header">
+            {asset.id === 'eth' || isEnabled ? (
+              <div className="right-header">
+                {/* <div className="input-label">Amount</div> */}
+                <div className="input-section">
+                  <NumberFormat
+                    autoFocus
+                    value={amount.isZero() ? '0' : amount.toString(10)}
+                    onValueChange={values => {
+                      const { value } = values;
+                      setAmount(new BigNumber(value));
+                    }}
+                    decimalScale={settings.decimals[asset.id].token}
+                    isAllowed={({ value }) => {
+                      return new BigNumber(value || 0).isLessThanOrEqualTo(
+                        BigNumber.minimum(
+                          asset.walletBalance,
+                          asset.borrowBalance
+                        )
+                      );
+                    }}
+                    thousandSeparator
+                    allowNegative={false}
+                    placeholder="0"
+                  />
+                  <span
+                    className="pointer max"
+                    onClick={() => handleMaxAmount()}
+                  >
+                    MAX
+                  </span>
+                </div>
+              </div>
             ) : (
-              <div className="flex align-center just-between">
-                <span className="value">
-                  ${format(borrowBalance.dp(2, 1).toString(10))}
-                </span>
-                <img
-                  className="arrow-right-img"
-                  src={arrowRightImg}
-                  alt="arrow"
-                />
-                <span className="value">
-                  ${newBorrowBalance.dp(2, 1).toString(10)}
-                </span>
+              <div className="notification">
+                To Repay {asset.name} to the Strike Protocol, you need to enable
+                it first.
               </div>
             )}
           </div>
-          <div className="description">
-            <span className="label">Borrow Limit Used</span>
-            {amount.isZero() || amount.isNaN() ? (
+          <div className="wallet-section">
+            <div className="description">
+              <span className="label">Wallet Balance</span>
               <span className="value">
-                {borrowPercent.dp(2, 1).toString(10)}%
+                {format(
+                  asset.walletBalance &&
+                    getBigNumber(asset.walletBalance)
+                      .dp(2, 1)
+                      .toString(10)
+                )}{' '}
+                {asset.symbol}
               </span>
-            ) : (
-              <div className="flex align-center just-between">
-                <span className="value">
-                  {borrowPercent.dp(2, 1).toString(10)}%
-                </span>
-                <img
-                  className="arrow-right-img"
-                  src={arrowRightImg}
-                  alt="arrow"
-                />
-                <span className="value">
-                  {newBorrowPercent.dp(2, 1).toString(10)}%
+            </div>
+          </div>
+          <div className="body">
+            <div className="left-content">
+              <div className="description">
+                <div className="flex align-center">
+                  <img src={asset.img} alt="asset" />
+                  <span className="label">Borrow APY</span>
+                </div>
+                <span className="value green">
+                  {asset.borrowApy &&
+                    getBigNumber(asset.borrowApy)
+                      .dp(2, 1)
+                      .toString(10)}
+                  %
                 </span>
               </div>
-            )}
-          </div>
-          {/* <Progress
+              <div className="description">
+                <div className="flex align-center">
+                  <img src={coinImg} alt="asset" />
+                  <span className="label">Interest APY</span>
+                </div>
+                <span className="value">
+                  {shortenNumberFormatter(
+                    getBigNumber(asset.strkBorrowApy)
+                      .dp(2, 1)
+                      .toString(10)
+                  )}
+                  %
+                </span>
+              </div>
+            </div>
+            <div className="right-content">
+              <div className="description">
+                <span className="label">Borrow Balance</span>
+                {amount.isZero() || amount.isNaN() ? (
+                  <span className="value">
+                    ${format(borrowBalance.dp(2, 1).toString(10))}
+                  </span>
+                ) : (
+                  <div className="flex align-center just-between">
+                    <span className="value">
+                      ${format(borrowBalance.dp(2, 1).toString(10))}
+                    </span>
+                    <img
+                      className="arrow-right-img"
+                      src={arrowRightImg}
+                      alt="arrow"
+                    />
+                    <span className="value">
+                      ${newBorrowBalance.dp(2, 1).toString(10)}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="description">
+                <span className="label">Borrow Limit Used</span>
+                {amount.isZero() || amount.isNaN() ? (
+                  <span className="value">
+                    {borrowPercent.dp(2, 1).toString(10)}%
+                  </span>
+                ) : (
+                  <div className="flex align-center just-between">
+                    <span className="value">
+                      {borrowPercent.dp(2, 1).toString(10)}%
+                    </span>
+                    <img
+                      className="arrow-right-img"
+                      src={arrowRightImg}
+                      alt="arrow"
+                    />
+                    <span className="value">
+                      {newBorrowPercent.dp(2, 1).toString(10)}%
+                    </span>
+                  </div>
+                )}
+              </div>
+              {/* <Progress
             percent={newBorrowPercent.toString(10)}
             strokeColor="#d99d43"
             strokeWidth={7}
             showInfo={false}
           /> */}
-        </div>
-      </div>
-      <div className="footer">
-        <div className="button-section">
-          {!isEnabled && asset.id !== 'eth' ? (
-            <Button
-              className="action-button"
-              disabled={isLoading}
-              onClick={() => {
-                onApprove();
-              }}
-            >
-              {isLoading && <Icon type="loading" />} Enable
-            </Button>
-          ) : (
-            <Button
-              className="action-button"
-              disabled={
-                isLoading ||
-                amount.isZero() ||
-                amount.isNaN() ||
-                amount.isGreaterThan(
-                  BigNumber.minimum(asset.walletBalance, asset.borrowBalance)
-                )
-              }
-              onClick={handleRepayBorrow}
-            >
-              {isLoading && <Icon type="loading" />} Repay
-            </Button>
-          )}
-        </div>
-      </div>
+            </div>
+          </div>
+          <div className="footer">
+            <div className="button-section">
+              {!isEnabled && asset.id !== 'eth' ? (
+                <Button
+                  className="action-button"
+                  disabled={isLoading}
+                  onClick={() => {
+                    onApprove();
+                  }}
+                >
+                  {isLoading && <Icon type="loading" />} Enable
+                </Button>
+              ) : (
+                <Button
+                  className="action-button"
+                  disabled={
+                    isLoading ||
+                    amount.isZero() ||
+                    amount.isNaN() ||
+                    amount.isGreaterThan(
+                      BigNumber.minimum(
+                        asset.walletBalance,
+                        asset.borrowBalance
+                      )
+                    )
+                  }
+                  onClick={handleRepayBorrow}
+                >
+                  {isLoading && <Icon type="loading" />} Repay
+                </Button>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </SectionWrapper>
   );
 }

@@ -13,6 +13,8 @@ import coinImg from 'assets/img/strike_32.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { SectionWrapper } from 'components/Basic/Supply/SupplySection';
+import ConnectButton from 'containers/Layout/ConnectButton';
+import IconQuestion from 'assets/img/question.png';
 
 const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();
@@ -156,149 +158,162 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
 
   return (
     <SectionWrapper>
-      <div className="header">
-        <div className="right-header">
-          {/* <div className="input-label">Amount</div> */}
-          <div className="input-section">
-            <NumberFormat
-              autoFocus
-              value={amount.isZero() ? '0' : amount.toString(10)}
-              onValueChange={({ value }) => {
-                setAmount(new BigNumber(value));
-              }}
-              decimalScale={settings.decimals[asset.id].token}
-              isAllowed={({ value }) => {
-                const temp = new BigNumber(value || 0);
-                const { totalBorrowLimit } = settings;
-                const { tokenPrice, collateralFactor } = asset;
-                return (
-                  temp.isLessThanOrEqualTo(asset.supplyBalance) &&
-                  getBigNumber(totalBorrowLimit).isGreaterThanOrEqualTo(
-                    temp.times(tokenPrice).times(collateralFactor)
-                  )
-                );
-              }}
-              thousandSeparator
-              allowNegative={false}
-              placeholder="0"
-            />
-            <span className="pointer max" onClick={() => handleMaxAmount()}>
-              SAFE MAX
-            </span>
+      {!settings.selectedAddress ? (
+        <>
+          <div className="alert">
+            <img src={IconQuestion} alt="info" />
+            <span>Please connect your wallet to withdraw</span>
           </div>
-        </div>
-      </div>
-      <div className="wallet-section">
-        <div className="description">
-          <span className="label">Protocol Balance</span>
-          <span className="value">
-            {format(
-              asset.supplyBalance && asset.supplyBalance.dp(2, 1).toString(10)
-            )}{' '}
-            {asset.symbol}
-          </span>
-        </div>
-      </div>
-      <div className="body">
-        <div className="left-content">
-          <div className="description">
-            <div className="flex align-center">
-              <img src={asset.img} alt="asset" />
-              <span className="label">Supply APY</span>
-            </div>
-            <span className="value green">
-              {asset.supplyApy &&
-                getBigNumber(asset.supplyApy)
-                  .dp(2, 1)
-                  .toString(10)}
-              %
-            </span>
-          </div>
-          <div className="description">
-            <div className="flex align-center">
-              <img src={coinImg} alt="asset" />
-              <span className="label">Interest APY</span>
-            </div>
-            <span className="value">
-              {shortenNumberFormatter(
-                getBigNumber(asset.strkSupplyApy)
-                  .dp(2, 1)
-                  .toString(10)
-              )}
-              %
-            </span>
-          </div>
-        </div>
-        <div className="right-content">
-          <div className="description">
-            <span className="label">Borrow Limit</span>
-            {amount.isZero() || amount.isNaN() ? (
-              <span className="value">
-                ${format(borrowLimit.dp(2, 1).toString(10))}
-              </span>
-            ) : (
-              <div className="flex align-center just-between">
-                <span className="value">
-                  ${format(borrowLimit.dp(2, 1).toString(10))}
-                </span>
-                <img
-                  className="arrow-right-img"
-                  src={arrowRightImg}
-                  alt="arrow"
+          <ConnectButton />
+        </>
+      ) : (
+        <>
+          <div className="header">
+            <div className="right-header">
+              {/* <div className="input-label">Amount</div> */}
+              <div className="input-section">
+                <NumberFormat
+                  autoFocus
+                  value={amount.isZero() ? '0' : amount.toString(10)}
+                  onValueChange={({ value }) => {
+                    setAmount(new BigNumber(value));
+                  }}
+                  decimalScale={settings.decimals[asset.id].token}
+                  isAllowed={({ value }) => {
+                    const temp = new BigNumber(value || 0);
+                    const { totalBorrowLimit } = settings;
+                    const { tokenPrice, collateralFactor } = asset;
+                    return (
+                      temp.isLessThanOrEqualTo(asset.supplyBalance) &&
+                      getBigNumber(totalBorrowLimit).isGreaterThanOrEqualTo(
+                        temp.times(tokenPrice).times(collateralFactor)
+                      )
+                    );
+                  }}
+                  thousandSeparator
+                  allowNegative={false}
+                  placeholder="0"
                 />
-                <span className="value">
-                  ${format(newBorrowLimit.dp(2, 1).toString(10))}
+                <span className="pointer max" onClick={() => handleMaxAmount()}>
+                  SAFE MAX
                 </span>
               </div>
-            )}
+            </div>
           </div>
-          <div className="description">
-            <span className="label">Borrow Limit Used</span>
-            {amount.isZero() || amount.isNaN() ? (
+          <div className="wallet-section">
+            <div className="description">
+              <span className="label">Protocol Balance</span>
               <span className="value">
-                {borrowPercent.dp(2, 1).toString(10)}%
+                {format(
+                  asset.supplyBalance &&
+                    asset.supplyBalance.dp(2, 1).toString(10)
+                )}{' '}
+                {asset.symbol}
               </span>
-            ) : (
-              <div className="flex align-center just-between">
-                <span className="value">
-                  {borrowPercent.dp(2, 1).toString(10)}%
-                </span>
-                <img
-                  className="arrow-right-img"
-                  src={arrowRightImg}
-                  alt="arrow"
-                />
-                <span className="value">
-                  {newBorrowPercent.dp(2, 1).toString(10)}%
+            </div>
+          </div>
+          <div className="body">
+            <div className="left-content">
+              <div className="description">
+                <div className="flex align-center">
+                  <img src={asset.img} alt="asset" />
+                  <span className="label">Supply APY</span>
+                </div>
+                <span className="value green">
+                  {asset.supplyApy &&
+                    getBigNumber(asset.supplyApy)
+                      .dp(2, 1)
+                      .toString(10)}
+                  %
                 </span>
               </div>
-            )}
-          </div>
-          {/* <Progress
+              <div className="description">
+                <div className="flex align-center">
+                  <img src={coinImg} alt="asset" />
+                  <span className="label">Interest APY</span>
+                </div>
+                <span className="value">
+                  {shortenNumberFormatter(
+                    getBigNumber(asset.strkSupplyApy)
+                      .dp(2, 1)
+                      .toString(10)
+                  )}
+                  %
+                </span>
+              </div>
+            </div>
+            <div className="right-content">
+              <div className="description">
+                <span className="label">Borrow Limit</span>
+                {amount.isZero() || amount.isNaN() ? (
+                  <span className="value">
+                    ${format(borrowLimit.dp(2, 1).toString(10))}
+                  </span>
+                ) : (
+                  <div className="flex align-center just-between">
+                    <span className="value">
+                      ${format(borrowLimit.dp(2, 1).toString(10))}
+                    </span>
+                    <img
+                      className="arrow-right-img"
+                      src={arrowRightImg}
+                      alt="arrow"
+                    />
+                    <span className="value">
+                      ${format(newBorrowLimit.dp(2, 1).toString(10))}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="description">
+                <span className="label">Borrow Limit Used</span>
+                {amount.isZero() || amount.isNaN() ? (
+                  <span className="value">
+                    {borrowPercent.dp(2, 1).toString(10)}%
+                  </span>
+                ) : (
+                  <div className="flex align-center just-between">
+                    <span className="value">
+                      {borrowPercent.dp(2, 1).toString(10)}%
+                    </span>
+                    <img
+                      className="arrow-right-img"
+                      src={arrowRightImg}
+                      alt="arrow"
+                    />
+                    <span className="value">
+                      {newBorrowPercent.dp(2, 1).toString(10)}%
+                    </span>
+                  </div>
+                )}
+              </div>
+              {/* <Progress
             percent={newBorrowPercent.toString(10)}
             strokeColor="#d99d43"
             strokeWidth={7}
             showInfo={false}
           /> */}
-        </div>
-      </div>
-      <div className="footer">
-        <div className="button-section">
-          <Button
-            className="action-button"
-            disabled={
-              isLoading ||
-              amount.isNaN() ||
-              amount.isZero() ||
-              amount.isGreaterThan(asset.supplyBalance) ||
-              newBorrowPercent.isGreaterThan(new BigNumber(100))
-            }
-            onClick={handleWithdraw}
-          >
-            {isLoading && <Icon type="loading" />} Withdraw
-          </Button>
-        </div>
-      </div>
+            </div>
+          </div>
+          <div className="footer">
+            <div className="button-section">
+              <Button
+                className="action-button"
+                disabled={
+                  isLoading ||
+                  amount.isNaN() ||
+                  amount.isZero() ||
+                  amount.isGreaterThan(asset.supplyBalance) ||
+                  newBorrowPercent.isGreaterThan(new BigNumber(100))
+                }
+                onClick={handleWithdraw}
+              >
+                {isLoading && <Icon type="loading" />} Withdraw
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
     </SectionWrapper>
   );
 }

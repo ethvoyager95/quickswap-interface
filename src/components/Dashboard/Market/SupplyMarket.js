@@ -32,6 +32,10 @@ function SupplyMarket({
   const [isCollateralEnalbe, setIsCollateralEnable] = useState(true);
 
   const handleToggleCollateral = r => {
+    if (!settings.selectedAddress) {
+      message.error('Please connect your wallet.');
+      return;
+    }
     const appContract = getComptrollerContract();
     if (r && settings.selectedAddress && r.borrowBalance.isZero()) {
       if (!r.collateral) {

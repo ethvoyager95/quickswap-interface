@@ -17,7 +17,6 @@ import { getProvider } from 'utilities/ContractService';
 const StyledConnectButton = styled.div`
   display: flex;
   justify-content: center;
-  margin-left: 40px;
 
   @media only screen and (max-width: 768px) {
     width: 100%;
