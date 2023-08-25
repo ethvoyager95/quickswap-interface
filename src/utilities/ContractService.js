@@ -14,6 +14,8 @@ export const getProvider = walletType => {
       });
     }
   }
+  if (walletType === 'metamask' && !provider && window.ethereum)
+    provider = window.ethereum;
   return provider;
 };
 

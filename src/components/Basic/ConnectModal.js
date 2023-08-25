@@ -313,14 +313,6 @@ function ConnectModal({
   };
 
   useEffect(() => {
-    if (window.ethereum) {
-      window.addEventListener('load', event => {
-        checkNetwork();
-      });
-    }
-  }, [window.ethereum]);
-
-  useEffect(() => {
     if (!settings.selectedAddress) {
       return;
     }

@@ -58,6 +58,7 @@ const trustwalletWatcher = null;
 const coinbaseWatcher = null;
 
 const abortController = new AbortController();
+let doneFlag = false;
 
 function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -447,7 +448,8 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   }, [history]);
 
   useEffect(() => {
-    if (window.ethereum) {
+    if (window.ethereum && !doneFlag) {
+      doneFlag = true;
       window.addEventListener('load', event => {
         checkNetwork();
       });
