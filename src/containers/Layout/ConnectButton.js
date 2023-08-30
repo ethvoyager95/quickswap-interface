@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { ethers } from 'ethers';
+import Web3 from 'web3';
 import { message } from 'antd';
 import Button from '@material-ui/core/Button';
 import * as constants from 'utilities/constants';
@@ -13,6 +14,7 @@ import AccountModal from 'components/Basic/AccountModal';
 import { connectAccount, accountActionCreators } from 'core';
 import InjectWalletClass from 'utilities/InjectWallet';
 import { getProvider } from 'utilities/ContractService';
+import { useProvider } from 'hooks/useContract';
 
 const StyledConnectButton = styled.div`
   display: flex;
@@ -68,11 +70,11 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   const [bitkeepError, setBitkeepError] = useState('');
   const [trustwalletError, setTrustwalletError] = useState('');
   const [coinbasewalletError, setCoinbasewalletError] = useState('');
+  const currentProvider = useProvider(settings.walletConnected);
 
-  const checkNetwork = () => {
-    const netId = window.ethereum.networkVersion
-      ? +window.ethereum.networkVersion
-      : +window.ethereum.chainId;
+  const checkNetwork = async provider => {
+    const web3 = new Web3(provider);
+    const netId = await web3.eth.getChainId();
     setSetting({
       accountLoading: true
     });
@@ -107,8 +109,9 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   };
 
   const handleMetamaskWatch = useCallback(async () => {
-    if (window.ethereum) {
-      const accs = await window.ethereum.request({ method: 'eth_accounts' });
+    const provider = getProvider('metamask');
+    if (provider) {
+      const accs = await provider.request({ method: 'eth_accounts' });
       if (!accs[0]) {
         accounts = [];
         clearTimeout(metamaskWatcher);
@@ -141,7 +144,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       const currentChainId = await metamask.getChainId();
       const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
       if (currentChainId !== Number(chainId))
-        await window.ethereum.request({
+        await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId }]
         });
@@ -168,7 +171,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       selectedAddress: tempAccounts[0],
       selectedENSName: tempENSName,
       selectedENSAvatar: tempENSAvatar,
-      isConnected: 'metamask'
+      walletConnected: 'metamask'
     });
     accounts = tempAccounts;
     setMetamaskError(tempError);
@@ -177,8 +180,9 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   }, [metamaskError]);
 
   const handleBitkeepWatch = useCallback(async () => {
-    if (window.bitkeep && window.bitkeep.ethereum) {
-      const accs = await window.bitkeep.ethereum.request({
+    const provider = getProvider('bitkeep');
+    if (provider) {
+      const accs = await provider.request({
         method: 'eth_accounts'
       });
       if (!accs[0]) {
@@ -213,7 +217,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       const currentChainId = await bitkeep.getChainId();
       const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
       if (currentChainId !== Number(chainId))
-        await window.bitkeep.ethereum.request({
+        await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId }]
         });
@@ -240,7 +244,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       selectedAddress: tempAccounts[0],
       selectedENSName: tempENSName,
       selectedENSAvatar: tempENSAvatar,
-      isConnected: 'bitkeep'
+      walletConnected: 'bitkeep'
     });
     accounts = tempAccounts;
     setBitkeepError(tempError);
@@ -249,8 +253,9 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   }, [bitkeepError]);
 
   const handleTrustWalletWatch = useCallback(async () => {
-    if (window.trustwallet) {
-      const accs = await window.trustwallet.request({
+    const provider = getProvider('trustwallet');
+    if (provider) {
+      const accs = await provider.request({
         method: 'eth_accounts'
       });
       if (!accs[0]) {
@@ -285,7 +290,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       const currentChainId = await trustwallet.getChainId();
       const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
       if (currentChainId !== Number(chainId))
-        await window.trustwallet.request({
+        await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId }]
         });
@@ -312,7 +317,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       selectedAddress: tempAccounts[0],
       selectedENSName: tempENSName,
       selectedENSAvatar: tempENSAvatar,
-      isConnected: 'trustwallet'
+      walletConnected: 'trustwallet'
     });
     accounts = tempAccounts;
     setTrustwalletError(tempError);
@@ -385,7 +390,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       selectedAddress: tempAccounts[0],
       selectedENSName: tempENSName,
       selectedENSAvatar: tempENSAvatar,
-      isConnected: 'coinbase'
+      walletConnected: 'coinbase'
     });
     accounts = tempAccounts;
     setCoinbasewalletError(tempError);
@@ -393,10 +398,9 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
     localStorage.setItem('walletConnected', 'coinbase');
   }, [coinbasewalletError]);
 
-  const handleMetaMask = () => {
-    setMetamaskError(
-      getProvider('metamask') ? '' : new Error(constants.NOT_INSTALLED)
-    );
+  const handleMetaMask = async () => {
+    const provider = getProvider('metamask');
+    setMetamaskError(provider ? '' : new Error(constants.NOT_INSTALLED));
     handleMetamaskWatch();
   };
 
@@ -409,17 +413,15 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
     handleBitkeepWatch();
   };
 
-  const handleTrustWallet = () => {
-    setTrustwalletError(
-      getProvider('trustwallet') ? '' : new Error(constants.NOT_INSTALLED)
-    );
+  const handleTrustWallet = async () => {
+    const provider = getProvider('trustwallet');
+    setTrustwalletError(provider ? '' : new Error(constants.NOT_INSTALLED));
     handleTrustWalletWatch();
   };
 
-  const handleCoinbaseWallet = () => {
-    setCoinbasewalletError(
-      getProvider('coinbase') ? '' : new Error(constants.NOT_INSTALLED)
-    );
+  const handleCoinbaseWallet = async () => {
+    const provider = getProvider('coinbase');
+    setCoinbasewalletError(provider ? '' : new Error(constants.NOT_INSTALLED));
     handleCoinbaseWalletWatch();
   };
 
@@ -433,13 +435,13 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   }, [accounts]);
 
   useEffect(() => {
-    if (settings.isConnected === 'metamask') {
+    if (settings.walletConnected === 'metamask') {
       handleMetamaskWatch();
-    } else if (settings.isConnected === 'bitkeep') {
+    } else if (settings.walletConnected === 'bitkeep') {
       handleBitkeepWatch();
-    } else if (settings.isConnected === 'trustwallet') {
+    } else if (settings.walletConnected === 'trustwallet') {
       handleTrustWalletWatch();
-    } else if (settings.isConnected === 'coinbase') {
+    } else if (settings.walletConnected === 'coinbase') {
       handleCoinbaseWalletWatch();
     }
     return function cleanup() {
@@ -448,19 +450,19 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   }, [history]);
 
   useEffect(() => {
-    if (window.ethereum && !doneFlag) {
+    if (currentProvider && !doneFlag) {
       doneFlag = true;
       window.addEventListener('load', event => {
-        checkNetwork();
+        checkNetwork(currentProvider);
       });
     }
-  }, [window.ethereum]);
+  }, [currentProvider]);
 
   const handleDisconnect = () => {
     localStorage.clear();
     setSetting({
       selectedAddress: null,
-      isConnected: ''
+      walletConnected: ''
     });
   };
 

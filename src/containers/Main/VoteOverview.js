@@ -11,9 +11,9 @@ import { withRouter } from 'react-router-dom';
 import { Icon, Tooltip, message } from 'antd';
 import Button from '@material-ui/core/Button';
 import {
-  methods,
+  getTokenContract,
   getVoteContract,
-  getTokenContract
+  methods
 } from 'utilities/ContractService';
 import { connectAccount, accountActionCreators } from 'core';
 import MainLayout from 'containers/Layout/MainLayout';
@@ -24,6 +24,7 @@ import ProposalHistory from 'components/Vote/VoteOverview/ProposalHistory';
 import { promisify } from 'utilities';
 import { Row, Column } from 'components/Basic/Style';
 import { Card } from 'components/Basic/Card';
+import { useInstance } from 'hooks/useContract';
 
 const VoteOverviewWrapper = styled.div`
   width: 100%;
@@ -102,6 +103,7 @@ const CardWrapper = styled.div`
 `;
 
 function VoteOverview({ settings, getVoters, getProposalById, match }) {
+  const instance = useInstance(settings.walletConnected);
   const [proposalInfo, setProposalInfo] = useState({});
   const [agreeVotes, setAgreeVotes] = useState({});
   const [againstVotes, setAgainstVotes] = useState({});
@@ -116,8 +118,8 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
 
   const updateBalance = useCallback(async () => {
     if (settings.selectedAddress && proposalInfo.id) {
-      const strkTokenContract = getTokenContract('strk');
-      const voteContract = getVoteContract();
+      const strkTokenContract = getTokenContract(instance, 'strk');
+      const voteContract = getVoteContract(instance);
       await methods
         .call(voteContract.methods.proposalThreshold, [])
         .then(res => {
@@ -131,7 +133,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
           setProposerVotingWeight(+Web3.utils.fromWei(res, 'ether'));
         });
     }
-  }, [settings.selectedAddress, proposalInfo]);
+  }, [settings.selectedAddress, proposalInfo, instance]);
   useEffect(() => {
     if (settings.selectedAddress) {
       updateBalance();
@@ -175,7 +177,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
   );
 
   const getIsPossibleExcuted = () => {
-    const voteContract = getVoteContract();
+    const voteContract = getVoteContract(instance);
     methods
       .call(voteContract.methods.proposals, [proposalInfo.id])
       .then(res => {
@@ -219,7 +221,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
   };
 
   const handleUpdateProposal = statusType => {
-    const appContract = getVoteContract();
+    const appContract = getVoteContract(instance);
     if (statusType === 'Queue') {
       setIsLoading(true);
       methods
@@ -432,7 +434,10 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
             </div>
             <Row>
               <Column xs="12">
-                <ProposalDetail proposalInfo={proposalInfo} />
+                <ProposalDetail
+                  walletConnected={settings.walletConnected}
+                  proposalInfo={proposalInfo}
+                />
               </Column>
             </Row>
           </Column>

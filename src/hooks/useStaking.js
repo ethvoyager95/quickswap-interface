@@ -1,12 +1,13 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import { multicall } from 'utilities/ContractService';
 import * as constants from 'utilities/constants';
+import { getTokenContract } from 'utilities/ContractService';
 import useRefresh from './useRefresh';
-import { useStakingContract, useStrkContract } from './useContract';
+import { useMulticall, useStakingContract } from './useContract';
 
-export const useStakingData = (account, strkPrice, forceUpdate) => {
+export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
+  const multicall = useMulticall(instance);
   const [totalLocked, setTotalLocked] = useState(new BigNumber(0));
   const [totalStaked, setTotalStaked] = useState(new BigNumber(0));
   const [stakeApr, setStakeApr] = useState(0);
@@ -147,7 +148,7 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
     return temp;
   }, [account]);
 
-  const contract = useStakingContract();
+  const contract = useStakingContract(instance);
 
   useEffect(() => {
     const fetchGlobalData = async () => {
@@ -339,9 +340,9 @@ export const useStakingData = (account, strkPrice, forceUpdate) => {
   };
 };
 
-export const useStakeCallback = account => {
+export const useStakeCallback = (instance, account) => {
   const [pending, setPending] = useState(false);
-  const contract = useStakingContract();
+  const contract = useStakingContract(instance);
 
   const handleStake = useCallback(
     async (amount, lock) => {
@@ -364,9 +365,9 @@ export const useStakeCallback = account => {
   return { handleStake, pending };
 };
 
-export const useWithdrawCallback = account => {
+export const useWithdrawCallback = (instance, account) => {
   const [pending, setPending] = useState(false);
-  const contract = useStakingContract();
+  const contract = useStakingContract(instance);
 
   const handleWithdraw = useCallback(
     async amount => {
@@ -389,9 +390,9 @@ export const useWithdrawCallback = account => {
   return { handleWithdraw, pending };
 };
 
-export const useWithdrawExpiredLocksCallback = account => {
+export const useWithdrawExpiredLocksCallback = (instance, account) => {
   const [pending, setPending] = useState(false);
-  const contract = useStakingContract();
+  const contract = useStakingContract(instance);
 
   const handleWithdrawExpiredLocks = useCallback(async () => {
     try {
@@ -411,9 +412,9 @@ export const useWithdrawExpiredLocksCallback = account => {
   return { handleWithdrawExpiredLocks, pending };
 };
 
-export const useGetRewardCallback = account => {
+export const useGetRewardCallback = (instance, account) => {
   const [pending, setPending] = useState(false);
-  const contract = useStakingContract();
+  const contract = useStakingContract(instance);
 
   const handleGetReward = useCallback(async () => {
     try {
@@ -433,10 +434,10 @@ export const useGetRewardCallback = account => {
   return { handleGetReward, pending };
 };
 
-export const useStrkApproveCallback = account => {
+export const useStrkApproveCallback = (instance, account) => {
   const [pending, setPending] = useState(false);
 
-  const contract = useStrkContract();
+  const contract = getTokenContract(instance, 'strk');
 
   const handleApprove = useCallback(async () => {
     try {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
+import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import WalletLink from 'walletlink';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { Web3Provider } from '@ethersproject/providers';
@@ -9,7 +10,6 @@ import { bindActionCreators } from 'redux';
 import { compose } from 'recompose';
 import { connectAccount, accountActionCreators } from 'core';
 import * as constants from 'utilities/constants';
-import { checkIsValidNetwork } from 'utilities/common';
 import metamaskImg from 'assets/img/metamask.png';
 import bitkeepImg from 'assets/img/bitkeep.png';
 import coinbaseImg from 'assets/img/coinbase.png';
@@ -18,6 +18,7 @@ import trusteWalletImg from 'assets/img/trustwallet.png';
 import arrowRightImg from 'assets/img/arrow-right.svg';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
+import { getProvider } from 'utilities/ContractService';
 
 const ModalContent = styled.div`
   border-radius: 6px;
@@ -284,47 +285,55 @@ function ConnectModal({
 
   const connectWalletConnect = async () => {
     try {
-      const walletConnector = new WalletConnectConnector({
-        rpc: {
-          1: 'https://mainnet.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4'
-        },
-        pollingInterval: 10000,
-        bridge: 'https://bridge.walletconnect.org',
-        qrcode: true
-      });
+      // const walletConnector = new WalletConnectConnector({
+      //   rpc: {
+      //     1: 'https://mainnet.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4'
+      //   },
+      //   pollingInterval: 10000,
+      //   bridge: 'https://bridge.walletconnect.org',
+      //   qrcode: true
+      // });
 
-      await walletConnector.activate();
-      const account = walletConnector.getAccount();
-      if (!account) {
-        setSetting({
-          selectedAddress: null
+      // await walletConnector.activate();
+      // const account = walletConnector.getAccount();
+      // if (!account) {
+      //   setSetting({
+      //     selectedAddress: null
+      //   });
+      // } else {
+      //   console.log(account);
+      //   console.log(settings);
+      //   setSetting({
+      //     selectedAddress: account.toString()
+      //   });
+      //   onCancel();
+      // }
+      const provider = getProvider('wcv2');
+      if (provider) {
+        provider.on('accountsChanged', accounts => {
+          setSetting({
+            selectedAddress: accounts[0]
+          });
         });
-      } else {
-        console.log(account);
-        console.log(settings);
-        setSetting({
-          selectedAddress: account.toString()
-        });
+
+        provider.connect();
         onCancel();
+        localStorage.setItem('walletConnected', 'wcv2');
+
+        const accounts = await provider.enable();
+        if (accounts)
+          setSetting({
+            selectedAddress: accounts[0],
+            walletConnected: 'wcv2'
+          });
       }
     } catch (ex) {
+      setSetting({
+        selectedAddress: null
+      });
       console.log(ex);
     }
   };
-
-  useEffect(() => {
-    if (!settings.selectedAddress) {
-      return;
-    }
-    if (window.ethereum && checkIsValidNetwork()) {
-      window.ethereum.on('accountsChanged', accs => {
-        setSetting({
-          selectedAddress: accs[0],
-          accountLoading: true
-        });
-      });
-    }
-  }, [window.ethereum, settings.selectedAddress]);
 
   return (
     <Modal

@@ -213,7 +213,7 @@ function History({ settings, setSetting }) {
     setVisibleFrom(false);
     setVisibleTo(false);
     if (
-      (currentTab === 'user' && !settings.isConnected) ||
+      (currentTab === 'user' && !settings.walletConnected) ||
       (currentTab === 'user' && !settings.selectedAddress)
     ) {
       setDataTransaction([]);
@@ -273,7 +273,7 @@ function History({ settings, setSetting }) {
     setToAgeDisplay('');
     setToAgeValue('');
     setToAddressValue('');
-    if (settings.isConnected) {
+    if (settings.walletConnected) {
       if (currentTab === 'user') {
         if (settings.selectedAddress) {
           filterCondition.user_address = settings.selectedAddress;
@@ -291,7 +291,7 @@ function History({ settings, setSetting }) {
         getDataTable(filterCondition);
       }
     }
-    if (!settings.isConnected) {
+    if (!settings.walletConnected) {
       if (currentTab === 'user') {
         setDataTransaction([]);
         setShowPaging(false);
@@ -302,21 +302,8 @@ function History({ settings, setSetting }) {
         getDataTable(filterCondition);
       }
     }
-  }, [currentTab, settings.selectedAddress, settings.isConnected]);
+  }, [currentTab, settings.selectedAddress, settings.walletConnected]);
 
-  useEffect(() => {
-    if (!settings.selectedAddress) {
-      return;
-    }
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', acc => {
-        setSetting({
-          selectedAddress: acc[0],
-          accountLoading: true
-        });
-      });
-    }
-  }, [window.ethereum, settings.selectedAddress]);
   // disabled block
   const disabledFilterBlock = useMemo(() => {
     if (!toBlockValue && !fromBlockValue) {
@@ -564,7 +551,7 @@ function History({ settings, setSetting }) {
           setPagination(pagination);
           setCurrentPage(1);
           if (
-            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.walletConnected) ||
             (currentTab === 'user' && !settings.selectedAddress)
           ) {
             setDataTransaction([]);
@@ -605,7 +592,7 @@ function History({ settings, setSetting }) {
           setPagination(pagination);
           setCurrentPage(1);
           if (
-            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.walletConnected) ||
             (currentTab === 'user' && !settings.selectedAddress)
           ) {
             setDataTransaction([]);
@@ -648,7 +635,7 @@ function History({ settings, setSetting }) {
           setPagination(pagination);
           setCurrentPage(1);
           if (
-            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.walletConnected) ||
             (currentTab === 'user' && !settings.selectedAddress)
           ) {
             setDataTransaction([]);
@@ -690,7 +677,7 @@ function History({ settings, setSetting }) {
           setPagination(pagination);
           setCurrentPage(1);
           if (
-            (currentTab === 'user' && !settings.isConnected) ||
+            (currentTab === 'user' && !settings.walletConnected) ||
             (currentTab === 'user' && !settings.selectedAddress)
           ) {
             setDataTransaction([]);
@@ -945,7 +932,7 @@ function History({ settings, setSetting }) {
           <>
             <img src={noData} alt="No data" />
             <div>
-              {settings.isConnected && settings.selectedAddress
+              {settings.walletConnected && settings.selectedAddress
                 ? 'No record was found'
                 : currentTab === 'all'
                 ? 'No record was found'

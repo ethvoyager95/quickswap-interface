@@ -8,9 +8,9 @@ import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import {
-  getTokenContract,
-  getSbepContract,
   getComptrollerContract,
+  getSbepContract,
+  getTokenContract,
   methods
 } from 'utilities/ContractService';
 import MainLayout from 'containers/Layout/MainLayout';
@@ -23,6 +23,7 @@ import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import { Row, Column } from 'components/Basic/Style';
 import { checkIsValidNetwork } from 'utilities/common';
 import * as constants from 'utilities/constants';
+import { useInstance } from 'hooks/useContract';
 
 const VoteWrapper = styled.div`
   height: 100%;
@@ -38,6 +39,7 @@ const SpinnerWrapper = styled.div`
 `;
 
 function Vote({ settings, history, getProposals, setSetting }) {
+  const instance = useInstance(settings.walletConnected);
   const [balance, setBalance] = useState(0);
   const [votingWeight, setVotingWeight] = useState(0);
   const [proposals, setProposals] = useState({});
@@ -81,8 +83,9 @@ function Vote({ settings, history, getProposals, setSetting }) {
   };
 
   const updateBalance = useCallback(async () => {
-    if (settings.selectedAddress && checkIsValidNetwork()) {
-      const strkTokenContract = getTokenContract('strk');
+    const validNetwork = await checkIsValidNetwork(instance);
+    if (settings.selectedAddress && validNetwork) {
+      const strkTokenContract = getTokenContract(instance, 'strk');
       await methods
         .call(strkTokenContract.methods.getCurrentVotes, [
           settings.selectedAddress
@@ -103,12 +106,12 @@ function Vote({ settings, history, getProposals, setSetting }) {
         .toString(10);
       setBalance(temp);
     }
-  }, [settings.markets]);
+  }, [settings.markets, instance]);
 
   const getVoteInfo = async () => {
     const myAddress = settings.selectedAddress;
     if (!myAddress) return;
-    const appContract = getComptrollerContract();
+    const appContract = getComptrollerContract(instance);
     const [strikeInitialIndex, strikeAccrued] = await Promise.all([
       methods.call(appContract.methods.strikeInitialIndex, []),
       methods.call(appContract.methods.strikeAccrued, [myAddress])
@@ -117,7 +120,7 @@ function Vote({ settings, history, getProposals, setSetting }) {
     await Promise.all(
       Object.values(constants.CONTRACT_SBEP_ADDRESS).map(
         async (item, index) => {
-          const sBepContract = getSbepContract(item.id);
+          const sBepContract = getSbepContract(instance, item.id);
           const [
             supplyState,
             supplierIndex,

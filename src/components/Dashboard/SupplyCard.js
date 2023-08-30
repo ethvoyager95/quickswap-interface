@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { compose } from 'recompose';
 import { Card } from 'components/Basic/Card';
 import SupplySection from 'components/Basic/Supply/SupplySection';
 import WithdrawSection from 'components/Basic/Supply/WithdrawSection';
 import BorrowSection from 'components/Basic/Borrow/BorrowSection';
 import RepaySection from 'components/Basic/Borrow/RepaySection';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
-import { compose } from 'recompose';
 import { connectAccount } from 'core';
 import metaMaskImg from 'assets/img/metamask.png';
 import { addToken, getBigNumber } from 'utilities/common';
+import { useProvider } from 'hooks/useContract';
 
 const CardWrapper = styled.div`
   position: relative;
@@ -97,6 +98,7 @@ const Tabs = styled.div`
 `;
 
 function SupplyCard({ currentMarket, settings }) {
+  const provider = useProvider(settings.walletConnected);
   const [currentTab, setCurrentTab] = useState('supply');
   const [currentAsset, setCurrentAsset] = useState({});
 
@@ -141,7 +143,7 @@ function SupplyCard({ currentMarket, settings }) {
           <img src={currentAsset.img} alt="asset" />
           <div className="title">{currentAsset.name}</div>
         </div>
-        {window.ethereum && window.ethereum.networkVersion && currentAsset.id && (
+        {provider && currentAsset.id && (
           <div className="flex align-center add-token-wrapper">
             {currentAsset.id !== 'eth' && (
               <div className="flex align-center underlying-asset">

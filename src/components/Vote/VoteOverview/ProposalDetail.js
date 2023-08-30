@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { getVoteContract, methods } from 'utilities/ContractService';
 import { Card } from 'components/Basic/Card';
 import { Label } from 'components/Basic/Label';
+import { useInstance } from 'hooks/useContract';
 
 const ProposalDetailWrapper = styled.div`
   width: 100%;
@@ -29,18 +30,19 @@ const ProposalDetailWrapper = styled.div`
   }
 `;
 
-function ProposalDetail({ proposalInfo }) {
+function ProposalDetail({ proposalInfo, walletConnected }) {
+  const instance = useInstance(walletConnected);
   const [proposalActions, setProposalActions] = useState({});
   useEffect(() => {
     if (proposalInfo.id) {
-      const voteContract = getVoteContract();
+      const voteContract = getVoteContract(instance);
       methods
         .call(voteContract.methods.getActions, [proposalInfo.id])
         .then(res => {
           setProposalActions(res);
         });
     }
-  }, [proposalInfo]);
+  }, [proposalInfo, instance]);
 
   return (
     <Card>
@@ -69,9 +71,11 @@ function ProposalDetail({ proposalInfo }) {
 }
 
 ProposalDetail.propTypes = {
-  proposalInfo: PropTypes.object
+  proposalInfo: PropTypes.object,
+  walletConnected: PropTypes.string
 };
 ProposalDetail.defaultProps = {
-  proposalInfo: {}
+  proposalInfo: {},
+  walletConnected: ''
 };
 export default ProposalDetail;

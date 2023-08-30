@@ -13,6 +13,7 @@ import Toggle from 'components/Basic/Toggle';
 import MarketTable from 'components/Basic/Table';
 import PendingTransaction from 'components/Basic/PendingTransaction';
 import { currencyFormatter, shortenNumberFormatter } from 'utilities/common';
+import { useInstance } from 'hooks/useContract';
 
 const SupplyMarketWrapper = styled.div`
   width: 100%;
@@ -28,6 +29,7 @@ function SupplyMarket({
   remainAssets,
   setSelectedAsset
 }) {
+  const instance = useInstance(settings.walletConnected);
   const [isOpenCollateralConfirm, setIsCollateralConfirm] = useState(false);
   const [isCollateralEnalbe, setIsCollateralEnable] = useState(true);
 
@@ -36,7 +38,7 @@ function SupplyMarket({
       message.error('Please connect your wallet.');
       return;
     }
-    const appContract = getComptrollerContract();
+    const appContract = getComptrollerContract(instance);
     if (r && settings.selectedAddress && r.borrowBalance.isZero()) {
       if (!r.collateral) {
         setIsCollateralEnable(false);

@@ -20,9 +20,18 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import MainLayout from 'containers/Layout/MainLayout';
 import { connectAccount, accountActionCreators } from 'core';
+import {
+  useFarmingContract,
+  useInstance,
+  useLPContract,
+  useNFTContract,
+  useProvider,
+  useSTRKClaimContract,
+  useVSTRKContract
+} from 'hooks/useContract';
 import * as constants from 'utilities/constants';
 import NftMintModal from 'components/Basic/NftMintModal';
-// import { checkIsValidNetwork } from 'utilities/common';
+import { checkIsValidNetwork } from 'utilities/common';
 import {
   DECIMALS_INPUT,
   MIXIMUM_IPUT,
@@ -55,14 +64,7 @@ import * as ST from '../../../assets/styles/staking.js';
 // eslint-disable-next-line import/no-duplicates
 import DialogConfirm from './DialogConfirm';
 import DialogErr from './DialogErr';
-import {
-  getFarmingContract,
-  getLPContract,
-  getVSTRKContract,
-  getNFTContract,
-  getSTRKClaimContract,
-  methods
-} from '../../../utilities/ContractService';
+import { methods } from '../../../utilities/ContractService';
 import DashboardStaking from './Dashboard';
 import CountDownClaim from './countDownClaim';
 import DialogSuccess from './DialogSuccess';
@@ -112,6 +114,8 @@ const AUDITOR_SETTING = {
 const abortController = new AbortController();
 // eslint-disable-next-line react/prop-types
 function Staking({ settings, setSetting }) {
+  const instance = useInstance(settings.walletConnected);
+  const provider = useProvider(settings.walletConnected);
   const address = settings.selectedAddress;
   const [val, setVal] = useState('');
   const [isMaxValue, setIsMaxValue] = useState(false);
@@ -176,11 +180,11 @@ function Staking({ settings, setSetting }) {
   const [isOpenNftMintModal, setIsOpenNftMintModal] = useState(false);
 
   // contract
-  const farmingContract = getFarmingContract();
-  const lpContract = getLPContract();
-  const vStrkContract = getVSTRKContract();
-  const nFtContract = getNFTContract();
-  const strkContract = getSTRKClaimContract();
+  const farmingContract = useFarmingContract(instance);
+  const lpContract = useLPContract(instance);
+  const vStrkContract = useVSTRKContract(instance);
+  const nFtContract = useNFTContract(instance);
+  const strkContract = useSTRKClaimContract(instance);
   // get userInfor
   useMemo(async () => {
     let sTokenBalance = null;
@@ -333,7 +337,7 @@ function Staking({ settings, setSetting }) {
           });
       }
     }
-  }, [address, txhash, window.ethereum]);
+  }, [address, txhash]);
 
   // get base boost available realtime
   const getBaseBoostRealTime = async () => {
@@ -481,7 +485,7 @@ function Staking({ settings, setSetting }) {
       setIsLoading(false);
       throw err;
     }
-  }, [address, window.ethereum, txhash, timeDelay, isSuccess]);
+  }, [address, txhash, timeDelay, isSuccess]);
   // get data NFT staked
   useMemo(async () => {
     if (!address) {
@@ -540,7 +544,7 @@ function Staking({ settings, setSetting }) {
       throw err;
     }
     setIsLoading(false);
-  }, [address, window.ethereum, txhash]);
+  }, [address, txhash]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
     if (userInfo) {
@@ -571,7 +575,7 @@ function Staking({ settings, setSetting }) {
       }, 2000);
       return result;
     }
-  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+  }, [address, txhash, isApproveLP, userInfo]);
 
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
@@ -603,7 +607,7 @@ function Staking({ settings, setSetting }) {
       }, 2000);
       return result;
     }
-  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+  }, [address, txhash, isApproveLP, userInfo]);
 
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
@@ -635,7 +639,7 @@ function Staking({ settings, setSetting }) {
       }, 2000);
       return result;
     }
-  }, [address, txhash, isApproveLP, userInfo, window.ethereum]);
+  }, [address, txhash, isApproveLP, userInfo]);
 
   const expiryTimeUnstakeNFT = useMemo(() => {
     if (userInfo) {
@@ -668,7 +672,7 @@ function Staking({ settings, setSetting }) {
       }, 2000);
       return result;
     }
-  }, [address, txhash, isApproveNFT, userInfo, window.ethereum]);
+  }, [address, txhash, isApproveNFT, userInfo]);
   // change amount
   const enforcer = nextUserInput => {
     const numberDigitsRegex = /^\d*(\.\d{0,18})?$/g;
@@ -962,7 +966,7 @@ function Staking({ settings, setSetting }) {
           setIsApproveNFT(res);
         });
     }
-  }, [address, txhash, userInfo, window.ethereum]);
+  }, [address, txhash, userInfo]);
   const checkApproveVstrk = useCallback(async () => {
     await methods
       .call(vStrkContract.methods.allowance, [
@@ -1458,33 +1462,36 @@ function Staking({ settings, setSetting }) {
   ]);
   // change accounts
   useEffect(() => {
-    if (!address) {
-      setYourBoostAPR(0);
-      return;
-    }
-    if (window.ethereum) {
-      // && checkIsValidNetwork()
-      window.ethereum.on('accountsChanged', acc => {
-        setSetting({
-          selectedAddress: acc[0],
-          accountLoading: true
+    const func = async () => {
+      if (!address) {
+        setYourBoostAPR(0);
+        return;
+      }
+      const validNetwork = await checkIsValidNetwork(instance);
+      if (validNetwork) {
+        provider.on('accountsChanged', acc => {
+          setSetting({
+            selectedAddress: acc[0],
+            accountLoading: true
+          });
+          setVal('');
+          setValUnStake('');
+          setMessErr({
+            mess: '',
+            show: false,
+            noLP: false
+          });
+          setMessErrUnStake({
+            mess: '',
+            show: false
+          });
+          setIsStakeNFT(false);
+          setIsUnStakeNFT(false);
         });
-        setVal('');
-        setValUnStake('');
-        setMessErr({
-          mess: '',
-          show: false,
-          noLP: false
-        });
-        setMessErrUnStake({
-          mess: '',
-          show: false
-        });
-        setIsStakeNFT(false);
-        setIsUnStakeNFT(false);
-      });
-    }
-  }, [window.ethereum, address]);
+      }
+    };
+    func();
+  }, [provider, address, instance]);
   // realtime base boost reward
   useEffect(() => {
     let updateTimerBaseBoost;
@@ -1547,7 +1554,11 @@ function Staking({ settings, setSetting }) {
           {/* <ST.SHr /> */}
           <Row className="all-section">
             <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-              <DashboardStaking amount={countNFT} txh={txhash} />
+              <DashboardStaking
+                instance={instance}
+                amount={countNFT}
+                txh={txhash}
+              />
               <ST.SDivPadding>
                 <ST.SHeader>
                   <ST.STextModel>STRK-ETH Staking</ST.STextModel>

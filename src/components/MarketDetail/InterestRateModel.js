@@ -7,12 +7,12 @@ import { withRouter } from 'react-router-dom';
 import Chart from 'react-apexcharts';
 import { connectAccount } from 'core';
 import {
-  getSbepContract,
   getInterestModelContract,
-  methods,
-  multicall
+  getSbepContract,
+  methods
 } from 'utilities/ContractService';
 import { checkIsValidNetwork } from 'utilities/common';
+import { useInstance, useMulticall } from 'hooks/useContract';
 
 const InterestRateModelWrapper = styled.div`
   margin: 10px -20px 10px;
@@ -173,6 +173,9 @@ function InterestRateModel({ settings, currentAsset, history }) {
     }
   });
 
+  const instance = useInstance(settings.walletConnected);
+  const multicall = useMulticall(instance);
+
   const [graphData, setGraphData] = useState([]);
   const [tickerPos, setTickerPos] = useState(null);
   const [percent, setPercent] = useState(null);
@@ -181,12 +184,15 @@ function InterestRateModel({ settings, currentAsset, history }) {
 
   const getGraphData = async asset => {
     flag = true;
-    const vbepContract = getSbepContract(asset);
+    const vbepContract = getSbepContract(instance, asset);
     const interestRateModel = await methods.call(
       vbepContract.methods.interestRateModel,
       []
     );
-    const interestModelContract = getInterestModelContract(interestRateModel);
+    const interestModelContract = getInterestModelContract(
+      instance,
+      interestRateModel
+    );
     const cashValue = await methods.call(vbepContract.methods.getCash, []);
     const data = [];
     const marketInfo = settings.markets.find(
@@ -361,12 +367,12 @@ function InterestRateModel({ settings, currentAsset, history }) {
       settings.markets &&
       settings.markets.length > 0 &&
       settings.decimals &&
-      checkIsValidNetwork() &&
+      checkIsValidNetwork(instance) &&
       !flag
     ) {
       getGraphData(currentAsset);
     }
-  }, [settings.markets, currentAsset]);
+  }, [settings.markets, currentAsset, instance]);
 
   useEffect(() => {
     flag = false;

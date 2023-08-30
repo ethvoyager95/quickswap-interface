@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 import { Input, Button, Dropdown } from 'antd';
 import MainLayout from 'containers/Layout/MainLayout';
 import { connectAccount, accountActionCreators } from 'core';
+import { useInstance } from 'hooks/useContract';
 import * as constants from 'utilities/constants';
 import { liquidateBorrow } from 'utilities/EthContract';
 import iconSearch from 'assets/img/liquidator-search.svg';
@@ -50,6 +51,7 @@ import {
 BigNumber.config({ DECIMAL_PLACES: 100 });
 
 function Liquidator({ settings, setSetting }) {
+  const instance = useInstance(settings.walletConnected);
   const abortController = new AbortController();
   const [userAddressInput, setUserAddressInput] = useState('');
   const [selectedUserAddress, setSelectedUserAddress] = useState('');
@@ -259,6 +261,7 @@ function Liquidator({ settings, setSetting }) {
     if (selectedAssetRepay.toLowerCase() !== 'eth') {
       if (settings.selectedAddress) {
         const tokenContract = getTokenContract(
+          instance,
           selectedAssetRepay.toLowerCase()
         );
         const approved = await methods.call(tokenContract.methods.allowance, [
@@ -316,7 +319,10 @@ function Liquidator({ settings, setSetting }) {
       setTypeModal('loading');
       setIsOpenModalLoading(true);
       setAction('Approve');
-      const tokenContract = getTokenContract(selectedAssetRepay.toLowerCase());
+      const tokenContract = getTokenContract(
+        instance,
+        selectedAssetRepay.toLowerCase()
+      );
       await methods.send(
         tokenContract.methods.approve,
         [
@@ -343,8 +349,11 @@ function Liquidator({ settings, setSetting }) {
       const tokenContract =
         selectedAssetRepay === 'ETH'
           ? null
-          : getTokenContract(selectedAssetRepay.toLowerCase());
-      const sbepContract = getSbepContract(selectedAssetRepay.toLowerCase());
+          : getTokenContract(instance, selectedAssetRepay.toLowerCase());
+      const sbepContract = getSbepContract(
+        instance,
+        selectedAssetRepay.toLowerCase()
+      );
       setIsOpenModalLoading(true);
       setAction('Liquidating');
       const decimals =
@@ -419,20 +428,6 @@ function Liquidator({ settings, setSetting }) {
     }
     return false;
   }, [settings.selectedAddress, userInfo.account, window.ethereum]);
-
-  useEffect(() => {
-    if (!settings.selectedAddress) {
-      return;
-    }
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', acc => {
-        setSetting({
-          selectedAddress: acc[0],
-          accountLoading: true
-        });
-      });
-    }
-  }, [window.ethereum, settings.selectedAddress]);
 
   useEffect(() => {
     getDataTableUsers();
@@ -885,7 +880,7 @@ function Liquidator({ settings, setSetting }) {
             </div>
           </div>
           <div className="liquidate-wrapper">
-            {!settings.selectedAddress || !settings.isConnected ? (
+            {!settings.selectedAddress || !settings.walletConnected ? (
               <div className="mess-liquidator">
                 You need to connect your wallet
               </div>

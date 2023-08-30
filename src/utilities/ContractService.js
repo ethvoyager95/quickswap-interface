@@ -1,46 +1,8 @@
-import Web3 from 'web3';
+import { useEffect } from 'react';
 import { Multicall } from 'ethereum-multicall';
+import { EthereumProvider } from '@walletconnect/ethereum-provider';
 
 import * as constants from './constants';
-
-export const getProvider = walletType => {
-  let provider = null;
-  if (typeof window.ethereum !== 'undefined') {
-    if (window.ethereum.providers?.length) {
-      window.ethereum.providers.forEach(async p => {
-        if (walletType === 'metamask' && p.isMetaMask) provider = p;
-        else if (walletType === 'trustwallet' && p.isTrustWallet) provider = p;
-        else if (walletType === 'coinbase' && p.isCoinbaseWallet) provider = p;
-      });
-    }
-  }
-  if (walletType === 'metamask' && !provider && window.ethereum)
-    provider = window.ethereum;
-  return provider;
-};
-
-const getInstance = () => {
-  const walletConnected = localStorage.getItem('walletConnected');
-  if (walletConnected === 'bitkeep' && window.bitkeep)
-    return new Web3(window.bitkeep.ethereum);
-
-  const provider = getProvider(walletConnected);
-  if (provider) return new Web3(provider);
-
-  return new Web3(window.ethereum);
-};
-const instance = getInstance();
-
-// const instance = new Web3(
-//   window.web3 ? window.web3.currentProvider : window.ethereum
-// );
-
-// const instance = new Web3('http://3.10.133.254:8575');
-
-export const multicall = new Multicall({
-  web3Instance: instance,
-  tryAggregate: true
-});
 
 const TOKEN_ABI = {
   usdc: constants.CONTRACT_USDC_TOKEN_ABI,
@@ -84,14 +46,52 @@ const send = (method, params, from) => {
   });
 };
 
-export const getTokenContract = name => {
+const walletV2Provider = await EthereumProvider.init({
+  projectId: process.env.REACT_APP_WEB3_WALLET_PROJECT_ID, // required
+  chains: [1], // required
+  showQrModal: true // requires @walletconnect/modal
+});
+
+export const getProvider = walletType => {
+  let provider = null;
+  if (walletType === 'wcv2') {
+    provider = walletV2Provider;
+  } else if (walletType === 'bitkeep' && window.bitkeep) {
+    provider = window.bitkeep.ethereum;
+  } else if (typeof window.ethereum !== 'undefined') {
+    if (window.ethereum.providers?.length) {
+      window.ethereum.providers.forEach(async p => {
+        if ((!walletType || walletType === 'metamask') && p.isMetaMask)
+          provider = p;
+        else if (walletType === 'trustwallet' && p.isTrustWallet) provider = p;
+        else if (walletType === 'coinbase' && p.isCoinbaseWallet) provider = p;
+      });
+    }
+  }
+  if (
+    (!walletType || walletType === 'metamask') &&
+    !provider &&
+    window.ethereum
+  )
+    provider = window.ethereum;
+  return provider;
+};
+
+export const getMulticall = instance => {
+  return new Multicall({
+    web3Instance: instance,
+    tryAggregate: true
+  });
+};
+
+export const getTokenContract = (instance, name) => {
   return new instance.eth.Contract(
     JSON.parse(TOKEN_ABI[name]),
     constants.CONTRACT_TOKEN_ADDRESS[name || 'usdc'].address
   );
 };
 
-export const getSbepContract = name => {
+export const getSbepContract = (instance, name) => {
   return new instance.eth.Contract(
     JSON.parse(
       name !== 'eth' ? constants.CONTRACT_SBEP_ABI : constants.CONTRACT_SETH_ABI
@@ -100,7 +100,7 @@ export const getSbepContract = name => {
   );
 };
 
-export const getComptrollerContract = () => {
+export const getComptrollerContract = instance => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_COMPTROLLER_ABI),
     constants.CONTRACT_COMPTROLLER_ADDRESS
@@ -108,6 +108,7 @@ export const getComptrollerContract = () => {
 };
 
 export const getPriceOracleContract = (
+  instance,
   address = constants.CONTRACT_PRICE_ORACLE_ADDRESS
 ) => {
   return new instance.eth.Contract(
@@ -116,59 +117,59 @@ export const getPriceOracleContract = (
   );
 };
 
-export const getVoteContract = () => {
+export const getVoteContract = instance => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_VOTE_ABI),
     constants.CONTRACT_VOTE_ADDRESS
   );
 };
 
-export const getInterestModelContract = address => {
+export const getInterestModelContract = (instance, address) => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_INTEREST_MODEL_ABI),
     address
   );
 };
 
-export const getFarmingContract = () => {
+export const getFarmingContract = instance => {
   return new instance.eth.Contract(
     JSON.parse(constants.FARMING_ABI),
     constants.CONTRACT_FARMING_ADDRESS
   );
 };
 
-export const getLPContract = () => {
+export const getLPContract = instance => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_LP_TOKEN_ABI),
     constants.CONTRACT_LP_ADDRESS
   );
 };
-export const getNFTContract = () => {
+export const getNFTContract = instance => {
   return new instance.eth.Contract(
     JSON.parse(constants.NFT_ABI),
     constants.NFT_ADDRESS
   );
 };
 
-export const getVSTRKContract = () => {
+export const getVSTRKContract = instance => {
   return new instance.eth.Contract(
     JSON.parse(constants.VSTRK_ABI),
     constants.VSTRK_ADDRESS
   );
 };
-export const getSTRKClaimContract = () => {
+export const getSTRKClaimContract = instance => {
   return new instance.eth.Contract(
     JSON.parse(constants.STRK_CLAIM_ABI),
     constants.STRK_CLAIM_ADDRESS
   );
 };
-export const getSTRKContract = () => {
+export const getSTRKContract = instance => {
   return new instance.eth.Contract(
     JSON.parse(constants.STRK_ABI),
     constants.STRK_ADDRESS
   );
 };
-export const getStakingContract = () => {
+export const getStakingContract = instance => {
   return new instance.eth.Contract(
     JSON.parse(constants.STAKING_ABI),
     constants.STAKING_ADDRESS

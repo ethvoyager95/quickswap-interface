@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { Icon } from 'antd';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
+import { useInstance } from 'hooks/useContract';
 import { getVoteContract, methods } from 'utilities/ContractService';
 import { Row, Column } from 'components/Basic/Style';
 import { connectAccount } from 'core';
@@ -117,6 +118,7 @@ function Proposal({
   history,
   settings
 }) {
+  const instance = useInstance(settings.walletConnected);
   const [isLoading, setIsLoading] = useState(false);
   const [voteType, setVoteType] = useState('like');
   const [voteStatus, setVoteStatus] = useState('');
@@ -170,7 +172,7 @@ function Proposal({
   };
 
   const getIsHasVoted = useCallback(async () => {
-    const voteContract = getVoteContract();
+    const voteContract = getVoteContract(instance);
     await methods
       .call(voteContract.methods.getReceipt, [proposal.id, address])
       .then(res => {
@@ -187,7 +189,7 @@ function Proposal({
   const handleVote = support => {
     setIsLoading(true);
     setVoteType(support);
-    const appContract = getVoteContract();
+    const appContract = getVoteContract(instance);
     methods
       .send(
         appContract.methods.castVote,
