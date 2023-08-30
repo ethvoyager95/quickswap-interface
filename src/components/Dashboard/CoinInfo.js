@@ -10,6 +10,7 @@ import { getTokenContract, methods } from 'utilities/ContractService';
 import * as constants from 'utilities/constants';
 import { checkIsValidNetwork } from 'utilities/common';
 import coinImg from 'assets/img/strike_32.png';
+import { useInstance } from 'hooks/useContract';
 
 const CardWrapper = styled.div`
   width: 100%;
@@ -61,14 +62,16 @@ const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();
 
 function CoinInfo({ settings }) {
+  const instance = useInstance(settings.walletConnected);
   const [address, setAddress] = useState('');
   const [balance, setBalance] = useState('');
   const [ensName, setENSName] = useState('');
   const [ensAvatar, setENSAvatar] = useState('');
 
   const updateBalance = useCallback(async () => {
-    if (window.ethereum && checkIsValidNetwork() && settings.selectedAddress) {
-      const strkTokenContract = getTokenContract('strk');
+    const validNetwork = await checkIsValidNetwork(instance);
+    if (instance && validNetwork && settings.selectedAddress) {
+      const strkTokenContract = getTokenContract(instance, 'strk');
       let temp = await methods.call(strkTokenContract.methods.balanceOf, [
         settings.selectedAddress
       ]);
@@ -81,7 +84,7 @@ function CoinInfo({ settings }) {
       setENSName(settings.selectedENSName);
       setENSAvatar(settings.selectedENSAvatar);
     }
-  }, [window.ethereum, settings.markets]);
+  }, [instance, settings.markets]);
 
   const handleLink = () => {
     window.open(
@@ -102,14 +105,6 @@ function CoinInfo({ settings }) {
       <div className="flex align-center">
         <img src={coinImg} alt="coin" />
         <p>{format(balance)}</p>
-        {/* {window.ethereum && (
-          <Icon
-            className="add-strk-token"
-            type="plus-circle"
-            theme="filled"
-            onClick={() => addToken('strk', 18, 'token')}
-          />
-        )} */}
       </div>
       <div
         className="flex align-center just-center pointer"

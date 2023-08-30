@@ -10,6 +10,7 @@ import { addToken, getBigNumber } from 'utilities/common';
 import { connectAccount } from 'core';
 import metaMaskImg from 'assets/img/metamask.png';
 import closeImg from 'assets/img/close.png';
+import { useProvider } from 'hooks/useContract';
 
 const ModalContent = styled.div`
   border-radius: 6px;
@@ -154,6 +155,7 @@ const Tabs = styled.div`
 `;
 
 function SupplyModal({ visible, onCancel, settings }) {
+  const provider = useProvider(settings.walletConnected);
   const [currentTab, setCurrentTab] = useState('supply');
   const [currentAsset, setCurrentAsset] = useState({});
 
@@ -204,48 +206,46 @@ function SupplyModal({ visible, onCancel, settings }) {
             <img src={currentAsset.img} alt="asset" />
             <div className="title">{currentAsset.name}</div>
           </div>
-          {window.ethereum &&
-            window.ethereum.networkVersion &&
-            currentAsset.id && (
-              <div className="flex align-center add-token-wrapper">
-                {currentAsset.id !== 'eth' && (
-                  <div className="flex align-center underlying-asset">
-                    {currentAsset.id.toUpperCase()}
-                    <img
-                      className="add-token pointer"
-                      src={metaMaskImg}
-                      onClick={() =>
-                        addToken(
-                          currentAsset.id,
-                          settings.decimals[currentAsset.id].token,
-                          'token'
-                        )
-                      }
-                      alt=""
-                    />
-                  </div>
-                )}
-                <div className="flex align-center stoken-asset">
-                  {`s${
-                    currentAsset.id === 'wbtc'
-                      ? 'BTC'
-                      : currentAsset.id.toUpperCase()
-                  }`}
+          {provider && currentAsset.id && (
+            <div className="flex align-center add-token-wrapper">
+              {currentAsset.id !== 'eth' && (
+                <div className="flex align-center underlying-asset">
+                  {currentAsset.id.toUpperCase()}
                   <img
                     className="add-token pointer"
                     src={metaMaskImg}
                     onClick={() =>
                       addToken(
                         currentAsset.id,
-                        settings.decimals[currentAsset.id].stoken,
-                        'stoken'
+                        settings.decimals[currentAsset.id].token,
+                        'token'
                       )
                     }
                     alt=""
                   />
                 </div>
+              )}
+              <div className="flex align-center stoken-asset">
+                {`s${
+                  currentAsset.id === 'wbtc'
+                    ? 'BTC'
+                    : currentAsset.id.toUpperCase()
+                }`}
+                <img
+                  className="add-token pointer"
+                  src={metaMaskImg}
+                  onClick={() =>
+                    addToken(
+                      currentAsset.id,
+                      settings.decimals[currentAsset.id].stoken,
+                      'stoken'
+                    )
+                  }
+                  alt=""
+                />
               </div>
-            )}
+            </div>
+          )}
           <>
             <Tabs>
               {currentAsset.id !== 'ust' && (

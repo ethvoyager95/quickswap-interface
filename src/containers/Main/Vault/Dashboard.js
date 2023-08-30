@@ -8,6 +8,11 @@ import { Row, Col } from 'antd';
 import styled from 'styled-components';
 import _ from 'lodash';
 import { connectAccount, accountActionCreators } from 'core';
+import {
+  useFarmingContract,
+  useSTRKClaimContract,
+  useSTRKContract
+} from 'hooks/useContract';
 import LogoFlash from '../../../assets/img/logo_flash.svg';
 import LogoLP from '../../../assets/img/logo_lp.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
@@ -24,12 +29,7 @@ import {
   FAKE_TOTAL_SUPPLY,
   FAKE_TOTAL_DEPOSIT
 } from './helper';
-import {
-  getFarmingContract,
-  getSTRKClaimContract,
-  getSTRKContract,
-  methods
-} from '../../../utilities/ContractService';
+import { methods } from '../../../utilities/ContractService';
 import * as ST from '../../../assets/styles/staking.js';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
 
@@ -140,14 +140,14 @@ const SIconFlash = styled.img`
   margin-right: 10px;
 `;
 const abortController = new AbortController();
-function DashboardStaking({ amount, txh }) {
+function DashboardStaking({ instance, amount, txh }) {
   const [baseAPR, setBaseAPR] = useState(0);
   const [amountStaked, setAmountStaked] = useState(0);
   const [totalLiquidity, setTotalLiqudity] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
-  const farmingContract = getFarmingContract();
-  const strkContract = getSTRKClaimContract();
-  const strkContractCustomer = getSTRKContract();
+  const farmingContract = useFarmingContract(instance);
+  const strkContract = useSTRKClaimContract(instance);
+  const strkContractCustomer = useSTRKContract(instance);
   const getRate = async () => {
     let rateStrkVsUSD = null;
     let rateStrkVsETH = null;
@@ -360,11 +360,13 @@ function DashboardStaking({ amount, txh }) {
   );
 }
 DashboardStaking.propTypes = {
+  instance: PropTypes.object,
   amount: PropTypes.number,
   txh: PropTypes.string
 };
 
 DashboardStaking.defaultProps = {
+  instance: null,
   amount: 0,
   txh: ''
 };

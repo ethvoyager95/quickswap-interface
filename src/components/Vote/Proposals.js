@@ -16,6 +16,7 @@ import ProposalModal from 'components/Vote/ProposalModal';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import { Card } from 'components/Basic/Card';
+import { useInstance } from 'hooks/useContract';
 
 const ProposalsWrapper = styled.div`
   width: 100%;
@@ -171,6 +172,8 @@ function Proposals({
   total,
   onChangePage
 }) {
+  const instance = useInstance(settings.walletConnected);
+
   const [current, setCurrent] = useState(pageNumber);
   const [pageSize, setPageSize] = useState(5);
 
@@ -182,7 +185,7 @@ function Proposals({
 
   useEffect(() => {
     if (address) {
-      const voteContract = getVoteContract();
+      const voteContract = getVoteContract(instance);
       methods.call(voteContract.methods.proposalThreshold, []).then(res => {
         setProposalThreshold(+Web3.utils.fromWei(res, 'ether'));
       });
@@ -190,7 +193,7 @@ function Proposals({
         setMaxOperation(Number(res));
       });
     }
-  }, [address]);
+  }, [address, instance]);
 
   useEffect(() => {
     if (
@@ -198,7 +201,7 @@ function Proposals({
       (delegateAddress === '' ||
         delegateAddress === '0x0000000000000000000000000000000000000000')
     ) {
-      const tokenContract = getTokenContract('strk');
+      const tokenContract = getTokenContract(instance, 'strk');
       methods
         .call(tokenContract.methods.delegates, [address])
         .then(res => {
@@ -206,7 +209,7 @@ function Proposals({
         })
         .catch(() => {});
     }
-  }, [settings.selectedAddress, address, delegateAddress]);
+  }, [settings.selectedAddress, address, delegateAddress, instance]);
 
   const handleChangePage = (page, size) => {
     setCurrent(page);
@@ -229,7 +232,7 @@ function Proposals({
       );
       return;
     }
-    const voteContract = getVoteContract();
+    const voteContract = getVoteContract(instance);
     setIsLoading(true);
     methods
       .call(voteContract.methods.latestProposalIds, [address])
@@ -313,6 +316,7 @@ function Proposals({
           </div>
         )}
         <ProposalModal
+          walletConnected={settings.walletConnected}
           address={address}
           visible={proposalModal}
           maxOperation={maxOperation}

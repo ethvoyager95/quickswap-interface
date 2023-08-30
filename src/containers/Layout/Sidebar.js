@@ -9,12 +9,13 @@ import BigNumber from 'bignumber.js';
 import Button from '@material-ui/core/Button';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import {
-  getTokenContract,
-  getSbepContract,
   getComptrollerContract,
-  methods,
-  multicall
+  getSbepContract,
+  getTokenContract,
+  methods
 } from 'utilities/ContractService';
+
+import { useInstance, useMulticall } from 'hooks/useContract';
 import { promisify } from 'utilities';
 import * as constants from 'utilities/constants';
 import UserInfoModal from 'components/Basic/UserInfoModal';
@@ -277,6 +278,8 @@ const menu = (
 );
 
 function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
+  const instance = useInstance(settings.walletConnected);
+  const multicall = useMulticall(instance);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [available, setAvailable] = useState('0');
@@ -288,13 +291,14 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     Object.values(constants.CONTRACT_TOKEN_ADDRESS).forEach(async item => {
       decimals[`${item.id}`] = {};
       if (item.id !== 'eth' && item.id !== 'strk') {
-        if (checkIsValidNetwork()) {
-          const tokenContract = getTokenContract(item.id);
+        const validNetwork = await checkIsValidNetwork(instance);
+        if (validNetwork) {
+          const tokenContract = getTokenContract(instance, item.id);
           const tokenDecimals = await methods.call(
             tokenContract.methods.decimals,
             []
           );
-          const sBepContract = getSbepContract(item.id);
+          const sBepContract = getSbepContract(instance, item.id);
           const stokenDecimals = await methods.call(
             sBepContract.methods.decimals,
             []
@@ -331,12 +335,12 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   };
 
   useEffect(() => {
-    if (settings.isConnected) {
+    if (settings.walletConnected) {
       setSetting({
         accountLoading: false
       });
     }
-  }, [settings.isConnected]);
+  }, [settings.walletConnected]);
 
   const getMarkets = async () => {
     const res = await promisify(getGovernanceStrike, {});
@@ -357,7 +361,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   useEffect(() => {
     if (window.ethereum) {
-      if (!settings.accountLoading /* && checkIsValidNetwork() */) {
+      if (!settings.accountLoading /* && checkIsValidNetwork(instance) */) {
         initSettings();
       }
     }
@@ -367,22 +371,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   }, [settings.accountLoading]);
 
   useEffect(() => {
-    if (!settings.selectedAddress) {
-      return;
-    }
-    if (window.ethereum && checkIsValidNetwork()) {
-      window.ethereum.on('accountsChanged', accs => {
-        setSetting({
-          selectedAddress: accs[0],
-          accountLoading: true
-        });
-      });
-    }
-  }, [window.ethereum, settings.selectedAddress]);
-
-  useEffect(() => {
-    const updateTimer = setInterval(() => {
-      if (checkIsValidNetwork()) {
+    const updateTimer = setInterval(async () => {
+      const validNetwork = await checkIsValidNetwork(instance);
+      if (validNetwork) {
         getMarkets();
       }
     }, 8000);
@@ -393,7 +384,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         clearInterval(updateTimer);
       }
     };
-  }, [settings.selectedAddress, settings.accountLoading]);
+  }, [settings.selectedAddress, settings.accountLoading, instance]);
 
   const updateMarketInfo = async (
     accountAddress = settings.selectedAddress
@@ -403,7 +394,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         return;
       }
       lockFlag = true;
-      const appContract = getComptrollerContract();
+      const appContract = getComptrollerContract(instance);
       let totalSupplyBalance = new BigNumber(0);
       let totalBorrowBalance = new BigNumber(0);
       let totalBorrowLimit = new BigNumber(0);
@@ -458,7 +449,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             };
 
             const tokenDecimal = settings.decimals[item.id].token || 18;
-            const sBepContract = getSbepContract(item.id);
+            const sBepContract = getSbepContract(instance, item.id);
             asset.collateral = assetsIn.includes(asset.stokenAddress);
 
             // const promises = [];
@@ -466,7 +457,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
             // wallet balance
             if (item.id !== 'eth') {
-              const tokenContract = getTokenContract(item.id);
+              const tokenContract = getTokenContract(instance, item.id);
               // promises.push(
               //   methods.call(tokenContract.methods.balanceOf, [accountAddress]),
               //   // allowance
@@ -808,14 +799,18 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   }, [settings.totalBorrowLimit, settings.selectedAddress]);
 
   // useEffect(() => {
-  //   if (!settings.isConnected && location.pathname !== '/history') {
+  //   if (!settings.walletConnected && location.pathname !== '/history') {
   //     setIsOpenModal(true);
   //   }
   // }, []);
 
   const updateBalance = async () => {
-    if (window.ethereum && checkIsValidNetwork() && settings.selectedAddress) {
-      const strkTokenContract = getTokenContract('strk');
+    if (
+      window.ethereum &&
+      checkIsValidNetwork(instance) &&
+      settings.selectedAddress
+    ) {
+      const strkTokenContract = getTokenContract(instance, 'strk');
       let temp = await methods.call(strkTokenContract.methods.balanceOf, [
         settings.selectedAddress
       ]);
@@ -829,7 +824,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   useEffect(() => {
     updateBalance();
-  }, [settings.selectedAddress]);
+  }, [settings.selectedAddress, instance]);
 
   return (
     <SidebarWrapper>

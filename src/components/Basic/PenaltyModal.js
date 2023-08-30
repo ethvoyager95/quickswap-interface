@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js';
 import { connectAccount } from 'core';
 import { useStakingData, useWithdrawCallback } from 'hooks/useStaking';
 import closeImg from 'assets/img/close.png';
+import { useInstance, useMulticall } from 'hooks/useContract';
 
 const ModalContent = styled.div`
   border-radius: 6px;
@@ -172,6 +173,7 @@ const ModalContent = styled.div`
 // const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin />;
 
 function PenaltyModal({ visible, onCancel, settings }) {
+  const instance = useInstance(settings.walletConnected);
   const [strkPrice, setStrkPrice] = useState(0);
 
   useEffect(() => {
@@ -184,11 +186,13 @@ function PenaltyModal({ visible, onCancel, settings }) {
   }, [settings.markets]);
 
   const { unlockedBalance, totalEarned, withdrawableBalance } = useStakingData(
+    instance,
     settings.selectedAddress,
     strkPrice
   );
 
   const { handleWithdraw, pending } = useWithdrawCallback(
+    instance,
     settings.selectedAddress
   );
 

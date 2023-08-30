@@ -1,10 +1,11 @@
 import { useEffect, useState, useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import * as constants from 'utilities/constants';
-import { multicall } from 'utilities/ContractService';
 import useRefresh from './useRefresh';
+import { useMulticall } from './useContract';
 
-export const useBalance = (account, forceUpdate) => {
+export const useBalance = (instance, account, forceUpdate) => {
+  const multicall = useMulticall(instance);
   const [strkBalance, setStrkBalance] = useState(new BigNumber(0));
   const [strkStakingAllowance, setStrkStakingAllowance] = useState(
     new BigNumber(0)

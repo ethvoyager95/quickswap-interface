@@ -7,10 +7,11 @@ import { bindActionCreators } from 'redux';
 import { compose } from 'recompose';
 import BigNumber from 'bignumber.js';
 import { connectAccount, accountActionCreators } from 'core';
-import { getNFTContract, methods } from 'utilities/ContractService';
+import { methods } from 'utilities/ContractService';
 import { nftMint } from 'utilities/EthContract';
 import closeImg from 'assets/img/close.png';
 import DegenApeLogo from 'assets/img/degen_ape_logo.svg';
+import { useInstance, useNFTContract } from 'hooks/useContract';
 
 const ModalContent = styled.div`
   border-radius: 6px;
@@ -114,13 +115,14 @@ function NftMintModal({ visible, onCancel, settings }) {
   //       .toString(10)
   //   )}`;
   // };
+  const instance = useInstance(settings.walletConnected);
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState(1);
   const [ethBalance, setEthBalance] = useState(new BigNumber(0));
   const [price, setPrice] = useState(new BigNumber(0));
   const [totalPrice, setTotalPrice] = useState(new BigNumber(0));
 
-  const nftContract = getNFTContract();
+  const nftContract = useNFTContract(instance);
 
   const fetchEthBalance = async () => {
     if (window.web3 && window.web3.eth) {

@@ -7,8 +7,8 @@ import Button from '@material-ui/core/Button';
 import commaNumber from 'comma-number';
 import { connectAccount } from 'core';
 import {
-  getTokenContract,
   getComptrollerContract,
+  getTokenContract,
   methods
 } from 'utilities/ContractService';
 import DelegationTypeModal from 'components/Basic/DelegationTypeModal';
@@ -18,6 +18,7 @@ import coinImg from 'assets/img/strike_32.png';
 import { addToken } from 'utilities/common';
 import metaMaskImg from 'assets/img/metamask.png';
 import IconQuestion from 'assets/img/question.png';
+import { useInstance } from 'hooks/useContract';
 
 const VotingWalletWrapper = styled.div`
   width: 100%;
@@ -157,10 +158,11 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
   const [delegateStatus, setDelegateStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingEarn, setIsLoadingEarn] = useState(false);
+  const instance = useInstance(settings.walletConnected);
 
   useEffect(() => {
     if (settings.selectedAddress && timeStamp % 3 === 0) {
-      const tokenContract = getTokenContract('strk');
+      const tokenContract = getTokenContract(instance, 'strk');
       methods
         .call(tokenContract.methods.delegates, [settings.selectedAddress])
         .then(res => {
@@ -176,7 +178,7 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
         .catch(() => {});
     }
     timeStamp = Date.now();
-  }, [settings.markets]);
+  }, [settings.markets, instance]);
 
   useEffect(() => {
     if (!earnedBalance) {
@@ -199,7 +201,7 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
   const handleCollect = () => {
     if (+earnedBalance !== 0) {
       setIsLoading(true);
-      const appContract = getComptrollerContract();
+      const appContract = getComptrollerContract(instance);
       methods
         .send(
           appContract.methods.claimStrike,
@@ -344,6 +346,7 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
           balance={balance}
           delegateStatus={delegateStatus}
           address={settings.selectedAddress ? settings.selectedAddress : ''}
+          instance={instance}
           onCancel={() => setIsOpenModal(false)}
         />
       </VotingWalletWrapper>

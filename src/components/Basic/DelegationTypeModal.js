@@ -73,6 +73,7 @@ const ModalContent = styled.div`
 
 function DelegationTypeModal({
   address,
+  instance,
   balance,
   delegateStatus,
   visible,
@@ -83,7 +84,7 @@ function DelegationTypeModal({
 
   const handleVoting = dAddress => {
     setIsLoading(true);
-    const tokenContract = getTokenContract('strk');
+    const tokenContract = getTokenContract(instance, 'strk');
     methods
       .send(tokenContract.methods.delegate, [dAddress || address], address)
       .then(() => {
@@ -196,6 +197,7 @@ DelegationTypeModal.propTypes = {
   balance: PropTypes.string,
   visible: PropTypes.bool,
   delegateStatus: PropTypes.string,
+  instance: PropTypes.object,
   onCancel: PropTypes.func
 };
 
@@ -204,6 +206,7 @@ DelegationTypeModal.defaultProps = {
   balance: PropTypes.string,
   visible: false,
   delegateStatus: '',
+  instance: null,
   onCancel: () => {}
 };
 

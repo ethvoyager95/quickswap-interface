@@ -15,11 +15,13 @@ import ConnectButton from 'containers/Layout/ConnectButton';
 import IconQuestion from 'assets/img/question.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import coinImg from 'assets/img/strike_32.png';
+import { useInstance } from 'hooks/useContract';
 
 const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();
 
 function BorrowSection({ asset, settings, setSetting }) {
+  const instance = useInstance(settings.walletConnected);
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState(new BigNumber(0));
   const [borrowBalance, setBorrowBalance] = useState(new BigNumber(0));
@@ -72,7 +74,7 @@ function BorrowSection({ asset, settings, setSetting }) {
    * Borrow
    */
   const handleBorrow = () => {
-    const appContract = getSbepContract(asset.id);
+    const appContract = getSbepContract(instance, asset.id);
     if (asset && settings.selectedAddress) {
       setIsLoading(true);
       setSetting({

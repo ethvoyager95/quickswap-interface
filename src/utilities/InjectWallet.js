@@ -20,31 +20,14 @@ export default class InjectWallet {
   }
 
   static async getWeb3(walletType) {
-    if (
-      walletType === 'metamask' ||
-      walletType === 'trustwallet' ||
-      walletType === 'coinbase'
-    ) {
-      const provider = getProvider(walletType);
-      if (provider) {
-        window.web3 = new Web3(provider);
-        provider.on('chainChanged', chainId => {
-          if (chainId > 0 && walletType !== 'coinbase')
-            window.location.reload();
-        });
-        // await provider.enable();
-        await provider.request({ method: 'eth_requestAccounts' });
-        return window.web3;
-      }
-    }
-
-    if (walletType === 'bitkeep' && window.bitkeep && window.bitkeep.ethereum) {
-      window.web3 = new Web3(window.bitkeep.ethereum);
-      window.bitkeep.ethereum.on('chainChanged', chainId => {
-        if (chainId > 0) window.location.reload();
+    const provider = getProvider(walletType);
+    if (provider) {
+      window.web3 = new Web3(provider);
+      provider.on('chainChanged', chainId => {
+        if (chainId > 0 && walletType !== 'coinbase') window.location.reload();
       });
-      // await window.bitkeep.ethereum.enable();
-      await window.bitkeep.ethereum.request({ method: 'eth_requestAccounts' });
+      // await provider.enable();
+      await provider.request({ method: 'eth_requestAccounts' });
       return window.web3;
     }
 

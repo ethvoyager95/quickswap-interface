@@ -13,6 +13,7 @@ import 'react-markdown-editor-lite/lib/index.css';
 import { getVoteContract, methods } from 'utilities/ContractService';
 import { encodeParameters, getArgs } from 'utilities/common';
 import closeImg from 'assets/img/close.png';
+import { useInstance } from 'hooks/useContract';
 
 const ModalContent = styled.div`
   border-radius: 6px;
@@ -168,12 +169,14 @@ const { Panel } = Collapse;
 function ProposalModal({
   form,
   address,
+  walletConnected,
   visible,
   maxOperation,
   onCancel,
   getProposals,
   ...props
 }) {
+  const instance = useInstance(walletConnected);
   const [isLoading, setIsLoading] = useState(false);
   const [description, setDescription] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -256,7 +259,7 @@ function ProposalModal({
           return;
         }
         setIsLoading(true);
-        const appContract = getVoteContract();
+        const appContract = getVoteContract(instance);
         methods
           .send(
             appContract.methods.propose,
@@ -539,6 +542,7 @@ function ProposalModal({
 ProposalModal.propTypes = {
   visible: PropTypes.bool,
   address: PropTypes.string,
+  walletConnected: PropTypes.string,
   form: PropTypes.object,
   maxOperation: PropTypes.number,
   onCancel: PropTypes.func,
@@ -548,6 +552,7 @@ ProposalModal.propTypes = {
 ProposalModal.defaultProps = {
   visible: false,
   address: '',
+  walletConnected: '',
   form: {},
   maxOperation: 0,
   onCancel: () => {}

@@ -9,8 +9,8 @@ import commaNumber from 'comma-number';
 import { Icon, Progress } from 'antd';
 import { connectAccount, accountActionCreators } from 'core';
 import {
-  getTokenContract,
   getSbepContract,
+  getTokenContract,
   methods
 } from 'utilities/ContractService';
 import { sendRepay } from 'utilities/EthContract';
@@ -20,6 +20,7 @@ import ConnectButton from 'containers/Layout/ConnectButton';
 import IconQuestion from 'assets/img/question.png';
 import arrowRightImg from 'assets/img/arrow-right.png';
 import coinImg from 'assets/img/strike_32.png';
+import { useInstance } from 'hooks/useContract';
 
 const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();
@@ -32,6 +33,7 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
   const [borrowPercent, setBorrowPercent] = useState(new BigNumber(0));
   const [newBorrowBalance, setNewBorrowBalance] = useState(new BigNumber(0));
   const [newBorrowPercent, setNewBorrowPercent] = useState(new BigNumber(0));
+  const instance = useInstance(settings.walletConnected);
 
   const updateInfo = useCallback(() => {
     const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
@@ -77,7 +79,7 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
   const onApprove = async () => {
     if (asset && settings.selectedAddress && asset.id !== 'eth') {
       setIsLoading(true);
-      const tokenContract = getTokenContract(asset.id);
+      const tokenContract = getTokenContract(instance, asset.id);
       methods
         .send(
           tokenContract.methods.approve,
@@ -103,7 +105,7 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
    * Repay Borrow
    */
   const handleRepayBorrow = async () => {
-    const appContract = getSbepContract(asset.id);
+    const appContract = getSbepContract(instance, asset.id);
     if (asset && settings.selectedAddress) {
       setIsLoading(true);
       setSetting({

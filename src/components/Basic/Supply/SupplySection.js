@@ -10,8 +10,8 @@ import NumberFormat from 'react-number-format';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
 import {
-  getTokenContract,
   getSbepContract,
+  getTokenContract,
   methods
 } from 'utilities/ContractService';
 import { sendSupply } from 'utilities/EthContract';
@@ -20,6 +20,7 @@ import arrowRightImg from 'assets/img/arrow-right.png';
 import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import ConnectButton from 'containers/Layout/ConnectButton';
 import IconQuestion from 'assets/img/question.png';
+import { useInstance } from 'hooks/useContract';
 
 export const SectionWrapper = styled.div`
   .wallet-section {
@@ -194,6 +195,7 @@ function SupplySection({ asset, settings, setSetting }) {
   const [borrowPercent, setBorrowPercent] = useState(new BigNumber(0));
   const [newBorrowLimit, setNewBorrowLimit] = useState(new BigNumber(0));
   const [newBorrowPercent, setNewBorrowPercent] = useState(new BigNumber(0));
+  const instance = useInstance(settings.walletConnected);
 
   const updateInfo = useCallback(async () => {
     const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
@@ -250,7 +252,7 @@ function SupplySection({ asset, settings, setSetting }) {
   const onApprove = async () => {
     if (asset.id && settings.selectedAddress && asset.id !== 'eth') {
       setIsLoading(true);
-      const tokenContract = getTokenContract(asset.id);
+      const tokenContract = getTokenContract(instance, asset.id);
       methods
         .send(
           tokenContract.methods.approve,
@@ -277,7 +279,7 @@ function SupplySection({ asset, settings, setSetting }) {
    * Supply
    */
   const handleSupply = () => {
-    const appContract = getSbepContract(asset.id);
+    const appContract = getSbepContract(instance, asset.id);
 
     if (asset.id && settings.selectedAddress) {
       setIsLoading(true);

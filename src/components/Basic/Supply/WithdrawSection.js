@@ -15,11 +15,13 @@ import { getBigNumber, shortenNumberFormatter } from 'utilities/common';
 import { SectionWrapper } from 'components/Basic/Supply/SupplySection';
 import ConnectButton from 'containers/Layout/ConnectButton';
 import IconQuestion from 'assets/img/question.png';
+import { useInstance } from 'hooks/useContract';
 
 const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();
 
 function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
+  const instance = useInstance(settings.walletConnected);
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState(new BigNumber(0));
   const [borrowLimit, setBorrowLimit] = useState(new BigNumber(0));
@@ -91,7 +93,7 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
    */
   const handleWithdraw = async () => {
     const { id: assetId } = asset;
-    const appContract = getSbepContract(assetId);
+    const appContract = getSbepContract(instance, assetId);
     if (assetId && settings.selectedAddress) {
       setIsLoading(true);
       setSetting({

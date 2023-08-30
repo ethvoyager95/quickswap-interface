@@ -25,7 +25,7 @@ const account = {
     },
     withSTRK: true,
     markets: [],
-    isConnected: localStorage.getItem('walletConnected')
+    walletConnected: localStorage.getItem('walletConnected')
   }
 };
 export const initialState = {

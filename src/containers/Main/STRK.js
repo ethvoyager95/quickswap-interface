@@ -10,9 +10,9 @@ import { Row, Col, Icon, Progress } from 'antd';
 import styled from 'styled-components';
 import { connectAccount, accountActionCreators } from 'core';
 import {
-  getTokenContract,
   getComptrollerContract,
   getSbepContract,
+  getTokenContract,
   methods
 } from 'utilities/ContractService';
 import MainLayout from 'containers/Layout/MainLayout';
@@ -20,6 +20,7 @@ import VotingWallet from 'components/Vote/VotingWallet';
 import * as constants from 'utilities/constants';
 import coinImg from 'assets/img/strike_32.png';
 import { shortenNumberFormatter } from 'utilities/common';
+import { useInstance } from 'hooks/useContract';
 
 const STRKLayout = styled.div`
   .main-content {
@@ -229,6 +230,7 @@ const UserDistributionWrapper = styled.div`
 const format = commaNumber.bindWith(',', '.');
 
 function STRK({ settings }) {
+  const instance = useInstance(settings.walletConnected);
   const [balance, setBalance] = useState(0);
   const [dailyDistribution, setDailyDistribution] = useState('0');
   const [totalDistributed, setTotalDistributed] = useState('0');
@@ -239,7 +241,7 @@ function STRK({ settings }) {
   const getPendingRewards = async () => {
     const myAddress = settings.selectedAddress;
     if (!myAddress) return;
-    const appContract = getComptrollerContract();
+    const appContract = getComptrollerContract(instance);
     const [strikeInitialIndex, strikeAccrued] = await Promise.all([
       methods.call(appContract.methods.strikeInitialIndex, []),
       methods.call(appContract.methods.strikeAccrued, [myAddress])
@@ -248,7 +250,7 @@ function STRK({ settings }) {
     await Promise.all(
       Object.values(constants.CONTRACT_SBEP_ADDRESS).map(
         async (item, index) => {
-          const sBepContract = getSbepContract(item.id);
+          const sBepContract = getSbepContract(instance, item.id);
           const [
             supplyState,
             supplierIndex,
@@ -308,7 +310,7 @@ function STRK({ settings }) {
   };
 
   const updateRemainAmount = async () => {
-    const strkTokenContract = getTokenContract('strk');
+    const strkTokenContract = getTokenContract(instance, 'strk');
     let temp = await methods.call(strkTokenContract.methods.balanceOf, [
       constants.CONTRACT_COMPTROLLER_ADDRESS
     ]);
@@ -342,7 +344,7 @@ function STRK({ settings }) {
 
   const updateBalance = useCallback(async () => {
     if (settings.selectedAddress) {
-      const strkTokenContract = getTokenContract('strk');
+      const strkTokenContract = getTokenContract(instance, 'strk');
       let temp = await methods.call(strkTokenContract.methods.balanceOf, [
         settings.selectedAddress
       ]);
@@ -352,7 +354,7 @@ function STRK({ settings }) {
         .toString(10);
       setBalance(temp);
     }
-  }, [settings.markets]);
+  }, [settings.markets, instance]);
 
   useEffect(() => {
     if (settings.selectedAddress) {

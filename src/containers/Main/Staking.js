@@ -25,6 +25,7 @@ import TotalStakedImg from 'assets/img/total_staked.svg';
 import TotalLockedImg from 'assets/img/total_locked.svg';
 import AccumulatedFeesImg from 'assets/img/accumulated_fees.svg';
 import IconQuestion from 'assets/img/question-blue.svg';
+import { useInstance, useMulticall } from 'hooks/useContract';
 
 const VaultContainer = styled.div`
   img {
@@ -426,6 +427,7 @@ const SQuestion = styled.img`
 const format = commaNumber.bindWith(',', '.');
 
 const Staking = ({ settings }) => {
+  const instance = useInstance(settings.walletConnected);
   const [strkPrice, setStrkPrice] = useState(0);
   const [stakeAmount, setStakeAmount] = useState('');
   const [lockAmount, setLockAmount] = useState('');
@@ -446,27 +448,32 @@ const Staking = ({ settings }) => {
     vests,
     strkEmission,
     reserves
-  } = useStakingData(settings.selectedAddress, strkPrice);
+  } = useStakingData(instance, settings.selectedAddress, strkPrice);
   const { strkBalance, strkStakingAllowance } = useBalance(
+    instance,
     settings.selectedAddress,
     false
   );
   const { handleStake, pending: stakePending } = useStakeCallback(
+    instance,
     settings.selectedAddress
   );
   const { handleApprove, pending: approvePending } = useStrkApproveCallback(
+    instance,
     settings.selectedAddress
   );
   const { handleWithdraw, pending: withdrawPending } = useWithdrawCallback(
+    instance,
     settings.selectedAddress
   );
   const { handleGetReward, pending: getRewardPending } = useGetRewardCallback(
+    instance,
     settings.selectedAddress
   );
   const {
     handleWithdrawExpiredLocks,
     pending: withdrawExpiredLocksPending
-  } = useWithdrawExpiredLocksCallback(settings.selectedAddress);
+  } = useWithdrawExpiredLocksCallback(instance, settings.selectedAddress);
 
   // const reserves = Number(settings.reserves);
 

@@ -29,11 +29,9 @@ export const getArgs = func => {
     });
 };
 
-export const checkIsValidNetwork = () => {
-  if (window.ethereum) {
-    const netId = window.ethereum.networkVersion
-      ? +window.ethereum.networkVersion
-      : +window.ethereum.chainId;
+export const checkIsValidNetwork = async instance => {
+  if (instance) {
+    const netId = await instance.eth.getChainId();
     if (netId) {
       if (netId === 1 || netId === 5) {
         if (netId === 5 && process.env.REACT_APP_ENV === 'prod') {
