@@ -821,7 +821,7 @@ export const ModalLoadingContent = styled.div`
     font-weight: 500;
     font-size: 18px;
     line-height: 28px;
-    color: var(--color-text-main);
+    color: var(--color-black);
     padding: 16px 0;
     background: #eeeeee;
     border-radius: 6px;
