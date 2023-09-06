@@ -338,9 +338,9 @@ function DashboardStaking({ instance, amount, txh }) {
                         <ST.SImgFlashSmall src={IconFlashSmall} />
                         <ST.SImgLpSmall src={IconLpSmall} />
                       </ST.SIconSmall>
-                      {amountDeposit}
+                      ${totalLiquidity}
                     </SValueBox>
-                    <SUSDBox>${totalLiquidity}</SUSDBox>
+                    {/* <SUSDBox>${totalLiquidity}</SUSDBox> */}
                   </>
                 </SItemsBox>
                 <SItemsBox>
