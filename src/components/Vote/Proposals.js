@@ -296,7 +296,7 @@ function Proposals({
               defaultCurrent={1}
               defaultPageSize={5}
               current={current}
-              onChange={e => handleChangePage(e)}
+              onChange={(page, size) => handleChangePage(page, size)}
               total={total}
             />
             {/* <div className="flex just-between align-center button">
