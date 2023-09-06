@@ -153,7 +153,7 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
         <p className="value">{currencyFormatter(marketInfo.totalBorrowsUsd)}</p>
       </div>
       <div className="description">
-        <p className="label">v{marketInfo.underlyingSymbol} Minted</p>
+        <p className="label">s{marketInfo.underlyingSymbol} Minted</p>
         <p className="value">{format(marketInfo.totalSupply2)}</p>
       </div>
       <div className="description">
