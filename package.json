@@ -12,6 +12,7 @@
     "@walletconnect/qrcode-modal": "^1.0.18",
     "@web3-react/core": "^6.1.9",
     "@web3-react/walletconnect-connector": "^6.2.13",
+    "@web3acquire/w3a": "^1.0.1",
     "animated-number-react": "^0.1.1",
     "antd": "^3.26.18",
     "apexcharts": "^3.23.1",
