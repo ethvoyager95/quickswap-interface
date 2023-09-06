@@ -115,7 +115,12 @@ function ProposalInfo({ proposalInfo }) {
         <p className="title">Governance</p>
         {proposalInfo.description && (
           <div className="description">
-            <Markdown source={proposalInfo.description.split('\n')[0]} />
+            <Markdown
+              source={
+                proposalInfo.description.split('\n')[0] ||
+                proposalInfo.description.split('\n')[1]
+              }
+            />
           </div>
         )}
         <div className="flex align-center just-start proposal-status">
