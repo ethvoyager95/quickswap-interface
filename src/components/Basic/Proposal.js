@@ -204,8 +204,6 @@ function Proposal({
       });
   };
 
-  console.log(proposal.description);
-
   return (
     <ProposalWrapper
       className="flex flex-column pointer"
