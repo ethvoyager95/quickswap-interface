@@ -204,13 +204,18 @@ function Proposal({
       });
   };
 
+  console.log(proposal.description);
+
   return (
     <ProposalWrapper
       className="flex flex-column pointer"
       onClick={() => history.push(`/vote/proposal/${proposal.id}`)}
     >
       <div className="title">
-        <ReactMarkdown>{proposal.description.split('\n')[0]}</ReactMarkdown>
+        <ReactMarkdown>
+          {proposal.description.split('\n')[0] ||
+            proposal.description.split('\n')[1]}
+        </ReactMarkdown>
       </div>
       <Row className="detail">
         <Column xs="12" sm={settings.selectedAddress ? '9' : '12'}>
