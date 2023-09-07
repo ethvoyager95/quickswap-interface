@@ -323,7 +323,7 @@ function WalletBalance({ settings, setSetting }) {
             <AnimatedNumber
               value={dailyEarning}
               formatValue={formatValue}
-              duration={2000}
+              duration={0}
             />
           </div>
         </div>
@@ -338,7 +338,7 @@ function WalletBalance({ settings, setSetting }) {
                 .dp(2, 1)
                 .toString(10)}
               formatValue={formatValue}
-              duration={2000}
+              duration={0}
             />
           </div>
         </div>
@@ -353,7 +353,7 @@ function WalletBalance({ settings, setSetting }) {
                 .dp(2, 1)
                 .toString(10)}
               formatValue={formatValue}
-              duration={2000}
+              duration={0}
             />
           </div>
         </div>
