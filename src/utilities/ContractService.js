@@ -66,14 +66,18 @@ export const getProvider = walletType => {
         else if (walletType === 'trustwallet' && p.isTrustWallet) provider = p;
         else if (walletType === 'coinbase' && p.isCoinbaseWallet) provider = p;
       });
+    } else if (
+      (!walletType || walletType === 'metamask') &&
+      window.ethereum.isMetaMask
+    ) {
+      provider = window.ethereum;
+    } else if (walletType === 'trustwallet' && window.trustwallet) {
+      provider = window.trustwallet;
+    } else if (walletType === 'coinbase' && window.ethereum.isCoinbaseWallet) {
+      provider = window.ethereum;
     }
   }
-  if (
-    (!walletType || walletType === 'metamask') &&
-    !provider &&
-    window.ethereum
-  )
-    provider = window.ethereum;
+  if (!provider && window.ethereum) provider = window.ethereum;
   return provider;
 };
 
