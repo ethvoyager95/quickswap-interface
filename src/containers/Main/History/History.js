@@ -91,8 +91,8 @@ function History({ settings, setSetting }) {
   };
 
   const handleExportCSV = async filter => {
-    const res = await getDataTransactions(filter);
-    setDataExportCSV(formatTxn(res.rows));
+    // const res = await getDataTransactions(filter);
+    // setDataExportCSV(formatTxn(res.rows));
   };
 
   const getDataTable = async (filter, paginationQuery = initPagination) => {
