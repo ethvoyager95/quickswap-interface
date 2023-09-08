@@ -20,7 +20,13 @@ import { useInstance } from 'hooks/useContract';
 const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();
 
-function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
+function WithdrawSection({
+  asset,
+  settings,
+  changeTab,
+  setSetting,
+  hideModal
+}) {
   const instance = useInstance(settings.walletConnected);
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState(new BigNumber(0));
@@ -129,7 +135,6 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
         }
         setAmount(new BigNumber(0));
         setIsLoading(false);
-        onCancel();
         setSetting({
           pendingInfo: {
             type: '',
@@ -138,6 +143,7 @@ function WithdrawSection({ asset, settings, changeTab, onCancel, setSetting }) {
             symbol: ''
           }
         });
+        hideModal();
       } catch (error) {
         setIsLoading(false);
         setSetting({
@@ -324,15 +330,14 @@ WithdrawSection.propTypes = {
   asset: PropTypes.object,
   settings: PropTypes.object,
   changeTab: PropTypes.func,
-  onCancel: PropTypes.func,
-  setSetting: PropTypes.func.isRequired
+  setSetting: PropTypes.func.isRequired,
+  hideModal: PropTypes.func.isRequired
 };
 
 WithdrawSection.defaultProps = {
   asset: {},
   settings: {},
-  changeTab: () => {},
-  onCancel: () => {}
+  changeTab: () => {}
 };
 
 const mapStateToProps = ({ account }) => ({
