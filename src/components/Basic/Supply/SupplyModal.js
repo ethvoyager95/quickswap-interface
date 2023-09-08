@@ -162,7 +162,7 @@ function SupplyModal({ visible, onCancel, settings }) {
   useEffect(() => {
     if (currentAsset.id === 'ust') setCurrentTab('withdraw');
     else setCurrentTab('supply');
-  }, [currentAsset]);
+  }, [currentAsset.id]);
 
   useEffect(() => {
     const asset = settings.selectedAsset;
@@ -278,10 +278,10 @@ function SupplyModal({ visible, onCancel, settings }) {
             ) : (
               <>
                 {currentTab === 'supply' && (
-                  <SupplySection asset={currentAsset} />
+                  <SupplySection asset={currentAsset} hideModal={onCancel} />
                 )}
                 {currentTab === 'withdraw' && (
-                  <WithdrawSection asset={currentAsset} />
+                  <WithdrawSection asset={currentAsset} hideModal={onCancel} />
                 )}
               </>
             )}

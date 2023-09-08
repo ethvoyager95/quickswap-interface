@@ -163,7 +163,7 @@ function BorrowModal({ visible, onCancel, settings }) {
     if (currentAsset.id === 'ust' || currentAsset.borrowPaused)
       setCurrentTab('repay');
     else setCurrentTab('borrow');
-  }, [currentAsset]);
+  }, [currentAsset.id]);
 
   useEffect(() => {
     const asset = settings.selectedAsset;
@@ -279,10 +279,10 @@ function BorrowModal({ visible, onCancel, settings }) {
             ) : (
               <>
                 {currentTab === 'borrow' && (
-                  <BorrowSection asset={currentAsset} />
+                  <BorrowSection asset={currentAsset} hideModal={onCancel} />
                 )}
                 {currentTab === 'repay' && (
-                  <RepaySection asset={currentAsset} />
+                  <RepaySection asset={currentAsset} hideModal={onCancel} />
                 )}
               </>
             )}

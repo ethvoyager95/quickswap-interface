@@ -109,7 +109,7 @@ function UserInfoModal({ visible, onCancel, available, settings }) {
                   .dp(2, 1)
                   .toString(10)}
                 formatValue={formatValue}
-                duration={1000}
+                duration={0}
               />
             </p>
           </div>
@@ -121,7 +121,7 @@ function UserInfoModal({ visible, onCancel, available, settings }) {
                   .dp(2, 1)
                   .toString(10)}
                 formatValue={formatValue}
-                duration={1000}
+                duration={0}
               />
             </p>
           </div>

@@ -20,7 +20,7 @@ import { useInstance } from 'hooks/useContract';
 const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();
 
-function BorrowSection({ asset, settings, setSetting }) {
+function BorrowSection({ asset, settings, setSetting, hideModal }) {
   const instance = useInstance(settings.walletConnected);
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState(new BigNumber(0));
@@ -107,6 +107,7 @@ function BorrowSection({ asset, settings, setSetting }) {
               symbol: ''
             }
           });
+          hideModal();
         })
         .catch(() => {
           setIsLoading(false);
@@ -319,7 +320,8 @@ function BorrowSection({ asset, settings, setSetting }) {
 BorrowSection.propTypes = {
   asset: PropTypes.object,
   settings: PropTypes.object,
-  setSetting: PropTypes.func.isRequired
+  setSetting: PropTypes.func.isRequired,
+  hideModal: PropTypes.func.isRequired
 };
 
 BorrowSection.defaultProps = {

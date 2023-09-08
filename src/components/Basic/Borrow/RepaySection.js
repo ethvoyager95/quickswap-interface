@@ -25,7 +25,7 @@ import { useInstance } from 'hooks/useContract';
 const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();
 
-function RepayBorrowTab({ asset, settings, setSetting }) {
+function RepayBorrowTab({ asset, settings, setSetting, hideModal }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [amount, setAmount] = useState(new BigNumber(0));
@@ -153,6 +153,7 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
               symbol: ''
             }
           });
+          hideModal();
         } else {
           sendRepay(
             settings.selectedAddress,
@@ -171,6 +172,7 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
                   symbol: ''
                 }
               });
+              hideModal();
             }
           );
         }
@@ -395,7 +397,8 @@ function RepayBorrowTab({ asset, settings, setSetting }) {
 RepayBorrowTab.propTypes = {
   asset: PropTypes.object,
   settings: PropTypes.object,
-  setSetting: PropTypes.func.isRequired
+  setSetting: PropTypes.func.isRequired,
+  hideModal: PropTypes.func.isRequired
 };
 
 RepayBorrowTab.defaultProps = {
