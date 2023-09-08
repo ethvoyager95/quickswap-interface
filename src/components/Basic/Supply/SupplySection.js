@@ -187,7 +187,7 @@ export const SectionWrapper = styled.div`
 const format = commaNumber.bindWith(',', '.');
 const abortController = new AbortController();
 
-function SupplySection({ asset, settings, setSetting }) {
+function SupplySection({ asset, settings, setSetting, hideModal }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [amount, setAmount] = useState(new BigNumber(0));
@@ -313,6 +313,7 @@ function SupplySection({ asset, settings, setSetting }) {
                 symbol: ''
               }
             });
+            hideModal();
           })
           .catch(() => {
             setIsLoading(false);
@@ -342,6 +343,7 @@ function SupplySection({ asset, settings, setSetting }) {
                 symbol: ''
               }
             });
+            hideModal();
           }
         );
       }
@@ -545,7 +547,8 @@ function SupplySection({ asset, settings, setSetting }) {
 SupplySection.propTypes = {
   asset: PropTypes.object,
   settings: PropTypes.object,
-  setSetting: PropTypes.func.isRequired
+  setSetting: PropTypes.func.isRequired,
+  hideModal: PropTypes.func.isRequired
 };
 
 SupplySection.defaultProps = {
