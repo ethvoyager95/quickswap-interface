@@ -30,6 +30,7 @@ const VoteOverviewWrapper = styled.div`
   width: 100%;
 
   .vote-status-update {
+    margin-top: 30px;
     margin-bottom: 20px;
     button {
       width: 120px;
@@ -92,6 +93,14 @@ const VoteOverviewWrapper = styled.div`
   .column-2 {
     flex: 1;
     margin-left: 19px;
+  }
+
+  .styled-row {
+    display: flex;
+
+    @media (max-width: 1024px) {
+      display: block;
+    }
   }
 `;
 
@@ -286,18 +295,18 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
             <Row>
               <Card>
                 <CardWrapper>
-                  <Column xs="12" md="8">
+                  <Column xs="12" md="12">
                     <ProposalInfo proposalInfo={proposalInfo} />
                   </Column>
-                  <Column xs="12" md="4">
+                  {/* <Column xs="12" md="4">
                     <ProposalHistory proposalInfo={proposalInfo} />
-                    {/* <ProposalUser proposalInfo={proposalInfo} /> */}
-                  </Column>
+                    <ProposalUser proposalInfo={proposalInfo} />
+                  </Column> */}
                 </CardWrapper>
               </Card>
             </Row>
-            <Row>
-              <Column xs="12" sm="6">
+            <Row className="styled-row">
+              <Column md="12" lg="4">
                 <VoteCard
                   label="For"
                   forNumber={
@@ -328,7 +337,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                   onViewAll={() => loadMore('for')}
                 />
               </Column>
-              <Column xs="12" sm="6">
+              <Column md="12" lg="4">
                 <VoteCard
                   label="Against"
                   forNumber={
@@ -362,6 +371,9 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                   }
                   onViewAll={() => loadMore('against')}
                 />
+              </Column>
+              <Column md="12" lg="4">
+                <ProposalHistory proposalInfo={proposalInfo} />
               </Column>
             </Row>
             <div className="vote-status-update">
