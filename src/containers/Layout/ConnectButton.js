@@ -23,6 +23,7 @@ const StyledConnectButton = styled.div`
   @media only screen and (max-width: 768px) {
     width: 100%;
     margin: 20px 0 0;
+    display: block;
   }
 
   .connect-btn {
