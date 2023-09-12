@@ -34,6 +34,8 @@ import { ReactComponent as HistoryImg } from 'assets/img/menu-history.svg';
 import { ReactComponent as StakingImg } from 'assets/img/menu-staking.svg';
 import { ReactComponent as LiquidatorImg } from 'assets/img/menu-liquidator.svg';
 import { ReactComponent as VaultImg } from 'assets/img/menu-vault.svg';
+import { ReactComponent as AnalyticsImg } from 'assets/img/menu-analytics.svg';
+import { ReactComponent as ToolsImg } from 'assets/img/menu-tools.svg';
 import ConnectButton from './ConnectButton';
 
 const SidebarWrapper = styled.div`
@@ -115,6 +117,10 @@ const MainMenu = styled.div`
 
     &:hover {
       color: var(--color-white);
+
+      svg path {
+        fill: #107def;
+      }
     }
   }
 
@@ -140,7 +146,7 @@ const MainMenu = styled.div`
 
     .right-area {
       display: block;
-      margin: 0 auto;
+      padding-left: 35%;
     }
   }
 
@@ -164,10 +170,11 @@ const MainMenu = styled.div`
 
     @media only screen and (max-width: 768px) {
       display: flex;
-      align-items: flex-start;
-      justify-content: center;
+      align-items: center;
+      justify-content: left;
       width: 100%;
       margin: 0;
+      padding-left: 35%;
     }
   }
   .active {
@@ -247,11 +254,11 @@ const menu = (
     <Menu.Item key="0">
       <NavLink
         className="flex flex-start align-center gap-menu"
-        to="/staking"
+        to="/history"
         activeClassName="active"
       >
-        <StakingImg />
-        <Label>Staking</Label>
+        <HistoryImg />
+        <Label>History</Label>
       </NavLink>
     </Menu.Item>
     <Menu.Item key="1">
@@ -267,12 +274,23 @@ const menu = (
     <Menu.Item key="2">
       <NavLink
         className="flex flex-start align-center gap-menu"
-        to="/vault"
+        to="/strk"
         activeClassName="active"
       >
-        <VaultImg />
-        <Label>DeFi Vault 3.0</Label>
+        <RewardsImg />
+        <Label>Rewards</Label>
       </NavLink>
+    </Menu.Item>
+    <Menu.Item key="3">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://dune.com/strike_finance/ethereum-strike-protocol"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <AnalyticsImg />
+        <Label>Analytics</Label>
+      </a>
     </Menu.Item>
   </Menu>
 );
@@ -871,14 +889,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         </NavLink>
         <NavLink
           className="flex flex-start align-center gap-menu"
-          to="/strk"
-          activeClassName="active"
-        >
-          <RewardsImg />
-          <Label>Rewards</Label>
-        </NavLink>
-        <NavLink
-          className="flex flex-start align-center gap-menu"
           to="/market"
           activeClassName="active"
         >
@@ -887,29 +897,41 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         </NavLink>
         <NavLink
           className="flex flex-start align-center gap-menu"
-          to="/history"
+          to="/staking"
           activeClassName="active"
         >
-          <HistoryImg />
-          <Label>History</Label>
+          <StakingImg />
+          <Label>Staking</Label>
         </NavLink>
-        {!isMenuOpen && width < 1200 && (
+        <NavLink
+          className="flex flex-start align-center gap-menu"
+          to="/vault"
+          activeClassName="active"
+        >
+          <VaultImg />
+          <Label>DeFi Vault 3.0</Label>
+        </NavLink>
+        {!isMenuOpen && width < 1330 && (
           <Dropdown overlay={menu} trigger={['click']}>
-            <span className="dropdown-link" onClick={e => e.preventDefault()}>
-              Earning <Icon type="down" />
+            <span
+              className="flex flex-start align-center gap-menu dropdown-link"
+              onClick={e => e.preventDefault()}
+            >
+              <ToolsImg /> Tools <Icon type="down" />
             </span>
           </Dropdown>
         )}
-        {(width >= 1200 || isMenuOpen) && (
+        {(width >= 1330 || isMenuOpen) && (
           <>
             <NavLink
               className="flex flex-start align-center gap-menu"
-              to="/staking"
+              to="/history"
               activeClassName="active"
             >
-              <StakingImg />
-              <Label>Staking</Label>
+              <HistoryImg />
+              <Label>History</Label>
             </NavLink>
+
             <NavLink
               className="flex flex-start align-center gap-menu"
               to="/liquidator"
@@ -920,12 +942,21 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             </NavLink>
             <NavLink
               className="flex flex-start align-center gap-menu"
-              to="/vault"
+              to="/strk"
               activeClassName="active"
             >
-              <VaultImg />
-              <Label>DeFi Vault 3.0</Label>
+              <RewardsImg />
+              <Label>Rewards</Label>
             </NavLink>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://dune.com/strike_finance/ethereum-strike-protocol"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <AnalyticsImg />
+              <Label>Analytics</Label>
+            </a>
           </>
         )}
         {/* {process.env.REACT_APP_ENV === 'dev' && (
