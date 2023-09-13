@@ -156,6 +156,7 @@ function RepayBorrowTab({ asset, settings, setSetting, hideModal }) {
           hideModal();
         } else {
           sendRepay(
+            instance,
             settings.selectedAddress,
             amount
               .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
