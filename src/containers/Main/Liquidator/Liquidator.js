@@ -363,6 +363,7 @@ function Liquidator({ settings, setSetting }) {
       const resLiquidate =
         selectedAssetRepay === 'ETH'
           ? await liquidateBorrow(
+              instance,
               settings.selectedAddress,
               selectedUserAddress,
               constants.CONTRACT_SBEP_ADDRESS[selectedAssetSeize.toLowerCase()]

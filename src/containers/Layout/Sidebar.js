@@ -390,6 +390,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   }, [settings.accountLoading]);
 
   useEffect(() => {
+    getMarkets();
     const updateTimer = setInterval(async () => {
       const validNetwork = await checkIsValidNetwork(instance);
       if (validNetwork) {
@@ -511,8 +512,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
                 }
               );
             }
-            // else if (window.ethereum) {
-            //   promises.push(window.web3.eth.getBalance(accountAddress), null);
+            // else if (instance) {
+            //   promises.push(instance.eth.getBalance(accountAddress), null);
             // }
 
             // supply balance
@@ -649,7 +650,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
                   .div(new BigNumber(10).pow(tokenDecimal))
                   .isGreaterThanOrEqualTo(asset.walletBalance);
             } else if (window.ethereum) {
-              walletBalance = await window.web3.eth.getBalance(accountAddress);
+              walletBalance = await instance.eth.getBalance(accountAddress);
               asset.walletBalance = new BigNumber(walletBalance).div(
                 new BigNumber(10).pow(tokenDecimal)
               );
