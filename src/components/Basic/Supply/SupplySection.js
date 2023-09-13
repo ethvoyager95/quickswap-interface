@@ -328,6 +328,7 @@ function SupplySection({ asset, settings, setSetting, hideModal }) {
           });
       } else {
         sendSupply(
+          instance,
           settings.selectedAddress,
           amount
             .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
