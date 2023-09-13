@@ -1,8 +1,7 @@
 import Web3 from 'web3'; // eslint-disable-line import/no-unresolved
 import * as constants from 'utilities/constants';
 
-export const sendSupply = async (from, amount, callback) => {
-  const web3 = new Web3(window.web3.currentProvider);
+export const sendSupply = async (web3, from, amount, callback) => {
   try {
     const contract = new web3.eth.Contract(
       JSON.parse(constants.CONTRACT_SETH_ABI),
@@ -30,8 +29,7 @@ export const sendSupply = async (from, amount, callback) => {
   }
 };
 
-export const sendRepay = async (from, amount, callback) => {
-  const web3 = new Web3(window.web3.currentProvider);
+export const sendRepay = async (web3, from, amount, callback) => {
   try {
     const contract = new web3.eth.Contract(
       JSON.parse(constants.CONTRACT_SETH_ABI),
@@ -60,12 +58,12 @@ export const sendRepay = async (from, amount, callback) => {
 };
 
 export const liquidateBorrow = async (
+  web3,
   from,
   borrower,
   sTokenCollateral,
   amount
 ) => {
-  const web3 = new Web3(window.web3.currentProvider);
   try {
     const contract = new web3.eth.Contract(
       JSON.parse(constants.CONTRACT_SETH_ABI),
@@ -91,8 +89,7 @@ export const liquidateBorrow = async (
   }
 };
 
-export const nftMint = async (from, totalPrice, amount) => {
-  const web3 = new Web3(window.web3.currentProvider);
+export const nftMint = async (web3, from, totalPrice, amount) => {
   try {
     const contract = new web3.eth.Contract(
       JSON.parse(constants.NFT_ABI),

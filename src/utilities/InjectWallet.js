@@ -22,13 +22,12 @@ export default class InjectWallet {
   static async getWeb3(walletType) {
     const provider = getProvider(walletType);
     if (provider) {
-      window.web3 = new Web3(provider);
       provider.on('chainChanged', chainId => {
         if (chainId > 0 && walletType !== 'coinbase') window.location.reload();
       });
       // await provider.enable();
       await provider.request({ method: 'eth_requestAccounts' });
-      return window.web3;
+      return new Web3(provider);
     }
 
     throw new Error(constants.NOT_INSTALLED);

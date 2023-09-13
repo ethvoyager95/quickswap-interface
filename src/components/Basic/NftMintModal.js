@@ -125,18 +125,15 @@ function NftMintModal({ visible, onCancel, settings }) {
   const nftContract = useNFTContract(instance);
 
   const fetchEthBalance = async () => {
-    if (window.web3 && window.web3.eth) {
-      const balance = await window.web3.eth.getBalance(
-        settings.selectedAddress
-      );
+    if (instance && instance.eth) {
+      const balance = await instance.eth.getBalance(settings.selectedAddress);
       setEthBalance(new BigNumber(balance));
     }
   };
 
   useEffect(() => {
-    if (window.web3 && window.web3.eth && settings.selectedAddress)
-      fetchEthBalance();
-  }, [settings.selectedAddress, window.web3]);
+    if (instance && instance.eth && settings.selectedAddress) fetchEthBalance();
+  }, [settings.selectedAddress, instance]);
 
   useEffect(() => {
     const fetchMintPrice = async () => {
@@ -160,7 +157,12 @@ function NftMintModal({ visible, onCancel, settings }) {
 
   const handleMint = async () => {
     setIsLoading(true);
-    await nftMint(settings.selectedAddress, totalPrice.toString(10), amount);
+    await nftMint(
+      instance,
+      settings.selectedAddress,
+      totalPrice.toString(10),
+      amount
+    );
     fetchEthBalance();
     setIsLoading(false);
   };
