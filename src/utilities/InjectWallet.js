@@ -25,6 +25,9 @@ export default class InjectWallet {
       provider.on('chainChanged', chainId => {
         if (chainId > 0 && walletType !== 'coinbase') window.location.reload();
       });
+      provider.on('accountsChanged', accounts => {
+        if (accounts && accounts.length > 0) window.location.reload();
+      });
       // await provider.enable();
       await provider.request({ method: 'eth_requestAccounts' });
       return new Web3(provider);
