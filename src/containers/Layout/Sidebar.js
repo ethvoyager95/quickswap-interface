@@ -36,6 +36,7 @@ import { ReactComponent as LiquidatorImg } from 'assets/img/menu-liquidator.svg'
 import { ReactComponent as VaultImg } from 'assets/img/menu-vault.svg';
 import { ReactComponent as AnalyticsImg } from 'assets/img/menu-analytics.svg';
 import { ReactComponent as ToolsImg } from 'assets/img/menu-tools.svg';
+import { ReactComponent as StatusImg } from 'assets/img/menu-status.svg';
 import ConnectButton from './ConnectButton';
 
 const SidebarWrapper = styled.div`
@@ -252,7 +253,7 @@ const abortController = new AbortController();
 
 const menu = (
   <Menu>
-    <Menu.Item key="0">
+    {/* <Menu.Item key="0">
       <NavLink
         className="flex flex-start align-center gap-menu"
         to="/history"
@@ -261,8 +262,8 @@ const menu = (
         <HistoryImg />
         <Label>History</Label>
       </NavLink>
-    </Menu.Item>
-    <Menu.Item key="1">
+    </Menu.Item> */}
+    <Menu.Item key="0">
       <NavLink
         className="flex flex-start align-center gap-menu"
         to="/liquidator"
@@ -272,7 +273,7 @@ const menu = (
         <Label>Liquidator</Label>
       </NavLink>
     </Menu.Item>
-    <Menu.Item key="2">
+    {/* <Menu.Item key="2">
       <NavLink
         className="flex flex-start align-center gap-menu"
         to="/strk"
@@ -281,8 +282,8 @@ const menu = (
         <RewardsImg />
         <Label>Rewards</Label>
       </NavLink>
-    </Menu.Item>
-    <Menu.Item key="3">
+    </Menu.Item> */}
+    <Menu.Item key="1">
       <a
         className="flex flex-start align-center gap-menu"
         href="https://dune.com/strike_finance/ethereum-strike-protocol"
@@ -291,6 +292,17 @@ const menu = (
       >
         <AnalyticsImg />
         <Label>Analytics</Label>
+      </a>
+    </Menu.Item>
+    <Menu.Item key="2">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://status.strike.org"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <StatusImg />
+        <Label>Status</Label>
       </a>
     </Menu.Item>
   </Menu>
@@ -913,7 +925,24 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           <VaultImg />
           <Label>DeFi Vault 3.0</Label>
         </NavLink>
-        {!isMenuOpen && width < 1330 && (
+        <NavLink
+          className="flex flex-start align-center gap-menu"
+          to="/history"
+          activeClassName="active"
+        >
+          <HistoryImg />
+          <Label>History</Label>
+        </NavLink>
+
+        <NavLink
+          className="flex flex-start align-center gap-menu"
+          to="/strk"
+          activeClassName="active"
+        >
+          <RewardsImg />
+          <Label>Rewards</Label>
+        </NavLink>
+        {!isMenuOpen && width >= 768 && (
           <Dropdown overlay={menu} trigger={['click']}>
             <span
               className="flex flex-start align-center gap-menu dropdown-link"
@@ -923,17 +952,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             </span>
           </Dropdown>
         )}
-        {(width >= 1330 || isMenuOpen) && (
+        {(width < 768 || isMenuOpen) && (
           <>
-            <NavLink
-              className="flex flex-start align-center gap-menu"
-              to="/history"
-              activeClassName="active"
-            >
-              <HistoryImg />
-              <Label>History</Label>
-            </NavLink>
-
             <NavLink
               className="flex flex-start align-center gap-menu"
               to="/liquidator"
@@ -942,14 +962,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               <LiquidatorImg />
               <Label>Liquidator</Label>
             </NavLink>
-            <NavLink
-              className="flex flex-start align-center gap-menu"
-              to="/strk"
-              activeClassName="active"
-            >
-              <RewardsImg />
-              <Label>Rewards</Label>
-            </NavLink>
+
             <a
               className="flex flex-start align-center gap-menu"
               href="https://dune.com/strike_finance/ethereum-strike-protocol"
@@ -958,6 +971,16 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             >
               <AnalyticsImg />
               <Label>Analytics</Label>
+            </a>
+
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://status.strike.org"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <StatusImg />
+              <Label>Status</Label>
             </a>
           </>
         )}
