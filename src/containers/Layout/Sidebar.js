@@ -474,7 +474,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               walletBalance: new BigNumber(0),
               supplyBalance: new BigNumber(0),
               borrowBalance: new BigNumber(0),
-              isEnabled: false,
+              allowBalance: new BigNumber(0),
               collateral: false,
               percentOfLimit: '0',
               borrowPaused: true
@@ -656,17 +656,14 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               asset.walletBalance = new BigNumber(walletBalance).div(
                 new BigNumber(10).pow(tokenDecimal)
               );
-              asset.isEnabled =
-                asset.walletBalance.isGreaterThan(new BigNumber(0)) &&
-                new BigNumber(allowBalance)
-                  .div(new BigNumber(10).pow(tokenDecimal))
-                  .isGreaterThanOrEqualTo(asset.walletBalance);
+              asset.allowBalance = new BigNumber(allowBalance).div(
+                new BigNumber(10).pow(tokenDecimal)
+              );
             } else if (window.ethereum) {
               walletBalance = await instance.eth.getBalance(accountAddress);
               asset.walletBalance = new BigNumber(walletBalance).div(
                 new BigNumber(10).pow(tokenDecimal)
               );
-              asset.isEnabled = true;
             }
 
             asset.supplyBalance = new BigNumber(supplyBalance).div(
@@ -777,7 +774,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               walletBalance: new BigNumber(0),
               supplyBalance: new BigNumber(0),
               borrowBalance: new BigNumber(0),
-              isEnabled: false,
+              allowBalance: new BigNumber(0),
               collateral: false,
               percentOfLimit: '0'
             };
