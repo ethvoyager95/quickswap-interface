@@ -232,8 +232,8 @@ function SupplySection({ asset, settings, setSetting, hideModal }) {
   }, [settings.selectedAddress, amount]);
 
   useEffect(() => {
-    setIsEnabled(asset.isEnabled);
-  }, [asset.isEnabled]);
+    setIsEnabled(asset.allowBalance.isGreaterThanOrEqualTo(amount));
+  }, [asset.allowBalance, amount]);
 
   /**
    * Get Allowed amount
