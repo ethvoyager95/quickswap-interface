@@ -73,6 +73,91 @@ export const SUPPORT_URL =
 export const URL_LOGO_NFT =
   'https://assets.strike.org/ipfs/QmZNFcvCDB5oxwRW1T7HbBh4NgtZRBmfNAph1kpkJss6V5';
 // Contract ABI
+
+export const CONTRACT_NAMES = {
+  [process.env.REACT_APP_TEST_COMPTROLLER_ADDRESS.toLowerCase()]: 'Comptroller',
+  [process.env.REACT_APP_MAIN_COMPTROLLER_ADDRESS.toLowerCase()]: 'Comptroller',
+  '0xd01ce4a7368cf81c34b1257691eedf34d825a694': 'ComptrollerIMP',
+
+  [process.env.REACT_APP_TEST_STAKING_ADDRESS.toLowerCase()]: 'StrkStakingProxy',
+  [process.env.REACT_APP_MAIN_STAKING_ADDRESS.toLowerCase()]: 'StrkStakingProxy',
+
+  '0x4b000392f494a0962574913139071a5af49ea078': 'StrkStaking',
+
+  '0xc8167659ff247ecd9b09333685ddf70091c96ca4': 'Treasury',
+
+  [process.env.REACT_APP_TEST_USDC_TOKEN_ADDRESS.toLowerCase()]: 'USDC',
+  [process.env.REACT_APP_MAIN_USDC_TOKEN_ADDRESS.toLowerCase()]: 'USDC',
+  [process.env.REACT_APP_TEST_USDC_SBEP_ADDRESS.toLowerCase()]: 'sUSDC',
+  [process.env.REACT_APP_MAIN_USDC_SBEP_ADDRESS.toLowerCase()]: 'sUSDC',
+
+  [process.env.REACT_APP_TEST_USDT_TOKEN_ADDRESS.toLowerCase()]: 'USDT',
+  [process.env.REACT_APP_MAIN_USDT_TOKEN_ADDRESS.toLowerCase()]: 'USDT',
+  [process.env.REACT_APP_TEST_USDT_SBEP_ADDRESS.toLowerCase()]: 'sUSDT',
+  [process.env.REACT_APP_MAIN_USDT_SBEP_ADDRESS.toLowerCase()]: 'sUSDT',
+
+  [process.env.REACT_APP_TEST_BUSD_TOKEN_ADDRESS.toLowerCase()]: 'BUSD',
+  [process.env.REACT_APP_MAIN_BUSD_TOKEN_ADDRESS.toLowerCase()]: 'BUSD',
+  [process.env.REACT_APP_TEST_BUSD_SBEP_ADDRESS.toLowerCase()]: 'sBUSD',
+  [process.env.REACT_APP_MAIN_BUSD_SBEP_ADDRESS.toLowerCase()]: 'sBUSD',
+
+  [process.env.REACT_APP_TEST_STRK_TOKEN_ADDRESS.toLowerCase()]: 'STRK',
+  [process.env.REACT_APP_MAIN_STRK_TOKEN_ADDRESS.toLowerCase()]: 'STRK',
+  [process.env.REACT_APP_TEST_STRK_SBEP_ADDRESS.toLowerCase()]: 'sSTRK',
+  [process.env.REACT_APP_MAIN_STRK_SBEP_ADDRESS.toLowerCase()]: 'sSTRK',
+
+  [process.env.REACT_APP_TEST_SXP_TOKEN_ADDRESS.toLowerCase()]: 'SXP',
+  [process.env.REACT_APP_MAIN_SXP_TOKEN_ADDRESS.toLowerCase()]: 'SXP',
+  [process.env.REACT_APP_TEST_SXP_SBEP_ADDRESS.toLowerCase()]: 'sSXP',
+  [process.env.REACT_APP_MAIN_SXP_SBEP_ADDRESS.toLowerCase()]: 'sSXP',
+
+  [process.env.REACT_APP_TEST_WBTC_TOKEN_ADDRESS.toLowerCase()]: 'WBTC',
+  [process.env.REACT_APP_MAIN_WBTC_TOKEN_ADDRESS.toLowerCase()]: 'WBTC',
+  [process.env.REACT_APP_TEST_WBTC_SBEP_ADDRESS.toLowerCase()]: 'sWBTC',
+  [process.env.REACT_APP_MAIN_WBTC_SBEP_ADDRESS.toLowerCase()]: 'sWBTC',
+
+  [process.env.REACT_APP_TEST_ETH_SBEP_ADDRESS.toLowerCase()]: 'sETH',
+  [process.env.REACT_APP_MAIN_ETH_SBEP_ADDRESS.toLowerCase()]: 'sETH',
+
+  [process.env.REACT_APP_TEST_COMP_TOKEN_ADDRESS.toLowerCase()]: 'COMP',
+  [process.env.REACT_APP_MAIN_COMP_TOKEN_ADDRESS.toLowerCase()]: 'COMP',
+  [process.env.REACT_APP_TEST_COMP_SBEP_ADDRESS.toLowerCase()]: 'sCOMP',
+  [process.env.REACT_APP_MAIN_COMP_SBEP_ADDRESS.toLowerCase()]: 'sCOMP',
+
+  [process.env.REACT_APP_TEST_UNI_TOKEN_ADDRESS.toLowerCase()]: 'UNI',
+  [process.env.REACT_APP_MAIN_UNI_TOKEN_ADDRESS.toLowerCase()]: 'UNI',
+  [process.env.REACT_APP_TEST_UNI_SBEP_ADDRESS.toLowerCase()]: 'sUNI',
+  [process.env.REACT_APP_MAIN_UNI_SBEP_ADDRESS.toLowerCase()]: 'sUNI',
+
+  [process.env.REACT_APP_TEST_LINK_TOKEN_ADDRESS.toLowerCase()]: 'LINK',
+  [process.env.REACT_APP_MAIN_LINK_TOKEN_ADDRESS.toLowerCase()]: 'LINK',
+  [process.env.REACT_APP_TEST_LINK_SBEP_ADDRESS.toLowerCase()]: 'sLINK',
+  [process.env.REACT_APP_MAIN_LINK_SBEP_ADDRESS.toLowerCase()]: 'sLINK',
+
+  [process.env.REACT_APP_MAIN_UST_TOKEN_ADDRESS.toLowerCase()]: 'UST',
+  [process.env.REACT_APP_MAIN_UST_SBEP_ADDRESS.toLowerCase()]: 'sUST',
+
+  [process.env.REACT_APP_TEST_APE_TOKEN_ADDRESS.toLowerCase()]: 'APE',
+  [process.env.REACT_APP_MAIN_APE_TOKEN_ADDRESS.toLowerCase()]: 'APE',
+  [process.env.REACT_APP_TEST_APE_SBEP_ADDRESS.toLowerCase()]: 'sAPE',
+  [process.env.REACT_APP_MAIN_APE_SBEP_ADDRESS.toLowerCase()]: 'sAPE',
+
+  [process.env.REACT_APP_TEST_DAI_TOKEN_ADDRESS.toLowerCase()]: 'DAI',
+  [process.env.REACT_APP_MAIN_DAI_TOKEN_ADDRESS.toLowerCase()]: 'DAI',
+  [process.env.REACT_APP_TEST_DAI_SBEP_ADDRESS.toLowerCase()]: 'sDAI',
+  [process.env.REACT_APP_MAIN_DAI_SBEP_ADDRESS.toLowerCase()]: 'sDAI',
+
+  [process.env.REACT_APP_TEST_XCN_TOKEN_ADDRESS.toLowerCase()]: 'XCN',
+  [process.env.REACT_APP_MAIN_XCN_TOKEN_ADDRESS.toLowerCase()]: 'XCN',
+  [process.env.REACT_APP_TEST_XCN_SBEP_ADDRESS.toLowerCase()]: 'sXCN',
+  [process.env.REACT_APP_MAIN_XCN_SBEP_ADDRESS.toLowerCase()]: 'sXCN',
+
+  [process.env.REACT_APP_TEST_WSTETH_TOKEN_ADDRESS.toLowerCase()]: 'wstETH',
+  [process.env.REACT_APP_MAIN_WSTETH_TOKEN_ADDRESS.toLowerCase()]: 'wstETH',
+  [process.env.REACT_APP_TEST_WSTETH_SBEP_ADDRESS.toLowerCase()]: 'sWSTETH',
+  [process.env.REACT_APP_MAIN_WSTETH_SBEP_ADDRESS.toLowerCase()]: 'sWSTETH'
+};
+
 export const CONTRACT_TOKEN_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
     ? {
