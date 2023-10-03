@@ -210,7 +210,7 @@ function SupplyModal({ visible, onCancel, settings }) {
             <div className="flex align-center add-token-wrapper">
               {currentAsset.id !== 'eth' && (
                 <div className="flex align-center underlying-asset">
-                  {currentAsset.id.toUpperCase()}
+                  {currentAsset.symbol}
                   <img
                     className="add-token pointer"
                     src={metaMaskImg}
@@ -226,11 +226,7 @@ function SupplyModal({ visible, onCancel, settings }) {
                 </div>
               )}
               <div className="flex align-center stoken-asset">
-                {`s${
-                  currentAsset.id === 'wbtc'
-                    ? 'BTC'
-                    : currentAsset.id.toUpperCase()
-                }`}
+                {`s${currentAsset.id === 'wbtc' ? 'BTC' : currentAsset.symbol}`}
                 <img
                   className="add-token pointer"
                   src={metaMaskImg}
