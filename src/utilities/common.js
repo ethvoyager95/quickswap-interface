@@ -11,6 +11,11 @@ export const encodeParameters = (types, values) => {
   return abi.encode(types, values);
 };
 
+export const decodeParameters = (types, data) => {
+  const abi = new ethers.utils.AbiCoder();
+  return abi.decode(types, data);
+};
+
 export const getArgs = func => {
   // First match everything inside the function argument parens.
   const args = func.toString().match(/.*?\(([^)]*)\)/)

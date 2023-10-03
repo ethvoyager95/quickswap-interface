@@ -204,8 +204,10 @@ function RepayBorrowTab({ asset, settings, setSetting, hideModal }) {
   };
 
   useEffect(() => {
-    setIsEnabled(asset.isEnabled);
-  }, [asset.isEnabled]);
+    setIsEnabled(
+      new BigNumber(asset.allowBalance || 0).isGreaterThanOrEqualTo(amount)
+    );
+  }, [asset.allowBalance, amount]);
 
   return (
     <SectionWrapper>
