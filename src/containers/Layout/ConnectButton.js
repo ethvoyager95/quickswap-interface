@@ -15,6 +15,7 @@ import { connectAccount, accountActionCreators } from 'core';
 import InjectWalletClass from 'utilities/InjectWallet';
 import { getProvider } from 'utilities/ContractService';
 import { useProvider } from 'hooks/useContract';
+import DisclaimerModal from 'components/Basic/DisclaimerModal';
 
 const StyledConnectButton = styled.div`
   display: flex;
@@ -66,6 +67,7 @@ let doneFlag = false;
 function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenAccountModal, setIsOpenAccountModal] = useState(false);
+  const [isOpenDisclaimerModal, setIsOpenDisclaimerModal] = useState(false);
   const [awaiting, setAwaiting] = useState('');
   const [metamaskError, setMetamaskError] = useState('');
   const [bitkeepError, setBitkeepError] = useState('');
@@ -460,7 +462,9 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
   }, [currentProvider]);
 
   const handleDisconnect = () => {
+    const disclaimerConfirmed = localStorage.getItem('disclaimerConfirmed');
     localStorage.clear();
+    localStorage.setItem('disclaimerConfirmed', disclaimerConfirmed);
     setSetting({
       selectedAddress: null,
       walletConnected: ''
@@ -493,7 +497,9 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
               setBitkeepError(null);
               setTrustwalletError(null);
               setCoinbasewalletError(null);
-              setIsOpenModal(true);
+              if (localStorage.getItem('disclaimerConfirmed'))
+                setIsOpenModal(true);
+              else setIsOpenDisclaimerModal(true);
             }}
           >
             Connect
@@ -519,6 +525,11 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
         visible={isOpenAccountModal}
         onCancel={() => setIsOpenAccountModal(false)}
         onDisconnect={() => handleDisconnect()}
+      />
+      <DisclaimerModal
+        visible={isOpenDisclaimerModal}
+        onCancel={() => setIsOpenDisclaimerModal(false)}
+        onContinue={() => setIsOpenModal(true)}
       />
     </>
   );
