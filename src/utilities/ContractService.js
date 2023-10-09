@@ -78,7 +78,6 @@ export const getProvider = walletType => {
       provider = window.ethereum;
     }
   }
-  if (!provider && window.ethereum) provider = window.ethereum;
   return provider;
 };
 
