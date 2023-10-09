@@ -233,7 +233,8 @@ function SupplySection({ asset, settings, setSetting, hideModal }) {
 
   useEffect(() => {
     setIsEnabled(
-      new BigNumber(asset.allowBalance || 0).isGreaterThanOrEqualTo(amount)
+      new BigNumber(asset.allowBalance || 0).isGreaterThan(0) &&
+        new BigNumber(asset.allowBalance || 0).isGreaterThanOrEqualTo(amount)
     );
   }, [asset.allowBalance, amount]);
 
