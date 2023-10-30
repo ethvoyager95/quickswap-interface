@@ -998,7 +998,25 @@ const Staking = ({ settings }) => {
               {claim.map((e, index) => (
                 <div key={e.name}>
                   <div className="claim_row">
-                    <p className="subtitle">{e.name}</p>
+                    <p
+                      className="subtitle"
+                      style={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      {e.name}
+                      {index === 1 && (
+                        <Tooltip
+                          placement="right"
+                          title={
+                            <div className="mb-2">
+                              Early withdrawal from a vest will incur a penalty
+                              between 25-90% based on a linear schedule of time.
+                            </div>
+                          }
+                        >
+                          <SQuestion src={IconQuestion} />
+                        </Tooltip>
+                      )}
+                    </p>
                     <p className="value">{e.value}</p>
                   </div>
                   <div className="claim_row">
