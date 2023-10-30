@@ -185,11 +185,12 @@ function PenaltyModal({ visible, onCancel, settings }) {
     }
   }, [settings.markets]);
 
-  const { unlockedBalance, totalEarned, withdrawableBalance } = useStakingData(
-    instance,
-    settings.selectedAddress,
-    strkPrice
-  );
+  const {
+    unlockedBalance,
+    totalEarned,
+    withdrawableBalance,
+    calcPenaltyAmount
+  } = useStakingData(instance, settings.selectedAddress, strkPrice);
 
   const { handleWithdraw, pending } = useWithdrawCallback(
     instance,
@@ -313,11 +314,13 @@ function PenaltyModal({ visible, onCancel, settings }) {
             <p>Early Claimed Penalty</p>
             <div className="flex">
               <span className="value">
-                {Number(claimAmount) > unlockedBalance.div(1e18).toNumber()
-                  ? `-${(
-                      Number(claimAmount) - unlockedBalance.div(1e18).toNumber()
-                    ).toFixed(3)}`
-                  : 0}
+                {calcPenaltyAmount(
+                  new BigNumber(claimAmount === '' ? 0 : claimAmount).times(
+                    1e18
+                  )
+                )
+                  .div(1e18)
+                  .toFixed(3)}
               </span>
               <span className="span-strk">&nbsp;STRK</span>
             </div>
