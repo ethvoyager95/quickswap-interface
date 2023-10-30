@@ -295,7 +295,7 @@ function PenaltyModal({ visible, onCancel, settings }) {
             </button>
           </div> */}
           <div className="info">
-            <p>Released STRK (Vested, Staked)</p>
+            <p>Released STRK (Vested)</p>
             <div className="flex">
               <span className="value">
                 {unlockedBalance.div(1e18).toFixed(3)}
