@@ -54,6 +54,7 @@ function ProposalDetail({ proposalInfo, walletConnected }) {
                 res.targets[_id].toLowerCase()
             );
             const funcName = signature.slice(0, signature.indexOf('('));
+            console.log('test pr template');
 
             const matches = signature.match(/\(.*?\)/);
             if (matches) {
