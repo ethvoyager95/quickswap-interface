@@ -6,6 +6,30 @@ import { getTokenContract } from 'utilities/ContractService';
 import useRefresh from './useRefresh';
 import { useMulticall, useStakingContract } from './useContract';
 
+const QUART = 25000; //  25%
+const HALF = 65000; //  65%
+const WHOLE = 100000; // 100%
+const vestDuration = 86400 * 14 * 6; // 12 weeks
+
+function _penaltyInfo(earning) {
+  const currentTimestamp = parseInt(new Date().getTime() / 1000, 10);
+
+  let penaltyFactor = 0;
+  if (Number(earning.unlockTime) > currentTimestamp) {
+    // 90% on day 1, decays to 25% on day 90
+    penaltyFactor =
+      ((earning.unlockTime - currentTimestamp) * HALF) / vestDuration + QUART; // 25% + timeLeft/vestDuration * 65%
+  }
+  const penaltyAmount = earning.amount.times(penaltyFactor).div(WHOLE);
+  const amount = earning.amount.minus(penaltyAmount);
+
+  return {
+    amount,
+    penaltyFactor,
+    penaltyAmount
+  };
+}
+
 export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
   const multicall = useMulticall(instance);
   const [totalLocked, setTotalLocked] = useState(new BigNumber(0));
@@ -26,6 +50,49 @@ export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
   const [reserves, setReserves] = useState(new BigNumber(0));
 
   const { fastRefresh } = useRefresh();
+
+  const getPenalty = (amount, _vests) => {
+    let remaining = amount;
+    let penalty = new BigNumber(0);
+
+    for (let i = 0; i < _vests.length; i += 1) {
+      const earnedAmount = _vests[i].amount;
+      // eslint-disable-next-line no-continue
+      if (earnedAmount.eq(0)) continue;
+      const { penaltyFactor } = _penaltyInfo(_vests[i]);
+
+      // Amount required from this lock, taking into account the penalty
+      let requiredAmount = remaining.times(WHOLE).div(WHOLE - penaltyFactor);
+      if (requiredAmount.gte(earnedAmount)) {
+        requiredAmount = earnedAmount;
+        remaining = remaining.minus(
+          earnedAmount
+            .times(new BigNumber(WHOLE).minus(penaltyFactor))
+            .div(WHOLE)
+        ); // remaining -= earned * (1 - pentaltyFactor)
+        if (remaining.eq(0)) i += 1;
+      } else {
+        remaining = new BigNumber(0);
+      }
+      penalty = penalty.plus(requiredAmount.times(penaltyFactor).div(WHOLE)); // penalty += amount * penaltyFactor
+      if (remaining.eq(0)) {
+        break;
+      }
+    }
+
+    return penalty;
+  };
+
+  const calcPenaltyAmount = useCallback(
+    amount => {
+      if (!amount || amount.gt(withdrawableBalance) || !vests.length) {
+        return new BigNumber(0);
+      }
+
+      return getPenalty(amount, vests);
+    },
+    [withdrawableBalance, vests]
+  );
 
   const calls = useMemo(() => {
     let temp = [
@@ -242,11 +309,6 @@ export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
               data.results.withdrawableBalance.callsReturnContext[0].returnValues[0].hex
             )
           );
-          setPenaltyAmount(
-            new BigNumber(
-              data.results.withdrawableBalance.callsReturnContext[0].returnValues[1].hex
-            )
-          );
           setUnlockedBalance(
             new BigNumber(
               data.results.unlockedBalance.callsReturnContext[0].returnValues[0].hex
@@ -268,6 +330,15 @@ export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
             }
           );
           setVests(_earningsData);
+
+          setPenaltyAmount(
+            getPenalty(
+              new BigNumber(
+                data.results.withdrawableBalance.callsReturnContext[0].returnValues[0].hex
+              ),
+              _earningsData
+            )
+          );
 
           const _locks = [];
           data.results.lockedBalances.callsReturnContext[0].returnValues[3].forEach(
@@ -336,7 +407,8 @@ export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
     unlockable,
     fees,
     strkEmission,
-    reserves
+    reserves,
+    calcPenaltyAmount
   };
 };
 
@@ -432,6 +504,28 @@ export const useGetRewardCallback = (instance, account) => {
   }, [account, contract]);
 
   return { handleGetReward, pending };
+};
+
+export const useExitCallback = (instance, account) => {
+  const [pending, setPending] = useState(false);
+  const contract = useStakingContract(instance);
+
+  const handleExit = useCallback(async () => {
+    try {
+      setPending(true);
+      const tx = await contract.methods.exit().send({
+        from: account
+      });
+      setPending(false);
+      return tx;
+    } catch (e) {
+      console.error('Exit had error :>> ', e);
+      setPending(false);
+      return false;
+    }
+  }, [account, contract]);
+
+  return { handleExit, pending };
 };
 
 export const useStrkApproveCallback = (instance, account) => {
