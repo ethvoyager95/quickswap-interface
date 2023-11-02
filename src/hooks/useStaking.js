@@ -506,6 +506,28 @@ export const useGetRewardCallback = (instance, account) => {
   return { handleGetReward, pending };
 };
 
+export const useExitCallback = (instance, account) => {
+  const [pending, setPending] = useState(false);
+  const contract = useStakingContract(instance);
+
+  const handleExit = useCallback(async () => {
+    try {
+      setPending(true);
+      const tx = await contract.methods.exit().send({
+        from: account
+      });
+      setPending(false);
+      return tx;
+    } catch (e) {
+      console.error('Exit had error :>> ', e);
+      setPending(false);
+      return false;
+    }
+  }, [account, contract]);
+
+  return { handleExit, pending };
+};
+
 export const useStrkApproveCallback = (instance, account) => {
   const [pending, setPending] = useState(false);
 

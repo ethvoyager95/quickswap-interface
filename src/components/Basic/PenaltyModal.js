@@ -6,7 +6,11 @@ import PropTypes from 'prop-types';
 import { Modal, Icon, message } from 'antd';
 import BigNumber from 'bignumber.js';
 import { connectAccount } from 'core';
-import { useStakingData, useWithdrawCallback } from 'hooks/useStaking';
+import {
+  useStakingData,
+  useWithdrawCallback,
+  useExitCallback
+} from 'hooks/useStaking';
 import closeImg from 'assets/img/close.png';
 import { useInstance, useMulticall } from 'hooks/useContract';
 
@@ -196,6 +200,10 @@ function PenaltyModal({ visible, onCancel, settings }) {
     instance,
     settings.selectedAddress
   );
+  const { handleExit, pending: pendingExit } = useExitCallback(
+    instance,
+    settings.selectedAddress
+  );
 
   // const unlockedBalance = new BigNumber(0);
   // const totalEarned = new BigNumber(0);
@@ -205,15 +213,18 @@ function PenaltyModal({ visible, onCancel, settings }) {
   // const pending = false;
 
   const [claimAmount, setClaimAmount] = React.useState('');
+  const [isMax, setIsMax] = React.useState(false);
 
   const withdraw = async () => {
-    if (pending) {
+    if (pending || pendingExit) {
       return;
     }
 
-    const tx = await handleWithdraw(
-      new BigNumber(claimAmount).times(1e18).toString(10)
-    );
+    const tx = !isMax
+      ? await handleWithdraw(
+          new BigNumber(claimAmount).times(1e18).toString(10)
+        )
+      : await handleExit();
     if (tx) {
       message.success('Claimed successfully.');
     } else {
@@ -257,8 +268,10 @@ function PenaltyModal({ visible, onCancel, settings }) {
                     if (
                       !event.target.value.length ||
                       Number(event.target.value) >= 0
-                    )
+                    ) {
                       setClaimAmount(event.target.value);
+                      setIsMax(false);
+                    }
                   }}
                 />
               </div>
@@ -267,6 +280,7 @@ function PenaltyModal({ visible, onCancel, settings }) {
                 className="max-button"
                 onClick={() => {
                   setClaimAmount(withdrawableBalance.div(1e18).toString(10));
+                  setIsMax(true);
                 }}
               >
                 MAX
@@ -339,6 +353,7 @@ function PenaltyModal({ visible, onCancel, settings }) {
           onClick={withdraw}
           disabled={
             pending ||
+            pendingExit ||
             new BigNumber(Number(claimAmount)).eq(0) ||
             withdrawableBalance.lt(new BigNumber(claimAmount).times(1e18))
           }
