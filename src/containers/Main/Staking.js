@@ -690,7 +690,7 @@ const Staking = ({ settings }) => {
   const claim = [
     {
       name: 'Claimable STRK',
-      description: 'Include staked STRK and vested STRK',
+      description: 'Vested STRK',
       value: `${unlockedBalance
         .div(1e18)
         .toNumber()
@@ -700,12 +700,13 @@ const Staking = ({ settings }) => {
     },
     {
       name: 'STRK in Vesting',
-      description: 'STRK amount that can be claimed with a 50% penalty',
-      value: `${penaltyAmount
-        .times(2)
-        .div(1e18)
-        .toNumber()
-        .toLocaleString('en-US', { maximumFractionDigits: 3 })} STRK`,
+      description:
+        'STRK amount that can be claimed with an early claim penalty',
+      value: `${vests
+        .reduce((total, e) => total + e.amount.div(1e18).toNumber(), 0)
+        .toLocaleString('en-US', {
+          maximumFractionDigits: 3
+        })} STRK`,
       claim: ''
     },
     {
@@ -997,7 +998,25 @@ const Staking = ({ settings }) => {
               {claim.map((e, index) => (
                 <div key={e.name}>
                   <div className="claim_row">
-                    <p className="subtitle">{e.name}</p>
+                    <p
+                      className="subtitle"
+                      style={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      {e.name}
+                      {index === 1 && (
+                        <Tooltip
+                          placement="right"
+                          title={
+                            <div className="mb-2">
+                              Early withdrawal from a vest will incur a penalty
+                              between 25-90% based on a linear schedule of time.
+                            </div>
+                          }
+                        >
+                          <SQuestion src={IconQuestion} />
+                        </Tooltip>
+                      )}
+                    </p>
                     <p className="value">{e.value}</p>
                   </div>
                   <div className="claim_row">
