@@ -440,7 +440,8 @@ const Staking = ({ settings }) => {
     stakeApr,
     lockApr,
     unlockedBalance,
-    penaltyAmount,
+    // penaltyAmount,
+    withdrawableBalance,
     locks,
     unlockable,
     fees,
@@ -712,7 +713,7 @@ const Staking = ({ settings }) => {
     {
       name: 'Claim all STRK above',
       description: 'Early Exit Penalty',
-      value: `${penaltyAmount
+      value: `${withdrawableBalance
         .div(1e18)
         .toNumber()
         .toLocaleString('en-US', { maximumFractionDigits: 3 })} STRK`,
