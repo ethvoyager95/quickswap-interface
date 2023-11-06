@@ -359,7 +359,7 @@ function SupplySection({ asset, settings, setSetting, hideModal }) {
   const handleMaxAmount = () => {
     let maxAmount = asset.walletBalance;
     if (asset.supplyCaps.isGreaterThan(0)) {
-      if (asset.supplyCaps.isLessThan(1)) maxAmount = new BigNumber(0);
+      if (asset.supplyCaps.isEqualTo(1e-18)) maxAmount = new BigNumber(0);
       else
         maxAmount = BigNumber.min(
           maxAmount,
