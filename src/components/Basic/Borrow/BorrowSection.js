@@ -139,7 +139,7 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
     );
 
     if (asset.borrowCaps.isGreaterThan(0)) {
-      if (asset.borrowCaps.isLessThan(1)) setAmount(new BigNumber(0));
+      if (asset.borrowCaps.isEqualTo(1e-18)) setAmount(new BigNumber(0));
       else
         setAmount(
           BigNumber.minimum(safeMax, asset.liquidity, asset.borrowCaps).div(
