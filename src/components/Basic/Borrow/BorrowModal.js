@@ -160,7 +160,10 @@ function BorrowModal({ visible, onCancel, settings }) {
   const [currentAsset, setCurrentAsset] = useState({});
 
   useEffect(() => {
-    if (currentAsset.borrowCaps && currentAsset.borrowCaps.isEqualTo(1e-18) || currentAsset.borrowPaused)
+    if (
+      (currentAsset.borrowCaps && currentAsset.borrowCaps.isEqualTo(1e-18)) ||
+      currentAsset.borrowPaused
+    )
       setCurrentTab('repay');
     else setCurrentTab('borrow');
   }, [currentAsset.id]);
@@ -246,18 +249,20 @@ function BorrowModal({ visible, onCancel, settings }) {
           )}
           <>
             <Tabs>
-              {(currentAsset.borrowCaps && !currentAsset.borrowCaps.isEqualTo(1e-18) && !currentAsset.borrowPaused) && (
-                <div
-                  className={`tab-item center ${
-                    currentTab === 'borrow' ? 'tab-active' : ''
-                  }`}
-                  onClick={() => {
-                    setCurrentTab('borrow');
-                  }}
-                >
-                  Borrow
-                </div>
-              )}
+              {currentAsset.borrowCaps &&
+                !currentAsset.borrowCaps.isEqualTo(1e-18) &&
+                !currentAsset.borrowPaused && (
+                  <div
+                    className={`tab-item center ${
+                      currentTab === 'borrow' ? 'tab-active' : ''
+                    }`}
+                    onClick={() => {
+                      setCurrentTab('borrow');
+                    }}
+                  >
+                    Borrow
+                  </div>
+                )}
               <div
                 className={`tab-item center ${
                   currentTab === 'repay' ? 'tab-active' : ''

@@ -160,7 +160,8 @@ function SupplyModal({ visible, onCancel, settings }) {
   const [currentAsset, setCurrentAsset] = useState({});
 
   useEffect(() => {
-    if (currentAsset.supplyCap && currentAsset.supplyCaps.isEqualTo(1e-18)) setCurrentTab('withdraw');
+    if (currentAsset.supplyCap && currentAsset.supplyCaps.isEqualTo(1e-18))
+      setCurrentTab('withdraw');
     else setCurrentTab('supply');
   }, [currentAsset.id]);
 
@@ -245,18 +246,19 @@ function SupplyModal({ visible, onCancel, settings }) {
           )}
           <>
             <Tabs>
-              {currentAsset.supplyCaps && !currentAsset.supplyCaps.isEqualTo(1e-18) && (
-                <div
-                  className={`tab-item center ${
-                    currentTab === 'supply' ? 'tab-active' : ''
-                  }`}
-                  onClick={() => {
-                    setCurrentTab('supply');
-                  }}
-                >
-                  Supply
-                </div>
-              )}
+              {currentAsset.supplyCaps &&
+                !currentAsset.supplyCaps.isEqualTo(1e-18) && (
+                  <div
+                    className={`tab-item center ${
+                      currentTab === 'supply' ? 'tab-active' : ''
+                    }`}
+                    onClick={() => {
+                      setCurrentTab('supply');
+                    }}
+                  >
+                    Supply
+                  </div>
+                )}
               <div
                 className={`tab-item center ${
                   currentTab === 'withdraw' ? 'tab-active' : ''
