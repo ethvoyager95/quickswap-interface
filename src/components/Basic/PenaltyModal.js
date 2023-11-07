@@ -6,11 +6,7 @@ import PropTypes from 'prop-types';
 import { Modal, Icon, message } from 'antd';
 import BigNumber from 'bignumber.js';
 import { connectAccount } from 'core';
-import {
-  useStakingData,
-  useWithdrawCallback,
-  useExitCallback
-} from 'hooks/useStaking';
+import { useStakingData, useWithdrawCallback } from 'hooks/useStaking';
 import closeImg from 'assets/img/close.png';
 import { useInstance, useMulticall } from 'hooks/useContract';
 
@@ -189,18 +185,13 @@ function PenaltyModal({ visible, onCancel, settings }) {
     }
   }, [settings.markets]);
 
-  const {
-    unlockedBalance,
-    totalEarned,
-    withdrawableBalance,
-    calcPenaltyAmount
-  } = useStakingData(instance, settings.selectedAddress, strkPrice);
+  const { unlockedBalance, totalEarned, withdrawableBalance } = useStakingData(
+    instance,
+    settings.selectedAddress,
+    strkPrice
+  );
 
   const { handleWithdraw, pending } = useWithdrawCallback(
-    instance,
-    settings.selectedAddress
-  );
-  const { handleExit, pending: pendingExit } = useExitCallback(
     instance,
     settings.selectedAddress
   );
@@ -213,18 +204,15 @@ function PenaltyModal({ visible, onCancel, settings }) {
   // const pending = false;
 
   const [claimAmount, setClaimAmount] = React.useState('');
-  const [isMax, setIsMax] = React.useState(false);
 
   const withdraw = async () => {
-    if (pending || pendingExit) {
+    if (pending) {
       return;
     }
 
-    const tx = !isMax
-      ? await handleWithdraw(
-          new BigNumber(claimAmount).times(1e18).toString(10)
-        )
-      : await handleExit();
+    const tx = await handleWithdraw(
+      new BigNumber(claimAmount).times(1e18).toString(10)
+    );
     if (tx) {
       message.success('Claimed successfully.');
     } else {
@@ -268,10 +256,8 @@ function PenaltyModal({ visible, onCancel, settings }) {
                     if (
                       !event.target.value.length ||
                       Number(event.target.value) >= 0
-                    ) {
+                    )
                       setClaimAmount(event.target.value);
-                      setIsMax(false);
-                    }
                   }}
                 />
               </div>
@@ -280,7 +266,6 @@ function PenaltyModal({ visible, onCancel, settings }) {
                 className="max-button"
                 onClick={() => {
                   setClaimAmount(withdrawableBalance.div(1e18).toString(10));
-                  setIsMax(true);
                 }}
               >
                 MAX
@@ -309,7 +294,7 @@ function PenaltyModal({ visible, onCancel, settings }) {
             </button>
           </div> */}
           <div className="info">
-            <p>Released STRK (Vested)</p>
+            <p>Released STRK (Vested, Staked)</p>
             <div className="flex">
               <span className="value">
                 {unlockedBalance.div(1e18).toFixed(3)}
@@ -328,13 +313,11 @@ function PenaltyModal({ visible, onCancel, settings }) {
             <p>Early Claimed Penalty</p>
             <div className="flex">
               <span className="value">
-                {calcPenaltyAmount(
-                  new BigNumber(claimAmount === '' ? 0 : claimAmount).times(
-                    1e18
-                  )
-                )
-                  .div(1e18)
-                  .toFixed(3)}
+                {Number(claimAmount) > unlockedBalance.div(1e18).toNumber()
+                  ? `-${(
+                      Number(claimAmount) - unlockedBalance.div(1e18).toNumber()
+                    ).toFixed(3)}`
+                  : 0}
               </span>
               <span className="span-strk">&nbsp;STRK</span>
             </div>
@@ -353,7 +336,6 @@ function PenaltyModal({ visible, onCancel, settings }) {
           onClick={withdraw}
           disabled={
             pending ||
-            pendingExit ||
             new BigNumber(Number(claimAmount)).eq(0) ||
             withdrawableBalance.lt(new BigNumber(claimAmount).times(1e18))
           }
