@@ -160,7 +160,7 @@ function SupplyModal({ visible, onCancel, settings }) {
   const [currentAsset, setCurrentAsset] = useState({});
 
   useEffect(() => {
-    if (currentAsset.supplyCap && currentAsset.supplyCaps.isEqualTo(1e-18))
+    if (currentAsset.supplyCaps && currentAsset.supplyCaps.isEqualTo(1e-18))
       setCurrentTab('withdraw');
     else setCurrentTab('supply');
   }, [currentAsset.id]);

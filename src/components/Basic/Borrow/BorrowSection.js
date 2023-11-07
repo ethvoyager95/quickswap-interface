@@ -248,7 +248,7 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
                     ${format(borrowBalance.dp(2, 1).toString(10))}
                   </span>
                 ) : (
-                  <div className="flex flex-column align-center just-between">
+                  <div className="flex align-center just-between">
                     <span className="value">
                       ${format(borrowBalance.dp(2, 1).toString(10))}
                     </span>
