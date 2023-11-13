@@ -232,10 +232,14 @@ function SupplySection({ asset, settings, setSetting, hideModal }) {
   }, [settings.selectedAddress, amount]);
 
   useEffect(() => {
-    setIsEnabled(
-      new BigNumber(asset.allowBalance || 0).isGreaterThan(0) &&
-        new BigNumber(asset.allowBalance || 0).isGreaterThanOrEqualTo(amount)
-    );
+    if (amount.isNaN()) {
+      setIsEnabled(new BigNumber(asset.allowBalance || 0).isGreaterThan(0));
+    } else {
+      setIsEnabled(
+        new BigNumber(asset.allowBalance || 0).isGreaterThan(0) &&
+          new BigNumber(asset.allowBalance || 0).isGreaterThanOrEqualTo(amount)
+      );
+    }
   }, [asset.allowBalance, amount]);
 
   /**
