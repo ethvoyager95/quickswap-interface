@@ -251,7 +251,68 @@ const UserInfoButton = styled.div`
 let lockFlag = false;
 const abortController = new AbortController();
 
-const menu = (
+const dao = (
+  <Menu>
+    <Menu.Item key="0">
+      <NavLink
+        className="flex flex-start align-center gap-menu"
+        to="/vote"
+        activeClassName="active"
+      >
+        <VoteImg />
+        <Label>Governance</Label>
+      </NavLink>
+    </Menu.Item>
+    <Menu.Item key="1">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://community.strike.org/"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <AnalyticsImg />
+        <Label>Discussion</Label>
+      </a>
+    </Menu.Item>
+  </Menu>
+);
+
+const manage = (
+  <Menu>
+    <Menu.Item key="0">
+      <NavLink
+        className="flex flex-start align-center gap-menu"
+        to="/liquidator"
+        activeClassName="active"
+      >
+        <LiquidatorImg />
+        <Label>Liquidator</Label>
+      </NavLink>
+    </Menu.Item>
+    <Menu.Item key="1">
+      <NavLink
+        className="flex flex-start align-center gap-menu"
+        to="/strk"
+        activeClassName="active"
+      >
+        <RewardsImg />
+        <Label>Rewards</Label>
+      </NavLink>
+    </Menu.Item>
+    <Menu.Item key="2">
+      <NavLink
+        className="flex flex-start align-center gap-menu"
+        to="/markets_deprecated"
+        activeClassName="active"
+      >
+        <MarketImg />
+        <Label>Deprecated Markets</Label>
+      </NavLink>
+    </Menu.Item>
+  </Menu>
+);
+
+const more = (
   <Menu>
     {/* <Menu.Item key="0">
       <NavLink
@@ -263,16 +324,7 @@ const menu = (
         <Label>History</Label>
       </NavLink>
     </Menu.Item> */}
-    <Menu.Item key="0">
-      <NavLink
-        className="flex flex-start align-center gap-menu"
-        to="/liquidator"
-        activeClassName="active"
-      >
-        <LiquidatorImg />
-        <Label>Liquidator</Label>
-      </NavLink>
-    </Menu.Item>
+
     {/* <Menu.Item key="2">
       <NavLink
         className="flex flex-start align-center gap-menu"
@@ -303,6 +355,50 @@ const menu = (
       >
         <StatusImg />
         <Label>Status</Label>
+      </a>
+    </Menu.Item>
+    <Menu.Item key="3">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://docs.strike.org"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <StatusImg />
+        <Label>Docs</Label>
+      </a>
+    </Menu.Item>
+    <Menu.Item key="4">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://twitter.com/StrikeFinance"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <StatusImg />
+        <Label>Twitter</Label>
+      </a>
+    </Menu.Item>
+    <Menu.Item key="5">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://t.me/StrikeFinance"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <StatusImg />
+        <Label>Telegram</Label>
+      </a>
+    </Menu.Item>
+    <Menu.Item key="6">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://strike-finance.medium.com"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <StatusImg />
+        <Label>Medium</Label>
       </a>
     </Menu.Item>
   </Menu>
@@ -890,14 +986,37 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           <DashboardImg />
           <Label>Dashboard</Label>
         </NavLink>
-        <NavLink
-          className="flex flex-start align-center gap-menu"
-          to="/vote"
-          activeClassName="active"
-        >
-          <VoteImg />
-          <Label>Vote</Label>
-        </NavLink>
+        {!isMenuOpen && width >= 768 && (
+          <Dropdown overlay={dao} trigger={['click']}>
+            <span
+              className="flex flex-start align-center gap-menu dropdown-link"
+              onClick={e => e.preventDefault()}
+            >
+              <VoteImg /> DAO <Icon type="down" /> &nbsp;
+            </span>
+          </Dropdown>
+        )}
+        {(width < 768 || isMenuOpen) && (
+          <>
+            <NavLink
+              className="flex flex-start align-center gap-menu"
+              to="/vote"
+              activeClassName="active"
+            >
+              <VoteImg />
+              <Label>Governance</Label>
+            </NavLink>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://community.strike.org/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <AnalyticsImg />
+              <Label>Discussion</Label>
+            </a>
+          </>
+        )}
         <NavLink
           className="flex flex-start align-center gap-menu"
           to="/market"
@@ -939,27 +1058,31 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           <RewardsImg />
           <Label>Rewards</Label>
         </NavLink>
+
         {!isMenuOpen && width >= 768 && (
-          <Dropdown overlay={menu} trigger={['click']}>
+          <Dropdown overlay={manage} trigger={['click']}>
             <span
               className="flex flex-start align-center gap-menu dropdown-link"
               onClick={e => e.preventDefault()}
             >
-              <ToolsImg /> Tools <Icon type="down" />
+              <ToolsImg /> Manage <Icon type="down" /> &nbsp;
+            </span>
+          </Dropdown>
+        )}
+        {(width < 768 || isMenuOpen) && <></>}
+
+        {!isMenuOpen && width >= 768 && (
+          <Dropdown overlay={more} trigger={['click']}>
+            <span
+              className="flex flex-start align-center gap-menu dropdown-link"
+              onClick={e => e.preventDefault()}
+            >
+              <ToolsImg /> More <Icon type="down" />
             </span>
           </Dropdown>
         )}
         {(width < 768 || isMenuOpen) && (
           <>
-            <NavLink
-              className="flex flex-start align-center gap-menu"
-              to="/liquidator"
-              activeClassName="active"
-            >
-              <LiquidatorImg />
-              <Label>Liquidator</Label>
-            </NavLink>
-
             <a
               className="flex flex-start align-center gap-menu"
               href="https://dune.com/strike_finance/ethereum-strike-protocol"
@@ -978,6 +1101,42 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             >
               <StatusImg />
               <Label>Status</Label>
+            </a>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://docs.strike.org"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <StatusImg />
+              <Label>Docs</Label>
+            </a>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://twitter.com/StrikeFinance"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <StatusImg />
+              <Label>Twitter</Label>
+            </a>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://t.me/StrikeFinance"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <StatusImg />
+              <Label>Telegram</Label>
+            </a>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://strike-finance.medium.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <StatusImg />
+              <Label>Medium</Label>
             </a>
           </>
         )}

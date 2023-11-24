@@ -86,7 +86,7 @@ function Footer({ settings }) {
           </a>
 
           <a
-            href="https://community.strike.org"
+            href="https://strike-finance.medium.com"
             target="_blank"
             rel="noreferrer"
           >
