@@ -302,11 +302,11 @@ const manage = (
     <Menu.Item key="2">
       <NavLink
         className="flex flex-start align-center gap-menu"
-        to="/markets_deprecated"
+        to="/marketdeprecated"
         activeClassName="active"
       >
         <MarketImg />
-        <Label>Deprecated Markets</Label>
+        <Label>Deprecated Market</Label>
       </NavLink>
     </Menu.Item>
   </Menu>
@@ -1050,15 +1050,6 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           <Label>History</Label>
         </NavLink>
 
-        <NavLink
-          className="flex flex-start align-center gap-menu"
-          to="/strk"
-          activeClassName="active"
-        >
-          <RewardsImg />
-          <Label>Rewards</Label>
-        </NavLink>
-
         {!isMenuOpen && width >= 768 && (
           <Dropdown overlay={manage} trigger={['click']}>
             <span
@@ -1069,7 +1060,34 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             </span>
           </Dropdown>
         )}
-        {(width < 768 || isMenuOpen) && <></>}
+        {(width < 768 || isMenuOpen) && (
+          <>
+            <NavLink
+              className="flex flex-start align-center gap-menu"
+              to="/liquidator"
+              activeClassName="active"
+            >
+              <LiquidatorImg />
+              <Label>Liquidator</Label>
+            </NavLink>
+            <NavLink
+              className="flex flex-start align-center gap-menu"
+              to="/strk"
+              activeClassName="active"
+            >
+              <RewardsImg />
+              <Label>Rewards</Label>
+            </NavLink>
+            <NavLink
+              className="flex flex-start align-center gap-menu"
+              to="/marketdeprecated"
+              activeClassName="active"
+            >
+              <MarketImg />
+              <Label>Deprecated Market</Label>
+            </NavLink>
+          </>
+        )}
 
         {!isMenuOpen && width >= 768 && (
           <Dropdown overlay={more} trigger={['click']}>
