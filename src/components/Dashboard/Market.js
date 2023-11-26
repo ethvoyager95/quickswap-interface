@@ -99,23 +99,25 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
 
   const updateMarketTable = async () => {
     const tempArr = [];
-    settings.assetList.forEach(item => {
-      if (item && item.id !== 'ust') {
-        const temp = {
-          ...item,
-          supplyApy: getBigNumber(item.supplyApy),
-          borrowApy: getBigNumber(item.borrowApy),
-          walletBalance: getBigNumber(item.walletBalance),
-          supplyBalance: getBigNumber(item.supplyBalance),
-          sTokenBalance: getBigNumber(item.sTokenBalance),
-          borrowBalance: getBigNumber(item.borrowBalance),
-          collateralFactor: getBigNumber(item.collateralFactor),
-          tokenPrice: getBigNumber(item.tokenPrice),
-          liquidity: getBigNumber(item.liquidity)
-        };
-        tempArr.push(temp);
-      }
-    });
+    settings.assetList
+      .filter(asset => asset.deprecated === false)
+      .forEach(item => {
+        if (item) {
+          const temp = {
+            ...item,
+            supplyApy: getBigNumber(item.supplyApy),
+            borrowApy: getBigNumber(item.borrowApy),
+            walletBalance: getBigNumber(item.walletBalance),
+            supplyBalance: getBigNumber(item.supplyBalance),
+            sTokenBalance: getBigNumber(item.sTokenBalance),
+            borrowBalance: getBigNumber(item.borrowBalance),
+            collateralFactor: getBigNumber(item.collateralFactor),
+            tokenPrice: getBigNumber(item.tokenPrice),
+            liquidity: getBigNumber(item.liquidity)
+          };
+          tempArr.push(temp);
+        }
+      });
 
     const tempSuppliedData = [];
     const tempNonSuppliableData = [];
