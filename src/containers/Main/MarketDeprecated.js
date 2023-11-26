@@ -195,41 +195,7 @@ const TableWrapper = styled.div`
 const format = commaNumber.bindWith(',', '.');
 
 function MarketDeprecated({ history, settings }) {
-  console.log(settings);
-  const [totalSupply, setTotalSupply] = useState('0');
-  const [supplierCount, setSupplierCount] = useState(0);
-  const [totalBorrow, setTotalBorrow] = useState('0');
-  const [borrowerCount, setBorrowerCount] = useState(0);
-  const [supplyVolume, setSupplyVolume] = useState(0);
-  const [borrowVolume, setBorrowVolume] = useState(0);
   const [sortInfo, setSortInfo] = useState({ field: '', sort: 'desc' });
-
-  useEffect(() => {
-    if (settings.markets && settings.marketVolumeLog && settings.dailyStrike) {
-      const tempTS = (settings.markets || []).reduce((accumulator, market) => {
-        return new BigNumber(accumulator).plus(
-          new BigNumber(market.totalSupplyUsd)
-        );
-      }, 0);
-      const tempSC = (settings.markets || []).reduce((accumulator, market) => {
-        return accumulator + market.supplierCount;
-      }, 0);
-      const tempTB = (settings.markets || []).reduce((accumulator, market) => {
-        return new BigNumber(accumulator).plus(
-          new BigNumber(market.totalBorrowsUsd)
-        );
-      }, 0);
-      const tempBC = (settings.markets || []).reduce((accumulator, market) => {
-        return accumulator + market.borrowerCount;
-      }, 0);
-      setTotalSupply(tempTS.dp(2, 1).toString(10));
-      setSupplierCount(tempSC);
-      setTotalBorrow(tempTB.dp(2, 1).toString(10));
-      setBorrowerCount(tempBC);
-      setSupplyVolume(settings.marketVolumeLog.totalSupplyUsd24h);
-      setBorrowVolume(settings.marketVolumeLog.totalBorrowsUsd24h);
-    }
-  }, [settings.markets]);
 
   const handleSort = field => {
     setSortInfo({
@@ -240,72 +206,14 @@ function MarketDeprecated({ history, settings }) {
   };
 
   return (
-    <MainLayout title="Deprecated Market Overview">
+    <MainLayout title="Deprecated Market">
       <MarketWrapper>
         <Row className="all-section">
           <Col xs={{ span: 24 }}>
-            <Row gutter={12}>
-              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                <div className="total-section">
-                  <div className="title">Total Supply</div>
-                  <div className="content">
-                    <div className="header">
-                      <div className="total-value">${format(totalSupply)}</div>
-                      {/* <div className="percent">
-                    <Icon type="arrow-up" />
-                    <span>—</span>
-                  </div> */}
-                    </div>
-                    <div className="footer">
-                      <div className="volume">
-                        <div className="value">
-                          {`$${format(
-                            new BigNumber(supplyVolume).toFormat(2)
-                          )}`}
-                        </div>
-                        <div className="label">24H Supply Volume</div>
-                      </div>
-                      <div className="suppliers">
-                        <div className="value">{supplierCount}</div>
-                        <div className="label"># of Suppliers</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Col>
-              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                <div className="total-section">
-                  <div className="title">Total Borrow</div>
-                  <div className="content">
-                    <div className="header">
-                      <div className="total-value">${format(totalBorrow)}</div>
-                      {/* <div className="percent">
-                    <Icon type="arrow-up" />
-                    <span>—</span>
-                  </div> */}
-                    </div>
-                    <div className="footer">
-                      <div className="volume">
-                        <div className="value">
-                          {`$${format(
-                            new BigNumber(borrowVolume).toFormat(2)
-                          )}`}
-                        </div>
-                        <div className="label">24H Borrow Volume</div>
-                      </div>
-                      <div className="suppliers">
-                        <div className="value">{borrowerCount}</div>
-                        <div className="label"># of Borrowers</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Col>
-            </Row>
-          </Col>
-          <Col xs={{ span: 24 }}>
             <TableWrapper>
-              <div className="table-title">Deprecated Market</div>
+              <div className="table-title">
+                A deprecated market means a market with zero collateral.
+              </div>
               <Row className="table_header">
                 <Col xs={{ span: 24 }} lg={{ span: 4 }} className="market">
                   Market
@@ -394,11 +302,7 @@ function MarketDeprecated({ history, settings }) {
               <div className="table_content">
                 {settings.markets &&
                   (settings.markets || [])
-                    .filter(
-                      m =>
-                        m.underlyingSymbol !== 'ZRX' &&
-                        m.underlyingSymbol !== 'BAT'
-                    )
+                    .filter(m => m.deprecated === true)
                     .map(market => {
                       return {
                         ...market,

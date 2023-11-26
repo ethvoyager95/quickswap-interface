@@ -522,11 +522,7 @@ function STRK({ settings }) {
               <div className="table_content">
                 {settings.markets &&
                   (settings.markets || [])
-                    .filter(
-                      m =>
-                        m.underlyingSymbol !== 'ZRX' &&
-                        m.underlyingSymbol !== 'BAT'
-                    )
+                    .filter(m => m.deprecated === false)
                     .map(market => {
                       return {
                         ...market,

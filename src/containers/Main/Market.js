@@ -259,11 +259,7 @@ function Market({ history, settings }) {
                       <div className="caption">Top 3 Markets</div>
                       {settings.markets &&
                         (settings.markets || [])
-                          .filter(
-                            m =>
-                              m.underlyingSymbol !== 'ZRX' &&
-                              m.underlyingSymbol !== 'BAT'
-                          )
+                          .filter(m => m.deprecated === false)
                           .sort((a, b) => {
                             return +new BigNumber(b.totalSupplyUsd)
                               .minus(new BigNumber(a.totalSupplyUsd))
@@ -323,11 +319,7 @@ function Market({ history, settings }) {
                       <div className="caption">Top 3 Markets</div>
                       {settings.markets &&
                         (settings.markets || [])
-                          .filter(
-                            m =>
-                              m.underlyingSymbol !== 'ZRX' &&
-                              m.underlyingSymbol !== 'BAT'
-                          )
+                          .filter(m => m.deprecated === false)
                           .sort((a, b) => {
                             return +new BigNumber(b.totalBorrowsUsd)
                               .minus(new BigNumber(a.totalBorrowsUsd))
@@ -465,11 +457,7 @@ function Market({ history, settings }) {
               <div className="table_content">
                 {settings.markets &&
                   (settings.markets || [])
-                    .filter(
-                      m =>
-                        m.underlyingSymbol !== 'ZRX' &&
-                        m.underlyingSymbol !== 'BAT'
-                    )
+                    .filter(m => m.deprecated === false)
                     .map(market => {
                       return {
                         ...market,
