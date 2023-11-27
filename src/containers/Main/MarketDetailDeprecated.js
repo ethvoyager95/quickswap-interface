@@ -215,7 +215,7 @@ function MarketDetailDeprecated({
   }, [currentAsset]);
 
   return (
-    <MainLayout title="Market" currentAsset={currentAsset}>
+    <MainLayout title="Deprecated Market Detail" currentAsset={currentAsset}>
       <MarketDetailWrapper className="flex">
         {/* {(!settings.selectedAddress ||
           !settings.markets ||

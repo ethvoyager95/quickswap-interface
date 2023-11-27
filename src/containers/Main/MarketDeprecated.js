@@ -383,7 +383,9 @@ function MarketDeprecated({ history, settings }) {
                         className="table_item pointer"
                         key={index}
                         onClick={() =>
-                          history.push(`/market/${item.underlyingSymbol}`)
+                          history.push(
+                            `/marketdeprecated/${item.underlyingSymbol}`
+                          )
                         }
                       >
                         <Col
