@@ -124,11 +124,7 @@ function ProposalInfo({ proposalInfo }) {
           </div>
         )}
         <div className="flex align-center just-start proposal-status">
-          <p>
-            {`${proposalInfo.id} ${getStatus(proposalInfo)} ${moment(
-              proposalInfo.updatedAt
-            ).format('MMMM DD, YYYY')}`}
-          </p>
+          <p>{`#${proposalInfo.id}`}</p>
           <div
             className={`flex align-center just-center status ${getStatus(
               proposalInfo

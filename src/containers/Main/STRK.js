@@ -189,7 +189,7 @@ const UserDistributionWrapper = styled.div`
       color: #5e6b86;
       font-weight: bold;
       @media (max-width: 768px) {
-        font-size: 11px;
+        font-size: 10px;
         line-height: 11px;
       }
     }
