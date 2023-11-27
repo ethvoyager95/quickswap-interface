@@ -13,6 +13,8 @@ import Vote from 'containers/Main/Vote';
 import STRK from 'containers/Main/STRK';
 import Market from 'containers/Main/Market';
 import MarketDetail from 'containers/Main/MarketDetail';
+import MarketDeprecated from 'containers/Main/MarketDeprecated';
+import MarketDetailDeprecated from 'containers/Main/MarketDetailDeprecated';
 import VoteOverview from 'containers/Main/VoteOverview';
 import ProposerDetail from 'containers/Main/ProposerDetail';
 import VoterLeaderboard from 'containers/Main/VoterLeaderboard';
@@ -60,6 +62,16 @@ class App extends React.Component {
                   <Route exact path="/strk" component={STRK} />
                   <Route exact path="/market" component={Market} />
                   <Route exact path="/market/:asset" component={MarketDetail} />
+                  <Route
+                    exact
+                    path="/marketdeprecated"
+                    component={MarketDeprecated}
+                  />
+                  <Route
+                    exact
+                    path="/marketdeprecated/:asset"
+                    component={MarketDetailDeprecated}
+                  />
                   <Route exact path="/forbidden" component={Forbidden} />
                   <Route exact path="/history" component={History} />
                   <Route exact path="/staking" component={Staking} />
