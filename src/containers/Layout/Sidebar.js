@@ -308,7 +308,7 @@ const manage = (
         <Label>Rewards</Label>
       </NavLink>
     </Menu.Item>
-    <Menu.Item key="2">
+    {/* <Menu.Item key="2">
       <NavLink
         className="flex flex-start align-center gap-menu"
         to="/marketdeprecated"
@@ -317,7 +317,7 @@ const manage = (
         <MarketDeprecatedImg />
         <Label>Deprecated Market</Label>
       </NavLink>
-    </Menu.Item>
+    </Menu.Item> */}
   </Menu>
 );
 
@@ -1113,14 +1113,14 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               <RewardsImg />
               <Label>Rewards</Label>
             </NavLink>
-            <NavLink
+            {/* <NavLink
               className="flex flex-start align-center gap-menu"
               to="/marketdeprecated"
               activeClassName="active"
             >
               <MarketDeprecatedImg />
               <Label>Deprecated Market</Label>
-            </NavLink>
+            </NavLink> */}
           </>
         )}
 
