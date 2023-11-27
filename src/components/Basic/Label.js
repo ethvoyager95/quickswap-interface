@@ -11,5 +11,6 @@ export const Label = styled.span`
 export const ColorLabel = styled.span`
   font-size: ${({ size }) => size || 16}px;
   font-weight: 900;
+  word-wrap: break-word;
   color: ${({ color }) => color || 'var(--color-text-secondary)'};
 `;
