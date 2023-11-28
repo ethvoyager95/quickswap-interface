@@ -42,6 +42,9 @@ function Header({ title, history, currentAsset }) {
     if (title === 'Market') {
       history.push('/market');
     }
+    if (title === 'Deprecated Market Detail') {
+      history.push('/marketdeprecated');
+    }
   };
 
   return (
@@ -52,7 +55,8 @@ function Header({ title, history, currentAsset }) {
       >
         {(title === 'Overview' ||
           title === 'Details' ||
-          title === 'Market') && (
+          title === 'Market' ||
+          title === 'Deprecated Market Detail') && (
           <img className="arrow-left" src={arrowRightImg} alt="arrow-left" />
         )}
         <p
@@ -60,7 +64,7 @@ function Header({ title, history, currentAsset }) {
             title === 'Overview' || title === 'Details' ? 'highlight' : ''
           }`}
         >
-          {title === 'Market' ? (
+          {title === 'Market' || title === 'Deprecated Market Detail' ? (
             <div className="flex align-center">
               <img
                 className="asset-img"

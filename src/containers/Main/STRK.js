@@ -189,7 +189,7 @@ const UserDistributionWrapper = styled.div`
       color: #5e6b86;
       font-weight: bold;
       @media (max-width: 768px) {
-        font-size: 11px;
+        font-size: 10px;
         line-height: 11px;
       }
     }
@@ -522,11 +522,7 @@ function STRK({ settings }) {
               <div className="table_content">
                 {settings.markets &&
                   (settings.markets || [])
-                    .filter(
-                      m =>
-                        m.underlyingSymbol !== 'ZRX' &&
-                        m.underlyingSymbol !== 'BAT'
-                    )
+                    .filter(m => m.deprecated === false)
                     .map(market => {
                       return {
                         ...market,

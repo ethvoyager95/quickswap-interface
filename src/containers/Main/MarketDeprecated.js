@@ -194,41 +194,8 @@ const TableWrapper = styled.div`
 
 const format = commaNumber.bindWith(',', '.');
 
-function Market({ history, settings }) {
-  const [totalSupply, setTotalSupply] = useState('0');
-  const [supplierCount, setSupplierCount] = useState(0);
-  const [totalBorrow, setTotalBorrow] = useState('0');
-  const [borrowerCount, setBorrowerCount] = useState(0);
-  const [supplyVolume, setSupplyVolume] = useState(0);
-  const [borrowVolume, setBorrowVolume] = useState(0);
+function MarketDeprecated({ history, settings }) {
   const [sortInfo, setSortInfo] = useState({ field: '', sort: 'desc' });
-
-  useEffect(() => {
-    if (settings.markets && settings.marketVolumeLog && settings.dailyStrike) {
-      const tempTS = (settings.markets || []).reduce((accumulator, market) => {
-        return new BigNumber(accumulator).plus(
-          new BigNumber(market.totalSupplyUsd)
-        );
-      }, 0);
-      const tempSC = (settings.markets || []).reduce((accumulator, market) => {
-        return accumulator + market.supplierCount;
-      }, 0);
-      const tempTB = (settings.markets || []).reduce((accumulator, market) => {
-        return new BigNumber(accumulator).plus(
-          new BigNumber(market.totalBorrowsUsd)
-        );
-      }, 0);
-      const tempBC = (settings.markets || []).reduce((accumulator, market) => {
-        return accumulator + market.borrowerCount;
-      }, 0);
-      setTotalSupply(tempTS.dp(2, 1).toString(10));
-      setSupplierCount(tempSC);
-      setTotalBorrow(tempTB.dp(2, 1).toString(10));
-      setBorrowerCount(tempBC);
-      setSupplyVolume(settings.marketVolumeLog.totalSupplyUsd24h);
-      setBorrowVolume(settings.marketVolumeLog.totalBorrowsUsd24h);
-    }
-  }, [settings.markets]);
 
   const handleSort = field => {
     setSortInfo({
@@ -239,136 +206,14 @@ function Market({ history, settings }) {
   };
 
   return (
-    <MainLayout title="Market Overview">
+    <MainLayout title="Deprecated Market">
       <MarketWrapper>
         <Row className="all-section">
           <Col xs={{ span: 24 }}>
-            <Row gutter={12}>
-              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                <div className="total-section">
-                  <div className="title">Total Supply</div>
-                  <div className="content">
-                    <div className="header">
-                      <div className="total-value">${format(totalSupply)}</div>
-                      {/* <div className="percent">
-                    <Icon type="arrow-up" />
-                    <span>—</span>
-                  </div> */}
-                    </div>
-                    <div className="markets">
-                      <div className="caption">Top 3 Markets</div>
-                      {settings.markets &&
-                        (settings.markets || [])
-                          .filter(m => m.deprecated === false)
-                          .sort((a, b) => {
-                            return +new BigNumber(b.totalSupplyUsd)
-                              .minus(new BigNumber(a.totalSupplyUsd))
-                              .toString(10);
-                          })
-                          .slice(0, 3)
-                          .map(item => (
-                            <div
-                              className="progress"
-                              key={item.underlyingSymbol}
-                            >
-                              <LineProgressBar
-                                label={item.underlyingSymbol}
-                                percent={
-                                  !new BigNumber(totalSupply).isZero()
-                                    ? new BigNumber(item.totalSupplyUsd)
-                                        .div(new BigNumber(totalSupply))
-                                        .times(100)
-                                        .dp(2, 1)
-                                        .toNumber()
-                                    : 0
-                                }
-                                type="market"
-                              />
-                            </div>
-                          ))}
-                    </div>
-                    <div className="footer">
-                      <div className="volume">
-                        <div className="value">
-                          {`$${format(
-                            new BigNumber(supplyVolume).toFormat(2)
-                          )}`}
-                        </div>
-                        <div className="label">24H Supply Volume</div>
-                      </div>
-                      <div className="suppliers">
-                        <div className="value">{supplierCount}</div>
-                        <div className="label"># of Suppliers</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Col>
-              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                <div className="total-section">
-                  <div className="title">Total Borrow</div>
-                  <div className="content">
-                    <div className="header">
-                      <div className="total-value">${format(totalBorrow)}</div>
-                      {/* <div className="percent">
-                    <Icon type="arrow-up" />
-                    <span>—</span>
-                  </div> */}
-                    </div>
-                    <div className="markets">
-                      <div className="caption">Top 3 Markets</div>
-                      {settings.markets &&
-                        (settings.markets || [])
-                          .filter(m => m.deprecated === false)
-                          .sort((a, b) => {
-                            return +new BigNumber(b.totalBorrowsUsd)
-                              .minus(new BigNumber(a.totalBorrowsUsd))
-                              .toString(10);
-                          })
-                          .slice(0, 3)
-                          .map(item => (
-                            <div
-                              className="progress"
-                              key={item.underlyingSymbol}
-                            >
-                              <LineProgressBar
-                                label={item.underlyingSymbol}
-                                percent={
-                                  !new BigNumber(totalBorrow).isZero()
-                                    ? new BigNumber(item.totalBorrowsUsd)
-                                        .div(new BigNumber(totalBorrow))
-                                        .times(100)
-                                        .dp(2, 1)
-                                        .toNumber()
-                                    : 0
-                                }
-                                type="market"
-                              />
-                            </div>
-                          ))}
-                    </div>
-                    <div className="footer">
-                      <div className="volume">
-                        <div className="value">
-                          {`$${format(
-                            new BigNumber(borrowVolume).toFormat(2)
-                          )}`}
-                        </div>
-                        <div className="label">24H Borrow Volume</div>
-                      </div>
-                      <div className="suppliers">
-                        <div className="value">{borrowerCount}</div>
-                        <div className="label"># of Borrowers</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Col>
-            </Row>
-          </Col>
-          <Col xs={{ span: 24 }}>
             <TableWrapper>
-              <div className="table-title">Market Distribution</div>
+              <div className="table-title">
+                A deprecated market means a market with zero collateral.
+              </div>
               <Row className="table_header">
                 <Col xs={{ span: 24 }} lg={{ span: 4 }} className="market">
                   Market
@@ -457,7 +302,7 @@ function Market({ history, settings }) {
               <div className="table_content">
                 {settings.markets &&
                   (settings.markets || [])
-                    .filter(m => m.deprecated === false)
+                    .filter(m => m.deprecated === true)
                     .map(market => {
                       return {
                         ...market,
@@ -538,7 +383,9 @@ function Market({ history, settings }) {
                         className="table_item pointer"
                         key={index}
                         onClick={() =>
-                          history.push(`/market/${item.underlyingSymbol}`)
+                          history.push(
+                            `/marketdeprecated/${item.underlyingSymbol}`
+                          )
                         }
                       >
                         <Col
@@ -657,12 +504,12 @@ function Market({ history, settings }) {
   );
 }
 
-Market.propTypes = {
+MarketDeprecated.propTypes = {
   history: PropTypes.object,
   settings: PropTypes.object
 };
 
-Market.defaultProps = {
+MarketDeprecated.defaultProps = {
   history: {},
   settings: {}
 };
@@ -674,4 +521,4 @@ const mapStateToProps = ({ account }) => ({
 export default compose(
   withRouter,
   connectAccount(mapStateToProps, undefined)
-)(Market);
+)(MarketDeprecated);
