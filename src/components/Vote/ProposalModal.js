@@ -251,7 +251,6 @@ function ProposalModal({
                 callDataValues.push(formValues[`calldata_${i}_${j}`]);
               }
             }
-            console.log('call data: ', callDataValues);
             callDatas.push(encodeParameters(callDataTypes, callDataValues));
           }
         } catch (error) {
