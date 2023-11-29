@@ -52,25 +52,27 @@ function BorrowLimit({ settings }) {
   const [borrowPercent, setBorrowPercent] = useState('0');
 
   useEffect(() => {
-    if (settings.selectedAddress) {
-      const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
-      const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
-      const total = BigNumber.maximum(totalBorrowLimit, 0);
-      setAvailable(total.dp(2, 1).toString(10));
-      setBorrowPercent(
-        total.isZero() || total.isNaN()
-          ? 0
-          : totalBorrowBalance
-              .div(total)
-              .times(100)
-              .dp(0, 1)
-              .toString(10)
-      );
-    }
+    const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
+    const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
+    const total = BigNumber.maximum(totalBorrowLimit, 0);
+    setAvailable(total.dp(2, 1).toString(10));
+    setBorrowPercent(
+      total.isZero() || total.isNaN()
+        ? 0
+        : totalBorrowBalance
+            .div(total)
+            .times(100)
+            .dp(0, 1)
+            .toString(10)
+    );
     return function cleanup() {
       abortController.abort();
     };
-  }, [settings.totalBorrowBalance, settings.totalBorrowLimit]);
+  }, [
+    settings.totalBorrowBalance,
+    settings.totalBorrowLimit,
+    settings.selectedAddress
+  ]);
 
   return (
     <CardWrapper>

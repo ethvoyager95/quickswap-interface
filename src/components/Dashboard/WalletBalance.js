@@ -230,11 +230,7 @@ function WalletBalance({ settings, setSetting }) {
   }, [settings.assetList, settings.withSTRK]);
 
   useEffect(() => {
-    if (
-      settings.selectedAddress &&
-      settings.assetList &&
-      settings.assetList.length > 0
-    ) {
+    if (settings.assetList && settings.assetList.length > 0) {
       updateNetAPY();
     }
     return function cleanup() {
@@ -284,7 +280,7 @@ function WalletBalance({ settings, setSetting }) {
       }
     });
     setDailyEarning(tempDailyEarning.toString(10));
-  }, [settings.assetList, settings.markets]);
+  }, [settings.assetList, settings.markets, settings.selectedAddress]);
 
   const formatValue = value => {
     return `$${format(
