@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
@@ -37,6 +37,15 @@ import { ReactComponent as VaultImg } from 'assets/img/menu-vault.svg';
 import { ReactComponent as AnalyticsImg } from 'assets/img/menu-analytics.svg';
 import { ReactComponent as ToolsImg } from 'assets/img/menu-tools.svg';
 import { ReactComponent as StatusImg } from 'assets/img/menu-status.svg';
+import { ReactComponent as DiscussionImg } from 'assets/img/menu-discussion.svg';
+import { ReactComponent as ManageImg } from 'assets/img/menu-manage.svg';
+import { ReactComponent as MoreImg } from 'assets/img/menu-more.svg';
+import { ReactComponent as TelegramImg } from 'assets/img/menu-telegram.svg';
+import { ReactComponent as TwitterImg } from 'assets/img/menu-twitter.svg';
+import { ReactComponent as MediumImg } from 'assets/img/menu-medium.svg';
+import { ReactComponent as MarketDeprecatedImg } from 'assets/img/menu-marketdeprecated.svg';
+import { ReactComponent as DocsImg } from 'assets/img/menu-docs.svg';
+
 import ConnectButton from './ConnectButton';
 
 const SidebarWrapper = styled.div`
@@ -251,7 +260,68 @@ const UserInfoButton = styled.div`
 let lockFlag = false;
 const abortController = new AbortController();
 
-const menu = (
+const dao = (
+  <Menu>
+    <Menu.Item key="0">
+      <NavLink
+        className="flex flex-start align-center gap-menu"
+        to="/vote"
+        activeClassName="active"
+      >
+        <VoteImg />
+        <Label>Governance</Label>
+      </NavLink>
+    </Menu.Item>
+    <Menu.Item key="1">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://community.strike.org/"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <DiscussionImg />
+        <Label>Discussion</Label>
+      </a>
+    </Menu.Item>
+  </Menu>
+);
+
+const manage = (
+  <Menu>
+    <Menu.Item key="0">
+      <NavLink
+        className="flex flex-start align-center gap-menu"
+        to="/liquidator"
+        activeClassName="active"
+      >
+        <LiquidatorImg />
+        <Label>Liquidator</Label>
+      </NavLink>
+    </Menu.Item>
+    <Menu.Item key="1">
+      <NavLink
+        className="flex flex-start align-center gap-menu"
+        to="/strk"
+        activeClassName="active"
+      >
+        <RewardsImg />
+        <Label>Rewards</Label>
+      </NavLink>
+    </Menu.Item>
+    {/* <Menu.Item key="2">
+      <NavLink
+        className="flex flex-start align-center gap-menu"
+        to="/marketdeprecated"
+        activeClassName="active"
+      >
+        <MarketDeprecatedImg />
+        <Label>Deprecated Market</Label>
+      </NavLink>
+    </Menu.Item> */}
+  </Menu>
+);
+
+const more = (
   <Menu>
     {/* <Menu.Item key="0">
       <NavLink
@@ -263,16 +333,7 @@ const menu = (
         <Label>History</Label>
       </NavLink>
     </Menu.Item> */}
-    <Menu.Item key="0">
-      <NavLink
-        className="flex flex-start align-center gap-menu"
-        to="/liquidator"
-        activeClassName="active"
-      >
-        <LiquidatorImg />
-        <Label>Liquidator</Label>
-      </NavLink>
-    </Menu.Item>
+
     {/* <Menu.Item key="2">
       <NavLink
         className="flex flex-start align-center gap-menu"
@@ -305,6 +366,50 @@ const menu = (
         <Label>Status</Label>
       </a>
     </Menu.Item>
+    <Menu.Item key="3">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://docs.strike.org"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <DocsImg />
+        <Label>Docs</Label>
+      </a>
+    </Menu.Item>
+    <Menu.Item key="4">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://twitter.com/StrikeFinance"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <TwitterImg />
+        <Label>Twitter</Label>
+      </a>
+    </Menu.Item>
+    <Menu.Item key="5">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://t.me/StrikeFinance"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <TelegramImg />
+        <Label>Telegram</Label>
+      </a>
+    </Menu.Item>
+    <Menu.Item key="6">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://strike-finance.medium.com"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <MediumImg />
+        <Label>Medium</Label>
+      </a>
+    </Menu.Item>
   </Menu>
 );
 
@@ -313,6 +418,12 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const multicall = useMulticall(instance);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpenDaoMenu, setIsOpenDaoMenu] = useState(false);
+  const [isOpenManageMenu, setIsOpenManageMenu] = useState(false);
+  const [isOpenMoreMenu, setIsOpenMoreMenu] = useState(false);
+
+  const dropdownRef = useRef(null);
+
   const [available, setAvailable] = useState('0');
   const [balance, setBalance] = useState('');
   const { width } = useWindowDimensions();
@@ -365,25 +476,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     });
   };
 
-  useEffect(() => {
-    if (settings.walletConnected) {
-      setSetting({
-        accountLoading: false
-      });
-    }
-  }, [settings.walletConnected]);
-
   const getMarkets = async () => {
     const res = await promisify(getGovernanceStrike, {});
     if (!res.status) {
       return;
     }
     setSetting({
-      markets: [
-        ...res.data.markets.filter(
-          m => m.underlyingSymbol !== 'ZRX' && m.underlyingSymbol !== 'BAT'
-        )
-      ],
+      markets: [...res.data.markets],
       marketVolumeLog: res.data.marketVolumeLog,
       dailyStrike: res.data.dailyStrike,
       reserves: res.data.reserves
@@ -391,15 +490,12 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   };
 
   useEffect(() => {
-    if (window.ethereum) {
-      if (!settings.accountLoading /* && checkIsValidNetwork(instance) */) {
-        initSettings();
-      }
-    }
+    initSettings();
+
     return function cleanup() {
       abortController.abort();
     };
-  }, [settings.accountLoading]);
+  }, [settings.selectedAddress]);
 
   useEffect(() => {
     getMarkets();
@@ -416,7 +512,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
         clearInterval(updateTimer);
       }
     };
-  }, [settings.selectedAddress, settings.accountLoading, instance]);
+  }, [settings.selectedAddress, instance]);
 
   const updateMarketInfo = async (
     accountAddress = settings.selectedAddress
@@ -432,9 +528,12 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       let totalBorrowLimit = new BigNumber(0);
       let totalLiquidity = new BigNumber(0);
 
-      const assetsIn = await methods.call(appContract.methods.getAssetsIn, [
-        accountAddress
-      ]);
+      const assetsIn =
+        (accountAddress &&
+          (await methods.call(appContract.methods.getAssetsIn, [
+            accountAddress
+          ]))) ||
+        [];
       const assetList = await Promise.all(
         Object.values(constants.CONTRACT_TOKEN_ADDRESS).map(
           async (item, index) => {
@@ -477,237 +576,186 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               allowBalance: new BigNumber(0),
               collateral: false,
               percentOfLimit: '0',
-              borrowPaused: true
+              borrowPaused: true,
+              deprecated: market.deprecated
             };
+            if (accountAddress) {
+              const tokenDecimal = settings.decimals[item.id].token || 18;
+              const sBepContract = getSbepContract(instance, item.id);
+              asset.collateral = assetsIn.includes(asset.stokenAddress);
 
-            const tokenDecimal = settings.decimals[item.id].token || 18;
-            const sBepContract = getSbepContract(instance, item.id);
-            asset.collateral = assetsIn.includes(asset.stokenAddress);
+              // const promises = [];
+              const contractCallContext = [];
 
-            // const promises = [];
-            const contractCallContext = [];
+              // wallet balance
+              if (item.id !== 'eth') {
+                const tokenContract = getTokenContract(instance, item.id);
+                contractCallContext.push(
+                  {
+                    reference: 'walletBalance',
+                    contractAddress: tokenContract.options.address,
+                    abi: tokenContract.options.jsonInterface,
+                    calls: [
+                      {
+                        methodName: 'balanceOf',
+                        methodParameters: [accountAddress]
+                      }
+                    ]
+                  },
+                  {
+                    reference: 'allowBalance',
+                    contractAddress: tokenContract.options.address,
+                    abi: tokenContract.options.jsonInterface,
+                    calls: [
+                      {
+                        methodName: 'allowance',
+                        methodParameters: [accountAddress, asset.stokenAddress]
+                      }
+                    ]
+                  }
+                );
+              }
 
-            // wallet balance
-            if (item.id !== 'eth') {
-              const tokenContract = getTokenContract(instance, item.id);
-              // promises.push(
-              //   methods.call(tokenContract.methods.balanceOf, [accountAddress]),
-              //   // allowance
-              //   methods.call(tokenContract.methods.allowance, [
-              //     accountAddress,
-              //     asset.stokenAddress
-              //   ])
-              // );
+              // hypotheticalLiquidity
+              const totalBalance = await methods.call(
+                sBepContract.methods.balanceOf,
+                [accountAddress]
+              );
 
               contractCallContext.push(
                 {
-                  reference: 'walletBalance',
-                  contractAddress: tokenContract.options.address,
-                  abi: tokenContract.options.jsonInterface,
+                  reference: 'supplyBalance',
+                  contractAddress: sBepContract.options.address,
+                  abi: sBepContract.options.jsonInterface,
                   calls: [
                     {
-                      methodName: 'balanceOf',
+                      methodName: 'balanceOfUnderlying',
                       methodParameters: [accountAddress]
                     }
                   ]
                 },
                 {
-                  reference: 'allowBalance',
-                  contractAddress: tokenContract.options.address,
-                  abi: tokenContract.options.jsonInterface,
+                  reference: 'borrowBalance',
+                  contractAddress: sBepContract.options.address,
+                  abi: sBepContract.options.jsonInterface,
                   calls: [
                     {
-                      methodName: 'allowance',
-                      methodParameters: [accountAddress, asset.stokenAddress]
+                      methodName: 'borrowBalanceCurrent',
+                      methodParameters: [accountAddress]
+                    }
+                  ]
+                },
+                {
+                  reference: 'hypotheticalLiquidity',
+                  contractAddress: appContract.options.address,
+                  abi: appContract.options.jsonInterface,
+                  calls: [
+                    {
+                      methodName: 'getHypotheticalAccountLiquidity',
+                      methodParameters: [
+                        accountAddress,
+                        asset.stokenAddress,
+                        totalBalance,
+                        0
+                      ]
+                    }
+                  ]
+                },
+                {
+                  reference: 'borrowGuardianPaused',
+                  contractAddress: appContract.options.address,
+                  abi: appContract.options.jsonInterface,
+                  calls: [
+                    {
+                      methodName: 'borrowGuardianPaused',
+                      methodParameters: [asset.stokenAddress]
                     }
                   ]
                 }
               );
-            }
-            // else if (instance) {
-            //   promises.push(instance.eth.getBalance(accountAddress), null);
-            // }
 
-            // supply balance
-            // promises.push(
-            //   methods.call(sBepContract.methods.balanceOfUnderlying, [
-            //     accountAddress
-            //   ])
-            // );
+              const results = await multicall.call(contractCallContext);
+              // console.log(`${item.id} =`, results);
 
-            // borrow balance
-            // promises.push(
-            //   methods.call(sBepContract.methods.borrowBalanceCurrent, [
-            //     accountAddress
-            //   ])
-            // );
+              let walletBalance = new BigNumber(0);
+              let allowBalance = new BigNumber(0);
+              const supplyBalance =
+                results.results.supplyBalance.callsReturnContext[0]
+                  .returnValues[0].hex;
+              const borrowBalance =
+                results.results.borrowBalance.callsReturnContext[0]
+                  .returnValues[0].hex;
+              const hypotheticalLiquidity =
+                results.results.hypotheticalLiquidity.callsReturnContext[0]
+                  .returnValues;
+              const borrowGuardianPaused =
+                results.results.borrowGuardianPaused.callsReturnContext[0]
+                  .returnValues[0];
 
-            // hypotheticalLiquidity
-            const totalBalance = await methods.call(
-              sBepContract.methods.balanceOf,
-              [accountAddress]
-            );
+              if (item.id !== 'eth') {
+                walletBalance =
+                  results.results.walletBalance.callsReturnContext[0]
+                    .returnValues[0].hex;
+                allowBalance =
+                  results.results.allowBalance.callsReturnContext[0]
+                    .returnValues[0].hex;
 
-            // promises.push(
-            //   methods.call(
-            //     appContract.methods.getHypotheticalAccountLiquidity,
-            //     [accountAddress, asset.stokenAddress, totalBalance, 0]
-            //   )
-            // );
-
-            // borrowGuardianPaused
-            // promises.push(
-            //   methods.call(
-            //     appContract.methods.borrowGuardianPaused,
-            //     [asset.stokenAddress]
-            //   )
-            // );
-
-            // const [
-            //   walletBalance,
-            //   allowBalance,
-            //   supplyBalance,
-            //   borrowBalance,
-            //   hypotheticalLiquidity,
-            //   borrowGuardianPaused
-            // ] = await Promise.all(promises);
-            // asset.walletBalance = new BigNumber(walletBalance).div(
-            //   new BigNumber(10).pow(tokenDecimal)
-            // );
-
-            contractCallContext.push(
-              {
-                reference: 'supplyBalance',
-                contractAddress: sBepContract.options.address,
-                abi: sBepContract.options.jsonInterface,
-                calls: [
-                  {
-                    methodName: 'balanceOfUnderlying',
-                    methodParameters: [accountAddress]
-                  }
-                ]
-              },
-              {
-                reference: 'borrowBalance',
-                contractAddress: sBepContract.options.address,
-                abi: sBepContract.options.jsonInterface,
-                calls: [
-                  {
-                    methodName: 'borrowBalanceCurrent',
-                    methodParameters: [accountAddress]
-                  }
-                ]
-              },
-              {
-                reference: 'hypotheticalLiquidity',
-                contractAddress: appContract.options.address,
-                abi: appContract.options.jsonInterface,
-                calls: [
-                  {
-                    methodName: 'getHypotheticalAccountLiquidity',
-                    methodParameters: [
-                      accountAddress,
-                      asset.stokenAddress,
-                      totalBalance,
-                      0
-                    ]
-                  }
-                ]
-              },
-              {
-                reference: 'borrowGuardianPaused',
-                contractAddress: appContract.options.address,
-                abi: appContract.options.jsonInterface,
-                calls: [
-                  {
-                    methodName: 'borrowGuardianPaused',
-                    methodParameters: [asset.stokenAddress]
-                  }
-                ]
+                asset.walletBalance = new BigNumber(walletBalance).div(
+                  new BigNumber(10).pow(tokenDecimal)
+                );
+                asset.allowBalance = new BigNumber(allowBalance).div(
+                  new BigNumber(10).pow(tokenDecimal)
+                );
+              } else if (window.ethereum) {
+                walletBalance = await instance.eth.getBalance(accountAddress);
+                asset.walletBalance = new BigNumber(walletBalance).div(
+                  new BigNumber(10).pow(tokenDecimal)
+                );
               }
-            );
 
-            const results = await multicall.call(contractCallContext);
-            // console.log(`${item.id} =`, results);
-
-            let walletBalance = new BigNumber(0);
-            let allowBalance = new BigNumber(0);
-            const supplyBalance =
-              results.results.supplyBalance.callsReturnContext[0]
-                .returnValues[0].hex;
-            const borrowBalance =
-              results.results.borrowBalance.callsReturnContext[0]
-                .returnValues[0].hex;
-            const hypotheticalLiquidity =
-              results.results.hypotheticalLiquidity.callsReturnContext[0]
-                .returnValues;
-            const borrowGuardianPaused =
-              results.results.borrowGuardianPaused.callsReturnContext[0]
-                .returnValues[0];
-
-            if (item.id !== 'eth') {
-              walletBalance =
-                results.results.walletBalance.callsReturnContext[0]
-                  .returnValues[0].hex;
-              allowBalance =
-                results.results.allowBalance.callsReturnContext[0]
-                  .returnValues[0].hex;
-
-              asset.walletBalance = new BigNumber(walletBalance).div(
+              asset.supplyBalance = new BigNumber(supplyBalance).div(
                 new BigNumber(10).pow(tokenDecimal)
               );
-              asset.allowBalance = new BigNumber(allowBalance).div(
+              asset.borrowBalance = new BigNumber(borrowBalance).div(
                 new BigNumber(10).pow(tokenDecimal)
               );
-            } else if (window.ethereum) {
-              walletBalance = await instance.eth.getBalance(accountAddress);
-              asset.walletBalance = new BigNumber(walletBalance).div(
-                new BigNumber(10).pow(tokenDecimal)
+
+              // percent of limit
+              asset.percentOfLimit = new BigNumber(
+                settings.totalBorrowLimit
+              ).isZero()
+                ? '0'
+                : asset.borrowBalance
+                    .times(asset.tokenPrice)
+                    .div(settings.totalBorrowLimit)
+                    .times(100)
+                    .dp(0, 1)
+                    .toString(10);
+
+              asset.hypotheticalLiquidity = hypotheticalLiquidity;
+
+              asset.borrowPaused = borrowGuardianPaused;
+
+              const supplyBalanceUSD = asset.supplyBalance.times(
+                asset.tokenPrice
+              );
+              const borrowBalanceUSD = asset.borrowBalance.times(
+                asset.tokenPrice
+              );
+
+              totalSupplyBalance = totalSupplyBalance.plus(supplyBalanceUSD);
+              totalBorrowBalance = totalBorrowBalance.plus(borrowBalanceUSD);
+
+              if (asset.collateral) {
+                totalBorrowLimit = totalBorrowLimit.plus(
+                  supplyBalanceUSD.times(asset.collateralFactor)
+                );
+              }
+
+              totalLiquidity = totalLiquidity.plus(
+                new BigNumber(market.totalSupplyUsd || 0)
               );
             }
-
-            asset.supplyBalance = new BigNumber(supplyBalance).div(
-              new BigNumber(10).pow(tokenDecimal)
-            );
-            asset.borrowBalance = new BigNumber(borrowBalance).div(
-              new BigNumber(10).pow(tokenDecimal)
-            );
-
-            // percent of limit
-            asset.percentOfLimit = new BigNumber(
-              settings.totalBorrowLimit
-            ).isZero()
-              ? '0'
-              : asset.borrowBalance
-                  .times(asset.tokenPrice)
-                  .div(settings.totalBorrowLimit)
-                  .times(100)
-                  .dp(0, 1)
-                  .toString(10);
-
-            asset.hypotheticalLiquidity = hypotheticalLiquidity;
-
-            asset.borrowPaused = borrowGuardianPaused;
-
-            const supplyBalanceUSD = asset.supplyBalance.times(
-              asset.tokenPrice
-            );
-            const borrowBalanceUSD = asset.borrowBalance.times(
-              asset.tokenPrice
-            );
-
-            totalSupplyBalance = totalSupplyBalance.plus(supplyBalanceUSD);
-            totalBorrowBalance = totalBorrowBalance.plus(borrowBalanceUSD);
-
-            if (asset.collateral) {
-              totalBorrowLimit = totalBorrowLimit.plus(
-                supplyBalanceUSD.times(asset.collateralFactor)
-              );
-            }
-
-            totalLiquidity = totalLiquidity.plus(
-              new BigNumber(market.totalSupplyUsd || 0)
-            );
 
             return asset;
           }
@@ -785,17 +833,14 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       );
 
       setSetting({
-        assetList
+        assetList,
+        totalLiquidity: '-',
+        totalSupplyBalance: '0',
+        totalBorrowBalance: '0',
+        totalBorrowLimit: '0'
       });
       lockFlag = false;
     }
-  };
-
-  const handleAccountChange = async () => {
-    await updateMarketInfo();
-    setSetting({
-      accountLoading: false
-    });
   };
 
   useEffect(() => {
@@ -811,10 +856,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   }, [settings.pendingInfo.status]);
 
   useEffect(() => {
-    if (settings.accountLoading) {
-      handleAccountChange();
-    }
-  }, [settings.accountLoading]);
+    updateMarketInfo();
+  }, [settings.selectedAddress]);
 
   useEffect(() => {
     if (settings.selectedAddress) {
@@ -827,11 +870,28 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
     };
   }, [settings.totalBorrowLimit, settings.selectedAddress]);
 
-  // useEffect(() => {
-  //   if (!settings.walletConnected && location.pathname !== '/history') {
-  //     setIsOpenModal(true);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const wheelHandler = event => {
+      if (isOpenDaoMenu || isOpenManageMenu || isOpenMoreMenu) {
+        event.preventDefault();
+      }
+    };
+    const handleOutsideClick = event => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpenDaoMenu(false);
+        setIsOpenManageMenu(false);
+        setIsOpenMoreMenu(false);
+      }
+    };
+    document.addEventListener('wheel', wheelHandler, { passive: false });
+    document.addEventListener('click', handleOutsideClick);
+
+    // Cleanup function
+    return () => {
+      document.removeEventListener('wheel', wheelHandler);
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, [isOpenDaoMenu, isOpenManageMenu, isOpenMoreMenu]);
 
   const updateBalance = async () => {
     if (
@@ -881,7 +941,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           <ConnectButton />
         </div>
       </TopSidebarWrapper>
-      <MainMenu isMenuOpen={isMenuOpen}>
+      <MainMenu isMenuOpen={isMenuOpen} ref={dropdownRef}>
         <NavLink
           className="flex flex-start align-center gap-menu"
           to="/dashboard"
@@ -890,14 +950,40 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           <DashboardImg />
           <Label>Dashboard</Label>
         </NavLink>
-        <NavLink
-          className="flex flex-start align-center gap-menu"
-          to="/vote"
-          activeClassName="active"
-        >
-          <VoteImg />
-          <Label>Vote</Label>
-        </NavLink>
+        {!isMenuOpen && width >= 768 && (
+          <Dropdown overlay={dao} trigger={['click']}>
+            <span
+              className="flex flex-start align-center gap-menu dropdown-link"
+              onClick={e => {
+                e.preventDefault();
+                setIsOpenDaoMenu(!isOpenDaoMenu);
+              }}
+            >
+              <VoteImg /> DAO <Icon type="down" /> &nbsp;
+            </span>
+          </Dropdown>
+        )}
+        {(width < 768 || isMenuOpen) && (
+          <>
+            <NavLink
+              className="flex flex-start align-center gap-menu"
+              to="/vote"
+              activeClassName="active"
+            >
+              <VoteImg />
+              <Label>Governance</Label>
+            </NavLink>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://community.strike.org/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <DiscussionImg />
+              <Label>Discussion</Label>
+            </a>
+          </>
+        )}
         <NavLink
           className="flex flex-start align-center gap-menu"
           to="/market"
@@ -931,21 +1017,16 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           <Label>History</Label>
         </NavLink>
 
-        <NavLink
-          className="flex flex-start align-center gap-menu"
-          to="/strk"
-          activeClassName="active"
-        >
-          <RewardsImg />
-          <Label>Rewards</Label>
-        </NavLink>
         {!isMenuOpen && width >= 768 && (
-          <Dropdown overlay={menu} trigger={['click']}>
+          <Dropdown overlay={manage} trigger={['click']}>
             <span
               className="flex flex-start align-center gap-menu dropdown-link"
-              onClick={e => e.preventDefault()}
+              onClick={e => {
+                e.preventDefault();
+                setIsOpenManageMenu(!isOpenManageMenu);
+              }}
             >
-              <ToolsImg /> Tools <Icon type="down" />
+              <ManageImg /> Manage <Icon type="down" /> &nbsp;
             </span>
           </Dropdown>
         )}
@@ -959,7 +1040,40 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               <LiquidatorImg />
               <Label>Liquidator</Label>
             </NavLink>
+            <NavLink
+              className="flex flex-start align-center gap-menu"
+              to="/strk"
+              activeClassName="active"
+            >
+              <RewardsImg />
+              <Label>Rewards</Label>
+            </NavLink>
+            {/* <NavLink
+              className="flex flex-start align-center gap-menu"
+              to="/marketdeprecated"
+              activeClassName="active"
+            >
+              <MarketDeprecatedImg />
+              <Label>Deprecated Market</Label>
+            </NavLink> */}
+          </>
+        )}
 
+        {!isMenuOpen && width >= 768 && (
+          <Dropdown overlay={more} trigger={['click']}>
+            <span
+              className="flex flex-start align-center gap-menu dropdown-link"
+              onClick={e => {
+                e.preventDefault();
+                setIsOpenMoreMenu(!isOpenMoreMenu);
+              }}
+            >
+              <MoreImg /> More <Icon type="down" />
+            </span>
+          </Dropdown>
+        )}
+        {(width < 768 || isMenuOpen) && (
+          <>
             <a
               className="flex flex-start align-center gap-menu"
               href="https://dune.com/strike_finance/ethereum-strike-protocol"
@@ -978,6 +1092,42 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             >
               <StatusImg />
               <Label>Status</Label>
+            </a>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://docs.strike.org"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <DocsImg />
+              <Label>Docs</Label>
+            </a>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://twitter.com/StrikeFinance"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <TwitterImg />
+              <Label>Twitter</Label>
+            </a>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://t.me/StrikeFinance"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <TelegramImg />
+              <Label>Telegram</Label>
+            </a>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://strike-finance.medium.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MediumImg />
+              <Label>Medium</Label>
             </a>
           </>
         )}

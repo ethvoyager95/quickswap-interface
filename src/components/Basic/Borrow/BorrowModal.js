@@ -160,7 +160,10 @@ function BorrowModal({ visible, onCancel, settings }) {
   const [currentAsset, setCurrentAsset] = useState({});
 
   useEffect(() => {
-    if (currentAsset.id === 'ust' || currentAsset.borrowPaused)
+    if (
+      (currentAsset.borrowCaps && currentAsset.borrowCaps.isEqualTo(1e-18)) ||
+      currentAsset.borrowPaused
+    )
       setCurrentTab('repay');
     else setCurrentTab('borrow');
   }, [currentAsset.id]);
@@ -178,7 +181,8 @@ function BorrowModal({ visible, onCancel, settings }) {
         borrowBalance: getBigNumber(asset.borrowBalance),
         collateralFactor: getBigNumber(asset.collateralFactor),
         tokenPrice: getBigNumber(asset.tokenPrice),
-        liquidity: getBigNumber(asset.liquidity)
+        liquidity: getBigNumber(asset.liquidity),
+        borrowCaps: getBigNumber(asset.borrowCaps)
       });
     }
   }, [settings.selectedAsset]);
@@ -245,18 +249,20 @@ function BorrowModal({ visible, onCancel, settings }) {
           )}
           <>
             <Tabs>
-              {currentAsset.id !== 'ust' && !currentAsset.borrowPaused && (
-                <div
-                  className={`tab-item center ${
-                    currentTab === 'borrow' ? 'tab-active' : ''
-                  }`}
-                  onClick={() => {
-                    setCurrentTab('borrow');
-                  }}
-                >
-                  Borrow
-                </div>
-              )}
+              {currentAsset.borrowCaps &&
+                !currentAsset.borrowCaps.isEqualTo(1e-18) &&
+                !currentAsset.borrowPaused && (
+                  <div
+                    className={`tab-item center ${
+                      currentTab === 'borrow' ? 'tab-active' : ''
+                    }`}
+                    onClick={() => {
+                      setCurrentTab('borrow');
+                    }}
+                  >
+                    Borrow
+                  </div>
+                )}
               <div
                 className={`tab-item center ${
                   currentTab === 'repay' ? 'tab-active' : ''
