@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
 import Sidebar from 'containers/Layout/Sidebar';
@@ -50,10 +50,83 @@ const MainLayoutWrapper = styled.div`
   }
 `;
 
+const Banner = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 5%;
+  background-color: var(--color-blue);
+  color: white;
+  font-size: 14px;
+
+  .alert {
+  }
+
+  .close {
+    cursor: pointer;
+  }
+`;
+
 function MainLayout({ title, isHeader, currentAsset, children }) {
+  const [bannerShow, setBannerShow] = useState(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem('bannerClose')) setBannerShow(true);
+  }, []);
+
   return (
     <MainLayoutWrapper>
       <Row>
+        <Column xs="12" sm="12">
+          {bannerShow && (
+            <Banner>
+              <div className="alert">
+                Join out STRK Token presale! Click there to participate and be
+                part of Strike Finance&apos;s exciting journey in decentralized
+                finance.
+                <a
+                  href="https://forms.gle/bVgJeV6Bo9SWR6bk8"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ paddingLeft: '10px' }}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4.47796 0V1.50441H9.43193L0 10.9422L1.05779 12L10.4956 2.56807V7.52204H12V0H4.47796Z"
+                      fill="white"
+                    />
+                  </svg>
+                </a>
+              </div>
+              <div
+                className="close"
+                onClick={() => {
+                  setBannerShow(false);
+                  localStorage.setItem('bannerClose', true);
+                }}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3.70501 3.01562L3.01501 3.70562L11.31 12.0006L3.01501 20.2956L3.70501 20.9856L12 12.6906L20.295 20.9856L20.985 20.2956L12.69 12.0006L20.985 3.70562L20.295 3.01562L12 11.3106L3.70501 3.01562Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+            </Banner>
+          )}
+        </Column>
         <Column xs="12" sm="12">
           <Sidebar />
         </Column>
