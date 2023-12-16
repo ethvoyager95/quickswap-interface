@@ -81,9 +81,9 @@ function MainLayout({ title, isHeader, currentAsset, children }) {
           {bannerShow && (
             <Banner>
               <div className="alert">
-                Join out STRK Token presale! Click there to participate and be
-                part of Strike Finance&apos;s exciting journey in decentralized
-                finance.
+                Join out STRK Token private sale! Click there to participate and
+                be part of Strike Finance&apos;s exciting journey in
+                decentralized finance.
                 <a
                   href="https://forms.gle/bVgJeV6Bo9SWR6bk8"
                   target="_blank"
