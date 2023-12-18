@@ -60,6 +60,11 @@ export const THE_GRAPH =
     ? process.env.REACT_APP_TEST_THE_GRAPH
     : process.env.REACT_APP_MAIN_THE_GRAPH;
 
+export const SALE_THE_GRAPH =
+  process.env.REACT_APP_ENV === 'dev'
+    ? process.env.REACT_APP_TEST_SALE_THE_GRAPH
+    : process.env.REACT_APP_MAIN_SALE_THE_GRAPH;
+
 export const STAKING_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
     ? process.env.REACT_APP_TEST_STAKING_ADDRESS
