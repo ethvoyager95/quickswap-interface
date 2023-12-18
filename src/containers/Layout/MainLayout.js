@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
+import commaNumber from 'comma-number';
 import Sidebar from 'containers/Layout/Sidebar';
 import Header from 'containers/Layout/Header';
 import Footer from 'containers/Layout/Footer';
 import { Row, Column } from 'components/Basic/Style';
+import { useSoldInfo } from 'hooks/useSoldInfo';
+import { getBigNumber } from 'utilities/common';
 
 const MainLayoutWrapper = styled.div`
   width: 100%;
@@ -68,7 +71,18 @@ const Banner = styled.div`
 `;
 
 function MainLayout({ title, isHeader, currentAsset, children }) {
+  const format = commaNumber.bindWith(',', '.');
+
+  const formatValue = value => {
+    return `$${format(
+      getBigNumber(value)
+        .dp(2, 1)
+        .toString(10)
+    )}`;
+  };
+
   const [bannerShow, setBannerShow] = useState(false);
+  const { totalSold } = useSoldInfo();
 
   useEffect(() => {
     if (!localStorage.getItem('bannerClose')) setBannerShow(true);
@@ -81,9 +95,12 @@ function MainLayout({ title, isHeader, currentAsset, children }) {
           {bannerShow && (
             <Banner>
               <div className="alert">
-                Join out STRK Token private sale! Click there to participate and
-                be part of Strike Finance&apos;s exciting journey in
-                decentralized finance.
+                <span role="img" aria-label="description">
+                  Join in STRK Token private sale! Click there to participate
+                  and be part of Strike Finance&apos;s exciting journey in
+                  decentralized finance. Raised up{' '}
+                  {formatValue(totalSold.usdAmount)} now! 🔥🔥
+                </span>
                 <a
                   href="https://forms.gle/bVgJeV6Bo9SWR6bk8"
                   target="_blank"
