@@ -84,7 +84,6 @@ const SMain = styled.div`
 `;
 const SMainColor = styled.div`
   padding: 0 20px 50px 20px;
-  background: #eceff9;
   margin-top: 20px;
 `;
 const STitle = styled.div`
@@ -113,6 +112,31 @@ const STack = styled.div`
   button {
     margin-right: 10px;
   }
+
+  .ant-switch {
+    background-color: #34384c;
+    border-color: #34384c;
+    width: 24px;
+    height: 20px;
+    border-radius: 6px;
+    padding: 0px 4px;
+
+    &::after {
+      width: 11px;
+      height: 16px;
+      border-radius: 6px;
+      background-color: var(--color-dark-grey);
+    }
+  }
+
+  .ant-switch-checked {
+    background-color: var(--color-blue);
+    border-color: var(--color-blue);
+    &::after {
+      background-color: var(--color-blue);
+    }
+  }
+
   @media only screen and (max-width: 768px) {
     font-size: 12px;
     min-width: 100px;
@@ -166,7 +190,7 @@ const SColBox = styled.div`
   }
 `;
 const SRowBoxText = styled.div`
-  color: #0b0f23;
+  color: var(--color-text-secondary);
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
@@ -175,7 +199,7 @@ const SRowBoxText = styled.div`
   }
 `;
 const SRowBoxTextApr = styled.div`
-  color: #0b0f23;
+  color: var(--color-text-secondary);
   font-weight: 900;
   font-size: 16px;
   line-height: 24px;
@@ -192,7 +216,7 @@ const STextBox = styled.div`
   display: flex;
   align-items: center;
   letter-spacing: 0.1px;
-  color: #0b0f23;
+  color: var(--color-text-main);
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -200,7 +224,7 @@ const STextBox = styled.div`
 const SCircle = styled.div`
   width: 5px;
   height: 5px;
-  background: #0b0f23;
+  background: var(--color-text-main);
   border-radius: 50%;
   margin-right: 10px;
 `;
@@ -213,7 +237,7 @@ const SValueBox = styled.div`
   align-items: center;
   text-align: right;
   letter-spacing: 0.1px;
-  color: #0b0f23;
+  color: var(--color-text-main);
 `;
 const SUl = styled.div`
   margin-left: 15px;
@@ -285,7 +309,7 @@ const SInput = styled.div`
   justify-content: space-between;
   align-items: center;
   input {
-    background: var(--color-bg-main);
+    background: var(--color-bg-primary);
     color: var(--color-text-main);
     border: 0px;
     width: 100%;
@@ -550,7 +574,7 @@ function DialogStake({
                 )}
                 <STack>
                   <Switch checked={checked} onChange={onChangeSwitch} />
-                  Stack All
+                  Stake All
                 </STack>
               </SRowText>
 

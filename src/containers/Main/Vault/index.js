@@ -2203,10 +2203,10 @@ function Staking({ settings, setSetting }) {
                           >
                             Get Strike NFTs
                           </ST.SHrefGetNft>
-                          <ST.SHrefNft target="_blank" href={GET_NFT_URL}>
+                          {/* <ST.SHrefNft target="_blank" href={GET_NFT_URL}>
                             LooksRare
                             <img style={{ width: '14px' }} src={IconLinkBlue} />
-                          </ST.SHrefNft>
+                          </ST.SHrefNft> */}
                         </ST.SHrefNftWrapper>
                       </ST.SText>
                     </ST.SFlex>
