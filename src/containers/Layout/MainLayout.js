@@ -56,7 +56,7 @@ const MainLayoutWrapper = styled.div`
 const Banner = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: base;
   padding: 20px 5%;
   background-color: var(--color-blue);
   color: white;
@@ -96,12 +96,21 @@ function MainLayout({ title, isHeader, currentAsset, children }) {
             <Banner>
               <div className="alert">
                 <span role="img" aria-label="description">
-                  Join in STRK Token private sale! Click there to participate
-                  and be part of Strike Finance&apos;s exciting journey in
-                  decentralized finance. Raised up{' '}
-                  {formatValue(totalSold.usdAmount)} now! 🔥🔥
+                  🎄 Live Now: Christmas Special STRK Token
+                  Sale!🌟&nbsp;&nbsp;&nbsp; Don&apos;t miss this exclusive
+                  opportunity. Incredible offers on STRK tokens await you.
+                  <br />
+                  👉{' '}
+                  <a
+                    href="https://strike.org"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: 'white', textDecoration: 'underline' }}
+                  >
+                    Click Here to Participate Now
+                  </a>
                 </span>
-                <a
+                {/* <a
                   href="https://forms.gle/bVgJeV6Bo9SWR6bk8"
                   target="_blank"
                   rel="noreferrer"
@@ -119,7 +128,7 @@ function MainLayout({ title, isHeader, currentAsset, children }) {
                       fill="white"
                     />
                   </svg>
-                </a>
+                </a> */}
               </div>
               <div
                 className="close"
