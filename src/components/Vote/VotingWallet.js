@@ -19,6 +19,7 @@ import { addToken } from 'utilities/common';
 import metaMaskImg from 'assets/img/metamask.png';
 import IconQuestion from 'assets/img/question.png';
 import { useInstance } from 'hooks/useContract';
+import * as constants from 'utilities/constants';
 
 const VotingWalletWrapper = styled.div`
   width: 100%;
@@ -152,7 +153,14 @@ const SQuestion = styled.img`
 let timeStamp = 0;
 const format = commaNumber.bindWith(',', '.');
 
-function VotingWallet({ balance, pageType, settings, earnedBalance }) {
+function VotingWallet({
+  balance,
+  pageType,
+  settings,
+  earnedBalance,
+  supplyMarkets,
+  borrowMarkets
+}) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [delegateAddress, setDelegateAddress] = useState('');
   const [delegateStatus, setDelegateStatus] = useState('');
@@ -202,10 +210,17 @@ function VotingWallet({ balance, pageType, settings, earnedBalance }) {
     if (+earnedBalance !== 0) {
       setIsLoading(true);
       const appContract = getComptrollerContract(instance);
+      let markets = [...new Set([...supplyMarkets, ...borrowMarkets])];
+      markets =
+        markets.length > 0
+          ? markets
+          : [constants.CONTRACT_SBEP_ADDRESS.usdc.address];
+      const claimForBorrow = borrowMarkets.length > 0;
+      const claimForSupply = supplyMarkets.length > 0;
       methods
         .send(
           appContract.methods.claimStrike,
-          [settings.selectedAddress],
+          [[settings.selectedAddress], markets, claimForBorrow, claimForSupply],
           settings.selectedAddress
         )
         .then(res => {
@@ -358,6 +373,8 @@ VotingWallet.propTypes = {
   balance: PropTypes.string.isRequired,
   pageType: PropTypes.string.isRequired,
   earnedBalance: PropTypes.string.isRequired,
+  supplyMarkets: PropTypes.array.isRequired,
+  borrowMarkets: PropTypes.array.isRequired,
   settings: PropTypes.object.isRequired
 };
 
