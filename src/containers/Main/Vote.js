@@ -46,6 +46,8 @@ function Vote({ settings, history, getProposals, setSetting }) {
   const [current, setCurrent] = useState(1);
   const [isLoadingProposal, setIsLoadingPropoasl] = useState(false);
   const [earnedBalance, setEarnedBalance] = useState('0.00000000');
+  const [supplyMarkets, setSupplyMarkets] = useState([]);
+  const [borrowMarkets, setBorrowMarkets] = useState([]);
 
   const loadInitialData = useCallback(async () => {
     setIsLoadingPropoasl(true);
@@ -117,6 +119,8 @@ function Vote({ settings, history, getProposals, setSetting }) {
       methods.call(appContract.methods.strikeAccrued, [myAddress])
     ]);
     let strikeEarned = new BigNumber(strikeAccrued);
+    const userSupplyMarkets = [];
+    const userBorrowMarkets = [];
     await Promise.all(
       Object.values(constants.CONTRACT_SBEP_ADDRESS).map(
         async (item, index) => {
@@ -166,6 +170,13 @@ function Vote({ settings, history, getProposals, setSetting }) {
               .dividedBy(1e36);
             strikeEarned = strikeEarned.plus(borrowerDelta);
           }
+
+          if (new BigNumber(supplierTokens).gt(0)) {
+            userSupplyMarkets.push(item.address);
+          }
+          if (new BigNumber(borrowBalanceStored).gt(0)) {
+            userBorrowMarkets.push(item.address);
+          }
         }
       )
     );
@@ -177,6 +188,9 @@ function Vote({ settings, history, getProposals, setSetting }) {
     setEarnedBalance(
       strikeEarned && strikeEarned !== '0' ? `${strikeEarned}` : '0.00000000'
     );
+
+    setSupplyMarkets(userSupplyMarkets);
+    setBorrowMarkets(userBorrowMarkets);
   };
 
   const handleAccountChange = async () => {
@@ -259,6 +273,8 @@ function Vote({ settings, history, getProposals, setSetting }) {
               <VotingWallet
                 balance={balance !== '0' ? `${balance}` : '0.00000000'}
                 earnedBalance={earnedBalance}
+                supplyMarkets={supplyMarkets}
+                borrowMarkets={borrowMarkets}
                 power={
                   votingWeight !== '0'
                     ? `${new BigNumber(votingWeight).dp(8, 1).toString(10)}`
