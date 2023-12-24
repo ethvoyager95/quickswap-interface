@@ -236,6 +236,8 @@ function STRK({ settings }) {
   const [totalDistributed, setTotalDistributed] = useState('0');
   const [remainAmount, setRemainAmount] = useState('0');
   const [earnedBalance, setEarnedBalance] = useState('0.00000000');
+  const [supplyMarkets, setSupplyMarkets] = useState([]);
+  const [borrowMarkets, setBorrowMarkets] = useState([]);
   const [sortInfo, setSortInfo] = useState({ field: '', sort: 'desc' });
 
   const getPendingRewards = async () => {
@@ -247,6 +249,8 @@ function STRK({ settings }) {
       methods.call(appContract.methods.strikeAccrued, [myAddress])
     ]);
     let strikeEarned = new BigNumber(strikeAccrued);
+    const userSupplyMarkets = [];
+    const userBorrowMarkets = [];
     await Promise.all(
       Object.values(constants.CONTRACT_SBEP_ADDRESS).map(
         async (item, index) => {
@@ -296,6 +300,13 @@ function STRK({ settings }) {
               .dividedBy(1e36);
             strikeEarned = strikeEarned.plus(borrowerDelta);
           }
+
+          if (new BigNumber(supplierTokens).gt(0)) {
+            userSupplyMarkets.push(item.address);
+          }
+          if (new BigNumber(borrowBalanceStored).gt(0)) {
+            userBorrowMarkets.push(item.address);
+          }
         }
       )
     );
@@ -307,6 +318,9 @@ function STRK({ settings }) {
     setEarnedBalance(
       strikeEarned && strikeEarned !== '0' ? `${strikeEarned}` : '0.00000000'
     );
+
+    setSupplyMarkets(userSupplyMarkets);
+    setBorrowMarkets(userBorrowMarkets);
   };
 
   const updateRemainAmount = async () => {
@@ -438,6 +452,8 @@ function STRK({ settings }) {
               <VotingWallet
                 balance={balance !== '0' ? `${balance}` : '0.00000000'}
                 earnedBalance={earnedBalance}
+                supplyMarkets={supplyMarkets}
+                borrowMarkets={borrowMarkets}
                 pageType="strk"
               />
             </RewardsInfoWrapper>
