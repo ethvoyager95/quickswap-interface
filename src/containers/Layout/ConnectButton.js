@@ -507,30 +507,36 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
         )}
       </StyledConnectButton>
 
-      <ConnectModal
-        visible={isOpenModal}
-        metamaskError={metamaskError}
-        bitkeepError={bitkeepError}
-        trustwalletError={trustwalletError}
-        coinbasewalletError={coinbasewalletError}
-        awaiting={awaiting}
-        onCancel={() => setIsOpenModal(false)}
-        onConnectMetaMask={handleMetaMask}
-        onConnectBitKeep={handleBitKeep}
-        onConnectTrustWallet={handleTrustWallet}
-        onConnectCoinbaseWallet={handleCoinbaseWallet}
-        checkNetwork={checkNetwork}
-      />
-      <AccountModal
-        visible={isOpenAccountModal}
-        onCancel={() => setIsOpenAccountModal(false)}
-        onDisconnect={() => handleDisconnect()}
-      />
-      <DisclaimerModal
-        visible={isOpenDisclaimerModal}
-        onCancel={() => setIsOpenDisclaimerModal(false)}
-        onContinue={() => setIsOpenModal(true)}
-      />
+      {isOpenModal && (
+        <ConnectModal
+          visible={isOpenModal}
+          metamaskError={metamaskError}
+          bitkeepError={bitkeepError}
+          trustwalletError={trustwalletError}
+          coinbasewalletError={coinbasewalletError}
+          awaiting={awaiting}
+          onCancel={() => setIsOpenModal(false)}
+          onConnectMetaMask={handleMetaMask}
+          onConnectBitKeep={handleBitKeep}
+          onConnectTrustWallet={handleTrustWallet}
+          onConnectCoinbaseWallet={handleCoinbaseWallet}
+          checkNetwork={checkNetwork}
+        />
+      )}
+      {isOpenAccountModal && (
+        <AccountModal
+          visible={isOpenAccountModal}
+          onCancel={() => setIsOpenAccountModal(false)}
+          onDisconnect={() => handleDisconnect()}
+        />
+      )}
+      {isOpenDisclaimerModal && (
+        <DisclaimerModal
+          visible={isOpenDisclaimerModal}
+          onCancel={() => setIsOpenDisclaimerModal(false)}
+          onContinue={() => setIsOpenModal(true)}
+        />
+      )}
     </>
   );
 }

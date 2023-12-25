@@ -78,7 +78,7 @@ function Footer({ settings }) {
         </div>
         <div className="socials">
           <a
-            href={`${process.env.REACT_APP_ETH_EXPLORER}/address/${process.env.REACT_APP_MAIN_STRK_TOKEN_ADDRESS}`}
+            href={`${process.env.REACT_APP_ETH_EXPLORER}/address/0x74232704659ef37c08995e386a2e26cc27a8d7b1`}
             target="_blank"
             rel="noreferrer"
           >

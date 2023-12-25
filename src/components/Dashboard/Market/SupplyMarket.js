@@ -263,11 +263,13 @@ function SupplyMarket({
           handleClickRow={row => setSelectedAsset(row)}
         />
       )}
-      <CollateralConfirmModal
-        visible={isOpenCollateralConfirm}
-        isCollateralEnalbe={isCollateralEnalbe}
-        onCancel={() => setIsCollateralConfirm(false)}
-      />
+      {isOpenCollateralConfirm && (
+        <CollateralConfirmModal
+          visible={isOpenCollateralConfirm}
+          isCollateralEnalbe={isCollateralEnalbe}
+          onCancel={() => setIsCollateralConfirm(false)}
+        />
+      )}
     </SupplyMarketWrapper>
   );
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
+import { getProvider as getBW3WProvider } from '@binance/w3w-ethereum-provider';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import WalletLink from 'walletlink';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -15,7 +16,8 @@ import bitkeepImg from 'assets/img/bitkeep.png';
 import coinbaseImg from 'assets/img/coinbase.png';
 import walletConnectImg from 'assets/img/walletconnect.png';
 import trusteWalletImg from 'assets/img/trustwallet.png';
-import arrowRightImg from 'assets/img/arrow-right.svg';
+import binanceImg from 'assets/img/binance.png';
+// import arrowRightImg from 'assets/img/arrow-right.svg';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
 import { getProvider } from 'utilities/ContractService';
@@ -335,6 +337,36 @@ function ConnectModal({
     }
   };
 
+  const connectBW3WalletConnect = async () => {
+    const provider = getBW3WProvider({ chainId: 1 });
+
+    // const provider = getProvider('bw3w');
+    try {
+      if (provider) {
+        provider.on('accountsChanged', accounts => {
+          setSetting({
+            selectedAddress: accounts[0]
+          });
+        });
+
+        onCancel();
+        localStorage.setItem('walletConnected', 'bw3w');
+
+        const accounts = await provider.enable();
+        if (accounts)
+          setSetting({
+            selectedAddress: accounts[0],
+            walletConnected: 'bw3w'
+          });
+      }
+    } catch (ex) {
+      setSetting({
+        selectedAddress: null
+      });
+      console.log(ex);
+    }
+  };
+
   return (
     <Modal
       className="connect-modal"
@@ -480,6 +512,28 @@ function ConnectModal({
                 <TrustWalletStatus />
               </div>
             )}
+          </div>
+
+          <div className="connect-wallet-content">
+            <div
+              className="metamask-connect-btn"
+              onClick={connectBW3WalletConnect}
+            >
+              <img src={binanceImg} alt="metamask" />
+              <span>Binance Web3 Wallet</span>
+              <svg
+                width="25"
+                height="25"
+                viewBox="0 0 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.1327 13L8.19682 7.15601C7.93216 6.89559 7.93486 6.4789 8.20222 6.21848L9.26355 5.195C9.53632 4.93457 9.97381 4.93457 10.2439 5.1976L17.7975 12.5286C17.9325 12.6588 18 12.8281 18 13C18 13.1719 17.9325 13.3412 17.7975 13.4714L10.2439 20.8024C9.97381 21.0654 9.53632 21.0654 9.26356 20.805L8.20222 19.7815C7.93486 19.5211 7.93216 19.1044 8.19682 18.844L14.1327 13Z"
+                  fill="#34384C"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <div className="terms">

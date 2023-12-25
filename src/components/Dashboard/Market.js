@@ -258,14 +258,18 @@ const Market = ({ currentMarket, setCurrentMarket, settings, setSetting }) => {
           </TabContent>
         </CardWrapper>
       </MarketWrapperMobile>
-      <SupplyModal
-        visible={isOpenSupplyModal}
-        onCancel={() => setIsOpenSupplyModal(false)}
-      />
-      <BorrowModal
-        visible={isOpenBorrowModal}
-        onCancel={() => setIsOpenBorrowModal(false)}
-      />
+      {isOpenSupplyModal && (
+        <SupplyModal
+          visible={isOpenSupplyModal}
+          onCancel={() => setIsOpenSupplyModal(false)}
+        />
+      )}
+      {isOpenBorrowModal && (
+        <BorrowModal
+          visible={isOpenBorrowModal}
+          onCancel={() => setIsOpenBorrowModal(false)}
+        />
+      )}
     </Card>
   );
 };

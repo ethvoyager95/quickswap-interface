@@ -187,8 +187,8 @@ function Faucet({ form, getFromFaucet, history }) {
             let fromAddress;
             if (symbol === 'strk') {
               fromAddress = process.env.REACT_APP_ENV
-                ? process.env.REACT_APP_TEST_STRK_TOKEN_ADDRESS
-                : process.env.REACT_APP_MAIN_STRK_TOKEN_ADDRESS;
+                ? '0xebb87eb4e69ef55257af1ab13929e12c243efc97'
+                : '0x74232704659ef37c08995e386a2e26cc27a8d7b1';
             } else if (symbol === 'eth') {
               fromAddress = process.env.REACT_APP_ENV
                 ? process.env.REACT_APP_TEST_ETH_TOKEN_ADDRESS
