@@ -37,23 +37,23 @@ export const TIMEOUT = 'Timeout';
 
 export const NFT_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_NFT_ADDRESS
-    : process.env.REACT_APP_MAIN_NFT_ADDRESS;
+    ? '0x4265E099Ae7e50B7bc34db0B97F2A08de1d7Cd26'
+    : '0x474D72f1a6A7884B62edAcC8D24d0815d01A65a2';
 
 export const VSTRK_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_VSTRK_ADDRESS
-    : process.env.REACT_APP_MAIN_VSTRK_ADDRESS;
+    ? '0x386a2a1062E434970c515dFdaa9668E7E1B0f288'
+    : '0xf966E86d31751f005C6932fcFFd91fCD7907ABF7';
 
 export const STRK_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_STRK_ADDRESS
-    : process.env.REACT_APP_MAIN_STRK_ADDRESS;
+    ? '0x56cee334f6B002b8DEA832ba540F45fDbF9AbE40'
+    : '0xff734dcb7fd6517caed5c6c8720992a0c676c800';
 
 export const STRK_CLAIM_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_STRK_CLAIM_ADDRESS
-    : process.env.REACT_APP_MAIN_STRK_CLAIM_ADDRESS;
+    ? '0xEbb87EB4E69ef55257af1AB13929E12c243efC97'
+    : '0x74232704659ef37c08995e386A2E26cc27a8d7B1';
 
 export const THE_GRAPH =
   process.env.REACT_APP_ENV === 'dev'
@@ -67,8 +67,8 @@ export const SALE_THE_GRAPH =
 
 export const STAKING_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_STAKING_ADDRESS
-    : process.env.REACT_APP_MAIN_STAKING_ADDRESS;
+    ? '0x151cb2a26a8aa14e4da2b52f47e8eeecdedebc6e'
+    : '0x453a8f1c6d60aa487af1e21203001017a4f45fa3';
 
 export const HEADER = {
   'Content-Type': 'application/json'
@@ -80,87 +80,85 @@ export const URL_LOGO_NFT =
 // Contract ABI
 
 export const CONTRACT_NAMES = {
-  [process.env.REACT_APP_TEST_COMPTROLLER_ADDRESS.toLowerCase()]: 'Comptroller',
-  [process.env.REACT_APP_MAIN_COMPTROLLER_ADDRESS.toLowerCase()]: 'Comptroller',
+  '0x95318a7f680427d323ef617bbdf0eb6617bff610': 'Comptroller',
+  '0xe2e17b2cbbf48211fa7eb8a875360e5e39ba2602': 'Comptroller',
   '0xd01ce4a7368cf81c34b1257691eedf34d825a694': 'ComptrollerIMP',
 
-  [process.env.REACT_APP_TEST_STAKING_ADDRESS.toLowerCase()]: 'StrkStakingProxy',
-  [process.env.REACT_APP_MAIN_STAKING_ADDRESS.toLowerCase()]: 'StrkStakingProxy',
-
+  '0x151cb2a26a8aa14e4da2b52f47e8eeecdedebc6e': 'StrkStakingProxy',
+  '0x453a8f1c6d60aa487af1e21203001017a4f45fa3': 'StrkStakingProxy',
   '0x4b000392f494a0962574913139071a5af49ea078': 'StrkStaking',
-
   '0xc8167659ff247ecd9b09333685ddf70091c96ca4': 'Treasury',
 
-  [process.env.REACT_APP_TEST_USDC_TOKEN_ADDRESS.toLowerCase()]: 'USDC',
-  [process.env.REACT_APP_MAIN_USDC_TOKEN_ADDRESS.toLowerCase()]: 'USDC',
-  [process.env.REACT_APP_TEST_USDC_SBEP_ADDRESS.toLowerCase()]: 'sUSDC',
-  [process.env.REACT_APP_MAIN_USDC_SBEP_ADDRESS.toLowerCase()]: 'sUSDC',
+  '0x964a39d94dce0b41e981475630744d92d74c8f4f': 'USDC',
+  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 'USDC',
+  '0xd7d63c0ff31c8b8d674563c34d3a79f5536ff0b8': 'sUSDC',
+  '0x3774e825d567125988fb293e926064b6faa71dab': 'sUSDC',
 
-  [process.env.REACT_APP_TEST_USDT_TOKEN_ADDRESS.toLowerCase()]: 'USDT',
-  [process.env.REACT_APP_MAIN_USDT_TOKEN_ADDRESS.toLowerCase()]: 'USDT',
-  [process.env.REACT_APP_TEST_USDT_SBEP_ADDRESS.toLowerCase()]: 'sUSDT',
-  [process.env.REACT_APP_MAIN_USDT_SBEP_ADDRESS.toLowerCase()]: 'sUSDT',
+  '0xd651b14e0363ce297ab767f8b43ba98e00f303ab': 'USDT',
+  '0xdac17f958d2ee523a2206206994597c13d831ec7': 'USDT',
+  '0x6df60f95422f3b261a1d253cadc985557f105967': 'sUSDT',
+  '0x69702cfd7dad8bccaa24d6b440159404aaa140f5': 'sUSDT',
 
-  [process.env.REACT_APP_TEST_BUSD_TOKEN_ADDRESS.toLowerCase()]: 'BUSD',
-  [process.env.REACT_APP_MAIN_BUSD_TOKEN_ADDRESS.toLowerCase()]: 'BUSD',
-  [process.env.REACT_APP_TEST_BUSD_SBEP_ADDRESS.toLowerCase()]: 'sBUSD',
-  [process.env.REACT_APP_MAIN_BUSD_SBEP_ADDRESS.toLowerCase()]: 'sBUSD',
+  '0x25ff0c18ccc61caf9d7f92d1d1e539697f7ac791': 'BUSD',
+  '0x4fabb145d64652a948d72533023f6e7a623c7c53': 'BUSD',
+  '0x2544a5846e5a4fffcbd8e9e3340c44c2a73fe74e': 'sBUSD',
+  '0x18a908ed663823c908a900b934d6249d4befbe44': 'sBUSD',
 
-  [process.env.REACT_APP_TEST_STRK_TOKEN_ADDRESS.toLowerCase()]: 'STRK',
-  [process.env.REACT_APP_MAIN_STRK_TOKEN_ADDRESS.toLowerCase()]: 'STRK',
-  [process.env.REACT_APP_TEST_STRK_SBEP_ADDRESS.toLowerCase()]: 'sSTRK',
-  [process.env.REACT_APP_MAIN_STRK_SBEP_ADDRESS.toLowerCase()]: 'sSTRK',
+  '0xebb87eb4e69ef55257af1ab13929e12c243efc97': 'STRK',
+  '0x74232704659ef37c08995e386a2e26cc27a8d7b1': 'STRK',
+  '0x9a7c2b469e2d65074e145ea173fc161096b9012b': 'sSTRK',
+  '0x4164e5b047842ad7dff18fc6a6e63a1e40610f46': 'sSTRK',
 
-  [process.env.REACT_APP_TEST_SXP_TOKEN_ADDRESS.toLowerCase()]: 'SXP',
-  [process.env.REACT_APP_MAIN_SXP_TOKEN_ADDRESS.toLowerCase()]: 'SXP',
-  [process.env.REACT_APP_TEST_SXP_SBEP_ADDRESS.toLowerCase()]: 'sSXP',
-  [process.env.REACT_APP_MAIN_SXP_SBEP_ADDRESS.toLowerCase()]: 'sSXP',
+  '0x552c0cef77e97ede3c913ac1f391b517aff2d6f5': 'SXP',
+  '0x8ce9137d39326ad0cd6491fb5cc0cba0e089b6a9': 'SXP',
+  '0x9b630bdbb755513fe6d0a42a1a3f6edbaa0e7c7a': 'sSXP',
+  '0xdbee1d8c452c781c17ea20115cbad0d5f627a680': 'sSXP',
 
-  [process.env.REACT_APP_TEST_WBTC_TOKEN_ADDRESS.toLowerCase()]: 'WBTC',
-  [process.env.REACT_APP_MAIN_WBTC_TOKEN_ADDRESS.toLowerCase()]: 'WBTC',
-  [process.env.REACT_APP_TEST_WBTC_SBEP_ADDRESS.toLowerCase()]: 'sWBTC',
-  [process.env.REACT_APP_MAIN_WBTC_SBEP_ADDRESS.toLowerCase()]: 'sWBTC',
+  '0x34ae08cb3e70f0b1587b8188bf45ffadba80f8ea': 'WBTC',
+  '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': 'WBTC',
+  '0x70e90e9d11ad89743a1e8d7256e15daa34409d6e': 'sWBTC',
+  '0x9d1c2a187cf908aed8cfae2353ef72f06223d54d': 'sWBTC',
 
-  [process.env.REACT_APP_TEST_ETH_SBEP_ADDRESS.toLowerCase()]: 'sETH',
-  [process.env.REACT_APP_MAIN_ETH_SBEP_ADDRESS.toLowerCase()]: 'sETH',
+  '0x8f87b9c14a7d8eeaba36b155fda6f57747b041a2': 'sETH',
+  '0xbee9cf658702527b0acb2719c1faa29edc006a92': 'sETH',
 
-  [process.env.REACT_APP_TEST_COMP_TOKEN_ADDRESS.toLowerCase()]: 'COMP',
-  [process.env.REACT_APP_MAIN_COMP_TOKEN_ADDRESS.toLowerCase()]: 'COMP',
-  [process.env.REACT_APP_TEST_COMP_SBEP_ADDRESS.toLowerCase()]: 'sCOMP',
-  [process.env.REACT_APP_MAIN_COMP_SBEP_ADDRESS.toLowerCase()]: 'sCOMP',
+  '0xedc33141ebbdb0423ea6f15aed794d6fa9797c46': 'COMP',
+  '0xc00e94cb662c3520282e6f5717214004a7f26888': 'COMP',
+  '0x3deb4fe003e6b6691053f43f777654bfdca6adee': 'sCOMP',
+  '0xb7e11002228d599f2a64b0c44d2299c9c644ff26': 'sCOMP',
 
-  [process.env.REACT_APP_TEST_UNI_TOKEN_ADDRESS.toLowerCase()]: 'UNI',
-  [process.env.REACT_APP_MAIN_UNI_TOKEN_ADDRESS.toLowerCase()]: 'UNI',
-  [process.env.REACT_APP_TEST_UNI_SBEP_ADDRESS.toLowerCase()]: 'sUNI',
-  [process.env.REACT_APP_MAIN_UNI_SBEP_ADDRESS.toLowerCase()]: 'sUNI',
+  '0xdfaf42b6e715ba05d2df72ba98b9ff681a9d2040': 'UNI',
+  '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': 'UNI',
+  '0x6e01780f4d75843872035e257d8644dfbf342a42': 'sUNI',
+  '0x280f76a218ddc8d56b490b5835e251e55a2e8f8d': 'sUNI',
 
-  [process.env.REACT_APP_TEST_LINK_TOKEN_ADDRESS.toLowerCase()]: 'LINK',
-  [process.env.REACT_APP_MAIN_LINK_TOKEN_ADDRESS.toLowerCase()]: 'LINK',
-  [process.env.REACT_APP_TEST_LINK_SBEP_ADDRESS.toLowerCase()]: 'sLINK',
-  [process.env.REACT_APP_MAIN_LINK_SBEP_ADDRESS.toLowerCase()]: 'sLINK',
+  '0x04e8dee65e07b0c878b54a5db2b07ac141e21384': 'LINK',
+  '0x514910771af9ca656af840dff83e8264ecf986ca': 'LINK',
+  '0x1ca164223279e8ad227289ab5b942d058f56167d': 'sLINK',
+  '0x3f3b3b269d9f7088b022290906acff8710914be1': 'sLINK',
 
-  [process.env.REACT_APP_MAIN_UST_TOKEN_ADDRESS.toLowerCase()]: 'UST',
-  [process.env.REACT_APP_MAIN_UST_SBEP_ADDRESS.toLowerCase()]: 'sUST',
+  '0xa693b19d2931d498c5b318df961919bb4aee87a5': 'UST',
+  '0xa9ba206cfb0548bf93ef1040dddd5121da9eaf85': 'sUST',
 
-  [process.env.REACT_APP_TEST_APE_TOKEN_ADDRESS.toLowerCase()]: 'APE',
-  [process.env.REACT_APP_MAIN_APE_TOKEN_ADDRESS.toLowerCase()]: 'APE',
-  [process.env.REACT_APP_TEST_APE_SBEP_ADDRESS.toLowerCase()]: 'sAPE',
-  [process.env.REACT_APP_MAIN_APE_SBEP_ADDRESS.toLowerCase()]: 'sAPE',
+  '0x994e6ae9cbfc03499bc8883ce1fa1dd35460e323': 'APE',
+  '0x4d224452801aced8b2f0aebe155379bb5d594381': 'APE',
+  '0xd0e75ed120d7277a7f373c95a8020cd364a6f046': 'sAPE',
+  '0xf24a7d2077285e192aa7df957a4a699c144510d8': 'sAPE',
 
-  [process.env.REACT_APP_TEST_DAI_TOKEN_ADDRESS.toLowerCase()]: 'DAI',
-  [process.env.REACT_APP_MAIN_DAI_TOKEN_ADDRESS.toLowerCase()]: 'DAI',
-  [process.env.REACT_APP_TEST_DAI_SBEP_ADDRESS.toLowerCase()]: 'sDAI',
-  [process.env.REACT_APP_MAIN_DAI_SBEP_ADDRESS.toLowerCase()]: 'sDAI',
+  '0xf3fe651310917425bd15d3a9dd9f521f8bdf2386': 'DAI',
+  '0x6b175474e89094c44da98b954eedeac495271d0f': 'DAI',
+  '0xbca2a7a64636781877a8c4bd7e899f75b8f0d6ad': 'sDAI',
+  '0x54a0ed40abea082ed62c3a4f92621b8ed47732a2': 'sDAI',
 
-  [process.env.REACT_APP_TEST_XCN_TOKEN_ADDRESS.toLowerCase()]: 'XCN',
-  [process.env.REACT_APP_MAIN_XCN_TOKEN_ADDRESS.toLowerCase()]: 'XCN',
-  [process.env.REACT_APP_TEST_XCN_SBEP_ADDRESS.toLowerCase()]: 'sXCN',
-  [process.env.REACT_APP_MAIN_XCN_SBEP_ADDRESS.toLowerCase()]: 'sXCN',
+  '0x7720367e7a684e77f359f11977eae409ee504c0a': 'XCN',
+  '0xa2cd3d43c775978a96bdbf12d733d5a1ed94fb18': 'XCN',
+  '0x7bfc13c192ca52e2a9832e26fb932a5ef8c9688c': 'sXCN',
+  '0xc13fdf3af7ec87dca256d9c11ff96405d360f522': 'sXCN',
 
-  [process.env.REACT_APP_TEST_WSTETH_TOKEN_ADDRESS.toLowerCase()]: 'wstETH',
-  [process.env.REACT_APP_MAIN_WSTETH_TOKEN_ADDRESS.toLowerCase()]: 'wstETH',
-  [process.env.REACT_APP_TEST_WSTETH_SBEP_ADDRESS.toLowerCase()]: 'sWSTETH',
-  [process.env.REACT_APP_MAIN_WSTETH_SBEP_ADDRESS.toLowerCase()]: 'sWSTETH'
+  '0xada42c161fd0dbebcc1e3394ce0decc72395180b': 'wstETH',
+  '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': 'wstETH',
+  '0x6585772d429e33494106b3ca0110407bfe3c27fa': 'sWSTETH',
+  '0x1ebfd36223079dc79fefc62260db9e25f3f5e2c7': 'sWSTETH'
 };
 
 export const CONTRACT_TOKEN_ADDRESS =
@@ -169,7 +167,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdc: {
           id: 'usdc',
           symbol: 'USDC',
-          address: process.env.REACT_APP_TEST_USDC_TOKEN_ADDRESS,
+          address: '0x964a39d94dce0b41e981475630744d92d74c8f4f',
           asset: usdc,
           sasset: susdc
           // decimals: 18
@@ -177,7 +175,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdt: {
           id: 'usdt',
           symbol: 'USDT',
-          address: process.env.REACT_APP_TEST_USDT_TOKEN_ADDRESS,
+          address: '0xd651b14e0363ce297ab767f8b43ba98e00f303ab',
           asset: usdt,
           sasset: susdt
           // decimals: 6
@@ -185,7 +183,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         busd: {
           id: 'busd',
           symbol: 'BUSD',
-          address: process.env.REACT_APP_TEST_BUSD_TOKEN_ADDRESS,
+          address: '0x25ff0c18ccc61caf9d7f92d1d1e539697f7ac791',
           asset: busd,
           sasset: sbusd
           // decimals: 18
@@ -193,7 +191,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         strk: {
           id: 'strk',
           symbol: 'STRK',
-          address: process.env.REACT_APP_TEST_STRK_TOKEN_ADDRESS,
+          address: '0xebb87eb4e69ef55257af1ab13929e12c243efc97',
           asset: strk,
           sasset: sstrk
           // decimals: 18
@@ -201,7 +199,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wbtc: {
           id: 'wbtc',
           symbol: 'WBTC',
-          address: process.env.REACT_APP_TEST_WBTC_TOKEN_ADDRESS,
+          address: '0x34ae08cb3e70f0b1587b8188bf45ffadba80f8ea',
           asset: btc,
           sasset: swbtc
           // decimals: 8
@@ -217,7 +215,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         link: {
           id: 'link',
           symbol: 'LINK',
-          address: process.env.REACT_APP_TEST_LINK_TOKEN_ADDRESS,
+          address: '0x04e8dee65e07b0c878b54a5db2b07ac141e21384',
           asset: link,
           sasset: slink
           // decimals: 18
@@ -225,7 +223,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         comp: {
           id: 'comp',
           symbol: 'COMP',
-          address: process.env.REACT_APP_TEST_COMP_TOKEN_ADDRESS,
+          address: '0xedc33141ebbdb0423ea6f15aed794d6fa9797c46',
           asset: comp,
           sasset: scomp
           // decimals: 18
@@ -233,7 +231,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         uni: {
           id: 'uni',
           symbol: 'UNI',
-          address: process.env.REACT_APP_TEST_UNI_TOKEN_ADDRESS,
+          address: '0xdfaf42b6e715ba05d2df72ba98b9ff681a9d2040',
           asset: uni,
           sasset: suni
           // decimals: 18
@@ -241,7 +239,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         ape: {
           id: 'ape',
           symbol: 'APE',
-          address: process.env.REACT_APP_TEST_APE_TOKEN_ADDRESS,
+          address: '0x994e6ae9cbfc03499bc8883ce1fa1dd35460e323',
           asset: ape,
           sasset: sape,
           decimals: 18
@@ -249,7 +247,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         sxp: {
           id: 'sxp',
           symbol: 'SXP',
-          address: process.env.REACT_APP_TEST_SXP_TOKEN_ADDRESS,
+          address: '0x552c0cef77e97ede3c913ac1f391b517aff2d6f5',
           asset: sxp,
           sasset: ssxp,
           decimals: 18
@@ -257,7 +255,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         dai: {
           id: 'dai',
           symbol: 'DAI',
-          address: process.env.REACT_APP_TEST_DAI_TOKEN_ADDRESS,
+          address: '0xf3fe651310917425bd15d3a9dd9f521f8bdf2386',
           asset: dai,
           sasset: sdai,
           decimals: 18
@@ -265,7 +263,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         xcn: {
           id: 'xcn',
           symbol: 'XCN',
-          address: process.env.REACT_APP_TEST_XCN_TOKEN_ADDRESS,
+          address: '0x7720367e7a684e77f359f11977eae409ee504c0a',
           asset: xcn,
           sasset: sxcn,
           decimals: 18
@@ -273,7 +271,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wsteth: {
           id: 'wsteth',
           symbol: 'wstETH',
-          address: process.env.REACT_APP_TEST_WSTETH_TOKEN_ADDRESS,
+          address: '0xada42c161fd0dbebcc1e3394ce0decc72395180b',
           asset: wsteth,
           sasset: swsteth,
           decimals: 18
@@ -291,7 +289,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdc: {
           id: 'usdc',
           symbol: 'USDC',
-          address: process.env.REACT_APP_MAIN_USDC_TOKEN_ADDRESS,
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
           asset: usdc,
           sasset: susdc,
           decimals: 6
@@ -299,7 +297,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdt: {
           id: 'usdt',
           symbol: 'USDT',
-          address: process.env.REACT_APP_MAIN_USDT_TOKEN_ADDRESS,
+          address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           asset: usdt,
           sasset: susdt,
           decimals: 6
@@ -307,7 +305,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         busd: {
           id: 'busd',
           symbol: 'BUSD',
-          address: process.env.REACT_APP_MAIN_BUSD_TOKEN_ADDRESS,
+          address: '0x4fabb145d64652a948d72533023f6e7a623c7c53',
           asset: busd,
           sasset: sbusd,
           decimals: 18
@@ -315,7 +313,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         strk: {
           id: 'strk',
           symbol: 'STRK',
-          address: process.env.REACT_APP_MAIN_STRK_TOKEN_ADDRESS,
+          address: '0x74232704659ef37c08995e386a2e26cc27a8d7b1',
           asset: strk,
           sasset: sstrk,
           decimals: 18
@@ -323,7 +321,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         sxp: {
           id: 'sxp',
           symbol: 'SXP',
-          address: process.env.REACT_APP_MAIN_SXP_TOKEN_ADDRESS,
+          address: '0x8ce9137d39326ad0cd6491fb5cc0cba0e089b6a9',
           asset: sxp,
           sasset: ssxp,
           decimals: 6
@@ -331,7 +329,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wbtc: {
           id: 'wbtc',
           symbol: 'WBTC',
-          address: process.env.REACT_APP_MAIN_WBTC_TOKEN_ADDRESS,
+          address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
           asset: btc,
           sasset: swbtc,
           decimals: 8
@@ -347,7 +345,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         link: {
           id: 'link',
           symbol: 'LINK',
-          address: process.env.REACT_APP_MAIN_LINK_TOKEN_ADDRESS,
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
           asset: link,
           sasset: slink,
           decimals: 18
@@ -355,7 +353,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         comp: {
           id: 'comp',
           symbol: 'COMP',
-          address: process.env.REACT_APP_MAIN_COMP_TOKEN_ADDRESS,
+          address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
           asset: comp,
           sasset: scomp,
           decimals: 18
@@ -363,7 +361,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         uni: {
           id: 'uni',
           symbol: 'UNI',
-          address: process.env.REACT_APP_MAIN_UNI_TOKEN_ADDRESS,
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           asset: uni,
           sasset: suni,
           decimals: 18
@@ -371,7 +369,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         ape: {
           id: 'ape',
           symbol: 'APE',
-          address: process.env.REACT_APP_MAIN_APE_TOKEN_ADDRESS,
+          address: '0x4d224452801aced8b2f0aebe155379bb5d594381',
           asset: ape,
           sasset: sape,
           decimals: 18
@@ -379,7 +377,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         ust: {
           id: 'ust',
           symbol: 'UST',
-          address: process.env.REACT_APP_MAIN_UST_TOKEN_ADDRESS,
+          address: '0xa693b19d2931d498c5b318df961919bb4aee87a5',
           asset: ust,
           sasset: sust,
           decimals: 18
@@ -387,7 +385,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         dai: {
           id: 'dai',
           symbol: 'DAI',
-          address: process.env.REACT_APP_MAIN_DAI_TOKEN_ADDRESS,
+          address: '0x6b175474e89094c44da98b954eedeac495271d0f',
           asset: dai,
           sasset: sdai,
           decimals: 18
@@ -395,7 +393,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         xcn: {
           id: 'xcn',
           symbol: 'XCN',
-          address: process.env.REACT_APP_MAIN_XCN_TOKEN_ADDRESS,
+          address: '0xa2cd3d43c775978a96bdbf12d733d5a1ed94fb18',
           asset: xcn,
           sasset: sxcn,
           decimals: 18
@@ -403,7 +401,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wsteth: {
           id: 'wsteth',
           symbol: 'wstETH',
-          address: process.env.REACT_APP_MAIN_WSTETH_TOKEN_ADDRESS,
+          address: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
           asset: wsteth,
           sasset: swsteth,
           decimals: 18
@@ -458,154 +456,149 @@ export const CONTRACT_SBEP_ADDRESS =
         usdc: {
           id: 'usdc',
           symbol: 'sUSDC',
-          address: process.env.REACT_APP_TEST_USDC_SBEP_ADDRESS
+          address: '0xd7d63c0ff31c8b8d674563c34d3a79f5536ff0b8'
         },
         usdt: {
           id: 'usdt',
           symbol: 'sUSDT',
-          address: process.env.REACT_APP_TEST_USDT_SBEP_ADDRESS
+          address: '0x6df60f95422f3b261a1d253cadc985557f105967'
         },
         busd: {
           id: 'busd',
           symbol: 'sBUSD',
-          address: process.env.REACT_APP_TEST_BUSD_SBEP_ADDRESS
+          address: '0x2544a5846e5a4fffcbd8e9e3340c44c2a73fe74e'
         },
         strk: {
           id: 'strk',
           symbol: 'sSTRK',
-          address: process.env.REACT_APP_TEST_STRK_SBEP_ADDRESS
+          address: '0x9a7c2b469e2d65074e145ea173fc161096b9012b'
         },
         wbtc: {
           id: 'wbtc',
           symbol: 'sWBTC',
-          address: process.env.REACT_APP_TEST_WBTC_SBEP_ADDRESS
+          address: '0x70e90e9d11ad89743a1e8d7256e15daa34409d6e'
         },
         eth: {
           id: 'eth',
           symbol: 'sETH',
-          address: process.env.REACT_APP_TEST_ETH_SBEP_ADDRESS
+          address: '0x8f87b9c14a7d8eeaba36b155fda6f57747b041a2'
         },
         link: {
           id: 'link',
           symbol: 'sLINK',
-          address: process.env.REACT_APP_TEST_LINK_SBEP_ADDRESS
+          address: '0x1ca164223279e8ad227289ab5b942d058f56167d'
         },
         comp: {
           id: 'comp',
           symbol: 'sCOMP',
-          address: process.env.REACT_APP_TEST_COMP_SBEP_ADDRESS
+          address: '0x3deb4fe003e6b6691053f43f777654bfdca6adee'
         },
         uni: {
           id: 'uni',
           symbol: 'sUNI',
-          address: process.env.REACT_APP_TEST_UNI_SBEP_ADDRESS
+          address: '0x6e01780f4d75843872035e257d8644dfbf342a42'
         },
         ape: {
           id: 'ape',
           symbol: 'sAPE',
-          address: process.env.REACT_APP_TEST_APE_SBEP_ADDRESS
+          address: '0xd0e75ed120d7277a7f373c95a8020cd364a6f046'
         },
         sxp: {
           id: 'sxp',
           symbol: 'sSXP',
-          address: process.env.REACT_APP_TEST_SXP_SBEP_ADDRESS
+          address: '0x9b630bdbb755513fe6d0a42a1a3f6edbaa0e7c7a'
         },
         dai: {
           id: 'dai',
           symbol: 'sDAI',
-          address: process.env.REACT_APP_TEST_DAI_SBEP_ADDRESS
+          address: '0xbca2a7a64636781877a8c4bd7e899f75b8f0d6ad'
         },
         xcn: {
           id: 'xcn',
           symbol: 'sXCN',
-          address: process.env.REACT_APP_TEST_XCN_SBEP_ADDRESS
+          address: '0x7bfc13c192ca52e2a9832e26fb932a5ef8c9688c'
         },
         wsteth: {
           id: 'wsteth',
           symbol: 'sWSTETH',
-          address: process.env.REACT_APP_TEST_WSTETH_SBEP_ADDRESS
+          address: '0x6585772d429e33494106b3ca0110407bfe3c27fa'
         }
-        // ust: {
-        //   id: 'ust',
-        //   symbol: 'sUST',
-        //   address: process.env.REACT_APP_TEST_UST_SBEP_ADDRESS
-        // }
       }
     : {
         usdc: {
           id: 'usdc',
           symbol: 'sUSDC',
-          address: process.env.REACT_APP_MAIN_USDC_SBEP_ADDRESS
+          address: '0x3774e825d567125988fb293e926064b6faa71dab'
         },
         usdt: {
           id: 'usdt',
           symbol: 'sUSDT',
-          address: process.env.REACT_APP_MAIN_USDT_SBEP_ADDRESS
+          address: '0x69702cfd7dad8bccaa24d6b440159404aaa140f5'
         },
         busd: {
           id: 'busd',
           symbol: 'sBUSD',
-          address: process.env.REACT_APP_MAIN_BUSD_SBEP_ADDRESS
+          address: '0x18a908ed663823c908a900b934d6249d4befbe44'
         },
         strk: {
           id: 'strk',
           symbol: 'sSTRK',
-          address: process.env.REACT_APP_MAIN_STRK_SBEP_ADDRESS
+          address: '0x4164e5b047842ad7dff18fc6a6e63a1e40610f46'
         },
         sxp: {
           id: 'sxp',
           symbol: 'sSXP',
-          address: process.env.REACT_APP_MAIN_SXP_SBEP_ADDRESS
+          address: '0xdbee1d8c452c781c17ea20115cbad0d5f627a680'
         },
         wbtc: {
           id: 'wbtc',
           symbol: 'sWBTC',
-          address: process.env.REACT_APP_MAIN_WBTC_SBEP_ADDRESS
+          address: '0x9d1c2a187cf908aed8cfae2353ef72f06223d54d'
         },
         eth: {
           id: 'eth',
           symbol: 'sETH',
-          address: process.env.REACT_APP_MAIN_ETH_SBEP_ADDRESS
+          address: '0xbee9cf658702527b0acb2719c1faa29edc006a92'
         },
         link: {
           id: 'link',
           symbol: 'sLINK',
-          address: process.env.REACT_APP_MAIN_LINK_SBEP_ADDRESS
+          address: '0x3f3b3b269d9f7088b022290906acff8710914be1'
         },
         comp: {
           id: 'comp',
           symbol: 'sCOMP',
-          address: process.env.REACT_APP_MAIN_COMP_SBEP_ADDRESS
+          address: '0xb7e11002228d599f2a64b0c44d2299c9c644ff26'
         },
         uni: {
           id: 'uni',
           symbol: 'sUNI',
-          address: process.env.REACT_APP_MAIN_UNI_SBEP_ADDRESS
+          address: '0x280f76a218ddc8d56b490b5835e251e55a2e8f8d'
         },
         ape: {
           id: 'ape',
           symbol: 'sAPE',
-          address: process.env.REACT_APP_MAIN_APE_SBEP_ADDRESS
+          address: '0xf24a7d2077285e192aa7df957a4a699c144510d8'
         },
         ust: {
           id: 'ust',
           symbol: 'sUST',
-          address: process.env.REACT_APP_MAIN_UST_SBEP_ADDRESS
+          address: '0xa9ba206cfb0548bf93ef1040dddd5121da9eaf85'
         },
         dai: {
           id: 'dai',
           symbol: 'sDAI',
-          address: process.env.REACT_APP_MAIN_DAI_SBEP_ADDRESS
+          address: '0x54a0ed40abea082ed62c3a4f92621b8ed47732a2'
         },
         xcn: {
           id: 'xcn',
           symbol: 'sXCN',
-          address: process.env.REACT_APP_MAIN_XCN_SBEP_ADDRESS
+          address: '0xc13fdf3af7ec87dca256d9c11ff96405d360f522'
         },
         wsteth: {
           id: 'wsteth',
           symbol: 'sWSTETH',
-          address: process.env.REACT_APP_MAIN_WSTETH_SBEP_ADDRESS
+          address: '0x1ebfd36223079dc79fefc62260db9e25f3f5e2c7'
         }
       };
 export const CONTRACT_SBEP_ABI =
@@ -617,24 +610,24 @@ export const CONTRACT_SETH_ABI = `
 
 export const CONTRACT_COMPTROLLER_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_COMPTROLLER_ADDRESS
-    : process.env.REACT_APP_MAIN_COMPTROLLER_ADDRESS;
+    ? '0x95318a7f680427d323ef617bbdf0eb6617bff610'
+    : '0xe2e17b2cbbf48211fa7eb8a875360e5e39ba2602';
 
 export const CONTRACT_COMPTROLLER_ABI =
   '[{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"action","type":"string"},{"indexed":false,"internalType":"bool","name":"pauseState","type":"bool"}],"name":"ActionPaused1","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":false,"internalType":"string","name":"action","type":"string"},{"indexed":false,"internalType":"bool","name":"pauseState","type":"bool"}],"name":"ActionPaused2","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bool","name":"state","type":"bool"}],"name":"ActionProtocolPaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"contributor","type":"address"},{"indexed":false,"internalType":"uint256","name":"newStrikeSpeed","type":"uint256"}],"name":"ContributorStrikeSpeedUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":true,"internalType":"address","name":"borrower","type":"address"},{"indexed":false,"internalType":"uint256","name":"strikeDelta","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"strikeBorrowIndex","type":"uint256"}],"name":"DistributedBorrowerStrike","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":true,"internalType":"address","name":"supplier","type":"address"},{"indexed":false,"internalType":"uint256","name":"strikeDelta","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"strikeSupplyIndex","type":"uint256"}],"name":"DistributedSupplierStrike","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"error","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"info","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"detail","type":"uint256"}],"name":"Failure","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"MarketEntered","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"MarketExited","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"contract SToken","name":"sToken","type":"address"}],"name":"MarketListed","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":false,"internalType":"bool","name":"isStriked","type":"bool"}],"name":"MarketStriked","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"oldCloseFactorMantissa","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newCloseFactorMantissa","type":"uint256"}],"name":"NewCloseFactor","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"oldCollateralFactorMantissa","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newCollateralFactorMantissa","type":"uint256"}],"name":"NewCollateralFactor","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"oldLiquidationIncentiveMantissa","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newLiquidationIncentiveMantissa","type":"uint256"}],"name":"NewLiquidationIncentive","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"newSupplyCap","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newBorrowCap","type":"uint256"}],"name":"NewMarketCap","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"oldMarketCapGuardian","type":"address"},{"indexed":false,"internalType":"address","name":"newMarketCapGuardian","type":"address"}],"name":"NewMarketCapGuardian","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"oldPauseGuardian","type":"address"},{"indexed":false,"internalType":"address","name":"newPauseGuardian","type":"address"}],"name":"NewPauseGuardian","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"contract PriceOracle","name":"oldPriceOracle","type":"address"},{"indexed":false,"internalType":"contract PriceOracle","name":"newPriceOracle","type":"address"}],"name":"NewPriceOracle","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"oldReserveGuardian","type":"address"},{"indexed":false,"internalType":"address","name":"newReserveGuardian","type":"address"},{"indexed":false,"internalType":"address","name":"oldReserveAddress","type":"address"},{"indexed":false,"internalType":"address","name":"newReserveAddress","type":"address"}],"name":"NewReserveGuardian","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"oldStrikeRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newStrikeRate","type":"uint256"}],"name":"NewStrikeRate","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"oldStrkStaking","type":"address"},{"indexed":false,"internalType":"address","name":"newStrkStaking","type":"address"}],"name":"NewStrkStakingInfo","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"newSpeed","type":"uint256"}],"name":"StrikeBorrowSpeedUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"StrikeGranted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"newSpeed","type":"uint256"}],"name":"StrikeSpeedUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract SToken","name":"sToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"newSpeed","type":"uint256"}],"name":"StrikeSupplySpeedUpdated","type":"event"},{"constant":false,"inputs":[{"internalType":"contract Unitroller","name":"unitroller","type":"address"}],"name":"_become","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"_borrowGuardianPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"_grantSTRK","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"_mintGuardianPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"contract SToken","name":"sToken","type":"address"},{"internalType":"bool","name":"state","type":"bool"}],"name":"_setBorrowPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"newCloseFactorMantissa","type":"uint256"}],"name":"_setCloseFactor","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract SToken","name":"sToken","type":"address"},{"internalType":"uint256","name":"newCollateralFactorMantissa","type":"uint256"}],"name":"_setCollateralFactor","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"contributor","type":"address"},{"internalType":"uint256","name":"strikeSpeed","type":"uint256"}],"name":"_setContributorStrikeSpeed","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"newLiquidationIncentiveMantissa","type":"uint256"}],"name":"_setLiquidationIncentive","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newMarketCapGuardian","type":"address"}],"name":"_setMarketCapGuardian","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract SToken[]","name":"sTokens","type":"address[]"},{"internalType":"uint256[]","name":"newSupplyCaps","type":"uint256[]"},{"internalType":"uint256[]","name":"newBorrowCaps","type":"uint256[]"}],"name":"_setMarketCaps","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newPauseGuardian","type":"address"}],"name":"_setPauseGuardian","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract PriceOracle","name":"newOracle","type":"address"}],"name":"_setPriceOracle","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bool","name":"state","type":"bool"}],"name":"_setProtocolPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address payable","name":"newReserveGuardian","type":"address"},{"internalType":"address payable","name":"newReserveAddress","type":"address"}],"name":"_setReserveInfo","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract SToken[]","name":"sToken","type":"address[]"},{"internalType":"uint256[]","name":"supplySpeeds","type":"uint256[]"},{"internalType":"uint256[]","name":"borrowSpeeds","type":"uint256[]"}],"name":"_setStrikeSpeeds","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newStrkStaking","type":"address"}],"name":"_setStrkStakingInfo","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract SToken","name":"sToken","type":"address"}],"name":"_supportMarket","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"accountAssets","outputs":[{"internalType":"contract SToken","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"allMarkets","outputs":[{"internalType":"contract SToken","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"borrower","type":"address"},{"internalType":"uint256","name":"borrowAmount","type":"uint256"}],"name":"borrowAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"borrowCaps","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"borrowGuardianPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"borrower","type":"address"},{"internalType":"uint256","name":"borrowAmount","type":"uint256"}],"name":"borrowVerify","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"contract SToken","name":"sToken","type":"address"}],"name":"checkMembership","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address[]","name":"holders","type":"address[]"},{"internalType":"contract SToken[]","name":"sTokens","type":"address[]"},{"internalType":"bool","name":"borrowers","type":"bool"},{"internalType":"bool","name":"suppliers","type":"bool"}],"name":"claimStrike","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"holder","type":"address"}],"name":"claimStrike","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"holder","type":"address"},{"internalType":"contract SToken[]","name":"sTokens","type":"address[]"}],"name":"claimStrike","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"closeFactorMantissa","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"comptrollerImplementation","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address[]","name":"sTokens","type":"address[]"}],"name":"enterMarkets","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sTokenAddress","type":"address"}],"name":"exitMarket","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"getAccountLiquidity","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAllMarkets","outputs":[{"internalType":"contract SToken[]","name":"","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"getAssetsIn","outputs":[{"internalType":"contract SToken[]","name":"","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getBlockNumber","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"address","name":"sTokenModify","type":"address"},{"internalType":"uint256","name":"redeemTokens","type":"uint256"},{"internalType":"uint256","name":"borrowAmount","type":"uint256"}],"name":"getHypotheticalAccountLiquidity","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getSTRKAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"isComptroller","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"lastContributorBlock","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sTokenBorrowed","type":"address"},{"internalType":"address","name":"sTokenCollateral","type":"address"},{"internalType":"address","name":"liquidator","type":"address"},{"internalType":"address","name":"borrower","type":"address"},{"internalType":"uint256","name":"repayAmount","type":"uint256"}],"name":"liquidateBorrowAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sTokenBorrowed","type":"address"},{"internalType":"address","name":"sTokenCollateral","type":"address"},{"internalType":"address","name":"liquidator","type":"address"},{"internalType":"address","name":"borrower","type":"address"},{"internalType":"uint256","name":"actualRepayAmount","type":"uint256"},{"internalType":"uint256","name":"seizeTokens","type":"uint256"}],"name":"liquidateBorrowVerify","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"sTokenBorrowed","type":"address"},{"internalType":"address","name":"sTokenCollateral","type":"address"},{"internalType":"uint256","name":"actualRepayAmount","type":"uint256"}],"name":"liquidateCalculateSeizeTokens","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"liquidationIncentiveMantissa","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"marketCapGuardian","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"markets","outputs":[{"internalType":"bool","name":"isListed","type":"bool"},{"internalType":"uint256","name":"collateralFactorMantissa","type":"uint256"},{"internalType":"bool","name":"isStriked","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"maxAssets","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"minter","type":"address"},{"internalType":"uint256","name":"mintAmount","type":"uint256"}],"name":"mintAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"mintGuardianPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"minter","type":"address"},{"internalType":"uint256","name":"actualMintAmount","type":"uint256"},{"internalType":"uint256","name":"mintTokens","type":"uint256"}],"name":"mintVerify","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"oracle","outputs":[{"internalType":"contract PriceOracle","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"pauseGuardian","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"pendingAdmin","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"pendingComptrollerImplementation","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"protocolPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"redeemer","type":"address"},{"internalType":"uint256","name":"redeemTokens","type":"uint256"}],"name":"redeemAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"redeemer","type":"address"},{"internalType":"uint256","name":"redeemAmount","type":"uint256"},{"internalType":"uint256","name":"redeemTokens","type":"uint256"}],"name":"redeemVerify","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"payer","type":"address"},{"internalType":"address","name":"borrower","type":"address"},{"internalType":"uint256","name":"repayAmount","type":"uint256"}],"name":"repayBorrowAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"payer","type":"address"},{"internalType":"address","name":"borrower","type":"address"},{"internalType":"uint256","name":"actualRepayAmount","type":"uint256"},{"internalType":"uint256","name":"borrowerIndex","type":"uint256"}],"name":"repayBorrowVerify","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"reserveAddress","outputs":[{"internalType":"address payable","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"reserveGuardian","outputs":[{"internalType":"address payable","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sTokenCollateral","type":"address"},{"internalType":"address","name":"sTokenBorrowed","type":"address"},{"internalType":"address","name":"liquidator","type":"address"},{"internalType":"address","name":"borrower","type":"address"},{"internalType":"uint256","name":"seizeTokens","type":"uint256"}],"name":"seizeAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"seizeGuardianPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sTokenCollateral","type":"address"},{"internalType":"address","name":"sTokenBorrowed","type":"address"},{"internalType":"address","name":"liquidator","type":"address"},{"internalType":"address","name":"borrower","type":"address"},{"internalType":"uint256","name":"seizeTokens","type":"uint256"}],"name":"seizeVerify","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"strikeAccrued","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"strikeBorrowSpeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"strikeBorrowState","outputs":[{"internalType":"uint224","name":"index","type":"uint224"},{"internalType":"uint32","name":"block","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"strikeBorrowerIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"strikeContributorSpeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"strikeInitialIndex","outputs":[{"internalType":"uint224","name":"","type":"uint224"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"strikeRate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"strikeSpeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"strikeSupplierIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"strikeSupplySpeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"strikeSupplyState","outputs":[{"internalType":"uint224","name":"index","type":"uint224"},{"internalType":"uint32","name":"block","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"strkStaking","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"supplyCaps","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"src","type":"address"},{"internalType":"address","name":"dst","type":"address"},{"internalType":"uint256","name":"transferTokens","type":"uint256"}],"name":"transferAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"transferGuardianPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sToken","type":"address"},{"internalType":"address","name":"src","type":"address"},{"internalType":"address","name":"dst","type":"address"},{"internalType":"uint256","name":"transferTokens","type":"uint256"}],"name":"transferVerify","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"contributor","type":"address"}],"name":"updateContributorRewards","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
 
 export const CONTRACT_PRICE_ORACLE_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_PRICE_ORACLE_ADDRESS
-    : process.env.REACT_APP_MAIN_PRICE_ORACLE_ADDRESS;
+    ? '0xA49a594168ae823DfAA0E0855C35b2905C674F89'
+    : '0x2257bA009E8d2f9B342E80968992d5A3abf2Fd51';
 
 export const CONTRACT_PRICE_ORACLE_ABI =
   '[{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"previousPriceMantissa","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"requestedPriceMantissa","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newPriceMantissa","type":"uint256"}],"name":"PricePosted","type":"event"},{"constant":true,"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"assetPrices","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"contractSToken","name":"sToken","type":"address"}],"name":"getUnderlyingPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"isPriceOracle","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"}],"name":"setDirectPrice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contractSToken","name":"sToken","type":"address"},{"internalType":"uint256","name":"underlyingPriceMantissa","type":"uint256"}],"name":"setUnderlyingPrice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
 
 export const CONTRACT_VOTE_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_VOTE_ADDRESS
-    : process.env.REACT_APP_MAIN_VOTE_ADDRESS;
+    ? '0xAfc7a3B5e97CB5E228277269CC75A7a893e63939'
+    : '0x29e2A3aF8eC2d537cBD484c6eC430AbE1C7fe2d8';
 
 export const CONTRACT_VOTE_ABI =
   process.env.REACT_APP_ENV === 'dev'
@@ -646,8 +639,8 @@ export const CONTRACT_INTEREST_MODEL_ABI =
 
 export const CONTRACT_LP_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_LP_ADDRESS
-    : process.env.REACT_APP_MAIN_LP_ADDRESS;
+    ? '0x56cee334f6B002b8DEA832ba540F45fDbF9AbE40'
+    : '0xfF734dcB7fD6517CAEd5C6C8720992A0C676C800';
 
 export const CONTRACT_LP_TOKEN_ABI =
   process.env.REACT_APP_ENV === 'prod'
@@ -656,8 +649,8 @@ export const CONTRACT_LP_TOKEN_ABI =
 
 export const CONTRACT_FARMING_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_FARMING_ADDRESS
-    : process.env.REACT_APP_MAIN_FARMING_ADDRESS;
+    ? '0xdDeCfa86834C4fA04298c5301Ddfa0E264A4C569'
+    : '0xACb8D462Ad11374AbFFaDf2C3a1C145D0673ce56';
 
 export const FARMING_ABI =
   process.env.REACT_APP_ENV === 'prod'

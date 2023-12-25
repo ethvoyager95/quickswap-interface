@@ -34,6 +34,9 @@ const messages = {
   en: enMessages
 };
 
+// eslint-disable-next-line global-require
+window.Buffer = window.Buffer || require('buffer').Buffer;
+
 class App extends React.Component {
   constructor(props) {
     super(props);

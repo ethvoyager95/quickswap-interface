@@ -356,14 +356,16 @@ function VotingWallet({
             </Button>
           </div>
         )}
-        <DelegationTypeModal
-          visible={isOpenModal}
-          balance={balance}
-          delegateStatus={delegateStatus}
-          address={settings.selectedAddress ? settings.selectedAddress : ''}
-          instance={instance}
-          onCancel={() => setIsOpenModal(false)}
-        />
+        {isOpenModal && (
+          <DelegationTypeModal
+            visible={isOpenModal}
+            balance={balance}
+            delegateStatus={delegateStatus}
+            address={settings.selectedAddress ? settings.selectedAddress : ''}
+            instance={instance}
+            onCancel={() => setIsOpenModal(false)}
+          />
+        )}
       </VotingWalletWrapper>
     </Card>
   );

@@ -315,13 +315,15 @@ function Proposals({
             </div> */}
           </div>
         )}
-        <ProposalModal
-          walletConnected={settings.walletConnected}
-          address={address}
-          visible={proposalModal}
-          maxOperation={maxOperation}
-          onCancel={() => setProposalModal(false)}
-        />
+        {proposalModal && (
+          <ProposalModal
+            walletConnected={settings.walletConnected}
+            address={address}
+            visible={proposalModal}
+            maxOperation={maxOperation}
+            onCancel={() => setProposalModal(false)}
+          />
+        )}
       </ProposalsWrapper>
     </Card>
   );

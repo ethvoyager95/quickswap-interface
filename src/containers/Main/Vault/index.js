@@ -2480,10 +2480,12 @@ function Staking({ settings, setSetting }) {
           // timeDelay={timeDelay}
         />
       )}
-      <NftMintModal
-        visible={isOpenNftMintModal}
-        onCancel={() => setIsOpenNftMintModal(false)}
-      />
+      {isOpenNftMintModal && (
+        <NftMintModal
+          visible={isOpenNftMintModal}
+          onCancel={() => setIsOpenNftMintModal(false)}
+        />
+      )}
     </>
   );
 }
