@@ -1208,10 +1208,12 @@ const Staking = ({ settings }) => {
           </div>
         </div>
       </VaultContainer>
-      <PenaltyModal
-        visible={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-      />
+      {isModalOpen && (
+        <PenaltyModal
+          visible={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      )}
     </MainLayout>
   );
 };
