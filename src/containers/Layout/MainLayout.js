@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
-import commaNumber from 'comma-number';
 import Sidebar from 'containers/Layout/Sidebar';
 import Header from 'containers/Layout/Header';
 import Footer from 'containers/Layout/Footer';
 import { Row, Column } from 'components/Basic/Style';
-import { useSoldInfo } from 'hooks/useSoldInfo';
-import { getBigNumber } from 'utilities/common';
 
 const MainLayoutWrapper = styled.div`
   width: 100%;
@@ -71,64 +68,17 @@ const Banner = styled.div`
 `;
 
 function MainLayout({ title, isHeader, currentAsset, children }) {
-  const format = commaNumber.bindWith(',', '.');
-
-  const formatValue = value => {
-    return `$${format(
-      getBigNumber(value)
-        .dp(2, 1)
-        .toString(10)
-    )}`;
-  };
-
-  const [bannerShow, setBannerShow] = useState(false);
-  const { totalSold } = useSoldInfo();
-
-  useEffect(() => {
-    if (!localStorage.getItem('bannerClose')) setBannerShow(true);
-  }, []);
+  // useEffect(() => {
+  //   if (!localStorage.getItem('bannerClose')) setBannerShow(true);
+  // }, []);
 
   return (
     <MainLayoutWrapper>
       <Row>
-        <Column xs="12" sm="12">
+        {/* <Column xs="12" sm="12">
           {bannerShow && (
             <Banner>
-              <div className="alert">
-                <span role="img" aria-label="description">
-                  🎄 Live Now: Christmas Special STRK Token
-                  Sale!🌟&nbsp;&nbsp;&nbsp; Don&apos;t miss this exclusive
-                  opportunity. Incredible offers on STRK tokens await you.
-                  <br />
-                  👉{' '}
-                  <a
-                    href="https://strike.org"
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ color: 'white', textDecoration: 'underline' }}
-                  >
-                    Click Here to Participate Now
-                  </a>
-                </span>
-                {/* <a
-                  href="https://forms.gle/bVgJeV6Bo9SWR6bk8"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ paddingLeft: '10px' }}
-                >
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M4.47796 0V1.50441H9.43193L0 10.9422L1.05779 12L10.4956 2.56807V7.52204H12V0H4.47796Z"
-                      fill="white"
-                    />
-                  </svg>
-                </a> */}
+              <div className="alert">             
               </div>
               <div
                 className="close"
@@ -152,7 +102,7 @@ function MainLayout({ title, isHeader, currentAsset, children }) {
               </div>
             </Banner>
           )}
-        </Column>
+        </Column> */}
         <Column xs="12" sm="12">
           <Sidebar />
         </Column>
