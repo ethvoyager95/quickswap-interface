@@ -20,7 +20,7 @@ import binanceImg from 'assets/img/binance.png';
 // import arrowRightImg from 'assets/img/arrow-right.svg';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
-import { getProvider } from 'utilities/ContractService';
+import { getProvider, setBw3wProvider } from 'utilities/ContractService';
 
 const ModalContent = styled.div`
   border-radius: 6px;
@@ -345,9 +345,9 @@ function ConnectModal({
       }
     });
 
-    // const provider = getProvider('bw3w');
     try {
       if (provider) {
+        setBw3wProvider(provider);
         provider.on('accountsChanged', accounts => {
           setSetting({
             selectedAddress: accounts[0]
