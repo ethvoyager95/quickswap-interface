@@ -54,7 +54,11 @@ const walletV2Provider = await EthereumProvider.init({
   showQrModal: true // requires @walletconnect/modal
 });
 
-const bw3wProvider = getBW3WProvider({ chainId: 1 });
+let bw3wProvider;
+
+export const setBw3wProvider = provider => {
+  bw3wProvider = provider;
+};
 
 export const getProvider = walletType => {
   let provider = null;
