@@ -340,7 +340,9 @@ function ConnectModal({
   const connectBW3WalletConnect = async () => {
     const provider = getBW3WProvider({
       chainId: 1,
-      rpc: 'https://eth.llamarpc.com'
+      rpc: {
+        1: 'https://eth.llamarpc.com'
+      }
     });
 
     // const provider = getProvider('bw3w');
