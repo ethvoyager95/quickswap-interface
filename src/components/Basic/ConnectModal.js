@@ -338,7 +338,10 @@ function ConnectModal({
   };
 
   const connectBW3WalletConnect = async () => {
-    const provider = getBW3WProvider({ chainId: 1 });
+    const provider = getBW3WProvider({
+      chainId: 1,
+      rpc: 'https://mainnet.infura.io/v3/55d040fb60064deaa7acc8e320d99bd4'
+    });
 
     // const provider = getProvider('bw3w');
     try {
