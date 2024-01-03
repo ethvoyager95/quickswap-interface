@@ -20,7 +20,7 @@ import binanceImg from 'assets/img/binance.png';
 // import arrowRightImg from 'assets/img/arrow-right.svg';
 import closeImg from 'assets/img/close.png';
 import logoImg from 'assets/img/logo.png';
-import { getProvider, setBw3wProvider } from 'utilities/ContractService';
+import { getProvider } from 'utilities/ContractService';
 
 const ModalContent = styled.div`
   border-radius: 6px;
@@ -338,16 +338,17 @@ function ConnectModal({
   };
 
   const connectBW3WalletConnect = async () => {
+    // const provider = getProvider('bw3w');
     const provider = getBW3WProvider({
       chainId: 1,
       rpc: {
-        1: 'https://eth.llamarpc.com'
-      }
+        1: process.env.REACT_APP_MAIN_RPC
+      },
+      showQrCodeModal: true
     });
 
     try {
       if (provider) {
-        setBw3wProvider(provider);
         provider.on('accountsChanged', accounts => {
           setSetting({
             selectedAddress: accounts[0]
