@@ -5,6 +5,9 @@ import { getProvider as getBW3WProvider } from '@binance/w3w-ethereum-provider';
 
 import * as constants from './constants';
 
+// eslint-disable-next-line global-require
+window.Buffer = window.Buffer || require('buffer').Buffer;
+
 const TOKEN_ABI = {
   usdc: constants.CONTRACT_USDC_TOKEN_ABI,
   usdt: constants.CONTRACT_USDT_TOKEN_ABI,
@@ -54,11 +57,13 @@ const walletV2Provider = await EthereumProvider.init({
   showQrModal: true // requires @walletconnect/modal
 });
 
-let bw3wProvider;
-
-export const setBw3wProvider = provider => {
-  bw3wProvider = provider;
-};
+const bw3wProvider = getBW3WProvider({
+  chainId: 1,
+  rpc: {
+    1: process.env.REACT_APP_MAIN_RPC
+  },
+  showQrCodeModal: true
+});
 
 export const getProvider = walletType => {
   let provider = null;
