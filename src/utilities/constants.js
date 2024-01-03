@@ -169,72 +169,72 @@ export const CONTRACT_TOKEN_ADDRESS =
           symbol: 'USDC',
           address: '0x964a39d94dce0b41e981475630744d92d74c8f4f',
           asset: usdc,
-          sasset: susdc
-          // decimals: 18
+          sasset: susdc,
+          decimals: 6
         },
         usdt: {
           id: 'usdt',
           symbol: 'USDT',
           address: '0xd651b14e0363ce297ab767f8b43ba98e00f303ab',
           asset: usdt,
-          sasset: susdt
-          // decimals: 6
+          sasset: susdt,
+          decimals: 6
         },
         busd: {
           id: 'busd',
           symbol: 'BUSD',
           address: '0x25ff0c18ccc61caf9d7f92d1d1e539697f7ac791',
           asset: busd,
-          sasset: sbusd
-          // decimals: 18
+          sasset: sbusd,
+          decimals: 18
         },
         strk: {
           id: 'strk',
           symbol: 'STRK',
           address: '0xebb87eb4e69ef55257af1ab13929e12c243efc97',
           asset: strk,
-          sasset: sstrk
-          // decimals: 18
+          sasset: sstrk,
+          decimals: 18
         },
         wbtc: {
           id: 'wbtc',
           symbol: 'WBTC',
           address: '0x34ae08cb3e70f0b1587b8188bf45ffadba80f8ea',
           asset: btc,
-          sasset: swbtc
-          // decimals: 8
+          sasset: swbtc,
+          decimals: 18
         },
         eth: {
           id: 'eth',
           symbol: 'ETH',
           address: process.env.REACT_APP_TEST_ETH_TOKEN_ADDRESS,
           asset: eth,
-          sasset: seth
-          // decimals: 18
+          sasset: seth,
+          decimals: 18
         },
         link: {
           id: 'link',
           symbol: 'LINK',
           address: '0x04e8dee65e07b0c878b54a5db2b07ac141e21384',
           asset: link,
-          sasset: slink
-          // decimals: 18
+          sasset: slink,
+          decimals: 18
         },
         comp: {
           id: 'comp',
           symbol: 'COMP',
           address: '0xedc33141ebbdb0423ea6f15aed794d6fa9797c46',
           asset: comp,
-          sasset: scomp
-          // decimals: 18
+          sasset: scomp,
+          decimals: 18
         },
         uni: {
           id: 'uni',
           symbol: 'UNI',
           address: '0xdfaf42b6e715ba05d2df72ba98b9ff681a9d2040',
           asset: uni,
-          sasset: suni
-          // decimals: 18
+          sasset: suni,
+          decimals: 18
         },
         ape: {
           id: 'ape',
@@ -324,7 +324,7 @@ export const CONTRACT_TOKEN_ADDRESS =
           address: '0x8ce9137d39326ad0cd6491fb5cc0cba0e089b6a9',
           asset: sxp,
           sasset: ssxp,
-          decimals: 6
+          decimals: 18
         },
         wbtc: {
           id: 'wbtc',
