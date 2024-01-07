@@ -430,10 +430,10 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   const setDecimals = async () => {
     const decimals = {};
+    const validNetwork = await checkIsValidNetwork(instance);
     Object.values(constants.CONTRACT_TOKEN_ADDRESS).forEach(async item => {
       decimals[`${item.id}`] = {};
       if (item.id !== 'eth' && item.id !== 'strk') {
-        const validNetwork = await checkIsValidNetwork(instance);
         if (validNetwork) {
           // const tokenContract = getTokenContract(instance, item.id);
           // const tokenDecimals = await methods.call(
@@ -530,12 +530,13 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       let totalBorrowLimit = new BigNumber(0);
       let totalLiquidity = new BigNumber(0);
 
-      const assetsIn =
+      let assetsIn =
         (accountAddress &&
           (await methods.call(appContract.methods.getAssetsIn, [
             accountAddress
           ]))) ||
         [];
+      assetsIn = assetsIn.map(it => it.toLowerCase());
       const assetList = await Promise.all(
         Object.values(constants.CONTRACT_TOKEN_ADDRESS).map(
           async (item, index) => {
@@ -584,7 +585,10 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             if (accountAddress) {
               const tokenDecimal = settings.decimals[item.id].token || 18;
               const sBepContract = getSbepContract(instance, item.id);
-              asset.collateral = assetsIn.includes(asset.stokenAddress);
+
+              asset.collateral = assetsIn.includes(
+                asset.stokenAddress.toLowerCase()
+              );
 
               // const promises = [];
               const contractCallContext = [];
