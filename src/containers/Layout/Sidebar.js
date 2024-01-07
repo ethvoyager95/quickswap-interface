@@ -530,13 +530,12 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       let totalBorrowLimit = new BigNumber(0);
       let totalLiquidity = new BigNumber(0);
 
-      let assetsIn =
+      const assetsIn =
         (accountAddress &&
           (await methods.call(appContract.methods.getAssetsIn, [
             accountAddress
           ]))) ||
         [];
-      assetsIn = assetsIn.map(it => it.toLowerCase());
       const assetList = await Promise.all(
         Object.values(constants.CONTRACT_TOKEN_ADDRESS).map(
           async (item, index) => {
@@ -586,9 +585,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               const tokenDecimal = settings.decimals[item.id].token || 18;
               const sBepContract = getSbepContract(instance, item.id);
 
-              asset.collateral = assetsIn.includes(
-                asset.stokenAddress.toLowerCase()
-              );
+              asset.collateral = assetsIn.includes(asset.stokenAddress);
 
               // const promises = [];
               const contractCallContext = [];

@@ -394,21 +394,21 @@ function STRK({ settings }) {
             className="highlight"
             href={`${process.env.REACT_APP_ETH_EXPLORER}/token/${
               process.env.REACT_APP_ENV === 'dev'
-                ? '0xebb87eb4e69ef55257af1ab13929e12c243efc97'
-                : '0x74232704659ef37c08995e386a2e26cc27a8d7b1'
+                ? '0xEbb87EB4E69ef55257af1AB13929E12c243efC97'
+                : '0x74232704659ef37c08995e386A2E26cc27a8d7B1'
             }`}
             target="_blank"
             rel="noreferrer"
           >
             {process.env.REACT_APP_ENV === 'dev'
-              ? '0xebb87eb4e69ef55257af1ab13929e12c243efc97'
-              : '0x74232704659ef37c08995e386a2e26cc27a8d7b1'}
+              ? '0xEbb87EB4E69ef55257af1AB13929E12c243efC97'
+              : '0x74232704659ef37c08995e386A2E26cc27a8d7B1'}
           </a>
           <CopyToClipboard
             text={
               process.env.REACT_APP_ENV === 'dev'
-                ? '0xebb87eb4e69ef55257af1ab13929e12c243efc97'
-                : '0x74232704659ef37c08995e386a2e26cc27a8d7b1'
+                ? '0xEbb87EB4E69ef55257af1AB13929E12c243efC97'
+                : '0x74232704659ef37c08995e386A2E26cc27a8d7B1'
             }
             onCopy={() => {}}
           >
