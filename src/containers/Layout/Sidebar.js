@@ -430,10 +430,10 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   const setDecimals = async () => {
     const decimals = {};
+    const validNetwork = await checkIsValidNetwork(instance);
     Object.values(constants.CONTRACT_TOKEN_ADDRESS).forEach(async item => {
       decimals[`${item.id}`] = {};
       if (item.id !== 'eth' && item.id !== 'strk') {
-        const validNetwork = await checkIsValidNetwork(instance);
         if (validNetwork) {
           // const tokenContract = getTokenContract(instance, item.id);
           // const tokenDecimals = await methods.call(
@@ -584,6 +584,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             if (accountAddress) {
               const tokenDecimal = settings.decimals[item.id].token || 18;
               const sBepContract = getSbepContract(instance, item.id);
+
               asset.collateral = assetsIn.includes(asset.stokenAddress);
 
               // const promises = [];
