@@ -89,76 +89,76 @@ export const CONTRACT_NAMES = {
   '0x4b000392f494a0962574913139071a5af49ea078': 'StrkStaking',
   '0xc8167659ff247ecd9b09333685ddf70091c96ca4': 'Treasury',
 
-  '0x964a39d94dce0b41e981475630744d92d74c8f4f': 'USDC',
-  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 'USDC',
-  '0xd7d63c0ff31c8b8d674563c34d3a79f5536ff0b8': 'sUSDC',
-  '0x3774e825d567125988fb293e926064b6faa71dab': 'sUSDC',
+  '0x964a39D94DCe0b41e981475630744D92D74C8F4F': 'USDC',
+  '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 'USDC',
+  '0xd7d63c0Ff31c8B8d674563C34D3A79f5536Ff0b8': 'sUSDC',
+  '0x3774E825d567125988Fb293e926064B6FAa71DAB': 'sUSDC',
 
-  '0xd651b14e0363ce297ab767f8b43ba98e00f303ab': 'USDT',
-  '0xdac17f958d2ee523a2206206994597c13d831ec7': 'USDT',
-  '0x6df60f95422f3b261a1d253cadc985557f105967': 'sUSDT',
-  '0x69702cfd7dad8bccaa24d6b440159404aaa140f5': 'sUSDT',
+  '0xd651b14E0363ce297ab767F8B43BA98E00F303AB': 'USDT',
+  '0xdAC17F958D2ee523a2206206994597C13D831ec7': 'USDT',
+  '0x6Df60f95422f3B261A1D253cADC985557f105967': 'sUSDT',
+  '0x69702cfd7DAd8bCcAA24D6B440159404AAA140F5': 'sUSDT',
 
-  '0x25ff0c18ccc61caf9d7f92d1d1e539697f7ac791': 'BUSD',
-  '0x4fabb145d64652a948d72533023f6e7a623c7c53': 'BUSD',
-  '0x2544a5846e5a4fffcbd8e9e3340c44c2a73fe74e': 'sBUSD',
-  '0x18a908ed663823c908a900b934d6249d4befbe44': 'sBUSD',
+  '0x25FF0C18Ccc61caF9D7F92D1D1E539697F7AC791': 'BUSD',
+  '0x4Fabb145d64652a948d72533023f6E7A623C7C53': 'BUSD',
+  '0x2544a5846E5a4FFfCBD8e9E3340C44C2A73FE74E': 'sBUSD',
+  '0x18A908eD663823C908A900b934D6249d4befbE44': 'sBUSD',
 
-  '0xebb87eb4e69ef55257af1ab13929e12c243efc97': 'STRK',
-  '0x74232704659ef37c08995e386a2e26cc27a8d7b1': 'STRK',
-  '0x9a7c2b469e2d65074e145ea173fc161096b9012b': 'sSTRK',
-  '0x4164e5b047842ad7dff18fc6a6e63a1e40610f46': 'sSTRK',
+  '0xEbb87EB4E69ef55257af1AB13929E12c243efC97': 'STRK',
+  '0x74232704659ef37c08995e386A2E26cc27a8d7B1': 'STRK',
+  '0x9a7C2b469e2d65074e145EA173FC161096b9012B': 'sSTRK',
+  '0x4164e5b047842Ad7dFf18fc6A6e63a1e40610f46': 'sSTRK',
 
-  '0x552c0cef77e97ede3c913ac1f391b517aff2d6f5': 'SXP',
-  '0x8ce9137d39326ad0cd6491fb5cc0cba0e089b6a9': 'SXP',
-  '0x9b630bdbb755513fe6d0a42a1a3f6edbaa0e7c7a': 'sSXP',
-  '0xdbee1d8c452c781c17ea20115cbad0d5f627a680': 'sSXP',
+  '0x552C0CEF77E97EDE3c913AC1F391b517Aff2d6f5': 'SXP',
+  '0x8CE9137d39326AD0cD6491fb5CC0CbA0e089b6A9': 'SXP',
+  '0x9B630bdbb755513fe6d0a42A1a3f6edbaA0e7C7a': 'sSXP',
+  '0xdBee1d8C452c781C17Ea20115CbaD0d5f627a680': 'sSXP',
 
-  '0x34ae08cb3e70f0b1587b8188bf45ffadba80f8ea': 'WBTC',
-  '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': 'WBTC',
-  '0x70e90e9d11ad89743a1e8d7256e15daa34409d6e': 'sWBTC',
-  '0x9d1c2a187cf908aed8cfae2353ef72f06223d54d': 'sWBTC',
+  '0x34AE08CB3e70f0B1587b8188bF45FfaDBa80f8ea': 'WBTC',
+  '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599': 'WBTC',
+  '0x70E90e9D11Ad89743A1e8d7256E15daa34409d6e': 'sWBTC',
+  '0x9d1C2A187cf908aEd8CFAe2353Ef72F06223d54D': 'sWBTC',
 
-  '0x8f87b9c14a7d8eeaba36b155fda6f57747b041a2': 'sETH',
-  '0xbee9cf658702527b0acb2719c1faa29edc006a92': 'sETH',
+  '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2': 'sETH',
+  '0xbEe9Cf658702527b0AcB2719c1FAA29EdC006a92': 'sETH',
 
-  '0xedc33141ebbdb0423ea6f15aed794d6fa9797c46': 'COMP',
-  '0xc00e94cb662c3520282e6f5717214004a7f26888': 'COMP',
-  '0x3deb4fe003e6b6691053f43f777654bfdca6adee': 'sCOMP',
-  '0xb7e11002228d599f2a64b0c44d2299c9c644ff26': 'sCOMP',
+  '0xEDC33141eBBdb0423ea6f15aed794d6fa9797C46': 'COMP',
+  '0xc00e94Cb662C3520282E6f5717214004A7f26888': 'COMP',
+  '0x3dEb4FE003e6b6691053f43F777654bFdCa6adeE': 'sCOMP',
+  '0xb7E11002228D599F2a64b0C44D2299C9c644ff26': 'sCOMP',
 
-  '0xdfaf42b6e715ba05d2df72ba98b9ff681a9d2040': 'UNI',
-  '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': 'UNI',
-  '0x6e01780f4d75843872035e257d8644dfbf342a42': 'sUNI',
-  '0x280f76a218ddc8d56b490b5835e251e55a2e8f8d': 'sUNI',
+  '0xdfaF42B6e715bA05D2df72BA98B9ff681a9D2040': 'UNI',
+  '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984': 'UNI',
+  '0x6E01780f4d75843872035e257d8644DfBF342A42': 'sUNI',
+  '0x280f76a218DDC8d56B490B5835e251E55a2e8F8d': 'sUNI',
 
-  '0x04e8dee65e07b0c878b54a5db2b07ac141e21384': 'LINK',
-  '0x514910771af9ca656af840dff83e8264ecf986ca': 'LINK',
-  '0x1ca164223279e8ad227289ab5b942d058f56167d': 'sLINK',
-  '0x3f3b3b269d9f7088b022290906acff8710914be1': 'sLINK',
+  '0x04E8dEE65E07B0C878b54A5dB2B07aC141e21384': 'LINK',
+  '0x514910771AF9Ca656af840dff83E8264EcF986CA': 'LINK',
+  '0x1Ca164223279e8Ad227289Ab5b942D058f56167d': 'sLINK',
+  '0x3F3B3B269d9f7088B022290906acff8710914be1': 'sLINK',
 
-  '0xa693b19d2931d498c5b318df961919bb4aee87a5': 'UST',
-  '0xa9ba206cfb0548bf93ef1040dddd5121da9eaf85': 'sUST',
+  '0xa693B19d2931d498c5B318dF961919BB4aee87a5': 'UST',
+  '0xa9bA206cfb0548bF93eF1040dDDD5121da9eaf85': 'sUST',
 
-  '0x994e6ae9cbfc03499bc8883ce1fa1dd35460e323': 'APE',
-  '0x4d224452801aced8b2f0aebe155379bb5d594381': 'APE',
-  '0xd0e75ed120d7277a7f373c95a8020cd364a6f046': 'sAPE',
-  '0xf24a7d2077285e192aa7df957a4a699c144510d8': 'sAPE',
+  '0x994E6aE9CBFC03499Bc8883Ce1Fa1DD35460E323': 'APE',
+  '0x4d224452801ACEd8B2F0aebE155379bb5D594381': 'APE',
+  '0xD0E75ED120D7277A7F373c95A8020cd364A6F046': 'sAPE',
+  '0xf24A7D2077285E192Aa7dF957a4a699c144510d8': 'sAPE',
 
-  '0xf3fe651310917425bd15d3a9dd9f521f8bdf2386': 'DAI',
-  '0x6b175474e89094c44da98b954eedeac495271d0f': 'DAI',
-  '0xbca2a7a64636781877a8c4bd7e899f75b8f0d6ad': 'sDAI',
-  '0x54a0ed40abea082ed62c3a4f92621b8ed47732a2': 'sDAI',
+  '0xF3fe651310917425bd15d3a9dD9f521F8BDF2386': 'DAI',
+  '0x6B175474E89094C44Da98b954EedeAC495271d0F': 'DAI',
+  '0xBcA2A7a64636781877A8c4Bd7E899F75b8F0D6aD': 'sDAI',
+  '0x54A0ed40abEa082ed62C3a4f92621b8ed47732a2': 'sDAI',
 
-  '0x7720367e7a684e77f359f11977eae409ee504c0a': 'XCN',
-  '0xa2cd3d43c775978a96bdbf12d733d5a1ed94fb18': 'XCN',
-  '0x7bfc13c192ca52e2a9832e26fb932a5ef8c9688c': 'sXCN',
-  '0xc13fdf3af7ec87dca256d9c11ff96405d360f522': 'sXCN',
+  '0x7720367E7a684e77F359f11977EAE409ee504c0a': 'XCN',
+  '0xA2cd3D43c775978A96BdBf12d733D5A1ED94fb18': 'XCN',
+  '0x7bfc13c192cA52e2a9832e26Fb932A5eF8C9688C': 'sXCN',
+  '0xC13FDF3aF7ec87dcA256d9C11Ff96405D360F522': 'sXCN',
 
-  '0xada42c161fd0dbebcc1e3394ce0decc72395180b': 'wstETH',
-  '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': 'wstETH',
-  '0x6585772d429e33494106b3ca0110407bfe3c27fa': 'sWSTETH',
-  '0x1ebfd36223079dc79fefc62260db9e25f3f5e2c7': 'sWSTETH'
+  '0xada42c161Fd0dBebCc1e3394cE0deCc72395180b': 'wstETH',
+  '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0': 'wstETH',
+  '0x6585772d429e33494106B3Ca0110407bFE3C27FA': 'sWSTETH',
+  '0x1EBfD36223079dC79FefC62260dB9E25f3F5e2C7': 'sWSTETH'
 };
 
 export const CONTRACT_TOKEN_ADDRESS =
@@ -167,7 +167,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdc: {
           id: 'usdc',
           symbol: 'USDC',
-          address: '0x964a39d94dce0b41e981475630744d92d74c8f4f',
+          address: '0x964a39D94DCe0b41e981475630744D92D74C8F4F',
           asset: usdc,
           sasset: susdc,
           decimals: 6
@@ -175,7 +175,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdt: {
           id: 'usdt',
           symbol: 'USDT',
-          address: '0xd651b14e0363ce297ab767f8b43ba98e00f303ab',
+          address: '0xd651b14E0363ce297ab767F8B43BA98E00F303AB',
           asset: usdt,
           sasset: susdt,
           decimals: 6
@@ -183,7 +183,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         busd: {
           id: 'busd',
           symbol: 'BUSD',
-          address: '0x25ff0c18ccc61caf9d7f92d1d1e539697f7ac791',
+          address: '0x25FF0C18Ccc61caF9D7F92D1D1E539697F7AC791',
           asset: busd,
           sasset: sbusd,
           decimals: 18
@@ -191,7 +191,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         strk: {
           id: 'strk',
           symbol: 'STRK',
-          address: '0xebb87eb4e69ef55257af1ab13929e12c243efc97',
+          address: '0xEbb87EB4E69ef55257af1AB13929E12c243efC97',
           asset: strk,
           sasset: sstrk,
           decimals: 18
@@ -199,7 +199,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wbtc: {
           id: 'wbtc',
           symbol: 'WBTC',
-          address: '0x34ae08cb3e70f0b1587b8188bf45ffadba80f8ea',
+          address: '0x34AE08CB3e70f0B1587b8188bF45FfaDBa80f8ea',
           asset: btc,
           sasset: swbtc,
           decimals: 18
@@ -215,7 +215,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         link: {
           id: 'link',
           symbol: 'LINK',
-          address: '0x04e8dee65e07b0c878b54a5db2b07ac141e21384',
+          address: '0x04E8dEE65E07B0C878b54A5dB2B07aC141e21384',
           asset: link,
           sasset: slink,
           decimals: 18
@@ -223,7 +223,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         comp: {
           id: 'comp',
           symbol: 'COMP',
-          address: '0xedc33141ebbdb0423ea6f15aed794d6fa9797c46',
+          address: '0xEDC33141eBBdb0423ea6f15aed794d6fa9797C46',
           asset: comp,
           sasset: scomp,
           decimals: 18
@@ -231,7 +231,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         uni: {
           id: 'uni',
           symbol: 'UNI',
-          address: '0xdfaf42b6e715ba05d2df72ba98b9ff681a9d2040',
+          address: '0xdfaF42B6e715bA05D2df72BA98B9ff681a9D2040',
           asset: uni,
           sasset: suni,
           decimals: 18
@@ -239,7 +239,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         ape: {
           id: 'ape',
           symbol: 'APE',
-          address: '0x994e6ae9cbfc03499bc8883ce1fa1dd35460e323',
+          address: '0x994E6aE9CBFC03499Bc8883Ce1Fa1DD35460E323',
           asset: ape,
           sasset: sape,
           decimals: 18
@@ -247,7 +247,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         sxp: {
           id: 'sxp',
           symbol: 'SXP',
-          address: '0x552c0cef77e97ede3c913ac1f391b517aff2d6f5',
+          address: '0x552C0CEF77E97EDE3c913AC1F391b517Aff2d6f5',
           asset: sxp,
           sasset: ssxp,
           decimals: 18
@@ -255,7 +255,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         dai: {
           id: 'dai',
           symbol: 'DAI',
-          address: '0xf3fe651310917425bd15d3a9dd9f521f8bdf2386',
+          address: '0xF3fe651310917425bd15d3a9dD9f521F8BDF2386',
           asset: dai,
           sasset: sdai,
           decimals: 18
@@ -263,7 +263,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         xcn: {
           id: 'xcn',
           symbol: 'XCN',
-          address: '0x7720367e7a684e77f359f11977eae409ee504c0a',
+          address: '0x7720367E7a684e77F359f11977EAE409ee504c0a',
           asset: xcn,
           sasset: sxcn,
           decimals: 18
@@ -271,7 +271,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wsteth: {
           id: 'wsteth',
           symbol: 'wstETH',
-          address: '0xada42c161fd0dbebcc1e3394ce0decc72395180b',
+          address: '0xada42c161Fd0dBebCc1e3394cE0deCc72395180b',
           asset: wsteth,
           sasset: swsteth,
           decimals: 18
@@ -289,7 +289,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdc: {
           id: 'usdc',
           symbol: 'USDC',
-          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
           asset: usdc,
           sasset: susdc,
           decimals: 6
@@ -297,7 +297,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdt: {
           id: 'usdt',
           symbol: 'USDT',
-          address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+          address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
           asset: usdt,
           sasset: susdt,
           decimals: 6
@@ -305,7 +305,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         busd: {
           id: 'busd',
           symbol: 'BUSD',
-          address: '0x4fabb145d64652a948d72533023f6e7a623c7c53',
+          address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53',
           asset: busd,
           sasset: sbusd,
           decimals: 18
@@ -313,7 +313,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         strk: {
           id: 'strk',
           symbol: 'STRK',
-          address: '0x74232704659ef37c08995e386a2e26cc27a8d7b1',
+          address: '0x74232704659ef37c08995e386A2E26cc27a8d7B1',
           asset: strk,
           sasset: sstrk,
           decimals: 18
@@ -321,7 +321,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         sxp: {
           id: 'sxp',
           symbol: 'SXP',
-          address: '0x8ce9137d39326ad0cd6491fb5cc0cba0e089b6a9',
+          address: '0x8CE9137d39326AD0cD6491fb5CC0CbA0e089b6A9',
           asset: sxp,
           sasset: ssxp,
           decimals: 18
@@ -329,7 +329,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wbtc: {
           id: 'wbtc',
           symbol: 'WBTC',
-          address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+          address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
           asset: btc,
           sasset: swbtc,
           decimals: 8
@@ -345,7 +345,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         link: {
           id: 'link',
           symbol: 'LINK',
-          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
           asset: link,
           sasset: slink,
           decimals: 18
@@ -353,7 +353,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         comp: {
           id: 'comp',
           symbol: 'COMP',
-          address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
+          address: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
           asset: comp,
           sasset: scomp,
           decimals: 18
@@ -361,7 +361,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         uni: {
           id: 'uni',
           symbol: 'UNI',
-          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
           asset: uni,
           sasset: suni,
           decimals: 18
@@ -369,7 +369,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         ape: {
           id: 'ape',
           symbol: 'APE',
-          address: '0x4d224452801aced8b2f0aebe155379bb5d594381',
+          address: '0x4d224452801ACEd8B2F0aebE155379bb5D594381',
           asset: ape,
           sasset: sape,
           decimals: 18
@@ -377,7 +377,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         ust: {
           id: 'ust',
           symbol: 'UST',
-          address: '0xa693b19d2931d498c5b318df961919bb4aee87a5',
+          address: '0xa693B19d2931d498c5B318dF961919BB4aee87a5',
           asset: ust,
           sasset: sust,
           decimals: 18
@@ -385,7 +385,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         dai: {
           id: 'dai',
           symbol: 'DAI',
-          address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+          address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
           asset: dai,
           sasset: sdai,
           decimals: 18
@@ -393,7 +393,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         xcn: {
           id: 'xcn',
           symbol: 'XCN',
-          address: '0xa2cd3d43c775978a96bdbf12d733d5a1ed94fb18',
+          address: '0xA2cd3D43c775978A96BdBf12d733D5A1ED94fb18',
           asset: xcn,
           sasset: sxcn,
           decimals: 18
@@ -401,7 +401,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wsteth: {
           id: 'wsteth',
           symbol: 'wstETH',
-          address: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+          address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
           asset: wsteth,
           sasset: swsteth,
           decimals: 18
@@ -456,149 +456,149 @@ export const CONTRACT_SBEP_ADDRESS =
         usdc: {
           id: 'usdc',
           symbol: 'sUSDC',
-          address: '0xd7d63c0ff31c8b8d674563c34d3a79f5536ff0b8'
+          address: '0xd7d63c0Ff31c8B8d674563C34D3A79f5536Ff0b8'
         },
         usdt: {
           id: 'usdt',
           symbol: 'sUSDT',
-          address: '0x6df60f95422f3b261a1d253cadc985557f105967'
+          address: '0x6Df60f95422f3B261A1D253cADC985557f105967'
         },
         busd: {
           id: 'busd',
           symbol: 'sBUSD',
-          address: '0x2544a5846e5a4fffcbd8e9e3340c44c2a73fe74e'
+          address: '0x2544a5846E5a4FFfCBD8e9E3340C44C2A73FE74E'
         },
         strk: {
           id: 'strk',
           symbol: 'sSTRK',
-          address: '0x9a7c2b469e2d65074e145ea173fc161096b9012b'
+          address: '0x9a7C2b469e2d65074e145EA173FC161096b9012B'
         },
         wbtc: {
           id: 'wbtc',
           symbol: 'sWBTC',
-          address: '0x70e90e9d11ad89743a1e8d7256e15daa34409d6e'
+          address: '0x70E90e9D11Ad89743A1e8d7256E15daa34409d6e'
         },
         eth: {
           id: 'eth',
           symbol: 'sETH',
-          address: '0x8f87b9c14a7d8eeaba36b155fda6f57747b041a2'
+          address: '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2'
         },
         link: {
           id: 'link',
           symbol: 'sLINK',
-          address: '0x1ca164223279e8ad227289ab5b942d058f56167d'
+          address: '0x1Ca164223279e8Ad227289Ab5b942D058f56167d'
         },
         comp: {
           id: 'comp',
           symbol: 'sCOMP',
-          address: '0x3deb4fe003e6b6691053f43f777654bfdca6adee'
+          address: '0x3dEb4FE003e6b6691053f43F777654bFdCa6adeE'
         },
         uni: {
           id: 'uni',
           symbol: 'sUNI',
-          address: '0x6e01780f4d75843872035e257d8644dfbf342a42'
+          address: '0x6E01780f4d75843872035e257d8644DfBF342A42'
         },
         ape: {
           id: 'ape',
           symbol: 'sAPE',
-          address: '0xd0e75ed120d7277a7f373c95a8020cd364a6f046'
+          address: '0xD0E75ED120D7277A7F373c95A8020cd364A6F046'
         },
         sxp: {
           id: 'sxp',
           symbol: 'sSXP',
-          address: '0x9b630bdbb755513fe6d0a42a1a3f6edbaa0e7c7a'
+          address: '0x9B630bdbb755513fe6d0a42A1a3f6edbaA0e7C7a'
         },
         dai: {
           id: 'dai',
           symbol: 'sDAI',
-          address: '0xbca2a7a64636781877a8c4bd7e899f75b8f0d6ad'
+          address: '0xBcA2A7a64636781877A8c4Bd7E899F75b8F0D6aD'
         },
         xcn: {
           id: 'xcn',
           symbol: 'sXCN',
-          address: '0x7bfc13c192ca52e2a9832e26fb932a5ef8c9688c'
+          address: '0x7bfc13c192cA52e2a9832e26Fb932A5eF8C9688C'
         },
         wsteth: {
           id: 'wsteth',
           symbol: 'sWSTETH',
-          address: '0x6585772d429e33494106b3ca0110407bfe3c27fa'
+          address: '0x6585772d429e33494106B3Ca0110407bFE3C27FA'
         }
       }
     : {
         usdc: {
           id: 'usdc',
           symbol: 'sUSDC',
-          address: '0x3774e825d567125988fb293e926064b6faa71dab'
+          address: '0x3774E825d567125988Fb293e926064B6FAa71DAB'
         },
         usdt: {
           id: 'usdt',
           symbol: 'sUSDT',
-          address: '0x69702cfd7dad8bccaa24d6b440159404aaa140f5'
+          address: '0x69702cfd7DAd8bCcAA24D6B440159404AAA140F5'
         },
         busd: {
           id: 'busd',
           symbol: 'sBUSD',
-          address: '0x18a908ed663823c908a900b934d6249d4befbe44'
+          address: '0x18A908eD663823C908A900b934D6249d4befbE44'
         },
         strk: {
           id: 'strk',
           symbol: 'sSTRK',
-          address: '0x4164e5b047842ad7dff18fc6a6e63a1e40610f46'
+          address: '0x4164e5b047842Ad7dFf18fc6A6e63a1e40610f46'
         },
         sxp: {
           id: 'sxp',
           symbol: 'sSXP',
-          address: '0xdbee1d8c452c781c17ea20115cbad0d5f627a680'
+          address: '0xdBee1d8C452c781C17Ea20115CbaD0d5f627a680'
         },
         wbtc: {
           id: 'wbtc',
           symbol: 'sWBTC',
-          address: '0x9d1c2a187cf908aed8cfae2353ef72f06223d54d'
+          address: '0x9d1C2A187cf908aEd8CFAe2353Ef72F06223d54D'
         },
         eth: {
           id: 'eth',
           symbol: 'sETH',
-          address: '0xbee9cf658702527b0acb2719c1faa29edc006a92'
+          address: '0xbEe9Cf658702527b0AcB2719c1FAA29EdC006a92'
         },
         link: {
           id: 'link',
           symbol: 'sLINK',
-          address: '0x3f3b3b269d9f7088b022290906acff8710914be1'
+          address: '0x3F3B3B269d9f7088B022290906acff8710914be1'
         },
         comp: {
           id: 'comp',
           symbol: 'sCOMP',
-          address: '0xb7e11002228d599f2a64b0c44d2299c9c644ff26'
+          address: '0xb7E11002228D599F2a64b0C44D2299C9c644ff26'
         },
         uni: {
           id: 'uni',
           symbol: 'sUNI',
-          address: '0x280f76a218ddc8d56b490b5835e251e55a2e8f8d'
+          address: '0x280f76a218DDC8d56B490B5835e251E55a2e8F8d'
         },
         ape: {
           id: 'ape',
           symbol: 'sAPE',
-          address: '0xf24a7d2077285e192aa7df957a4a699c144510d8'
+          address: '0xf24A7D2077285E192Aa7dF957a4a699c144510d8'
         },
         ust: {
           id: 'ust',
           symbol: 'sUST',
-          address: '0xa9ba206cfb0548bf93ef1040dddd5121da9eaf85'
+          address: '0xa9bA206cfb0548bF93eF1040dDDD5121da9eaf85'
         },
         dai: {
           id: 'dai',
           symbol: 'sDAI',
-          address: '0x54a0ed40abea082ed62c3a4f92621b8ed47732a2'
+          address: '0x54A0ed40abEa082ed62C3a4f92621b8ed47732a2'
         },
         xcn: {
           id: 'xcn',
           symbol: 'sXCN',
-          address: '0xc13fdf3af7ec87dca256d9c11ff96405d360f522'
+          address: '0xC13FDF3aF7ec87dcA256d9C11Ff96405D360F522'
         },
         wsteth: {
           id: 'wsteth',
           symbol: 'sWSTETH',
-          address: '0x1ebfd36223079dc79fefc62260db9e25f3f5e2c7'
+          address: '0x1EBfD36223079dC79FefC62260dB9E25f3F5e2C7'
         }
       };
 export const CONTRACT_SBEP_ABI =
