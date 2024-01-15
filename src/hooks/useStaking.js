@@ -48,6 +48,7 @@ export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
   const [fees, setFees] = useState([]);
   const [strkEmission, setStrkEmission] = useState(new BigNumber(0));
   const [reserves, setReserves] = useState(new BigNumber(0));
+  const [isExcludedFromPenalty, setIsExcludedFromPenalty] = useState(false);
 
   const { fastRefresh } = useRefresh();
 
@@ -85,13 +86,18 @@ export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
 
   const calcPenaltyAmount = useCallback(
     amount => {
-      if (!amount || amount.gt(withdrawableBalance) || !vests.length) {
+      if (
+        isExcludedFromPenalty ||
+        !amount ||
+        amount.gt(withdrawableBalance) ||
+        !vests.length
+      ) {
         return new BigNumber(0);
       }
 
       return getPenalty(amount, vests);
     },
-    [withdrawableBalance, vests]
+    [withdrawableBalance, vests, isExcludedFromPenalty]
   );
 
   const calls = useMemo(() => {
@@ -205,6 +211,17 @@ export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
           calls: [
             {
               methodName: 'claimableRewards',
+              methodParameters: [account]
+            }
+          ]
+        },
+        {
+          reference: 'isExcludedFromPenalty',
+          contractAddress: constants.STAKING_ADDRESS,
+          abi: JSON.parse(constants.STAKING_ABI),
+          calls: [
+            {
+              methodName: 'isExcludedFromPenalty',
               methodParameters: [account]
             }
           ]
@@ -378,6 +395,10 @@ export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
             ]);
 
           setUnlockedBalance(new BigNumber(_unlockedBalance));
+          setIsExcludedFromPenalty(
+            data.results.isExcludedFromPenalty.callsReturnContext[0]
+              .returnValues[0]
+          );
         } else {
           setWithdrawableBalance(new BigNumber(0));
           setPenaltyAmount(new BigNumber(0));
@@ -409,6 +430,7 @@ export const useStakingData = (instance, account, strkPrice, forceUpdate) => {
     fees,
     strkEmission,
     reserves,
+    isExcludedFromPenalty,
     calcPenaltyAmount
   };
 };
