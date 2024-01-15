@@ -719,11 +719,15 @@ const Staking = ({ settings }) => {
       name: 'STRK in Vesting',
       description:
         'STRK amount that can be claimed with an early claim penalty',
-      value: `${vests
-        .reduce((total, e) => total + e.amount.div(1e18).toNumber(), 0)
-        .toLocaleString('en-US', {
-          maximumFractionDigits: 3
-        })} STRK`,
+      value: `${
+        isExcludedFromPenalty
+          ? '0'
+          : vests
+              .reduce((total, e) => total + e.amount.div(1e18).toNumber(), 0)
+              .toLocaleString('en-US', {
+                maximumFractionDigits: 3
+              })
+      } STRK`,
       claim: ''
     },
     {
