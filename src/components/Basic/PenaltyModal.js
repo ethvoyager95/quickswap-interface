@@ -342,7 +342,19 @@ function PenaltyModal({ visible, onCancel, settings }) {
           <div className="info">
             <p>You Will Receive</p>
             <div className="flex">
-              <span className="value">{claimAmount}</span>
+              <span className="value">
+                {new BigNumber(claimAmount || '0')
+                  .times(1e18)
+                  .minus(
+                    calcPenaltyAmount(
+                      new BigNumber(claimAmount === '' ? 0 : claimAmount).times(
+                        1e18
+                      )
+                    )
+                  )
+                  .div(1e18)
+                  .toString(10)}
+              </span>
               <span className="span-strk">&nbsp;STRK</span>
             </div>
           </div>
