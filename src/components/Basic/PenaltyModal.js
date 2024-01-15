@@ -205,13 +205,6 @@ function PenaltyModal({ visible, onCancel, settings }) {
     settings.selectedAddress
   );
 
-  // const unlockedBalance = new BigNumber(0);
-  // const totalEarned = new BigNumber(0);
-  // const withdrawableBalance = new BigNumber(0);
-
-  // const handleWithdraw = () => {};
-  // const pending = false;
-
   const [claimAmount, setClaimAmount] = React.useState('');
   const [isMax, setIsMax] = React.useState(false);
 
