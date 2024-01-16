@@ -38,6 +38,7 @@ import { ReactComponent as AnalyticsImg } from 'assets/img/menu-analytics.svg';
 import { ReactComponent as ToolsImg } from 'assets/img/menu-tools.svg';
 import { ReactComponent as StatusImg } from 'assets/img/menu-status.svg';
 import { ReactComponent as DiscussionImg } from 'assets/img/menu-discussion.svg';
+import { ReactComponent as SnapshotImg } from 'assets/img/menu-snapshot.svg';
 import { ReactComponent as ManageImg } from 'assets/img/menu-manage.svg';
 import { ReactComponent as MoreImg } from 'assets/img/menu-more.svg';
 import { ReactComponent as TelegramImg } from 'assets/img/menu-telegram.svg';
@@ -281,6 +282,17 @@ const dao = (
       >
         <DiscussionImg />
         <Label>Discussion</Label>
+      </a>
+    </Menu.Item>
+    <Menu.Item key="2">
+      <a
+        className="flex flex-start align-center gap-menu"
+        href="https://dao.strike.org"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <SnapshotImg style={{ width: '16px', height: '16px' }} />
+        <Label>Snapshot</Label>
       </a>
     </Menu.Item>
   </Menu>
@@ -984,6 +996,15 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             >
               <DiscussionImg />
               <Label>Discussion</Label>
+            </a>
+            <a
+              className="flex flex-start align-center gap-menu"
+              href="https://dao.strike.org"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <SnapshotImg style={{ width: '16px', height: '16px' }} />
+              <Label>Snapshot</Label>
             </a>
           </>
         )}
