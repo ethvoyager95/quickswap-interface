@@ -447,7 +447,8 @@ const Staking = ({ settings }) => {
     // totalEarned,
     vests,
     strkEmission,
-    reserves
+    reserves,
+    isExcludedFromPenalty
   } = useStakingData(instance, settings.selectedAddress, strkPrice);
   const { strkBalance, strkStakingAllowance } = useBalance(
     instance,
@@ -588,7 +589,7 @@ const Staking = ({ settings }) => {
     if (isPending()) {
       return;
     }
-    if (unlockedBalance.eq(0)) {
+    if (!isExcludedFromPenalty && unlockedBalance.eq(0)) {
       return;
     }
 
@@ -596,7 +597,15 @@ const Staking = ({ settings }) => {
       return;
     }
 
-    const tx = await handleWithdraw(unlockedBalance.toString(10));
+    let claimAmount = unlockedBalance;
+    if (isExcludedFromPenalty) {
+      claimAmount = vests.reduce(
+        (total, e) => total.plus(e.amount),
+        new BigNumber(0)
+      );
+    }
+
+    const tx = await handleWithdraw(claimAmount.toString(10));
     if (tx) {
       message.success('Claim successfully.');
     } else {
@@ -691,10 +700,18 @@ const Staking = ({ settings }) => {
     {
       name: 'Claimable STRK',
       description: 'Vested STRK',
-      value: `${unlockedBalance
-        .div(1e18)
-        .toNumber()
-        .toLocaleString('en-US', { maximumFractionDigits: 3 })} STRK`,
+      value: `${
+        isExcludedFromPenalty
+          ? vests
+              .reduce((total, e) => total + e.amount.div(1e18).toNumber(), 0)
+              .toLocaleString('en-US', {
+                maximumFractionDigits: 3
+              })
+          : unlockedBalance
+              .div(1e18)
+              .toNumber()
+              .toLocaleString('en-US', { maximumFractionDigits: 3 })
+      } STRK`,
       claim: 'Claim',
       handler: withdraw
     },
@@ -702,11 +719,15 @@ const Staking = ({ settings }) => {
       name: 'STRK in Vesting',
       description:
         'STRK amount that can be claimed with an early claim penalty',
-      value: `${vests
-        .reduce((total, e) => total + e.amount.div(1e18).toNumber(), 0)
-        .toLocaleString('en-US', {
-          maximumFractionDigits: 3
-        })} STRK`,
+      value: `${
+        isExcludedFromPenalty
+          ? '0'
+          : vests
+              .reduce((total, e) => total + e.amount.div(1e18).toNumber(), 0)
+              .toLocaleString('en-US', {
+                maximumFractionDigits: 3
+              })
+      } STRK`,
       claim: ''
     },
     {
@@ -1057,20 +1078,22 @@ const Staking = ({ settings }) => {
                   </p>
                   <p className="value">
                     <span className="span-total">Total</span>{' '}
-                    {vests
-                      .reduce(
-                        (total, e) => total + e.amount.div(1e18).toNumber(),
-                        0
-                      )
-                      .toLocaleString('en-US', {
-                        maximumFractionDigits: 3
-                      })}{' '}
+                    {isExcludedFromPenalty
+                      ? '0'
+                      : vests
+                          .reduce(
+                            (total, e) => total + e.amount.div(1e18).toNumber(),
+                            0
+                          )
+                          .toLocaleString('en-US', {
+                            maximumFractionDigits: 3
+                          })}{' '}
                     <span className="span-strk">STRK</span>
                   </p>
                 </div>
               </div>
               <div className="border flex flex-column center input-bg scroll-div">
-                {vests.map((e, index) => (
+                {(isExcludedFromPenalty ? [] : vests).map((e, index) => (
                   <div
                     key={e}
                     className={`flex align-center space-between ${index <
@@ -1097,7 +1120,7 @@ const Staking = ({ settings }) => {
                     </p>
                   </div>
                 ))}
-                {!vests.length && (
+                {(isExcludedFromPenalty || !vests.length) && (
                   <div>
                     <img
                       className="mb-3 mx-auto max-25"
