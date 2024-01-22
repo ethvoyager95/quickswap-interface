@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import { ApolloProvider } from 'react-apollo';
+import { ToastContainer } from 'react-toastify';
 import enMessages from 'lang/en';
 import { store } from 'core';
 import Dashboard from 'containers/Main/Dashboard';
@@ -26,6 +27,7 @@ import { client } from '../apollo/client';
 import Theme from './Theme';
 import 'assets/styles/App.scss';
 import History from './Main/History/History';
+import 'react-toastify/dist/ReactToastify.css';
 
 addLocaleData([...en]);
 const initialLang = 'en';
@@ -101,6 +103,7 @@ class App extends React.Component {
                   <Redirect from="/" to="/dashboard" />
                 </Switch>
               </BrowserRouter>
+              <ToastContainer />
             </Provider>
           </IntlProvider>
         </ApolloProvider>
