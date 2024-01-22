@@ -3,6 +3,7 @@ import { Multicall } from 'ethereum-multicall';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import { getProvider as getBW3WProvider } from '@binance/w3w-ethereum-provider';
 import { log } from '@binance/w3w-utils';
+import { toast } from 'react-toastify';
 
 import * as constants from './constants';
 
@@ -42,6 +43,11 @@ const call = (method, params) => {
 };
 
 const send = (method, params, from) => {
+  method(...params).estimateGas({ from }, (error, gasAmount) => {
+    if (error) {
+      toast.error(error.message);
+    }
+  });
   return new Promise((resolve, reject) => {
     method(...params)
       .send({ from })
