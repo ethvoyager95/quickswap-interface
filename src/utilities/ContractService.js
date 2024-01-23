@@ -43,18 +43,21 @@ const call = (method, params) => {
 };
 
 const send = (method, params, from) => {
-  method(...params).estimateGas({ from }, (error, gasAmount) => {
-    if (error) {
-      toast.error(error.message);
-    }
-  });
   return new Promise((resolve, reject) => {
     method(...params)
-      .send({ from })
-      .then(res => {
-        resolve(res);
+      .estimateGas({ from })
+      .then(gasAmount => {
+        method(...params)
+          .send({ from })
+          .then(res => {
+            resolve(res);
+          })
+          .catch(err => {
+            reject(err);
+          });
       })
       .catch(err => {
+        toast.error(err.message);
         reject(err);
       });
   });
