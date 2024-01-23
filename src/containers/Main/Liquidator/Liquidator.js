@@ -324,6 +324,7 @@ function Liquidator({ settings, setSetting }) {
         selectedAssetRepay.toLowerCase()
       );
       await methods.send(
+        instance,
         tokenContract.methods.approve,
         [
           constants.CONTRACT_SBEP_ADDRESS[selectedAssetRepay.toLowerCase()]
@@ -374,6 +375,7 @@ function Liquidator({ settings, setSetting }) {
                 .toString(10)
             )
           : await methods.send(
+              instance,
               sbepContract.methods.liquidateBorrow,
               [
                 selectedUserAddress,
@@ -388,7 +390,7 @@ function Liquidator({ settings, setSetting }) {
               settings.selectedAddress
             );
 
-      if (resLiquidate.status) {
+      if (resLiquidate?.status) {
         setTypeModal('transaction success');
         setRepayValue('');
 

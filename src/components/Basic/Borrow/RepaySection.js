@@ -82,6 +82,7 @@ function RepayBorrowTab({ asset, settings, setSetting, hideModal }) {
       const tokenContract = getTokenContract(instance, asset.id);
       methods
         .send(
+          instance,
           tokenContract.methods.approve,
           [
             asset.stokenAddress,
@@ -120,6 +121,7 @@ function RepayBorrowTab({ asset, settings, setSetting, hideModal }) {
         if (asset.id !== 'eth') {
           if (amount.eq(asset.borrowBalance)) {
             await methods.send(
+              instance,
               appContract.methods.repayBorrow,
               [
                 new BigNumber(2)
@@ -131,6 +133,7 @@ function RepayBorrowTab({ asset, settings, setSetting, hideModal }) {
             );
           } else {
             await methods.send(
+              instance,
               appContract.methods.repayBorrow,
               [
                 amount

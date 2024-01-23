@@ -86,7 +86,12 @@ function DelegationTypeModal({
     setIsLoading(true);
     const tokenContract = getTokenContract(instance, 'strk');
     methods
-      .send(tokenContract.methods.delegate, [dAddress || address], address)
+      .send(
+        instance,
+        tokenContract.methods.delegate,
+        [dAddress || address],
+        address
+      )
       .then(() => {
         setIsLoading(false);
         onCancel();

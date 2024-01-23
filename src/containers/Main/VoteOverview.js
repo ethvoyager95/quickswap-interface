@@ -235,6 +235,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
       setIsLoading(true);
       methods
         .send(
+          instance,
           appContract.methods.queue,
           [proposalInfo.id],
           settings.selectedAddress
@@ -252,6 +253,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
       setIsLoading(true);
       methods
         .send(
+          instance,
           appContract.methods.execute,
           [proposalInfo.id],
           settings.selectedAddress
@@ -269,6 +271,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
       setIsCancelLoading(true);
       methods
         .send(
+          instance,
           appContract.methods.cancel,
           [proposalInfo.id],
           settings.selectedAddress

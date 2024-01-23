@@ -219,6 +219,7 @@ function VotingWallet({
       const claimForSupply = supplyMarkets.length > 0;
       methods
         .send(
+          instance,
           appContract.methods.claimStrike,
           [[settings.selectedAddress], markets, claimForBorrow, claimForSupply],
           settings.selectedAddress

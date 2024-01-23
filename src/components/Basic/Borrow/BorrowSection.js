@@ -87,6 +87,7 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
       });
       methods
         .send(
+          instance,
           appContract.methods.borrow,
           [
             amount

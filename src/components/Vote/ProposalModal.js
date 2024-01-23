@@ -261,6 +261,7 @@ function ProposalModal({
         const appContract = getVoteContract(instance);
         methods
           .send(
+            instance,
             appContract.methods.propose,
             [targetAddresses, values, signatures, callDatas, description],
             address

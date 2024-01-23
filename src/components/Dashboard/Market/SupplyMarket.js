@@ -45,6 +45,7 @@ function SupplyMarket({
         setIsCollateralConfirm(true);
         methods
           .send(
+            instance,
             appContract.methods.enterMarkets,
             [[r.stokenAddress]],
             settings.selectedAddress
@@ -63,6 +64,7 @@ function SupplyMarket({
         setIsCollateralConfirm(true);
         methods
           .send(
+            instance,
             appContract.methods.exitMarket,
             [r.stokenAddress],
             settings.selectedAddress
