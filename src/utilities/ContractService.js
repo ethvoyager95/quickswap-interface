@@ -4,6 +4,7 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import { getProvider as getBW3WProvider } from '@binance/w3w-ethereum-provider';
 import { log } from '@binance/w3w-utils';
 import { toast } from 'react-toastify';
+import BigNumber from 'bignumber.js';
 
 import * as constants from './constants';
 
@@ -42,19 +43,36 @@ const call = (method, params) => {
   });
 };
 
-const send = (method, params, from) => {
+const send = (web3, method, params, from) => {
   return new Promise((resolve, reject) => {
     method(...params)
       .estimateGas({ from })
-      .then(gasAmount => {
-        method(...params)
-          .send({ from })
-          .then(res => {
-            resolve(res);
-          })
-          .catch(err => {
-            reject(err);
-          });
+      .then(async gasAmount => {
+        const walletBalance = await web3.eth.getBalance(from);
+        const gasPrice = await web3.eth.getGasPrice();
+        const estimatedGas = new BigNumber(gasPrice)
+          .times(gasAmount)
+          .times(1e9);
+
+        if (estimatedGas.gt(new BigNumber(walletBalance))) {
+          toast.error(
+            'Your ETH balance is insufficient to execute the transaction.'
+          );
+          reject(
+            Error(
+              'Your ETH balance is insufficient to execute the transaction.'
+            )
+          );
+        } else {
+          method(...params)
+            .send({ from })
+            .then(res => {
+              resolve(res);
+            })
+            .catch(err => {
+              reject(err);
+            });
+        }
       })
       .catch(err => {
         toast.error(err.message);

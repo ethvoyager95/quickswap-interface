@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import * as constants from 'utilities/constants';
-import { getTokenContract } from 'utilities/ContractService';
+import { getTokenContract, methods } from 'utilities/ContractService';
 import useRefresh from './useRefresh';
 import { useMulticall, useStakingContract } from './useContract';
 
@@ -443,11 +443,16 @@ export const useStakeCallback = (instance, account) => {
     async (amount, lock) => {
       try {
         setPending(true);
-        const tx = await contract.methods.stake(amount, lock).send({
-          from: account
-        });
-        setPending(false);
-        return tx;
+        return methods
+          .send(instance, contract.methods.stake, [amount, lock], account)
+          .then(res => {
+            setPending(false);
+            return true;
+          })
+          .catch(err => {
+            setPending(false);
+            return false;
+          });
       } catch (e) {
         console.error('Stake had error :>> ', e);
         setPending(false);
@@ -468,11 +473,16 @@ export const useWithdrawCallback = (instance, account) => {
     async amount => {
       try {
         setPending(true);
-        const tx = await contract.methods.withdraw(amount).send({
-          from: account
-        });
-        setPending(false);
-        return tx;
+        return methods
+          .send(instance, contract.methods.withdraw, [amount], account)
+          .then(res => {
+            setPending(false);
+            return true;
+          })
+          .catch(err => {
+            setPending(false);
+            return false;
+          });
       } catch (e) {
         console.error('Withdraw had error :>> ', e);
         setPending(false);
@@ -492,11 +502,16 @@ export const useWithdrawExpiredLocksCallback = (instance, account) => {
   const handleWithdrawExpiredLocks = useCallback(async () => {
     try {
       setPending(true);
-      const tx = await contract.methods.withdrawExpiredLocks().send({
-        from: account
-      });
-      setPending(false);
-      return tx;
+      return methods
+        .send(instance, contract.methods.withdrawExpiredLocks, [], account)
+        .then(res => {
+          setPending(false);
+          return true;
+        })
+        .catch(err => {
+          setPending(false);
+          return false;
+        });
     } catch (e) {
       console.error('WithdrawExpiredLocks had error :>> ', e);
       setPending(false);
@@ -514,11 +529,16 @@ export const useGetRewardCallback = (instance, account) => {
   const handleGetReward = useCallback(async () => {
     try {
       setPending(true);
-      const tx = await contract.methods.getReward().send({
-        from: account
-      });
-      setPending(false);
-      return tx;
+      return methods
+        .send(instance, contract.methods.getReward, [], account)
+        .then(res => {
+          setPending(false);
+          return true;
+        })
+        .catch(err => {
+          setPending(false);
+          return false;
+        });
     } catch (e) {
       console.error('GetReward had error :>> ', e);
       setPending(false);
@@ -536,11 +556,16 @@ export const useExitCallback = (instance, account) => {
   const handleExit = useCallback(async () => {
     try {
       setPending(true);
-      const tx = await contract.methods.exit().send({
-        from: account
-      });
-      setPending(false);
-      return tx;
+      return methods
+        .send(instance, contract.methods.exit, [], account)
+        .then(res => {
+          setPending(false);
+          return true;
+        })
+        .catch(err => {
+          setPending(false);
+          return false;
+        });
     } catch (e) {
       console.error('Exit had error :>> ', e);
       setPending(false);
@@ -559,16 +584,24 @@ export const useStrkApproveCallback = (instance, account) => {
   const handleApprove = useCallback(async () => {
     try {
       setPending(true);
-      const tx = await contract.methods
-        .approve(
-          constants.STAKING_ADDRESS,
-          '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+      return methods
+        .send(
+          instance,
+          contract.methods.approve,
+          [
+            constants.STAKING_ADDRESS,
+            '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+          ],
+          account
         )
-        .send({
-          from: account
+        .then(res => {
+          setPending(false);
+          return true;
+        })
+        .catch(err => {
+          setPending(false);
+          return false;
         });
-      setPending(false);
-      return tx;
     } catch (e) {
       console.error('Approve had error :>> ', e);
       setPending(false);

@@ -220,9 +220,10 @@ function PenaltyModal({ visible, onCancel, settings }) {
       : await handleExit();
     if (tx) {
       message.success('Claimed successfully.');
-    } else {
-      message.error('Something went wrong while claiming reward.');
     }
+    // else {
+    //   message.error('Something went wrong while claiming reward.');
+    // }
   };
 
   return (

@@ -192,6 +192,7 @@ function Proposal({
     const appContract = getVoteContract(instance);
     methods
       .send(
+        instance,
         appContract.methods.castVote,
         [proposal.id, support === 'like'],
         address

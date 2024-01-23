@@ -1,5 +1,31 @@
 import Web3 from 'web3'; // eslint-disable-line import/no-unresolved
+import { toast } from 'react-toastify';
+import BigNumber from 'bignumber.js';
 import * as constants from 'utilities/constants';
+
+const checkGas = async (web3, method, params, amount, from) => {
+  let estimatedGasAmount;
+  await method(...params).estimateGas(
+    { from, value: new BigNumber(amount) },
+    (error, gasAmount) => {
+      estimatedGasAmount = gasAmount;
+    }
+  );
+
+  const walletBalance = await web3.eth.getBalance(from);
+  const gasPrice = await web3.eth.getGasPrice();
+  const estimatedGas = new BigNumber(gasPrice)
+    .times(estimatedGasAmount)
+    .times(1e9);
+
+  if (
+    new BigNumber(amount).plus(estimatedGas).gt(new BigNumber(walletBalance))
+  ) {
+    toast.error('Your ETH balance is insufficient to execute the transaction.');
+    return false;
+  }
+  return true;
+};
 
 export const sendSupply = async (web3, from, amount, callback) => {
   try {
@@ -8,6 +34,19 @@ export const sendSupply = async (web3, from, amount, callback) => {
       constants.CONTRACT_SBEP_ADDRESS.eth.address
     );
     const contractData = contract.methods.mint().encodeABI();
+
+    const result = await checkGas(
+      web3,
+      contract.methods.mint,
+      [],
+      amount,
+      from
+    );
+
+    if (!result) {
+      callback(false);
+      return;
+    }
 
     const tx = {
       from,
@@ -36,6 +75,19 @@ export const sendRepay = async (web3, from, amount, callback) => {
       constants.CONTRACT_SBEP_ADDRESS.eth.address
     );
     const contractData = contract.methods.repayBorrow().encodeABI();
+
+    const result = await checkGas(
+      web3,
+      contract.methods.repayBorrow,
+      [],
+      amount,
+      from
+    );
+
+    if (!result) {
+      callback(false);
+      return;
+    }
 
     const tx = {
       from,
@@ -73,6 +125,18 @@ export const liquidateBorrow = async (
       .liquidateBorrow(borrower, sTokenCollateral)
       .encodeABI();
 
+    const result = await checkGas(
+      web3,
+      contract.methods.liquidateBorrow,
+      [borrower, sTokenCollateral],
+      amount,
+      from
+    );
+
+    if (!result) {
+      return null;
+    }
+
     const tx = {
       from,
       to: constants.CONTRACT_SBEP_ADDRESS.eth.address,
@@ -96,6 +160,18 @@ export const nftMint = async (web3, from, totalPrice, amount) => {
       constants.NFT_ADDRESS
     );
     const contractData = contract.methods.mint(from, amount).encodeABI();
+
+    const result = await checkGas(
+      web3,
+      contract.methods.mint,
+      [from, amount],
+      amount,
+      from
+    );
+
+    if (!result) {
+      return null;
+    }
 
     const tx = {
       from,
