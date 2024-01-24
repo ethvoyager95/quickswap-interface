@@ -593,7 +593,7 @@ const Staking = ({ settings }) => {
       return;
     }
     if (unlockedBalance.eq(0)) {
-      toast.error('You have not claimable STRK.');
+      toast.info('You have not claimable STRK.');
       return;
     }
 
@@ -640,7 +640,7 @@ const Staking = ({ settings }) => {
       return;
     }
     if (unlockable.eq(0)) {
-      toast.error('You have not STRK to withdraw.');
+      toast.info('You have not STRK to withdraw.');
       return;
     }
 
