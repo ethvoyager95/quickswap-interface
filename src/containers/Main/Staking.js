@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Tooltip, message } from 'antd';
+import { toast } from 'react-toastify';
 import commaNumber from 'comma-number';
 import MainLayout from 'containers/Layout/MainLayout';
 import { connectAccount } from 'core';
@@ -591,7 +592,8 @@ const Staking = ({ settings }) => {
     if (isPending()) {
       return;
     }
-    if (!isExcludedFromPenalty && unlockedBalance.eq(0)) {
+    if (unlockedBalance.eq(0)) {
+      toast.info('You have not claimable STRK.');
       return;
     }
 
@@ -638,6 +640,7 @@ const Staking = ({ settings }) => {
       return;
     }
     if (unlockable.eq(0)) {
+      toast.info('You have not STRK to withdraw.');
       return;
     }
 
