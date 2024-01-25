@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Tooltip, message } from 'antd';
+import { toast } from 'react-toastify';
 import commaNumber from 'comma-number';
 import MainLayout from 'containers/Layout/MainLayout';
 import { connectAccount } from 'core';
@@ -552,9 +553,10 @@ const Staking = ({ settings }) => {
       const tx = await handleApprove();
       if (tx) {
         message.success('Approved successfully.');
-      } else {
-        message.error('Something went wrong while approving.');
       }
+      // else {
+      //   message.error('Something went wrong while approving.');
+      // }
     } else {
       if (
         strkBalance.lt(
@@ -574,11 +576,12 @@ const Staking = ({ settings }) => {
       );
       if (tx) {
         message.success(lock ? 'Locked successfully.' : 'Staked successfully.');
-      } else {
-        message.error(
-          `Something went wrong while ${lock ? 'locking' : 'staking'}.`
-        );
       }
+      // else {
+      //   message.error(
+      //     `Something went wrong while ${lock ? 'locking' : 'staking'}.`
+      //   );
+      // }
     }
     if (lock) {
       setLockPending(false);
@@ -589,7 +592,8 @@ const Staking = ({ settings }) => {
     if (isPending()) {
       return;
     }
-    if (!isExcludedFromPenalty && unlockedBalance.eq(0)) {
+    if (unlockedBalance.eq(0)) {
+      toast.info('You have not claimable STRK.');
       return;
     }
 
@@ -608,9 +612,10 @@ const Staking = ({ settings }) => {
     const tx = await handleWithdraw(claimAmount.toString(10));
     if (tx) {
       message.success('Claim successfully.');
-    } else {
-      message.error('Something went wrong while claim.');
     }
+    // else {
+    //   message.error('Something went wrong while claim.');
+    // }
   }, [handleWithdraw, unlockedBalance, settings.selectedAddress]);
 
   const getReward = async () => {
@@ -624,9 +629,10 @@ const Staking = ({ settings }) => {
     const tx = await handleGetReward();
     if (tx) {
       message.success('Claim reward successfully.');
-    } else {
-      message.error('Something went wrong while claiming reward.');
     }
+    // else {
+    //   message.error('Something went wrong while claiming reward.');
+    // }
   };
 
   const withdrawExpiredLocks = useCallback(async () => {
@@ -634,15 +640,17 @@ const Staking = ({ settings }) => {
       return;
     }
     if (unlockable.eq(0)) {
+      toast.info('You have not STRK to withdraw.');
       return;
     }
 
     const tx = await handleWithdrawExpiredLocks();
     if (tx) {
       message.success('Withdraw locks successfully.');
-    } else {
-      message.error('Something went wrong while withdrawal.');
     }
+    // else {
+    //   message.error('Something went wrong while withdrawal.');
+    // }
   }, [handleWithdrawExpiredLocks, unlockable]);
 
   const overview = [

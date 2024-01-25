@@ -117,12 +117,14 @@ function WithdrawSection({
             [settings.selectedAddress]
           );
           await methods.send(
+            instance,
             appContract.methods.redeem,
             [sTokenBalance],
             settings.selectedAddress
           );
         } else {
           await methods.send(
+            instance,
             appContract.methods.redeemUnderlying,
             [
               amount

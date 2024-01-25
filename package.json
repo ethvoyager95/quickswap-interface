@@ -51,6 +51,7 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "^5.0.1",
     "react-slick": "^0.29.0",
+    "react-toastify": "^10.0.4",
     "react-top-loading-bar": "^2.0.1",
     "recompose": "0.26.0",
     "redux": "^4.0.4",

@@ -262,6 +262,7 @@ function SupplySection({ asset, settings, setSetting, hideModal }) {
       const tokenContract = getTokenContract(instance, asset.id);
       methods
         .send(
+          instance,
           tokenContract.methods.approve,
           [
             asset.stokenAddress,
@@ -301,6 +302,7 @@ function SupplySection({ asset, settings, setSetting, hideModal }) {
       if (asset.id !== 'eth') {
         methods
           .send(
+            instance,
             appContract.methods.mint,
             [
               amount
@@ -340,18 +342,30 @@ function SupplySection({ asset, settings, setSetting, hideModal }) {
           amount
             .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
             .toString(10),
-          () => {
-            setAmount(new BigNumber(0));
-            setIsLoading(false);
-            setSetting({
-              pendingInfo: {
-                type: '',
-                status: false,
-                amount: 0,
-                symbol: ''
-              }
-            });
-            hideModal();
+          flag => {
+            if (flag) {
+              setAmount(new BigNumber(0));
+              setIsLoading(false);
+              setSetting({
+                pendingInfo: {
+                  type: '',
+                  status: false,
+                  amount: 0,
+                  symbol: ''
+                }
+              });
+              hideModal();
+            } else {
+              setIsLoading(false);
+              setSetting({
+                pendingInfo: {
+                  type: '',
+                  status: false,
+                  amount: 0,
+                  symbol: ''
+                }
+              });
+            }
           }
         );
       }

@@ -989,6 +989,7 @@ function Staking({ settings, setSetting }) {
     setiIsConfirm(true);
     await methods
       .send(
+        instance,
         lpContract.methods.approve,
         [constants.CONTRACT_FARMING_ADDRESS, MAX_APPROVE],
         address
@@ -1019,6 +1020,7 @@ function Staking({ settings, setSetting }) {
     setiIsConfirm(true);
     await methods
       .send(
+        instance,
         vStrkContract.methods.approve,
         [constants.CONTRACT_FARMING_ADDRESS, MAX_APPROVE],
         address
@@ -1049,6 +1051,7 @@ function Staking({ settings, setSetting }) {
     setiIsConfirm(true);
     await methods
       .send(
+        instance,
         nFtContract.methods.setApprovalForAll,
         [constants.CONTRACT_FARMING_ADDRESS, true],
         address
@@ -1111,6 +1114,7 @@ function Staking({ settings, setSetting }) {
 
       await methods
         .send(
+          instance,
           farmingContract.methods.deposit,
           [
             0,
@@ -1183,6 +1187,7 @@ function Staking({ settings, setSetting }) {
         : new BigNumber(valUnStake);
       await methods
         .send(
+          instance,
           farmingContract.methods.withdraw,
           [
             0,
@@ -1228,6 +1233,7 @@ function Staking({ settings, setSetting }) {
     const zero = 0;
     await methods
       .send(
+        instance,
         farmingContract.methods.claimBaseRewards,
         [zero.toString(10)],
         address
@@ -1258,6 +1264,7 @@ function Staking({ settings, setSetting }) {
     const zero = 0;
     await methods
       .send(
+        instance,
         farmingContract.methods.claimBoostReward,
         [zero.toString(10)],
         address
@@ -1307,6 +1314,7 @@ function Staking({ settings, setSetting }) {
         const lstAllIdsStake = _.map(lstAllIds, 'token_id');
         await methods
           .send(
+            instance,
             checked
               ? farmingContract.methods.boostAll
               : farmingContract.methods.boost,
@@ -1370,6 +1378,7 @@ function Staking({ settings, setSetting }) {
         );
         await methods
           .send(
+            instance,
             checked
               ? farmingContract.methods.unBoostAll
               : farmingContract.methods.unBoost,
