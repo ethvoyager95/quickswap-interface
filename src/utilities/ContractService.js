@@ -52,7 +52,7 @@ const send = (web3, method, params, from) => {
         const gasPrice = await web3.eth.getGasPrice();
         const estimatedGas = new BigNumber(gasPrice)
           .times(gasAmount)
-          .times(1e9);
+          .times(process.env.REACT_APP_ENV === 'dev' ? 1e9 : 1);
 
         if (estimatedGas.gt(new BigNumber(walletBalance))) {
           toast.error(
