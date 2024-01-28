@@ -592,10 +592,6 @@ const Staking = ({ settings }) => {
     if (isPending()) {
       return;
     }
-    if (unlockedBalance.eq(0)) {
-      toast.info('You have not claimable STRK.');
-      return;
-    }
 
     if (!settings.selectedAddress) {
       return;
@@ -607,6 +603,11 @@ const Staking = ({ settings }) => {
         (total, e) => total.plus(e.amount),
         new BigNumber(0)
       );
+    }
+
+    if (claimAmount.eq(0)) {
+      toast.info('You have not claimable STRK.');
+      return;
     }
 
     const tx = await handleWithdraw(claimAmount.toString(10));
