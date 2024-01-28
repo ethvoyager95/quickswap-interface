@@ -50,10 +50,7 @@ const send = (web3, method, params, from) => {
       .then(async gasAmount => {
         const walletBalance = await web3.eth.getBalance(from);
         const gasPrice = await web3.eth.getGasPrice();
-        const estimatedGas = new BigNumber(gasPrice)
-          .times(gasAmount)
-          .times(process.env.REACT_APP_ENV === 'dev' ? 1e9 : 1);
-
+        const estimatedGas = new BigNumber(gasPrice).times(gasAmount);
         if (estimatedGas.gt(new BigNumber(walletBalance))) {
           toast.error(
             'Your ETH balance is insufficient to execute the transaction.'
