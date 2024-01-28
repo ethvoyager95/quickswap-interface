@@ -14,9 +14,7 @@ const checkGas = async (web3, method, params, amount, from) => {
 
   const walletBalance = await web3.eth.getBalance(from);
   const gasPrice = await web3.eth.getGasPrice();
-  const estimatedGas = new BigNumber(gasPrice)
-    .times(estimatedGasAmount)
-    .times(process.env.REACT_APP_ENV === 'dev' ? 1e9 : 1);
+  const estimatedGas = new BigNumber(gasPrice).times(estimatedGasAmount);
 
   if (
     new BigNumber(amount).plus(estimatedGas).gt(new BigNumber(walletBalance))
