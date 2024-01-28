@@ -50,6 +50,7 @@ const send = (web3, method, params, from) => {
       .then(async gasAmount => {
         const walletBalance = await web3.eth.getBalance(from);
         const gasPrice = await web3.eth.getGasPrice();
+        console.log('gasPirce = ', gasPrice);
         const estimatedGas = new BigNumber(gasPrice).times(gasAmount);
         if (estimatedGas.gt(new BigNumber(walletBalance))) {
           toast.error(
