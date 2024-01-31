@@ -48,28 +48,30 @@ const send = (web3, method, params, from) => {
     method(...params)
       .estimateGas({ from })
       .then(async gasAmount => {
-        // const walletBalance = await web3.eth.getBalance(from);
-        // const gasPrice = await web3.eth.getGasPrice();
-        // const estimatedGas = new BigNumber(gasPrice).times(gasAmount).times(2);
-        // if (estimatedGas.gt(new BigNumber(walletBalance))) {
-        //   toast.error(
-        //     'Your ETH balance is insufficient to execute the transaction.'
-        //   );
-        //   reject(
-        //     Error(
-        //       'Your ETH balance is insufficient to execute the transaction.'
-        //     )
-        //   );
-        // } else {
-        method(...params)
-          .send({ from })
-          .then(res => {
-            resolve(res);
-          })
-          .catch(err => {
-            reject(err);
-          });
-        // }
+        const walletBalance = await web3.eth.getBalance(from);
+        const gasPrice = await web3.eth.getGasPrice();
+        const estimatedGas = new BigNumber(gasPrice)
+          .times(gasAmount)
+          .times(1.5);
+        if (estimatedGas.gt(new BigNumber(walletBalance))) {
+          toast.error(
+            'Your ETH balance is insufficient to execute the transaction.'
+          );
+          reject(
+            Error(
+              'Your ETH balance is insufficient to execute the transaction.'
+            )
+          );
+        } else {
+          method(...params)
+            .send({ from })
+            .then(res => {
+              resolve(res);
+            })
+            .catch(err => {
+              reject(err);
+            });
+        }
       })
       .catch(err => {
         toast.error(err.message);

@@ -4,26 +4,26 @@ import BigNumber from 'bignumber.js';
 import * as constants from 'utilities/constants';
 
 const checkGas = async (web3, method, params, amount, from) => {
-  // let estimatedGasAmount;
-  // await method(...params).estimateGas(
-  //   { from, value: new BigNumber(amount) },
-  //   (error, gasAmount) => {
-  //     estimatedGasAmount = gasAmount;
-  //   }
-  // );
+  let estimatedGasAmount;
+  await method(...params).estimateGas(
+    { from, value: new BigNumber(amount) },
+    (error, gasAmount) => {
+      estimatedGasAmount = gasAmount;
+    }
+  );
 
-  // const walletBalance = await web3.eth.getBalance(from);
-  // const gasPrice = await web3.eth.getGasPrice();
-  // const estimatedGas = new BigNumber(gasPrice)
-  //   .times(estimatedGasAmount)
-  //   .times(2);
+  const walletBalance = await web3.eth.getBalance(from);
+  const gasPrice = await web3.eth.getGasPrice();
+  const estimatedGas = new BigNumber(gasPrice)
+    .times(estimatedGasAmount)
+    .times(1.5);
 
-  // if (
-  //   new BigNumber(amount).plus(estimatedGas).gt(new BigNumber(walletBalance))
-  // ) {
-  //   toast.error('Your ETH balance is insufficient to execute the transaction.');
-  //   return false;
-  // }
+  if (
+    new BigNumber(amount).plus(estimatedGas).gt(new BigNumber(walletBalance))
+  ) {
+    toast.error('Your ETH balance is insufficient to execute the transaction.');
+    return false;
+  }
   return true;
 };
 
