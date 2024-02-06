@@ -27,7 +27,8 @@ const TOKEN_ABI = {
   ust: constants.CONTRACT_UST_TOKEN_ABI,
   dai: constants.CONTRACT_DAI_TOKEN_ABI,
   xcn: constants.CONTRACT_XCN_TOKEN_ABI,
-  wsteth: constants.CONTRACT_WSTETH_TOKEN_ABI
+  wsteth: constants.CONTRACT_WSTETH_TOKEN_ABI,
+  reth: constants.CONTRACT_RETH_TOKEN_ABI
 };
 
 const call = (method, params) => {
