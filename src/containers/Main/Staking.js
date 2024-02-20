@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
@@ -428,7 +428,7 @@ const SQuestion = styled.img`
 
 const format = commaNumber.bindWith(',', '.');
 
-const Staking = ({ settings }) => {
+const Staking = ({ settings, intl }) => {
   const instance = useInstance(settings.walletConnected);
   const [strkPrice, setStrkPrice] = useState(0);
   const [stakeAmount, setStakeAmount] = useState('');
@@ -553,7 +553,11 @@ const Staking = ({ settings }) => {
     if (isApprove()) {
       const tx = await handleApprove();
       if (tx) {
-        message.success('Approved successfully.');
+        message.success(
+          intl.formatMessage({
+            id: 'Approved_successfully'
+          })
+        );
       }
       // else {
       //   message.error('Something went wrong while approving.');
@@ -564,7 +568,11 @@ const Staking = ({ settings }) => {
           new BigNumber(lock ? lockAmount : stakeAmount).times(1e18)
         )
       ) {
-        message.error('Insufficient balance.');
+        message.error(
+          intl.formatMessage({
+            id: 'Insufficient_balance'
+          })
+        );
         return;
       }
 
@@ -576,7 +584,15 @@ const Staking = ({ settings }) => {
         lock
       );
       if (tx) {
-        message.success(lock ? 'Locked successfully.' : 'Staked successfully.');
+        message.success(
+          lock
+            ? intl.formatMessage({
+                id: 'Locked_successfully'
+              })
+            : intl.formatMessage({
+                id: 'Staked_successfully'
+              })
+        );
       }
       // else {
       //   message.error(
@@ -607,13 +623,21 @@ const Staking = ({ settings }) => {
     }
 
     if (claimAmount.eq(0)) {
-      toast.info('You have not claimable STRK.');
+      toast.info(
+        intl.formatMessage({
+          id: 'You_have_not_claimable_STRK'
+        })
+      );
       return;
     }
 
     const tx = await handleWithdraw(claimAmount.toString(10));
     if (tx) {
-      message.success('Claim successfully.');
+      message.success(
+        intl.formatMessage({
+          id: 'Claim_successfully'
+        })
+      );
     }
     // else {
     //   message.error('Something went wrong while claim.');
@@ -630,7 +654,11 @@ const Staking = ({ settings }) => {
 
     const tx = await handleGetReward();
     if (tx) {
-      message.success('Claim reward successfully.');
+      message.success(
+        intl.formatMessage({
+          id: 'Claim_reward_successfully'
+        })
+      );
     }
     // else {
     //   message.error('Something went wrong while claiming reward.');
@@ -642,13 +670,21 @@ const Staking = ({ settings }) => {
       return;
     }
     if (unlockable.eq(0)) {
-      toast.info('You have not STRK to withdraw.');
+      toast.info(
+        intl.formatMessage({
+          id: 'You_have_not_STRK_to_withdraw'
+        })
+      );
       return;
     }
 
     const tx = await handleWithdrawExpiredLocks();
     if (tx) {
-      message.success('Withdraw locks successfully.');
+      message.success(
+        intl.formatMessage({
+          id: 'Withdraw_locks_successfully'
+        })
+      );
     }
     // else {
     //   message.error('Something went wrong while withdrawal.');
@@ -1283,7 +1319,8 @@ const Staking = ({ settings }) => {
 };
 
 Staking.propTypes = {
-  settings: PropTypes.object
+  settings: PropTypes.object,
+  intl: intlShape.isRequired
 };
 
 Staking.defaultProps = {
@@ -1294,7 +1331,6 @@ const mapStateToProps = ({ account }) => ({
   settings: account.setting
 });
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, null)
-)(Staking);
+export default injectIntl(
+  compose(withRouter, connectAccount(mapStateToProps, null))(Staking)
+);

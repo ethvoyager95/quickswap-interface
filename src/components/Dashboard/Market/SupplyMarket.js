@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { message } from 'antd';
@@ -28,7 +28,8 @@ function SupplyMarket({
   settings,
   suppliedAssets,
   remainAssets,
-  setSelectedAsset
+  setSelectedAsset,
+  intl
 }) {
   const instance = useInstance(settings.walletConnected);
   const [isOpenCollateralConfirm, setIsCollateralConfirm] = useState(false);
@@ -36,7 +37,11 @@ function SupplyMarket({
 
   const handleToggleCollateral = r => {
     if (!settings.selectedAddress) {
-      message.error('Please connect your wallet.');
+      message.error(
+        intl.formatMessage({
+          id: 'Please_connect_your_wallet'
+        })
+      );
       return;
     }
     const appContract = getComptrollerContract(instance);
@@ -78,12 +83,16 @@ function SupplyMarket({
           });
       } else {
         message.error(
-          'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+          intl.formatMessage({
+            id: 'You_need_to_set_collateral'
+          })
         );
       }
     } else {
       message.error(
-        'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+        intl.formatMessage({
+          id: 'You_need_to_set_collateral'
+        })
       );
     }
   };
@@ -281,7 +290,8 @@ SupplyMarket.propTypes = {
   suppliedAssets: PropTypes.array,
   remainAssets: PropTypes.array,
   settings: PropTypes.object,
-  setSelectedAsset: PropTypes.func.isRequired
+  setSelectedAsset: PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
 SupplyMarket.defaultProps = {
@@ -294,6 +304,6 @@ const mapStateToProps = ({ account }) => ({
   settings: account.setting
 });
 
-export default compose(connectAccount(mapStateToProps, undefined))(
-  SupplyMarket
+export default injectIntl(
+  compose(connectAccount(mapStateToProps, undefined))(SupplyMarket)
 );
