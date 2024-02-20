@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
@@ -115,29 +116,33 @@ function VoterLeaderboard({ history, getVoterAccounts }) {
     <MainLayout title="Governors">
       <LeaderboardWrapper>
         <TableWrapper>
-          <p className="header-title">Addresses by Voting Weight</p>
+          <p className="header-title">
+            <FormattedMessage id="Addresses_by_Voting_Weight" />
+          </p>
           <Row className="table_header">
             <Col xs={{ span: 24 }} lg={{ span: 12 }} className="rank">
-              Rank
+              <FormattedMessage id="Rank" />
             </Col>
             <Col xs={{ span: 8 }} lg={{ span: 4 }} className="votes right">
-              Votes
+              <FormattedMessage id="Votes" />
             </Col>
             <Col
               xs={{ span: 8 }}
               lg={{ span: 4 }}
               className="vote-weight right"
             >
-              Vote Weight
+              <FormattedMessage id="Vote_Weight" />
             </Col>
             <Col xs={{ span: 8 }} lg={{ span: 4 }} className="proposals right">
-              Proposals Voted
+              <FormattedMessage id="Proposals_Voted" />
             </Col>
           </Row>
           <div className="table_content">
             {(!voterAccounts ||
               (voterAccounts && voterAccounts.length === 0)) && (
-              <p className="empty-voter center">No voters</p>
+              <p className="empty-voter center">
+                <FormattedMessage id="No_voters" />
+              </p>
             )}
             {voterAccounts &&
               voterAccounts.map((item, index) => (
@@ -159,7 +164,9 @@ function VoterLeaderboard({ history, getVoterAccounts }) {
                     lg={{ span: 4 }}
                     className="votes right"
                   >
-                    <p className="mobile-label">Votes</p>
+                    <p className="mobile-label">
+                      <FormattedMessage id="Votes" />
+                    </p>
                     <p>
                       {format(
                         BigNumber(Web3.utils.fromWei(item.votes, 'ether'))
@@ -173,7 +180,9 @@ function VoterLeaderboard({ history, getVoterAccounts }) {
                     lg={{ span: 4 }}
                     className="vote-weight right"
                   >
-                    <p className="mobile-label">Vote Weight</p>
+                    <p className="mobile-label">
+                      <FormattedMessage id="Vote_Weight" />
+                    </p>
                     <p>{parseFloat(item.voteWeight * 100).toFixed(2)}%</p>
                   </Col>
                   <Col
@@ -181,7 +190,9 @@ function VoterLeaderboard({ history, getVoterAccounts }) {
                     lg={{ span: 4 }}
                     className="proposals right"
                   >
-                    <p className="mobile-label">Proposals Voted</p>
+                    <p className="mobile-label">
+                      <FormattedMessage id="Proposals_Voted" />
+                    </p>
                     <p>{item.proposalsVoted}</p>
                   </Col>
                 </Row>

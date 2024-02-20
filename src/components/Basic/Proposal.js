@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { FormattedMessage } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -241,12 +242,16 @@ function Proposal({
               proposal.state !== 'Active' && (
                 <div className="flex align-center">
                   <img src={dashImg} alt="dash" />
-                  <p className="orange-text">NO VOTE</p>
+                  <p className="orange-text">
+                    <FormattedMessage id="NO_VOTE" />
+                  </p>
                 </div>
               )}
             {voteStatus && voteStatus === 'voted' && (
               <div className="flex align-center">
-                <p className="orange-text">VOTED</p>
+                <p className="orange-text">
+                  <FormattedMessage id="VOTED" />
+                </p>
               </div>
             )}
             {voteStatus &&

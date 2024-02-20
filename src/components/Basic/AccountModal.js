@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect, useState, useRef } from 'react';
 import { initOnRamp } from '@coinbase/cbpay-js';
 // import { initOnRamp } from '@coinbase/cbpay-js';
@@ -199,7 +200,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
   const handleCoinbasePayClick = async () => {
     if (onrampInstance.current) onrampInstance.current.destroy();
 
-    await initOnRamp(
+    initOnRamp(
       {
         appId: process.env.REACT_APP_COINBASE_PAY_APP_ID,
         experienceLoggedIn: 'new_tab',

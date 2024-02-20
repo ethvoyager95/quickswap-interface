@@ -9,6 +9,7 @@
 /* eslint-disable no-const-assign */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -113,7 +114,7 @@ const AUDITOR_SETTING = {
 };
 const abortController = new AbortController();
 // eslint-disable-next-line react/prop-types
-function Staking({ settings, setSetting }) {
+function Staking({ settings, setSetting, intl }) {
   const instance = useInstance(settings.walletConnected);
   const provider = useProvider(settings.walletConnected);
   const address = settings.selectedAddress;
@@ -258,7 +259,7 @@ function Staking({ settings, setSetting }) {
           const totalAmountBigNumber = totalAmount.toNumber().toString();
           if (balanceBigNumber.isZero()) {
             setMessErr({
-              mess: 'No token to stake: Get STRK-ETH LPs',
+              mess: <FormattedMessage id="No_token_to_stake" />,
               show: false,
               noLP: true
             });
@@ -1570,9 +1571,11 @@ function Staking({ settings, setSetting }) {
               />
               <ST.SDivPadding>
                 <ST.SHeader>
-                  <ST.STextModel>STRK-ETH Staking</ST.STextModel>
+                  <ST.STextModel>
+                    STRK-ETH <FormattedMessage id="Staking" />
+                  </ST.STextModel>
                   <ST.SHref target="_blank" href={constants.SUPPORT_URL}>
-                    Get STRK-ETH LPs
+                    <FormattedMessage id="Get" /> STRK-ETH LPs
                     <ST.SImgErr src={IconLinkBlue} />
                   </ST.SHref>
                 </ST.SHeader>
@@ -1593,7 +1596,9 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            placeholder="Enter a number"
+                            placeholder={intl.formatMessage({
+                              id: 'Enter_a_number'
+                            })}
                             onChange={event => handleChangeValue(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
@@ -1613,7 +1618,7 @@ function Staking({ settings, setSetting }) {
                             }
                             onClick={handleMaxValue}
                           >
-                            MAX
+                            <FormattedMessage id="MAX" />
                           </ST.SMax>
                         </ST.SInput>
                       </Col>
@@ -1635,7 +1640,9 @@ function Staking({ settings, setSetting }) {
                       </Col>
                       <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                         <ST.SInfor>
-                          <ST.SInforText>Available</ST.SInforText>
+                          <ST.SInforText>
+                            <FormattedMessage id="Available" />
+                          </ST.SInforText>
                           {address ? (
                             <ST.SInforValue>
                               <ST.SIconSmall>
@@ -1673,7 +1680,7 @@ function Staking({ settings, setSetting }) {
                                         >
                                           <ST.SBtnUnStakeStart>
                                             <ST.SBtnStake disabled>
-                                              Stake
+                                              <FormattedMessage id="Stake" />
                                             </ST.SBtnStake>
                                             <Tooltip
                                               placement="right"
@@ -1696,7 +1703,7 @@ function Staking({ settings, setSetting }) {
                                             >
                                               <ST.SBtnUnStakeStart>
                                                 <ST.SBtnLoadding disabled>
-                                                  Loading...
+                                                  <FormattedMessage id="Loading..." />
                                                 </ST.SBtnLoadding>
                                                 <Tooltip
                                                   placement="right"
@@ -1723,7 +1730,7 @@ function Staking({ settings, setSetting }) {
                                                   }
                                                   onClick={handleStake}
                                                 >
-                                                  Stake
+                                                  <FormattedMessage id="Stake" />
                                                 </ST.SBtnStake>
                                                 <Tooltip
                                                   placement="right"
@@ -1750,7 +1757,7 @@ function Staking({ settings, setSetting }) {
                               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                                 <ST.SBtn>
                                   <ST.SBtnApprove onClick={handleApproveLp}>
-                                    Approve Staking
+                                    <FormattedMessage id="Approve_Staking" />
                                   </ST.SBtnApprove>
                                 </ST.SBtn>
                               </Col>
@@ -1780,7 +1787,9 @@ function Staking({ settings, setSetting }) {
                             autoComplete="off"
                             autoCorrect="off"
                             maxLength={79}
-                            placeholder="Enter a number"
+                            placeholder={intl.formatMessage({
+                              id: 'Enter_a_number'
+                            })}
                             onChange={event => handleChangeValueUnstake(event)}
                             onBlur={event => {
                               if (event.target.value !== '') {
@@ -1797,7 +1806,7 @@ function Staking({ settings, setSetting }) {
                             disabled={userInfo.amountNumber === 0 || !address}
                             onClick={handleMaxValueStaked}
                           >
-                            MAX
+                            <FormattedMessage id="MAX" />
                           </ST.SMaxUn>
                         </ST.SInputUnStake>
                       </Col>
@@ -1819,7 +1828,9 @@ function Staking({ settings, setSetting }) {
                       </Col>
                       <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                         <ST.SInforNotBorder>
-                          <ST.SInforTextUn>Staked</ST.SInforTextUn>
+                          <ST.SInforTextUn>
+                            <FormattedMessage id="Staked" />
+                          </ST.SInforTextUn>
                           {address ? (
                             <ST.SInforValueUn>
                               <ST.SIconSmall>
@@ -1860,7 +1871,7 @@ function Staking({ settings, setSetting }) {
                                             >
                                               <ST.SBtnUnStakeStart>
                                                 <ST.SBtnLoadding disabled>
-                                                  Loading...
+                                                  <FormattedMessage id="Loading..." />
                                                 </ST.SBtnLoadding>
                                                 <Tooltip
                                                   placement="right"
@@ -1888,7 +1899,7 @@ function Staking({ settings, setSetting }) {
                                                   }
                                                   onClick={handleUnStake}
                                                 >
-                                                  Unstake
+                                                  <FormattedMessage id="Unstake" />
                                                 </ST.SBtnUnstake>
                                                 <Tooltip
                                                   placement="right"
@@ -1913,7 +1924,7 @@ function Staking({ settings, setSetting }) {
                                             <ST.SBtnStake
                                               onClick={handleApproveVstrk}
                                             >
-                                              Approve Staking
+                                              <FormattedMessage id="Approve_Staking" />
                                             </ST.SBtnStake>
                                           </ST.SBtnUnStakeStartNotBorder>
                                         </Col>
@@ -1958,7 +1969,7 @@ function Staking({ settings, setSetting }) {
                                                 }
                                                 onClick={handleUnStake}
                                               >
-                                                Unstake
+                                                <FormattedMessage id="Unstake" />
                                               </ST.SSUnTake>
                                               <Tooltip
                                                 placement="right"
@@ -1976,7 +1987,7 @@ function Staking({ settings, setSetting }) {
                                                   <ST.SBtnStake
                                                     onClick={handleApproveVstrk}
                                                   >
-                                                    Approve Staking
+                                                    <FormattedMessage id="Approve_Staking" />
                                                   </ST.SBtnStake>
                                                 </ST.SBtnUnStakeStartNotBorder>
                                               )}
@@ -1998,10 +2009,12 @@ function Staking({ settings, setSetting }) {
               </ST.SDivPadding>
               <ST.SDivPaddingMT>
                 <ST.SDivHarvest>
-                  <ST.STextLeft>Claim the Reward</ST.STextLeft>
+                  <ST.STextLeft>
+                    <FormattedMessage id="Claim_the_Reward" />
+                  </ST.STextLeft>
                   <ST.SInforTextVSTRK>
                     <ST.SInforTextVSTRKDetail>
-                      STRK claimed
+                      STRK <FormattedMessage id="claimed" />
                     </ST.SInforTextVSTRKDetail>
                     {address ? (
                       <>
@@ -2029,7 +2042,9 @@ function Staking({ settings, setSetting }) {
                   <Row>
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                       <ST.SInforClaimNotBorder>
-                        <ST.SInforText>Base Reward</ST.SInforText>
+                        <ST.SInforText>
+                          <FormattedMessage id="Base_Reward" />
+                        </ST.SInforText>
                         {address ? (
                           <ST.SInforValue>
                             <ST.SIconSmall>
@@ -2053,7 +2068,7 @@ function Staking({ settings, setSetting }) {
                             <ST.SBtnClaim>
                               {isClaimBaseReward ? (
                                 <ST.SClaim onClick={handleClainBaseReward}>
-                                  Claim
+                                  <FormattedMessage id="Claim" />
                                 </ST.SClaim>
                               ) : (
                                 <>
@@ -2064,7 +2079,7 @@ function Staking({ settings, setSetting }) {
                                     }
                                     onClick={handleClainBaseReward}
                                   >
-                                    Claim
+                                    <FormattedMessage id="Claim" />
                                   </ST.SClaim>
                                 </>
                               )}
@@ -2109,7 +2124,7 @@ function Staking({ settings, setSetting }) {
                         <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                           <ST.SInforClaimNotBorder>
                             <ST.SInforTextMargin>
-                              Boost Reward
+                              <FormattedMessage id="Boost_Reward" />
                             </ST.SInforTextMargin>
                             {address ? (
                               <ST.SInforValueNoMargin>
@@ -2138,7 +2153,7 @@ function Staking({ settings, setSetting }) {
                                         <ST.SClaim
                                           onClick={handleClainBootReward}
                                         >
-                                          Claim
+                                          <FormattedMessage id="Claim" />
                                         </ST.SClaim>
                                       ) : (
                                         <ST.SClaim
@@ -2149,7 +2164,7 @@ function Staking({ settings, setSetting }) {
                                           }
                                           onClick={handleClainBootReward}
                                         >
-                                          Claim
+                                          <FormattedMessage id="Claim" />
                                         </ST.SClaim>
                                       )}
                                       <Tooltip
@@ -2199,10 +2214,12 @@ function Staking({ settings, setSetting }) {
                   <ST.SRowFlex>
                     <ST.SFlex>
                       <ST.SText>
-                        NFT Staking
+                        NFT <FormattedMessage id="Staking" />
                         <Tooltip
                           placement="right"
-                          title="Only display all NFTs that can be staked into this pool"
+                          title={
+                            <FormattedMessage id="Only_display_all_NFTs" />
+                          }
                         >
                           <ST.SQuestion src={IconQuestion} />
                         </Tooltip>
@@ -2210,7 +2227,7 @@ function Staking({ settings, setSetting }) {
                           <ST.SHrefGetNft
                             onClick={() => setIsOpenNftMintModal(true)}
                           >
-                            Get Strike NFTs
+                            <FormattedMessage id="Get_Strike_NFTs" />
                           </ST.SHrefGetNft>
                           {/* <ST.SHrefNft target="_blank" href={GET_NFT_URL}>
                             LooksRare
@@ -2232,7 +2249,7 @@ function Staking({ settings, setSetting }) {
                               }
                               onClick={handleStakeNFT}
                             >
-                              Stake
+                              <FormattedMessage id="Stake" />
                             </ST.SSTake>
                             <Tooltip
                               placement="top"
@@ -2244,7 +2261,7 @@ function Staking({ settings, setSetting }) {
                         ) : (
                           <>
                             <ST.SSTake onClick={handleApproveNFT}>
-                              Approve Staking
+                              <FormattedMessage id="Approve_Staking" />
                             </ST.SSTake>
                           </>
                         )}
@@ -2265,9 +2282,11 @@ function Staking({ settings, setSetting }) {
                         <ST.SSliderNoData>
                           <ST.SSliderNoDataImg src={IconNoData} />
                           <ST.SSliderNoDataText>
-                            {address
-                              ? 'You don’t own any NFTs'
-                              : 'Connect wallet to see your NFTs'}
+                            {address ? (
+                              <FormattedMessage id="You_do_not_own_any_NFTs" />
+                            ) : (
+                              <FormattedMessage id="Connect_wallet_to_see_your_NFTs" />
+                            )}
                           </ST.SSliderNoDataText>
                         </ST.SSliderNoData>
                       )}
@@ -2309,7 +2328,9 @@ function Staking({ settings, setSetting }) {
                     <ST.SWrapperNFTStake>
                       <ST.SWrapperTitle>
                         <ST.SFlex>
-                          <ST.SText>NFT Staked</ST.SText>
+                          <ST.SText>
+                            NFT <FormattedMessage id="Staked" />
+                          </ST.SText>
                         </ST.SFlex>
 
                         {yourBoostAPR &&
@@ -2317,14 +2338,14 @@ function Staking({ settings, setSetting }) {
                         dataNFTUnState.length > 0 ? (
                           <ST.SDetailsColor>
                             {' '}
-                            Your Boost APR:
+                            <FormattedMessage id="Your_Boost_APR" />:
                             <ST.SDetailsColorBold>
                               {yourBoostAPR}%{' '}
                             </ST.SDetailsColorBold>
                           </ST.SDetailsColor>
                         ) : (
                           <ST.SDetailsColor>
-                            Your Boost APR:{' '}
+                            <FormattedMessage id="Your_Boost_APR" />:{' '}
                             <ST.SDetailsColorNotBold>-</ST.SDetailsColorNotBold>
                           </ST.SDetailsColor>
                         )}
@@ -2354,7 +2375,7 @@ function Staking({ settings, setSetting }) {
                                   }
                                   onClick={handleUnStakeNFT}
                                 >
-                                  Unstake
+                                  <FormattedMessage id="Unstake" />
                                 </ST.SSUnSTakedWeb>
                               </>
                             )}
@@ -2382,7 +2403,7 @@ function Staking({ settings, setSetting }) {
                                 disabled={dataNFTUnState.length === 0}
                                 onClick={handleUnStakeNFT}
                               >
-                                Unstake
+                                <FormattedMessage id="Unstake" />
                               </ST.SSUnSTakedMobile>
                             </ST.SWrapperUnStake>
                           )}
@@ -2403,9 +2424,11 @@ function Staking({ settings, setSetting }) {
                         <ST.SSliderNoData>
                           <ST.SSliderNoDataImg src={IconNoData} />
                           <ST.SSliderNoDataText>
-                            {address
-                              ? 'You don’t own any NFTs'
-                              : 'Connect wallet to see your NFTs'}
+                            {address ? (
+                              <FormattedMessage id="You_do_not_own_any_NFTs" />
+                            ) : (
+                              <FormattedMessage id="Connect_wallet_to_see_your_NFTs" />
+                            )}
                           </ST.SSliderNoDataText>
                         </ST.SSliderNoData>
                       )}
@@ -2500,7 +2523,8 @@ function Staking({ settings, setSetting }) {
 }
 Staking.propTypes = {
   settings: PropTypes.object,
-  setSetting: PropTypes.func.isRequired
+  setSetting: PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
 Staking.defaultProps = {
@@ -2523,7 +2547,9 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, mapDispatchToProps)
-)(Staking);
+export default injectIntl(
+  compose(
+    withRouter,
+    connectAccount(mapStateToProps, mapDispatchToProps)
+  )(Staking)
+);

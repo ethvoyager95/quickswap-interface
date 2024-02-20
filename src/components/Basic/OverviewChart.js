@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { compose } from 'recompose';
 import styled from 'styled-components';
 import ReactApexChart from 'react-apexcharts';
@@ -217,7 +218,11 @@ function OverviewChart({ marketType, marketInfo, data, graphType }) {
       <div className="info-bar">
         <div className="total-supply">
           <p className="label">
-            Total {marketType === 'supply' ? 'Supply' : 'Borrow'}
+            {marketType === 'supply' ? (
+              <FormattedMessage id="Total_Supply" />
+            ) : (
+              <FormattedMessage id="Total_Borrow" />
+            )}
           </p>
           <p className="value">
             $
@@ -234,7 +239,9 @@ function OverviewChart({ marketType, marketInfo, data, graphType }) {
         </div>
 
         <div className="supply-apy">
-          <p className="label">APY</p>
+          <p className="label">
+            <FormattedMessage id="APY" />
+          </p>
           <p className="value">
             {marketType === 'supply'
               ? new BigNumber(
@@ -252,7 +259,9 @@ function OverviewChart({ marketType, marketInfo, data, graphType }) {
         </div>
 
         <div className="distribution-apy">
-          <p className="label">Distribution APY</p>
+          <p className="label">
+            <FormattedMessage id="Distribution_APY" />
+          </p>
           <p className="value">
             {marketType === 'supply'
               ? new BigNumber(

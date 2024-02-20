@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { message } from 'antd';
@@ -89,7 +90,7 @@ function SupplyMarket({
 
   const supplyColumns = [
     {
-      title: 'Asset',
+      title: <FormattedMessage id="Asset" />,
       dataIndex: 'asset',
       key: 'asset',
       render(img, asset) {
@@ -111,7 +112,7 @@ function SupplyMarket({
       }
     },
     {
-      title: 'APY',
+      title: <FormattedMessage id="APY" />,
       dataIndex: 'supplyApy',
       key: 'supplyApy',
       render(supplyApy, asset) {
@@ -131,7 +132,7 @@ function SupplyMarket({
       }
     },
     {
-      title: 'Wallet',
+      title: <FormattedMessage id="Wallet" />,
       dataIndex: 'walletBalance',
       key: 'walletBalance',
       render(walletBalance, asset) {
@@ -145,7 +146,7 @@ function SupplyMarket({
       }
     },
     {
-      title: 'Collateral',
+      title: <FormattedMessage id="Collateral" />,
       dataIndex: 'collateral',
       key: 'collateral',
       render(collateral, asset) {
@@ -163,7 +164,7 @@ function SupplyMarket({
 
   const suppliedColumns = [
     {
-      title: 'Asset',
+      title: <FormattedMessage id="Asset" />,
       dataIndex: 'asset',
       key: 'asset',
       render(img, asset) {
@@ -185,7 +186,7 @@ function SupplyMarket({
       }
     },
     {
-      title: 'APY / Earned',
+      title: <FormattedMessage id="APY_Earned" />,
       dataIndex: 'supplyApy',
       key: 'supplyApy',
       render(supplyApy, asset) {
@@ -205,7 +206,7 @@ function SupplyMarket({
       }
     },
     {
-      title: 'Balance',
+      title: <FormattedMessage id="Balance" />,
       dataIndex: 'supplyBalance',
       key: 'supplyBalance',
       render(supplyBalance, asset) {
@@ -224,7 +225,7 @@ function SupplyMarket({
       }
     },
     {
-      title: 'Collateral',
+      title: <FormattedMessage id="Collateral" />,
       dataIndex: 'collateral',
       key: 'collateral',
       render(collateral, asset) {

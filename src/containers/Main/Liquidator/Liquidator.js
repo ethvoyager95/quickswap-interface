@@ -1,6 +1,8 @@
+/* eslint-disable no-console */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import axios from 'axios';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
@@ -593,7 +595,11 @@ function Liquidator({ settings, setSetting }) {
 
   const columns = [
     {
-      title: () => <THeadWrapper>Health</THeadWrapper>,
+      title: () => (
+        <THeadWrapper>
+          <FormattedMessage id="Health" />
+        </THeadWrapper>
+      ),
       dataIndex: 'accHealth',
       key: 'accHealth',
       render(_, asset) {
@@ -605,7 +611,11 @@ function Liquidator({ settings, setSetting }) {
       }
     },
     {
-      title: () => <THeadWrapper>Account</THeadWrapper>,
+      title: () => (
+        <THeadWrapper>
+          <FormattedMessage id="Account" />
+        </THeadWrapper>
+      ),
       dataIndex: 'account',
       key: 'account',
       render(_, asset) {
@@ -630,7 +640,11 @@ function Liquidator({ settings, setSetting }) {
       }
     },
     {
-      title: () => <THeadWrapper>Asset To Repay</THeadWrapper>,
+      title: () => (
+        <THeadWrapper>
+          <FormattedMessage id="Asset_To_Repay" />
+        </THeadWrapper>
+      ),
       dataIndex: 'repay',
       key: 'repay',
       render(_, asset) {
@@ -647,7 +661,9 @@ function Liquidator({ settings, setSetting }) {
     {
       title: () => (
         <THeadWrapper>
-          <div>Max Repay Amount</div>
+          <div>
+            <FormattedMessage id="Max_Repay_Amount" />
+          </div>
         </THeadWrapper>
       ),
       dataIndex: 'maxRepay',
@@ -669,7 +685,11 @@ function Liquidator({ settings, setSetting }) {
       }
     },
     {
-      title: () => <THeadWrapper>Asset To Seize</THeadWrapper>,
+      title: () => (
+        <THeadWrapper>
+          <FormattedMessage id="Asset_To_Seize" />
+        </THeadWrapper>
+      ),
       dataIndex: 'seize',
       key: 'seize',
       render(_, asset) {
@@ -684,7 +704,11 @@ function Liquidator({ settings, setSetting }) {
       }
     },
     {
-      title: () => <THeadWrapper>Max Seize Amount</THeadWrapper>,
+      title: () => (
+        <THeadWrapper>
+          <FormattedMessage id="Max_Seize_Amount" />
+        </THeadWrapper>
+      ),
       dataIndex: 'maxSeize',
       key: 'maxSeize',
       render(_, asset) {
@@ -709,7 +733,9 @@ function Liquidator({ settings, setSetting }) {
       <NoData>
         <>
           <img src={noData} alt="No data" />
-          <div>No record was found </div>
+          <div>
+            <FormattedMessage id="No_record_was_found" />
+          </div>
         </>
       </NoData>
     )
@@ -719,7 +745,9 @@ function Liquidator({ settings, setSetting }) {
     <MainLayout title="Liquidator">
       <Wrapper>
         <SearchBar>
-          <div className="label">Search address to liquidate</div>
+          <div className="label">
+            <FormattedMessage id="Search_address_to_liquidate" />
+          </div>
           <div className="address">
             <div className="text-input">
               <Input
@@ -739,7 +767,7 @@ function Liquidator({ settings, setSetting }) {
                 setIsOpenModal(true);
               }}
             >
-              Recent Liquidations
+              <FormattedMessage id="Recent_Liquidations" />
             </Button>
           </div>
           <div className="address">
@@ -752,7 +780,7 @@ function Liquidator({ settings, setSetting }) {
             </div>
             {selectedUserAddress && Web3.utils.isAddress(selectedUserAddress) && (
               <div className="refresh" onClick={handleRefresh}>
-                Refresh
+                <FormattedMessage id="Refresh" />
               </div>
             )}
           </div>
@@ -763,13 +791,15 @@ function Liquidator({ settings, setSetting }) {
               setIsOpenModal(true);
             }}
           >
-            Recent Liquidations
+            <FormattedMessage id="Recent_Liquidations" />
           </Button>
         </SearchBar>
         <WalletInfo>
           <div className="details">
             <div className="item">
-              <div>Account Health</div>
+              <div>
+                <FormattedMessage id="Account_Health" />
+              </div>
               <div
                 className={`${!userInfo.accHealth ? 'gray-value' : ''} ${
                   userInfo.accHealth < 1 ? 'red-value' : ''
@@ -779,7 +809,9 @@ function Liquidator({ settings, setSetting }) {
               </div>
             </div>
             <div className="item">
-              <div>Asset to Repay</div>
+              <div>
+                <FormattedMessage id="Asset_to_Repay" />
+              </div>
               {isLoadingInfo ? (
                 <div>-</div>
               ) : userInfo.repayAsset ? (
@@ -814,7 +846,9 @@ function Liquidator({ settings, setSetting }) {
               )}
             </div>
             <div className="item">
-              <div>Asset to Seize</div>
+              <div>
+                <FormattedMessage id="Asset_to_Seize" />
+              </div>
               {isLoadingInfo ? (
                 <div>-</div>
               ) : userInfo.seizeAsset ? (
@@ -849,7 +883,9 @@ function Liquidator({ settings, setSetting }) {
               )}
             </div>
             <div className="item">
-              <div>Max Repay Amount</div>
+              <div>
+                <FormattedMessage id="Max_Repay_Amount" />
+              </div>
               <div className="flex-value">
                 {isLoadingInfo ? (
                   '-'
@@ -867,7 +903,9 @@ function Liquidator({ settings, setSetting }) {
               </div>
             </div>
             <div className="item">
-              <div>Max Seize Amount</div>
+              <div>
+                <FormattedMessage id="Max_Seize_Amount" />
+              </div>
               <div className="flex-value">
                 {isLoadingInfo ? (
                   '-'
@@ -885,12 +923,12 @@ function Liquidator({ settings, setSetting }) {
           <div className="liquidate-wrapper">
             {!settings.selectedAddress || !settings.walletConnected ? (
               <div className="mess-liquidator">
-                You need to connect your wallet
+                <FormattedMessage id="You_need_to_connect_your_wallet" />
               </div>
             ) : selectedUserAddress && userInfo.healthFactor ? (
               <div className="liquidate">
                 <div className="title">
-                  Amount you want to repay in{' '}
+                  <FormattedMessage id="Amount_you_want_to_repay_in" />{' '}
                   <img
                     src={
                       renderLogo(selectedAssetRepay) ||
@@ -908,11 +946,11 @@ function Liquidator({ settings, setSetting }) {
                     value={repayValue}
                   />
                   <div className="max-btn" onClick={handleClickMaxBtn}>
-                    MAX
+                    <FormattedMessage id="MAX" />
                   </div>
                 </div>
                 <div className="balance">
-                  Wallet balance{' '}
+                  <FormattedMessage id="Wallet_balance" />{' '}
                   <span>
                     {isLoadingInfo
                       ? '-'
@@ -924,12 +962,12 @@ function Liquidator({ settings, setSetting }) {
                   <div>
                     {repayValue && +repayValue !== 0 && !errMess && (
                       <>
-                        You will repay{' '}
+                        <FormattedMessage id="You_will_repay" />{' '}
                         <span className="text-blue">
                           {repayAmount.toEth} {selectedAssetRepay}
                         </span>{' '}
                         <span className="text-gray">${repayAmount.toUsd}</span>{' '}
-                        and seize{' '}
+                        <FormattedMessage id="and_seize" />{' '}
                         <span className="text-blue">
                           {seizeAmount} {selectedAssetSeize}
                         </span>
@@ -948,25 +986,31 @@ function Liquidator({ settings, setSetting }) {
                       }
                       onClick={handleLiquidate}
                     >
-                      Liquidate
+                      <FormattedMessage id="Liquidate" />
                     </Button>
                   ) : (
-                    <Button onClick={handleApprove}>Approve</Button>
+                    <Button onClick={handleApprove}>
+                      <FormattedMessage id="Approve" />
+                    </Button>
                   )}
                 </div>
                 <div className="gas-price">
-                  <div>Account health is updated every 2 seconds</div>
+                  <div>
+                    <FormattedMessage id="Account_health_is_updated_every_2_seconds" />
+                  </div>
                   {/* <img src={iconFilter} alt="" /> */}
                 </div>
               </div>
             ) : (
               <div className="mess-liquidator">
-                Search an account you want to liquidate
+                <FormattedMessage id="Search_an_account_you_want_to_liquidate" />
               </div>
             )}
           </div>
         </WalletInfo>
-        <BlockLabel>block# {blockNumber}</BlockLabel>
+        <BlockLabel>
+          <FormattedMessage id="block" /># {blockNumber}
+        </BlockLabel>
         <STableWrapper>
           <STable
             locale={locale}

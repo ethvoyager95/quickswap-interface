@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { Modal } from 'antd';
@@ -260,7 +261,7 @@ function BorrowModal({ visible, onCancel, settings }) {
                       setCurrentTab('borrow');
                     }}
                   >
-                    Borrow
+                    <FormattedMessage id="Borrow" />
                   </div>
                 )}
               <div
@@ -271,7 +272,7 @@ function BorrowModal({ visible, onCancel, settings }) {
                   setCurrentTab('repay');
                 }}
               >
-                Repay Borrow
+                <FormattedMessage id="Repay_Borrow" />
               </div>
             </Tabs>
             {!currentAsset || Object.keys(currentAsset).length === 0 ? (

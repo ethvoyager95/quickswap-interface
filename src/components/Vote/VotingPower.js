@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import commaNumber from 'comma-number';
 import { Card } from 'components/Basic/Card';
@@ -56,7 +57,9 @@ function VotingPower({ power }) {
       <Column sm="12" md="12">
         <Card>
           <VotingPowerWrapper className="flex flex-column">
-            <p className="title">Voting Weight</p>
+            <p className="title">
+              <FormattedMessage id="Voting_Weight" />
+            </p>
             <p className="content">
               {getBefore(format(power))}
               <span>{getAfter(format(power))}</span>

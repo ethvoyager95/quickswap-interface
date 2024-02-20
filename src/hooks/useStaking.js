@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';

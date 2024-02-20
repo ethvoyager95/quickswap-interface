@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -78,7 +79,7 @@ function Header({ title, history, currentAsset }) {
               <p>{currentAsset.toUpperCase()}</p>
             </div>
           ) : (
-            title
+            <FormattedMessage id={title} />
           )}
         </p>
       </div>

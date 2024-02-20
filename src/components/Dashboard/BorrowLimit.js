@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
@@ -77,12 +78,14 @@ function BorrowLimit({ settings }) {
   return (
     <CardWrapper>
       <div className="available">
-        <div className="credit-text">Available Credit</div>
+        <div className="credit-text">
+          <FormattedMessage id="Available_Credit" />
+        </div>
         <div className="usd-price">${format(available)}</div>
       </div>
       <div className="progress">
         <LineProgressBar
-          label="Borrow Limit"
+          id="Borrow_Limit"
           percent={Number(borrowPercent)}
           borrowLimit={format(
             new BigNumber(available)

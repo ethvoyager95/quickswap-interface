@@ -58,8 +58,6 @@ export const initFilter = {};
 export const tabsTransaction = ['all', 'user'];
 export const LIST_BLOCK_VALUE = [43, 44, 45, 46, 69, 101];
 export const LIST_BLOCK_TEXT = ['E', 'e', '-', '+', '.'];
-export const tooltipContent =
-  'Function executed based on decoded input data. For unidentified functions, method ID is displayed instead.';
 
 const MINUTES_TO_TIMESTAMP = 60;
 const HOUR_TO_TIMESTAMP = 60 * 60;

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import BigNumber from 'bignumber.js';
 import * as constants from 'utilities/constants';
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { compose } from 'recompose';
 import { Icon, Progress } from 'antd';
@@ -172,7 +173,9 @@ function WithdrawSection({
         <>
           <div className="alert">
             <img src={IconQuestion} alt="info" />
-            <span>Please connect your wallet to withdraw</span>
+            <span>
+              <FormattedMessage id="connect_wallet_withdraw" />
+            </span>
           </div>
           <ConnectButton />
         </>
@@ -205,14 +208,16 @@ function WithdrawSection({
                   placeholder="0"
                 />
                 <span className="pointer max" onClick={() => handleMaxAmount()}>
-                  SAFE MAX
+                  <FormattedMessage id="SAFE_MAX" />
                 </span>
               </div>
             </div>
           </div>
           <div className="wallet-section">
             <div className="description">
-              <span className="label">Protocol Balance</span>
+              <span className="label">
+                <FormattedMessage id="Protocol_Balance" />
+              </span>
               <span className="value">
                 {format(
                   asset.supplyBalance &&
@@ -227,7 +232,9 @@ function WithdrawSection({
               <div className="description">
                 <div className="flex align-center">
                   <img src={asset.img} alt="asset" />
-                  <span className="label">Supply APY</span>
+                  <span className="label">
+                    <FormattedMessage id="Supply_APY" />
+                  </span>
                 </div>
                 <span className="value green">
                   {asset.supplyApy &&
@@ -240,7 +247,9 @@ function WithdrawSection({
               <div className="description">
                 <div className="flex align-center">
                   <img src={coinImg} alt="asset" />
-                  <span className="label">Interest APY</span>
+                  <span className="label">
+                    <FormattedMessage id="Interest_APY" />
+                  </span>
                 </div>
                 <span className="value">
                   {shortenNumberFormatter(
@@ -254,7 +263,9 @@ function WithdrawSection({
             </div>
             <div className="right-content">
               <div className="description">
-                <span className="label">Borrow Limit</span>
+                <span className="label">
+                  <FormattedMessage id="Borrow_Limit" />
+                </span>
                 {amount.isZero() || amount.isNaN() ? (
                   <span className="value">
                     ${format(borrowLimit.dp(2, 1).toString(10))}
@@ -276,7 +287,9 @@ function WithdrawSection({
                 )}
               </div>
               <div className="description">
-                <span className="label">Borrow Limit Used</span>
+                <span className="label">
+                  <FormattedMessage id="Borrow_Limit_Used" />
+                </span>
                 {amount.isZero() || amount.isNaN() ? (
                   <span className="value">
                     {borrowPercent.dp(2, 1).toString(10)}%
@@ -318,7 +331,8 @@ function WithdrawSection({
                 }
                 onClick={handleWithdraw}
               >
-                {isLoading && <Icon type="loading" />} Withdraw
+                {isLoading && <Icon type="loading" />}{' '}
+                <FormattedMessage id="Withdraw" />
               </Button>
             </div>
           </div>

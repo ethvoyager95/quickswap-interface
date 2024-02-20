@@ -233,6 +233,7 @@ export function* watchGetVoterAccountsRequest() {
   }
 }
 
+// eslint-disable-next-line
 export default function*() {
   yield all([
     fork(watchGetMarketHistoryRequest),

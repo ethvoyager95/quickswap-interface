@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { compose } from 'recompose';
@@ -387,7 +388,9 @@ function STRK({ settings }) {
   const UserDistribution = () => {
     return (
       <UserDistributionWrapper>
-        <p className="header-title">User Distribution</p>
+        <p className="header-title">
+          <FormattedMessage id="User_Distribution" />
+        </p>
         <div className="flex align-center strk-info">
           <img src={coinImg} alt="strk" />
           <a
@@ -427,15 +430,21 @@ function STRK({ settings }) {
         />
         <div className="flex flex-column distribution-wrapper">
           <div className="info-item">
-            <p className="title">Daily Distribution</p>
+            <p className="title">
+              <FormattedMessage id="Daily_Distribution" />
+            </p>
             <p className="value">{format(dailyDistribution)}</p>
           </div>
           <div className="info-item">
-            <p className="title">Total Distributed</p>
+            <p className="title">
+              <FormattedMessage id="Total_Distributed" />
+            </p>
             <p className="value">{format(totalDistributed)}</p>
           </div>
           <div className="info-item">
-            <p className="title">Remaining</p>
+            <p className="title">
+              <FormattedMessage id="Remaining" />
+            </p>
             <p className="value">{format(remainAmount)}</p>
           </div>
         </div>
@@ -461,10 +470,12 @@ function STRK({ settings }) {
               <UserDistribution />
             </div>
             <TableWrapper>
-              <p className="header-title">Market Distribution</p>
+              <p className="header-title">
+                <FormattedMessage id="Market_Distribution" />
+              </p>
               <Row className="table_header">
                 <Col xs={{ span: 24 }} lg={{ span: 4 }} className="market">
-                  Market
+                  <FormattedMessage id="Market" />
                 </Col>
                 <Col
                   xs={{ span: 6 }}
@@ -472,7 +483,8 @@ function STRK({ settings }) {
                   className="per-day right"
                 >
                   <span onClick={() => handleSort('perDay')}>
-                    <img src={coinImg} alt="strk" /> Per Day{' '}
+                    <img src={coinImg} alt="strk" />{' '}
+                    <FormattedMessage id="Per_Day" />{' '}
                     {sortInfo.field === 'perDay' && (
                       <Icon
                         type={
@@ -488,9 +500,9 @@ function STRK({ settings }) {
                   className="supply-apy right"
                 >
                   <span onClick={() => handleSort('supplyAPY')}>
-                    Supply
+                    <FormattedMessage id="Supply" />
                     <img src={coinImg} alt="strk" />
-                    APY{' '}
+                    <FormattedMessage id="APY" />{' '}
                     {sortInfo.field === 'supplyAPY' && (
                       <Icon
                         type={
@@ -506,9 +518,9 @@ function STRK({ settings }) {
                   className="borrow-apy right"
                 >
                   <span onClick={() => handleSort('borrowAPY')}>
-                    Borrow
+                    <FormattedMessage id="Borrow" />
                     <img src={coinImg} alt="strk" />
-                    APY{' '}
+                    <FormattedMessage id="APY" />{' '}
                     {sortInfo.field === 'borrowAPY' && (
                       <Icon
                         type={
@@ -524,7 +536,7 @@ function STRK({ settings }) {
                   className="total-distributed right"
                 >
                   <span onClick={() => handleSort('total')}>
-                    Total Distributed
+                    <FormattedMessage id="Total_Distributed" />
                     {sortInfo.field === 'total' && (
                       <Icon
                         type={
@@ -629,7 +641,9 @@ function STRK({ settings }) {
                           lg={{ span: 5 }}
                           className="per-day right"
                         >
-                          <p className="mobile-label">Per day</p>
+                          <p className="mobile-label">
+                            <FormattedMessage id="Per_Day" />
+                          </p>
                           <p>{item.perDay}</p>
                         </Col>
                         <Col
@@ -637,7 +651,9 @@ function STRK({ settings }) {
                           lg={{ span: 5 }}
                           className="supply-apy right"
                         >
-                          <p className="mobile-label">Supply APY</p>
+                          <p className="mobile-label">
+                            <FormattedMessage id="Supply_APY" />
+                          </p>
                           <p className="apy-value">
                             {shortenNumberFormatter(item.supplyAPY)}%
                           </p>
@@ -654,7 +670,9 @@ function STRK({ settings }) {
                           lg={{ span: 5 }}
                           className="borrow-apy right"
                         >
-                          <p className="mobile-label">Borrow APY</p>
+                          <p className="mobile-label">
+                            <FormattedMessage id="Borrow_APY" />
+                          </p>
                           <p className="apy-value">
                             {shortenNumberFormatter(item.borrowAPY)}%
                           </p>
@@ -671,7 +689,9 @@ function STRK({ settings }) {
                           lg={{ span: 5 }}
                           className="total-distributed right"
                         >
-                          <p className="mobile-label">Total Distributed</p>
+                          <p className="mobile-label">
+                            <FormattedMessage id="Total_Distributed" />
+                          </p>
                           <p>{format(item.totalDistributed.toString())}</p>
                         </Col>
                       </Row>

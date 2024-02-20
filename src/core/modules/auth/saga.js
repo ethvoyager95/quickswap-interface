@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import { put, call, fork, all, take } from 'redux-saga/effects';
 
@@ -110,6 +111,7 @@ export function* watchLogoutRequest() {
   }
 }
 
+// eslint-disable-next-line
 export default function*() {
   yield all([
     fork(watchHandleAuthErrorRequest),
