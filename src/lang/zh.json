@@ -213,5 +213,9 @@
   "You_do_not_own_any_NFTs": "您不拥有任何 NFT",
   "Connect_wallet_to_see_your_NFTs": "连接钱包以查看您的 NFT",
   "No_token_to_stake": "没有代币可供质押：获取 STRK-ETH LP",
-  "History_Method_desc": "基于解码的输入数据执行的函数。 对于未识别的函数，将显示方法 ID。"
+  "History_Method_desc": "基于解码的输入数据执行的函数。 对于未识别的函数，将显示方法 ID。",
+  "Confirm_the_transaction": "确认交易",
+  "Disable_as_collateral": "作为抵押品禁用",
+  "Enable_as_collateral": "作为抵押品启用",
+  "Your_ETH_balance_is_insufficient": "您的 ETH 余额不足以执行交易。"
 }

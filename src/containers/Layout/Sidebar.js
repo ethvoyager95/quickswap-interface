@@ -1270,8 +1270,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
                 setIsOpenLangMenu(!isOpenLangMenu);
               }}
             >
-              <img src={selectedLan.icon} alt="lang" />{' '}
-              <FormattedMessage id={selectedLan.label} /> <Icon type="down" />
+              <img src={selectedLan.icon} alt="lang" /> {selectedLan.label}{' '}
+              <Icon type="down" />
             </span>
           </Dropdown>
         )}

@@ -1,4 +1,4 @@
-import Web3 from 'web3'; // eslint-disable-line import/no-unresolved
+import { FormattedMessage } from 'react-intl';
 import { toast } from 'react-toastify';
 import BigNumber from 'bignumber.js';
 import * as constants from 'utilities/constants';
@@ -21,7 +21,10 @@ const checkGas = async (web3, method, params, amount, from) => {
   if (
     new BigNumber(amount).plus(estimatedGas).gt(new BigNumber(walletBalance))
   ) {
-    toast.error('Your ETH balance is insufficient to execute the transaction.');
+    toast.error(
+      // eslint-disable-next-line react/react-in-jsx-scope
+      <FormattedMessage id="Your_ETH_balance_is_insufficient" />
+    );
     return false;
   }
   return true;
