@@ -39,7 +39,7 @@
   "Wallet_Balance": "Wallet Balance",
   "Protocol_Balance": "Protocol Balance",
   "Available_Credit": "Available Credit",
-  "Repay_Borrow": "Repay_Borrow",
+  "Repay_Borrow": "Repay Borrow",
   "Supply_desc": "To Supply {name} to the Strike Protocol, you need to approve it first.",
   "Repay_desc": "To Repay {name} to the Strike Protocol, you need to enable it first.",
   "Your_safe_limit": "Your safe limit",
