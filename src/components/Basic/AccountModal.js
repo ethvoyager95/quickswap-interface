@@ -333,7 +333,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings, intl }) {
               //   setOpenDropdown(!openDropdown);
               // }}
             >
-              Buy crypto with Fiat
+              <FormattedMessage id="Buy_crypto_with_Fiat" />
               {openDropdown ? (
                 <svg
                   width="15"
@@ -376,7 +376,8 @@ function AccountModal({ visible, onCancel, onDisconnect, settings, intl }) {
                   }}
                 >
                   <StyledName>
-                    <img src={coinbaseImg} alt="token" /> Coinbase Pay
+                    <img src={coinbaseImg} alt="token" />{' '}
+                    <FormattedMessage id="Coinbase_Pay" />
                   </StyledName>
                 </StyledPaymentItem>
               </StyledPaymentSelect>
@@ -391,7 +392,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings, intl }) {
             onCancel();
           }}
         >
-          Disconnect
+          <FormattedMessage id="Disconnect" />
         </div>
       </ModalContent>
     </Modal>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -135,7 +136,9 @@ function VoteCard({
       <VoteCardWrapper>
         <div className="header-card">
           <div className="flex align-center just-between vote-count">
-            <span>{label}</span>
+            <span>
+              <FormattedMessage id={label} />
+            </span>
             <span>
               {format(
                 new BigNumber(
@@ -158,8 +161,12 @@ function VoteCard({
         </div>
         <VoteList>
           <div className="flex align-center just-between header">
-            <span>{addressNumber} addresses</span>
-            <span>Votes</span>
+            <span>
+              {addressNumber} <FormattedMessage id="addresses" />
+            </span>
+            <span>
+              <FormattedMessage id="Votes" />
+            </span>
           </div>
           <div className="vote-list scrollbar">
             {list.map((l, index) => (

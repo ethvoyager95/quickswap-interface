@@ -1,5 +1,6 @@
 import { hot } from 'react-hot-loader/root';
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import moment from 'moment';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import { IntlProvider, addLocaleData } from 'react-intl';
@@ -35,6 +36,10 @@ import 'assets/styles/App.scss';
 import History from './Main/History/History';
 import 'react-toastify/dist/ReactToastify.css';
 
+import 'moment/locale/es';
+import 'moment/locale/tr';
+import 'moment/locale/zh-cn';
+
 addLocaleData([...en, ...zh, ...es, ...tr]);
 const messages = {
   en: enMessages,
@@ -49,6 +54,14 @@ window.Buffer = window.Buffer || require('buffer').Buffer;
 function App() {
   const lang = localStorage.getItem('language') || 'en';
   const message = messages[localStorage.getItem('language') || 'en'];
+
+  useEffect(() => {
+    if (lang === 'zh') {
+      moment.locale('zh-cn');
+    } else {
+      moment.locale(lang);
+    }
+  }, [lang]);
 
   return (
     <Theme>

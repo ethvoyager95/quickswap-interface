@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import moment from 'moment';
@@ -49,7 +50,9 @@ function PendingTransaction({ settings }) {
 
   return (
     <PendingTransactionWrapper>
-      <div className="title">Pending Transactions</div>
+      <div className="title">
+        <FormattedMessage id="Pending_Transactions" />
+      </div>
       <div className="content">
         <div className="content-info">
           <LoadingSpinner size={20} />

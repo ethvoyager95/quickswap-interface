@@ -15,6 +15,7 @@ import MarketTable from 'components/Basic/Table';
 import PendingTransaction from 'components/Basic/PendingTransaction';
 import { currencyFormatter, shortenNumberFormatter } from 'utilities/common';
 import { useInstance } from 'hooks/useContract';
+import BigNumber from 'bignumber.js';
 
 const SupplyMarketWrapper = styled.div`
   width: 100%;
@@ -63,8 +64,8 @@ function SupplyMarket({
             setIsCollateralConfirm(false);
           });
       } else if (
-        +r.hypotheticalLiquidity['1'] > 0 ||
-        +r.hypotheticalLiquidity['2'] === 0
+        new BigNumber(r.hypotheticalLiquidity['1'].hex).gt(0) ||
+        new BigNumber(r.hypotheticalLiquidity['2'].hex).eq(0)
       ) {
         setIsCollateralEnable(true);
         setIsCollateralConfirm(true);

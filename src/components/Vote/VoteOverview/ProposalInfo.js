@@ -133,7 +133,9 @@ function ProposalInfo({ proposalInfo }) {
               proposalInfo
             )}`}
           >
-            {getStatus(proposalInfo)}
+            {getStatus(proposalInfo) && (
+              <FormattedMessage id={getStatus(proposalInfo)} />
+            )}
           </div>
           <div className="left-time">{getRemainTime(proposalInfo)}</div>
         </div>
