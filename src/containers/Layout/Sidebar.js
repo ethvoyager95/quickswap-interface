@@ -208,6 +208,7 @@ const MobileIcon = styled.div`
     align-items: center;
     cursor: pointer;
     margin-right: 20px;
+    margin-left: 20px;
   }
 `;
 
@@ -467,6 +468,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [isOpenLangMenu, setIsOpenLangMenu] = useState(false);
 
   const dropdownRef = useRef(null);
+  const dropdownRef1 = useRef(null);
 
   const [available, setAvailable] = useState('0');
   const [balance, setBalance] = useState('');
@@ -477,6 +479,33 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   }, [lang, languages]);
 
   const languageItems = useMemo(() => {
+    if (width < 768) {
+      return (
+        <Menu>
+          {languages.map((item, index) => (
+            <Menu.Item key={index}>
+              <div
+                className="flex flex-start align-center gap-menu"
+                style={item.id === lang ? { cursor: 'not-allowed' } : {}}
+                onClick={() => {
+                  if (item.id !== lang) {
+                    localStorage.setItem('language', item.id);
+                    // eslint-disable-next-line valid-typeof
+                    if (typeof window !== undefined) {
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 500);
+                    }
+                  }
+                }}
+              >
+                <img src={item.icon} alt="lang" />
+              </div>
+            </Menu.Item>
+          ))}
+        </Menu>
+      );
+    }
     return (
       <Menu>
         {languages.map((item, index) => (
@@ -962,10 +991,20 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       }
     };
     const handleOutsideClick = event => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        width >= 768 &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
         setIsOpenDaoMenu(false);
         setIsOpenManageMenu(false);
         setIsOpenMoreMenu(false);
+        setIsOpenLangMenu(false);
+      } else if (
+        width < 768 &&
+        dropdownRef1.current &&
+        !dropdownRef1.current.contains(event.target)
+      ) {
         setIsOpenLangMenu(false);
       }
     };
@@ -1009,9 +1048,25 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             <img src={logoImg} alt="logo" className="logo-text" />
           </NavLink>
         </Logo>
-        <MobileIcon onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <FaTimes color="white" /> : <FaBars color="white" />}
-        </MobileIcon>
+        <div className="flex" ref={dropdownRef1}>
+          {width < 768 && (
+            <Dropdown overlay={languageItems} trigger={['click']}>
+              <span
+                className="flex flex-start align-center gap-menu dropdown-link"
+                onClick={e => {
+                  e.preventDefault();
+                  setIsOpenLangMenu(!isOpenLangMenu);
+                }}
+              >
+                <img src={selectedLan.icon} alt="lang" />
+                <Icon type="down" style={{ color: 'white' }} />
+              </span>
+            </Dropdown>
+          )}
+          <MobileIcon onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <FaTimes color="white" /> : <FaBars color="white" />}
+          </MobileIcon>
+        </div>
         <div className="right-area">
           {settings.selectedAddress && (
             <UserInfoButton>
