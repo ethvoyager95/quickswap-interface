@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -25,7 +26,6 @@ import {
   LIMIT,
   LIST_BLOCK_VALUE,
   LIST_BLOCK_TEXT,
-  tooltipContent,
   tabsTransaction
 } from './helper';
 import {
@@ -48,7 +48,7 @@ import {
 } from './style';
 import './overide.scss';
 
-function History({ settings, setSetting }) {
+function History({ settings, setSetting, intl }) {
   const [currentTab, setCurrentTab] = useState('all');
   const [dataTransactions, setDataTransaction] = useState([]);
   const [dataExportCSV, setDataExportCSV] = useState([]);
@@ -315,7 +315,9 @@ function History({ settings, setSetting }) {
   const blockFilter = (
     <DropdownBlock>
       <div className="item">
-        <div>From</div>
+        <div>
+          <FormattedMessage id="From" />
+        </div>
         <input
           type="number"
           inputMode="decimal"
@@ -324,7 +326,9 @@ function History({ settings, setSetting }) {
           min={0}
           minLength={1}
           maxLength={79}
-          placeholder="Block Number"
+          placeholder={intl.formatMessage({
+            id: 'Block_Number'
+          })}
           onChange={e => handleInputBlockChange(e.target.value, 'from')}
           // block special character keypress
           onKeyPress={event => {
@@ -342,7 +346,9 @@ function History({ settings, setSetting }) {
         />
       </div>
       <div className="item">
-        <div>To</div>
+        <div>
+          <FormattedMessage id="To" />
+        </div>
         <input
           type="number"
           inputMode="decimal"
@@ -351,7 +357,9 @@ function History({ settings, setSetting }) {
           min={0}
           minLength={1}
           maxLength={79}
-          placeholder="Block Number"
+          placeholder={intl.formatMessage({
+            id: 'Block_Number'
+          })}
           onChange={e => handleInputBlockChange(e.target.value, 'to')}
           // block special character keypress
           onKeyPress={event => {
@@ -374,11 +382,11 @@ function History({ settings, setSetting }) {
           disabled={disabledFilterBlock}
           onClick={() => handleFilter('block')}
         >
-          Filter
+          <FormattedMessage id="Filter" />
         </Button>
         <Button
           className="button-clear"
-          danger
+          danger="true"
           ghost
           disabled={disabledFilterBlock}
           onClick={() => {
@@ -386,7 +394,7 @@ function History({ settings, setSetting }) {
             setToBlockValue('');
           }}
         >
-          Clear
+          <FormattedMessage id="Clear" />
         </Button>
       </DivFlexBetween>
     </DropdownBlock>
@@ -403,7 +411,9 @@ function History({ settings, setSetting }) {
   const timestampFilter = (
     <DropdownBlock>
       <div className="item">
-        <div>From</div>
+        <div>
+          <FormattedMessage id="From" />
+        </div>
         <DatePicker
           defaultPickerValue={moment(fromAgeDisplay, 'MM/DD/YYYY')}
           value={fromAgeDisplay !== '' ? moment(fromAgeDisplay) : null}
@@ -413,7 +423,9 @@ function History({ settings, setSetting }) {
         />
       </div>
       <div className="item">
-        <div>To</div>
+        <div>
+          <FormattedMessage id="To" />
+        </div>
         <DatePicker
           defaultPickerValue={moment(toAgeDisplay, 'MM/DD/YYYY')}
           value={toAgeDisplay !== '' ? moment(toAgeDisplay) : null}
@@ -428,11 +440,11 @@ function History({ settings, setSetting }) {
           disabled={disabledBtnFilterAge}
           onClick={() => handleFilter('age')}
         >
-          Filter
+          <FormattedMessage id="Filter" />
         </Button>
         <Button
           className="button-clear"
-          danger
+          danger="true"
           ghost
           disabled={disabledBtnFilterAge}
           onClick={() => {
@@ -442,7 +454,7 @@ function History({ settings, setSetting }) {
             setToAgeDisplay('');
           }}
         >
-          Clear
+          <FormattedMessage id="Clear" />
         </Button>
       </DivFlexBetween>
     </DropdownBlock>
@@ -461,7 +473,9 @@ function History({ settings, setSetting }) {
         <Input
           className="input-address"
           value={fromAddressValue}
-          placeholder="Search by address e.g 0x..."
+          placeholder={intl.formatMessage({
+            id: 'Search_by_address'
+          })}
           onChange={e => handleInputAddressChange(e.target.value, 'from')}
         />
       </div>
@@ -471,18 +485,18 @@ function History({ settings, setSetting }) {
           disabled={disabledFilterFromAddress}
           onClick={() => handleFilter('from')}
         >
-          Filter
+          <FormattedMessage id="Filter" />
         </Button>
         <Button
           className="button-clear"
-          danger
+          danger="true"
           ghost
           disabled={disabledFilterFromAddress}
           onClick={() => {
             setFromAddressValue('');
           }}
         >
-          Clear
+          <FormattedMessage id="Clear" />
         </Button>
       </DivFlexBetween>
     </DropdownAddress>
@@ -501,7 +515,9 @@ function History({ settings, setSetting }) {
         <Input
           className="input-address"
           value={toAddressValue}
-          placeholder="Search by address e.g 0x..."
+          placeholder={intl.formatMessage({
+            id: 'Search_by_address'
+          })}
           onChange={e => handleInputAddressChange(e.target.value, 'to')}
         />
       </div>
@@ -511,18 +527,18 @@ function History({ settings, setSetting }) {
           disabled={disabledFilterToAddress}
           onClick={() => handleFilter('to')}
         >
-          Filter
+          <FormattedMessage id="Filter" />
         </Button>
         <Button
           className="button-clear"
-          danger
+          danger="true"
           ghost
           disabled={disabledFilterToAddress}
           onClick={() => {
             setToAddressValue('');
           }}
         >
-          Clear
+          <FormattedMessage id="Clear" />
         </Button>
       </DivFlexBetween>
     </DropdownAddress>
@@ -531,7 +547,7 @@ function History({ settings, setSetting }) {
   const renderTagFilterByBlock = (
     <TagFilterWrapper>
       <div>
-        Block:{' '}
+        <FormattedMessage id="Block" />:{' '}
         {filterCondition.from_block
           ? `From ${filterCondition.from_block} `
           : ''}
@@ -566,7 +582,7 @@ function History({ settings, setSetting }) {
   const renderTagFilterByAge = (
     <TagFilterWrapper>
       <div>
-        Age:{' '}
+        <FormattedMessage id="Age" />:{' '}
         {filterCondition.from_date
           ? `From ${dayjs
               .unix(filterCondition.from_date)
@@ -607,7 +623,7 @@ function History({ settings, setSetting }) {
   const renderTagFilterByFromAddress = (
     <TagFilterWrapper>
       <div>
-        From:{' '}
+        <FormattedMessage id="From" />:{' '}
         {filterCondition.from_address
           ? `${
               filterCondition.from_address.length > 8
@@ -650,7 +666,7 @@ function History({ settings, setSetting }) {
   const renderTagFilterByToAddress = (
     <TagFilterWrapper>
       <div>
-        To:{' '}
+        <FormattedMessage id="To" />:{' '}
         {filterCondition.to_address
           ? `${
               filterCondition.to_address.length > 8
@@ -691,7 +707,11 @@ function History({ settings, setSetting }) {
 
   const columns = [
     {
-      title: () => <THeadWrapper>Txn Hash</THeadWrapper>,
+      title: () => (
+        <THeadWrapper>
+          <FormattedMessage id="Txn_Hash" />
+        </THeadWrapper>
+      ),
       dataIndex: 'txHash',
       key: 'txHash',
       render(_, asset) {
@@ -710,8 +730,13 @@ function History({ settings, setSetting }) {
     {
       title: () => (
         <THeadWrapper>
-          <div>Method</div>
-          <Tooltip placement="top" title={tooltipContent}>
+          <div>
+            <FormattedMessage id="Method" />
+          </div>
+          <Tooltip
+            placement="top"
+            title={<FormattedMessage id="History_Method_desc" />}
+          >
             <SButton>
               <img src={iconInfo} alt="" />
             </SButton>
@@ -736,7 +761,7 @@ function History({ settings, setSetting }) {
     {
       title: () => (
         <THeadWrapper id="th-block">
-          Block{' '}
+          <FormattedMessage id="Block" />{' '}
           <Dropdown
             overlay={blockFilter}
             trigger={['click']}
@@ -776,7 +801,7 @@ function History({ settings, setSetting }) {
     {
       title: () => (
         <THeadWrapper id="th-age">
-          Age{' '}
+          <FormattedMessage id="Age" />{' '}
           <Dropdown
             overlay={timestampFilter}
             trigger={['click']}
@@ -817,7 +842,7 @@ function History({ settings, setSetting }) {
     {
       title: () => (
         <THeadWrapper id="th-from">
-          From{' '}
+          <FormattedMessage id="From" />{' '}
           <Dropdown
             overlay={addressFromFilter}
             trigger={['click']}
@@ -861,7 +886,7 @@ function History({ settings, setSetting }) {
     {
       title: () => (
         <THeadWrapper id="th-to">
-          To{' '}
+          <FormattedMessage id="To" />{' '}
           <Dropdown
             overlay={addressToFilter}
             trigger={['click']}
@@ -903,7 +928,11 @@ function History({ settings, setSetting }) {
       }
     },
     {
-      title: () => <THeadWrapper>Value</THeadWrapper>,
+      title: () => (
+        <THeadWrapper>
+          <FormattedMessage id="Value" />
+        </THeadWrapper>
+      ),
       dataIndex: 'value',
       key: 'value',
       render(_, asset) {
@@ -932,11 +961,13 @@ function History({ settings, setSetting }) {
           <>
             <img src={noData} alt="No data" />
             <div>
-              {settings.walletConnected && settings.selectedAddress
-                ? 'No record was found'
-                : currentTab === 'all'
-                ? 'No record was found'
-                : 'Connect your wallet to see your transaction history'}
+              {settings.walletConnected && settings.selectedAddress ? (
+                <FormattedMessage id="No_record_was_found" />
+              ) : currentTab === 'all' ? (
+                <FormattedMessage id="No_record_was_found" />
+              ) : (
+                <FormattedMessage id="Connect_wallet_to_see_history" />
+              )}
             </div>
           </>
         )}
@@ -967,7 +998,11 @@ function History({ settings, setSetting }) {
             }}
             className={currentTab === tab ? 'active' : ''}
           >
-            {tab === 'all' ? 'All Transactions' : 'User Transactions'}
+            {tab === 'all' ? (
+              <FormattedMessage id="All_Transactions" />
+            ) : (
+              <FormattedMessage id="User_Transactions" />
+            )}
           </div>
         ))}
       </TabsWrapper>
@@ -979,7 +1014,9 @@ function History({ settings, setSetting }) {
         filterCondition.from_address ||
         filterCondition.to_address ? (
           <>
-            <div className="title">Filtered by: </div>
+            <div className="title">
+              <FormattedMessage id="Filtered_by" />:{' '}
+            </div>
             {filterCondition.from_block || filterCondition.to_block
               ? renderTagFilterByBlock
               : null}
@@ -1042,7 +1079,8 @@ function History({ settings, setSetting }) {
 
 History.propTypes = {
   settings: PropTypes.object,
-  setSetting: PropTypes.func.isRequired
+  setSetting: PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
 History.defaultProps = {
@@ -1064,7 +1102,9 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, mapDispatchToProps)
-)(History);
+export default injectIntl(
+  compose(
+    withRouter,
+    connectAccount(mapStateToProps, mapDispatchToProps)
+  )(History)
+);

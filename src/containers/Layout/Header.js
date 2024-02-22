@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -59,7 +60,7 @@ function Header({ title, history, currentAsset }) {
           title === 'Deprecated Market Detail') && (
           <img className="arrow-left" src={arrowRightImg} alt="arrow-left" />
         )}
-        <p
+        <div
           className={`${
             title === 'Overview' || title === 'Details' ? 'highlight' : ''
           }`}
@@ -78,9 +79,11 @@ function Header({ title, history, currentAsset }) {
               <p>{currentAsset.toUpperCase()}</p>
             </div>
           ) : (
-            title
+            <p>
+              <FormattedMessage id={title} />
+            </p>
           )}
-        </p>
+        </div>
       </div>
     </HeaderWrapper>
   );

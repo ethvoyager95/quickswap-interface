@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { compose } from 'recompose';
@@ -239,14 +240,16 @@ function Market({ history, settings }) {
   };
 
   return (
-    <MainLayout title="Market Overview">
+    <MainLayout title="Market_Overview">
       <MarketWrapper>
         <Row className="all-section">
           <Col xs={{ span: 24 }}>
             <Row gutter={12}>
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <div className="total-section">
-                  <div className="title">Total Supply</div>
+                  <div className="title">
+                    <FormattedMessage id="Total_Supply" />
+                  </div>
                   <div className="content">
                     <div className="header">
                       <div className="total-value">${format(totalSupply)}</div>
@@ -256,7 +259,9 @@ function Market({ history, settings }) {
                   </div> */}
                     </div>
                     <div className="markets">
-                      <div className="caption">Top 3 Markets</div>
+                      <div className="caption">
+                        <FormattedMessage id="Top_3_Markets" />
+                      </div>
                       {settings.markets &&
                         (settings.markets || [])
                           .filter(m => m.deprecated === false)
@@ -294,11 +299,15 @@ function Market({ history, settings }) {
                             new BigNumber(supplyVolume).toFormat(2)
                           )}`}
                         </div>
-                        <div className="label">24H Supply Volume</div>
+                        <div className="label">
+                          <FormattedMessage id="24H_Supply_Volume" />
+                        </div>
                       </div>
                       <div className="suppliers">
                         <div className="value">{supplierCount}</div>
-                        <div className="label"># of Suppliers</div>
+                        <div className="label">
+                          <FormattedMessage id="of_Suppliers" />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -306,7 +315,9 @@ function Market({ history, settings }) {
               </Col>
               <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                 <div className="total-section">
-                  <div className="title">Total Borrow</div>
+                  <div className="title">
+                    <FormattedMessage id="Total_Borrow" />
+                  </div>
                   <div className="content">
                     <div className="header">
                       <div className="total-value">${format(totalBorrow)}</div>
@@ -316,7 +327,9 @@ function Market({ history, settings }) {
                   </div> */}
                     </div>
                     <div className="markets">
-                      <div className="caption">Top 3 Markets</div>
+                      <div className="caption">
+                        <FormattedMessage id="Top_3_Markets" />
+                      </div>
                       {settings.markets &&
                         (settings.markets || [])
                           .filter(m => m.deprecated === false)
@@ -354,11 +367,15 @@ function Market({ history, settings }) {
                             new BigNumber(borrowVolume).toFormat(2)
                           )}`}
                         </div>
-                        <div className="label">24H Borrow Volume</div>
+                        <div className="label">
+                          <FormattedMessage id="24H_Borrow_Volume" />
+                        </div>
                       </div>
                       <div className="suppliers">
                         <div className="value">{borrowerCount}</div>
-                        <div className="label"># of Borrowers</div>
+                        <div className="label">
+                          <FormattedMessage id="of_Borrowers" />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -368,10 +385,12 @@ function Market({ history, settings }) {
           </Col>
           <Col xs={{ span: 24 }}>
             <TableWrapper>
-              <div className="table-title">Market Distribution</div>
+              <div className="table-title">
+                <FormattedMessage id="Market_Distribution" />
+              </div>
               <Row className="table_header">
                 <Col xs={{ span: 24 }} lg={{ span: 4 }} className="market">
-                  Market
+                  <FormattedMessage id="Market" />
                 </Col>
                 <Col
                   xs={{ span: 4 }}
@@ -379,7 +398,7 @@ function Market({ history, settings }) {
                   className="borrow-apy right"
                 >
                   <span onClick={() => handleSort('price')}>
-                    Price{' '}
+                    <FormattedMessage id="Price" />{' '}
                     {sortInfo.field === 'price' && (
                       <Icon
                         type={
@@ -395,7 +414,7 @@ function Market({ history, settings }) {
                   className="total-supply right"
                 >
                   <span onClick={() => handleSort('total_supply')}>
-                    Total Supply{' '}
+                    <FormattedMessage id="Total_Supply" />{' '}
                     {sortInfo.field === 'total_supply' && (
                       <Icon
                         type={
@@ -411,7 +430,7 @@ function Market({ history, settings }) {
                   className="supply-apy right"
                 >
                   <span onClick={() => handleSort('supply_apy')}>
-                    Supply APY{' '}
+                    <FormattedMessage id="Supply_APY" />{' '}
                     {sortInfo.field === 'supply_apy' && (
                       <Icon
                         type={
@@ -427,7 +446,7 @@ function Market({ history, settings }) {
                   className="total-borrow right"
                 >
                   <span onClick={() => handleSort('total_borrow')}>
-                    Total Borrow{' '}
+                    <FormattedMessage id="Total_Borrow" />{' '}
                     {sortInfo.field === 'total_borrow' && (
                       <Icon
                         type={
@@ -443,7 +462,7 @@ function Market({ history, settings }) {
                   className="borrow-apy right"
                 >
                   <span onClick={() => handleSort('borrow_apy')}>
-                    Borrow APY{' '}
+                    <FormattedMessage id="Borrow_APY" />{' '}
                     {sortInfo.field === 'borrow_apy' && (
                       <Icon
                         type={
@@ -566,7 +585,9 @@ function Market({ history, settings }) {
                           lg={{ span: 4 }}
                           className="total-supply right"
                         >
-                          <p className="mobile-label">Price</p>
+                          <p className="mobile-label">
+                            <FormattedMessage id="Price" />
+                          </p>
                           <p className="item-title">
                             $
                             {format(new BigNumber(item.tokenPrice).toFormat(2))}
@@ -577,7 +598,9 @@ function Market({ history, settings }) {
                           lg={{ span: 4 }}
                           className="total-supply right"
                         >
-                          <p className="mobile-label">Total Supply</p>
+                          <p className="mobile-label">
+                            <FormattedMessage id="Total_Supply" />
+                          </p>
                           <p className="item-title">
                             {currencyFormatter(item.totalSupplyUsd)}
                           </p>
@@ -596,7 +619,9 @@ function Market({ history, settings }) {
                           lg={{ span: 4 }}
                           className="supply-apy right"
                         >
-                          <p className="mobile-label">Supply APY</p>
+                          <p className="mobile-label">
+                            <FormattedMessage id="Supply_APY" />
+                          </p>
                           <p className="item-title">
                             {shortenNumberFormatter(item.sAPY)}%
                           </p>
@@ -614,7 +639,9 @@ function Market({ history, settings }) {
                           lg={{ span: 4 }}
                           className="total-borrow right"
                         >
-                          <p className="mobile-label">Total Borrow</p>
+                          <p className="mobile-label">
+                            <FormattedMessage id="Total_Borrow" />
+                          </p>
                           <p className="item-title">
                             {currencyFormatter(item.totalBorrowsUsd)}
                           </p>
@@ -633,7 +660,9 @@ function Market({ history, settings }) {
                           lg={{ span: 4 }}
                           className="borrow-apy right"
                         >
-                          <p className="mobile-label">Borrow APY</p>
+                          <p className="mobile-label">
+                            <FormattedMessage id="Borrow_APY" />
+                          </p>
                           <p className="item-title">
                             {shortenNumberFormatter(item.bAPY)}%
                           </p>

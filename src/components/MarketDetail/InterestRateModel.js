@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import BigNumber from 'bignumber.js';
@@ -398,8 +399,12 @@ function InterestRateModel({ settings, currentAsset, history }) {
 
   return (
     <InterestRateModelWrapper>
-      <p className="title">Interest Rate Model</p>
-      <p className="description">Utilization vs. APY</p>
+      <p className="title">
+        <FormattedMessage id="Interest_Rate_Model" />
+      </p>
+      <p className="description">
+        <FormattedMessage id="Utilization_vs_APY" />
+      </p>
       <div
         id="percent-wrapper"
         className="percent-wrapper"
@@ -408,7 +413,9 @@ function InterestRateModel({ settings, currentAsset, history }) {
         <div id="line" className="line" />
         {graphData.length !== 0 && (
           <div className="current-percent" style={{ left: currentPos || 30 }}>
-            <p>Current</p>
+            <p>
+              <FormattedMessage id="Current" />
+            </p>
           </div>
         )}
         <div

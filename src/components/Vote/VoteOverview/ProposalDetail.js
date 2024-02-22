@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import { getVoteContract, methods } from 'utilities/ContractService';
@@ -115,23 +116,20 @@ function ProposalDetail({ proposalInfo, walletConnected }) {
       <ProposalDetailWrapper className="flex flex-column">
         <div className="section">
           <Label size="20" primary>
-            Operation
+            <FormattedMessage id="Operation" />
           </Label>
           {(proposalContracts || []).map((contractName, idx) => (
-            <div>
-              <ColorLabel size="16" color="#1ba27a" key={idx}>
+            <div key={idx}>
+              <ColorLabel size="16" color="#1ba27a">
                 {contractName}
               </ColorLabel>
-              .
-              <Label size="16" key={idx}>
-                {proposalFunctions[idx]}
-              </Label>
+              .<Label size="16">{proposalFunctions[idx]}</Label>
             </div>
           ))}
         </div>
         <div className="section">
           <Label size="20" primary>
-            Description
+            <FormattedMessage id="Description" />
           </Label>
           <Label size="16">
             <ReactMarkdown>{proposalInfo.description}</ReactMarkdown>

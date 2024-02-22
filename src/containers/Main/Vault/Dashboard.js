@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
@@ -319,19 +320,25 @@ function DashboardStaking({ instance, amount, txh }) {
                 <SLogoFlash src={LogoFlash} />
                 <SLogoLP src={LogoLP} />
                 <STitle>
-                  DeFi Vault 3.0
-                  <SText>STRK-ETH Staking</SText>
+                  <FormattedMessage id="DeFi_Vault_3" />
+                  <SText>
+                    STRK-ETH <FormattedMessage id="Staking" />
+                  </SText>
                 </STitle>
               </SLogo>
             </Col>
             <Col xs={{ span: 24 }} lg={{ span: 12 }}>
               <SBox>
                 <SItemsBox>
-                  <STextBox>NFTs Staked</STextBox>
+                  <STextBox>
+                    NFTs <FormattedMessage id="Staked" />
+                  </STextBox>
                   <SValueBox>{amountStaked}</SValueBox>
                 </SItemsBox>
                 <SItemsBox>
-                  <STextBox>Liquidity</STextBox>
+                  <STextBox>
+                    <FormattedMessage id="Liquidity" />
+                  </STextBox>
                   <>
                     <SValueBox>
                       <ST.SIconSmall>
@@ -344,11 +351,17 @@ function DashboardStaking({ instance, amount, txh }) {
                   </>
                 </SItemsBox>
                 <SItemsBox>
-                  <STextBox>Boost APR</STextBox>
-                  <SValueBox>Up to 200% </SValueBox>
+                  <STextBox>
+                    <FormattedMessage id="Boost_APR" />
+                  </STextBox>
+                  <SValueBox>
+                    <FormattedMessage id="Up_to_200" />{' '}
+                  </SValueBox>
                 </SItemsBox>
                 <SItemsBox>
-                  <STextBox>Base APR</STextBox>
+                  <STextBox>
+                    <FormattedMessage id="Base_APR" />
+                  </STextBox>
                   <SValueBox>{baseAPR}% </SValueBox>
                 </SItemsBox>
               </SBox>

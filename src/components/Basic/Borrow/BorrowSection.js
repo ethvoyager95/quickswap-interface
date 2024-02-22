@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { compose } from 'recompose';
 import { Icon, Progress } from 'antd';
 import Button from '@material-ui/core/Button';
@@ -157,7 +158,9 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
         <>
           <div className="alert">
             <img src={IconQuestion} alt="info" />
-            <span>Please connect your wallet to borrow</span>
+            <span>
+              <FormattedMessage id="connect_wallet_borrow" />
+            </span>
           </div>
           <ConnectButton />
         </>
@@ -190,14 +193,16 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
                   placeholder="0"
                 />
                 <span className="pointer max" onClick={() => handleMaxAmount()}>
-                  SAFE MAX
+                  <FormattedMessage id="SAFE_MAX" />
                 </span>
               </div>
             </div>
           </div>
           <div className="wallet-section">
             <div className="description">
-              <span className="label">Protocol Balance</span>
+              <span className="label">
+                <FormattedMessage id="Protocol_Balance" />
+              </span>
               <span className="value">
                 {asset.borrowBalance &&
                   format(
@@ -214,7 +219,9 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
               <div className="description">
                 <div className="flex align-center">
                   <img src={asset.img} alt="asset" />
-                  <span className="label">Borrow APY</span>
+                  <span className="label">
+                    <FormattedMessage id="Borrow_APY" />
+                  </span>
                 </div>
                 <span className="value green">
                   {asset.borrowApy &&
@@ -229,7 +236,9 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
               <div className="description">
                 <div className="flex align-center">
                   <img src={coinImg} alt="asset" />
-                  <span className="label">Interest APY</span>
+                  <span className="label">
+                    <FormattedMessage id="Interest_APY" />
+                  </span>
                 </div>
                 <span className="value">
                   {shortenNumberFormatter(
@@ -243,7 +252,9 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
             </div>
             <div className="right-content">
               <div className="description">
-                <span className="label">Borrow Balance</span>
+                <span className="label">
+                  <FormattedMessage id="Borrow_Balance" />
+                </span>
                 {amount.isZero() || amount.isNaN() ? (
                   <span className="value">
                     ${format(borrowBalance.dp(2, 1).toString(10))}
@@ -265,7 +276,9 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
                 )}
               </div>
               <div className="description">
-                <span className="label">Borrow Limit Used</span>
+                <span className="label">
+                  <FormattedMessage id="Borrow_Limit_Used" />
+                </span>
                 {amount.isZero() || amount.isNaN() ? (
                   <span className="value">
                     {borrowPercent.dp(2, 1).toString(10)}%
@@ -308,7 +321,8 @@ function BorrowSection({ asset, settings, setSetting, hideModal }) {
                 }
                 onClick={handleBorrow}
               >
-                {isLoading && <Icon type="loading" />} Borrow
+                {isLoading && <Icon type="loading" />}{' '}
+                <FormattedMessage id="Borrow" />
               </Button>
             </div>
           </div>

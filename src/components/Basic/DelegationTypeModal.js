@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
@@ -129,7 +130,9 @@ function DelegationTypeModal({
         />
         <div className={`${child ? 'hidden' : ''}`}>
           <div className="flex align-center just-center header-content">
-            <p>Choose Delegation Type</p>
+            <p>
+              <FormattedMessage id="Choose_Delegation_Type" />
+            </p>
           </div>
           <div
             className="flex flex-column section"
@@ -145,17 +148,20 @@ function DelegationTypeModal({
             <div className="flex align-center just-between">
               <div className="flex align-center">
                 <img src={greenCheckImg} alt="check" className="check-image" />
-                <span>Manual Voting</span>
+                <span>
+                  <FormattedMessage id="Manual_Voting" />
+                </span>
               </div>
               {delegateStatus !== 'self' ? (
                 <img src={arrowRightImg} alt="arrow" className="arrow-image" />
               ) : (
-                <p className="active-delegate">Active</p>
+                <p className="active-delegate">
+                  <FormattedMessage id="Active" />
+                </p>
               )}
             </div>
             <div className="description">
-              This option allows you to vote on proposals directly from your
-              connected wallet.
+              <FormattedMessage id="Manual_Voting_desc" />
             </div>
           </div>
           <div
@@ -167,18 +173,20 @@ function DelegationTypeModal({
             <div className="flex align-center just-between">
               <div className="flex align-center">
                 <img src={greenCheckImg} alt="check" className="check-image" />
-                <span>Delegate Voting</span>
+                <span>
+                  <FormattedMessage id="Delegate_Voting" />
+                </span>
               </div>
               {delegateStatus !== 'delegate' ? (
                 <img src={arrowRightImg} alt="arrow" className="arrow-image" />
               ) : (
-                <p className="active-delegate">Active</p>
+                <p className="active-delegate">
+                  <FormattedMessage id="Active" />
+                </p>
               )}
             </div>
             <div className="description">
-              This option allows you to delegate your votes to another Ethereum
-              address. You never send Strike, only your voting rights, and can
-              undelegate at any time.
+              <FormattedMessage id="Delegate_Voting_desc" />
             </div>
           </div>
         </div>

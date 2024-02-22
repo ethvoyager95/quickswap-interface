@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { Modal } from 'antd';
@@ -256,7 +257,7 @@ function SupplyModal({ visible, onCancel, settings }) {
                       setCurrentTab('supply');
                     }}
                   >
-                    Supply
+                    <FormattedMessage id="Supply" />
                   </div>
                 )}
               <div
@@ -267,7 +268,7 @@ function SupplyModal({ visible, onCancel, settings }) {
                   setCurrentTab('withdraw');
                 }}
               >
-                Withdraw
+                <FormattedMessage id="Withdraw" />
               </div>
             </Tabs>
             {!currentAsset || Object.keys(currentAsset).length === 0 ? (

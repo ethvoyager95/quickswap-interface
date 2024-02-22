@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
@@ -312,6 +313,7 @@ const VaultContainer = styled.div`
   }
 
   .max-button {
+    white-space: nowrap;
     padding: 5px 20px;
     color: var(--color-text-main);
     background: linear-gradient(
@@ -427,7 +429,7 @@ const SQuestion = styled.img`
 
 const format = commaNumber.bindWith(',', '.');
 
-const Staking = ({ settings }) => {
+const Staking = ({ settings, intl }) => {
   const instance = useInstance(settings.walletConnected);
   const [strkPrice, setStrkPrice] = useState(0);
   const [stakeAmount, setStakeAmount] = useState('');
@@ -552,7 +554,11 @@ const Staking = ({ settings }) => {
     if (isApprove()) {
       const tx = await handleApprove();
       if (tx) {
-        message.success('Approved successfully.');
+        message.success(
+          intl.formatMessage({
+            id: 'Approved_successfully'
+          })
+        );
       }
       // else {
       //   message.error('Something went wrong while approving.');
@@ -563,7 +569,11 @@ const Staking = ({ settings }) => {
           new BigNumber(lock ? lockAmount : stakeAmount).times(1e18)
         )
       ) {
-        message.error('Insufficient balance.');
+        message.error(
+          intl.formatMessage({
+            id: 'Insufficient_balance'
+          })
+        );
         return;
       }
 
@@ -575,7 +585,15 @@ const Staking = ({ settings }) => {
         lock
       );
       if (tx) {
-        message.success(lock ? 'Locked successfully.' : 'Staked successfully.');
+        message.success(
+          lock
+            ? intl.formatMessage({
+                id: 'Locked_successfully'
+              })
+            : intl.formatMessage({
+                id: 'Staked_successfully'
+              })
+        );
       }
       // else {
       //   message.error(
@@ -606,13 +624,21 @@ const Staking = ({ settings }) => {
     }
 
     if (claimAmount.eq(0)) {
-      toast.info('You have not claimable STRK.');
+      toast.info(
+        intl.formatMessage({
+          id: 'You_have_not_claimable_STRK'
+        })
+      );
       return;
     }
 
     const tx = await handleWithdraw(claimAmount.toString(10));
     if (tx) {
-      message.success('Claim successfully.');
+      message.success(
+        intl.formatMessage({
+          id: 'Claim_successfully'
+        })
+      );
     }
     // else {
     //   message.error('Something went wrong while claim.');
@@ -629,7 +655,11 @@ const Staking = ({ settings }) => {
 
     const tx = await handleGetReward();
     if (tx) {
-      message.success('Claim reward successfully.');
+      message.success(
+        intl.formatMessage({
+          id: 'Claim_reward_successfully'
+        })
+      );
     }
     // else {
     //   message.error('Something went wrong while claiming reward.');
@@ -641,13 +671,21 @@ const Staking = ({ settings }) => {
       return;
     }
     if (unlockable.eq(0)) {
-      toast.info('You have not STRK to withdraw.');
+      toast.info(
+        intl.formatMessage({
+          id: 'You_have_not_STRK_to_withdraw'
+        })
+      );
       return;
     }
 
     const tx = await handleWithdrawExpiredLocks();
     if (tx) {
-      message.success('Withdraw locks successfully.');
+      message.success(
+        intl.formatMessage({
+          id: 'Withdraw_locks_successfully'
+        })
+      );
     }
     // else {
     //   message.error('Something went wrong while withdrawal.');
@@ -664,7 +702,7 @@ const Staking = ({ settings }) => {
     //     .toLocaleString('en-US', { maximumFractionDigits: 0 })
     // },
     {
-      name: 'Total STRK Locked',
+      name: <FormattedMessage id="Total_STRK_Locked" />,
       img: TotalLockedImg,
       value: totalLocked
         .div(1e18)
@@ -672,14 +710,14 @@ const Staking = ({ settings }) => {
         .toLocaleString('en-US', { maximumFractionDigits: 0 })
     },
     {
-      name: 'Reserve Vault',
+      name: <FormattedMessage id="Reserve_Vault" />,
       img: AccumulatedFeesImg,
       value: `${reserves.toNumber().toLocaleString('en-US', {
         maximumFractionDigits: 3
       })} USDC`
     },
     {
-      name: 'Penalty STRK Emission',
+      name: <FormattedMessage id="Penalty_STRK_Emission" />,
       img: TotalStakedImg,
       value: `${strkEmission
         .div(1e18)
@@ -695,11 +733,11 @@ const Staking = ({ settings }) => {
     //   apr: `${stakeApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}%`
     // },
     {
-      name: 'Lock STRK',
+      name: <FormattedMessage id="Lock_STRK" />,
       text: [
-        `Lock STRK and earn platform revenue and penalty fees in unlocked STRK.`,
-        `The lock period is 12 weeks.`,
-        `Locked STRK will continue to earn fees after the locks expire if you do not withdraw.`
+        <FormattedMessage id="Lock_STRK_desc_1" />,
+        <FormattedMessage id="Lock_STRK_desc_2" />,
+        <FormattedMessage id="Lock_STRK_desc_3" />
       ],
       apr: `${lockApr.toLocaleString('en-US', { maximumFractionDigits: 0 })}%`
     }
@@ -707,8 +745,8 @@ const Staking = ({ settings }) => {
 
   const claim = [
     {
-      name: 'Claimable STRK',
-      description: 'Vested STRK',
+      name: <FormattedMessage id="Claimable_STRK" />,
+      description: <FormattedMessage id="Vested_STRK" />,
       value: `${
         isExcludedFromPenalty
           ? vests
@@ -721,13 +759,12 @@ const Staking = ({ settings }) => {
               .toNumber()
               .toLocaleString('en-US', { maximumFractionDigits: 3 })
       } STRK`,
-      claim: 'Claim',
+      claim: <FormattedMessage id="Claim" />,
       handler: withdraw
     },
     {
-      name: 'STRK in Vesting',
-      description:
-        'STRK amount that can be claimed with an early claim penalty',
+      name: <FormattedMessage id="STRK_in_Vesting" />,
+      description: <FormattedMessage id="STRK_in_Vesting_desc" />,
       value: `${
         isExcludedFromPenalty
           ? '0'
@@ -740,23 +777,23 @@ const Staking = ({ settings }) => {
       claim: ''
     },
     {
-      name: 'Claim all STRK above',
-      description: 'Early Exit Penalty',
+      name: <FormattedMessage id="Claim_all_STRK_above" />,
+      description: <FormattedMessage id="Early_Exit_Penalty" />,
       value: `${withdrawableBalance
         .div(1e18)
         .toNumber()
         .toLocaleString('en-US', { maximumFractionDigits: 3 })} STRK`,
-      claim: 'Claim with penalty',
+      claim: <FormattedMessage id="Claim_with_penalty" />,
       handler: () => setIsModalOpen(true)
     },
     {
-      name: 'Expired Locked STRK',
+      name: <FormattedMessage id="Expired_Locked_STRK" />,
       description: '',
       value: `${unlockable
         .div(1e18)
         .toNumber()
         .toLocaleString('en-US', { maximumFractionDigits: 3 })} STRK`,
-      claim: 'Withdraw',
+      claim: <FormattedMessage id="Withdraw" />,
       handler: withdrawExpiredLocks
     }
   ];
@@ -765,10 +802,14 @@ const Staking = ({ settings }) => {
     <MainLayout>
       <VaultContainer>
         <div className="header-container mt-2 mx-auto">
-          <div className="title">Revenue Share Staking</div>
+          <div className="title">
+            <FormattedMessage id="Revenue_Share_Staking" />
+          </div>
           <div className="info">
             <div className="item">
-              <div className="label">Total Locked</div>
+              <div className="label">
+                <FormattedMessage id="Total_Locked" />
+              </div>
               <div className="value">
                 ${' '}
                 {totalLocked
@@ -779,7 +820,9 @@ const Staking = ({ settings }) => {
               </div>
             </div>
             <div className="item">
-              <div className="label">Lock APR</div>
+              <div className="label">
+                <FormattedMessage id="Lock_APR" />
+              </div>
               <div className="value">
                 {lockApr.toLocaleString('en-US', {
                   maximumFractionDigits: 0
@@ -788,7 +831,9 @@ const Staking = ({ settings }) => {
               </div>
             </div>
             <div className="item">
-              <div className="label">Total Vested</div>
+              <div className="label">
+                <FormattedMessage id="Total_Vested" />
+              </div>
               <div className="value">
                 ${' '}
                 {totalStaked
@@ -799,7 +844,9 @@ const Staking = ({ settings }) => {
               </div>
             </div>
             <div className="item">
-              <div className="label">Vesting APR</div>
+              <div className="label">
+                <FormattedMessage id="Vesting_APR" />
+              </div>
               <div className="value">
                 {stakeApr.toLocaleString('en-US', {
                   maximumFractionDigits: 0
@@ -813,8 +860,8 @@ const Staking = ({ settings }) => {
           <div className="col">
             <div className="container">
               {overview.map((e, index) => (
-                <div>
-                  <div className="info_row" key={e.name}>
+                <div key={`overview-${index}`}>
+                  <div className="info_row">
                     <div>
                       <img className="subimage" src={e.img} alt={e.name} />
                       <p className="subtitle">{e.name}</p>
@@ -823,9 +870,7 @@ const Staking = ({ settings }) => {
                           placement="right"
                           title={
                             <div className="mb-2">
-                              This means the STRK emission per second at which
-                              penalized STRKs are distributed to STRK lock
-                              users.
+                              <FormattedMessage id="Penalty_STRK_Emission_help" />
                             </div>
                           }
                         >
@@ -845,7 +890,7 @@ const Staking = ({ settings }) => {
             </div>
 
             {input.map((e, index) => (
-              <div key={e.name} className="container">
+              <div key={`input-${index}`} className="container">
                 <div className="flex space-between mb-2 header">
                   <div className="flex">
                     <p className="title mr-1">{e.name}</p>
@@ -867,23 +912,25 @@ const Staking = ({ settings }) => {
                       <SQuestion src={IconQuestion} />
                     </Tooltip> */}
                   </div>
-                  <div className="APR">APR {e.apr}</div>
+                  <div className="APR">
+                    <FormattedMessage id="APR" /> {e.apr}
+                  </div>
                 </div>
                 <div className="mb-3">
                   {e.text.map((it, i) => (
-                    <>
-                      <span key={i} className="lock-text">
-                        {it}
-                      </span>
+                    <div key={`e-text-${i}`}>
+                      <span className="lock-text">{it}</span>
                       <br />
-                    </>
+                    </div>
                   ))}
                 </div>
                 <div className="input-bg mb-2">
                   <div className="flex align-center space-between balance_row mb-1">
-                    <p className="amount">Amount</p>
+                    <p className="amount">
+                      <FormattedMessage id="Amount" />
+                    </p>
                     <p className="balance">
-                      Balance{' '}
+                      <FormattedMessage id="Balance" />{' '}
                       {format(
                         strkBalance
                           .div(1e18)
@@ -941,7 +988,7 @@ const Staking = ({ settings }) => {
                         );
                       }}
                     >
-                      MAX
+                      <FormattedMessage id="MAX" />
                     </button>
                   </div>
                 </div>
@@ -961,9 +1008,13 @@ const Staking = ({ settings }) => {
                   }}
                 >
                   {index === 0 && approvePending && lockPending ? (
-                    <span>Pending...</span>
+                    <span>
+                      <FormattedMessage id="Pending..." />
+                    </span>
                   ) : (
-                    <>{isApprove() ? 'Approve' : e.name}</>
+                    <>
+                      {isApprove() ? <FormattedMessage id="Approve" /> : e.name}
+                    </>
                   )}
                 </button>
               </div>
@@ -971,9 +1022,13 @@ const Staking = ({ settings }) => {
 
             <div className="container">
               <div className="flex space-between mb header">
-                <p className="title">Claimable Fees</p>
+                <p className="title">
+                  <FormattedMessage id="Claimable_Fees" />
+                </p>
                 <p className="value">
-                  <span className="span-total">Total</span>{' '}
+                  <span className="span-total">
+                    <FormattedMessage id="Total" />
+                  </span>{' '}
                   {fees.length >= 2
                     ? fees[0]
                         .div(1e18)
@@ -987,7 +1042,10 @@ const Staking = ({ settings }) => {
               </div>
               <div className="fee_list input-bg mb-2">
                 {fees.map((e, index) => (
-                  <div key={index} className="flex align-center space-between">
+                  <div
+                    key={`fee-${index}`}
+                    className="flex align-center space-between"
+                  >
                     <div className="flex align-center">
                       <img
                         src={['coins/strk.png', 'coins/usdc.png'][index]}
@@ -1006,7 +1064,7 @@ const Staking = ({ settings }) => {
                 ))}
               </div>
               <p className="link text-right" onClick={getReward}>
-                Claim All{' '}
+                <FormattedMessage id="Claim_All" />{' '}
                 <svg
                   width="6"
                   height="9"
@@ -1026,7 +1084,7 @@ const Staking = ({ settings }) => {
           <div className="col">
             <div className="container">
               {claim.map((e, index) => (
-                <div key={e.name}>
+                <div key={`claim-${index}`}>
                   <div className="claim_row">
                     <p
                       className="subtitle"
@@ -1038,8 +1096,7 @@ const Staking = ({ settings }) => {
                           placement="right"
                           title={
                             <div className="mb-2">
-                              Early withdrawal from a vest will incur a penalty
-                              between 25-90% based on a linear schedule of time.
+                              <FormattedMessage id="Early_Widthraw_help" />
                             </div>
                           }
                         >
@@ -1076,7 +1133,9 @@ const Staking = ({ settings }) => {
 
             <div className="container">
               <div className="flex space-between mb header">
-                <p className="title">STRK Vests</p>
+                <p className="title">
+                  STRK <FormattedMessage id="Vests" />
+                </p>
                 <div className="flex align-center">
                   <p className="apr">
                     APR{' '}
@@ -1086,7 +1145,9 @@ const Staking = ({ settings }) => {
                     %
                   </p>
                   <p className="value">
-                    <span className="span-total">Total</span>{' '}
+                    <span className="span-total">
+                      <FormattedMessage id="Total" />
+                    </span>{' '}
                     {isExcludedFromPenalty
                       ? '0'
                       : vests
@@ -1104,7 +1165,7 @@ const Staking = ({ settings }) => {
               <div className="border flex flex-column center input-bg scroll-div">
                 {(isExcludedFromPenalty ? [] : vests).map((e, index) => (
                   <div
-                    key={e}
+                    key={`vest-${index}`}
                     className={`flex align-center space-between ${index <
                       vests.length - 1 && 'mb-2'}`}
                   >
@@ -1150,7 +1211,9 @@ const Staking = ({ settings }) => {
                         />
                       </svg>
 
-                      <p>No vesting found</p>
+                      <p>
+                        <FormattedMessage id="No_vesting_found" />
+                      </p>
                     </div>
                   </div>
                 )}
@@ -1159,7 +1222,9 @@ const Staking = ({ settings }) => {
 
             <div className="container">
               <div className="flex space-between mb header">
-                <p className="title">STRK Locks</p>
+                <p className="title">
+                  STRK <FormattedMessage id="Locks" />
+                </p>
                 <div className="flex align-center">
                   <p className="apr">
                     APR{' '}
@@ -1169,7 +1234,9 @@ const Staking = ({ settings }) => {
                     %
                   </p>
                   <p className="value">
-                    <span className="span-total">Total</span>{' '}
+                    <span className="span-total">
+                      <FormattedMessage id="Total" />
+                    </span>{' '}
                     {locks
                       .reduce(
                         (total, e) => total + e.amount.div(1e18).toNumber(),
@@ -1185,7 +1252,7 @@ const Staking = ({ settings }) => {
               <div className="border flex flex-column center input-bg scroll-div">
                 {locks.map((e, index) => (
                   <div
-                    key={e}
+                    key={`lock-${index}`}
                     className={`flex align-center space-between ${index <
                       locks.length - 1 && 'mb-2'}`}
                   >
@@ -1205,7 +1272,7 @@ const Staking = ({ settings }) => {
                       {moment.unix(e.unlockTime).format('DD/MM HH:mm')}
                     </p> */}
                     <p className="desktop-show">
-                      Expired at{' '}
+                      <FormattedMessage id="Expired_at" />{' '}
                       {moment.unix(e.unlockTime).format('DD/MM/YYYY HH:mm:ss')}
                     </p>
                   </div>
@@ -1231,7 +1298,9 @@ const Staking = ({ settings }) => {
                         />
                       </svg>
 
-                      <p>No locking found</p>
+                      <p>
+                        <FormattedMessage id="No_locking_found" />
+                      </p>
                     </div>
                   </div>
                 )}
@@ -1251,7 +1320,8 @@ const Staking = ({ settings }) => {
 };
 
 Staking.propTypes = {
-  settings: PropTypes.object
+  settings: PropTypes.object,
+  intl: intlShape.isRequired
 };
 
 Staking.defaultProps = {
@@ -1262,7 +1332,6 @@ const mapStateToProps = ({ account }) => ({
   settings: account.setting
 });
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, null)
-)(Staking);
+export default injectIntl(
+  compose(withRouter, connectAccount(mapStateToProps, null))(Staking)
+);

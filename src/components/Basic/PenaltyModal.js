@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
@@ -176,7 +177,7 @@ const ModalContent = styled.div`
 
 // const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin />;
 
-function PenaltyModal({ visible, onCancel, settings }) {
+function PenaltyModal({ visible, onCancel, settings, intl }) {
   const instance = useInstance(settings.walletConnected);
   const [strkPrice, setStrkPrice] = useState(0);
 
@@ -219,7 +220,11 @@ function PenaltyModal({ visible, onCancel, settings }) {
         )
       : await handleExit();
     if (tx) {
-      message.success('Claimed successfully.');
+      message.success(
+        intl.formatMessage({
+          id: 'Claim_successfully'
+        })
+      );
     }
     // else {
     //   message.error('Something went wrong while claiming reward.');
@@ -362,7 +367,8 @@ function PenaltyModal({ visible, onCancel, settings }) {
 PenaltyModal.propTypes = {
   visible: PropTypes.bool,
   settings: PropTypes.object,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
+  intl: intlShape.isRequired
 };
 
 PenaltyModal.defaultProps = {
@@ -375,7 +381,6 @@ const mapStateToProps = ({ account }) => ({
   settings: account.setting
 });
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, null)
-)(PenaltyModal);
+export default injectIntl(
+  compose(withRouter, connectAccount(mapStateToProps, null))(PenaltyModal)
+);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -172,7 +173,9 @@ const MarketTableWrapper = styled.div`
 function MarketTable({ columns, data, title, handleClickRow }) {
   return (
     <MarketTableWrapper>
-      <div className="all-title">{title}</div>
+      <div className="all-title">
+        <FormattedMessage id={title} />
+      </div>
       <Table
         columns={columns}
         dataSource={data}

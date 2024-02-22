@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Steps, Icon } from 'antd';
@@ -85,7 +86,9 @@ function ProposalHistory({ proposalInfo }) {
   return (
     <Card>
       <ProposalHistoryWrapper>
-        <p className="title">Proposal history</p>
+        <p className="title">
+          <FormattedMessage id="Proposal_history" />
+        </p>
         <div className="history-steps-wrapper">
           <Steps direction="vertical" current={getStepNumber()}>
             <Step

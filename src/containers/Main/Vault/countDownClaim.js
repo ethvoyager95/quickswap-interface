@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 import React, { useState, useEffect } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
@@ -256,19 +257,27 @@ function CountDownClaim({
                   <SBoxTime disabled>
                     <STimeNumber>
                       {countdownTime.countdownDays}
-                      <STimeText>Days :</STimeText>
+                      <STimeText>
+                        <FormattedMessage id="test" /> :
+                      </STimeText>
                     </STimeNumber>
                     <STimeNumber>
                       {countdownTime.countdownHours}
-                      <STimeText>Hours :</STimeText>
+                      <STimeText>
+                        <FormattedMessage id="Hours" /> :
+                      </STimeText>
                     </STimeNumber>
                     <STimeNumber>
                       {countdownTime.countdownMinutes}
-                      <STimeText>Min :</STimeText>
+                      <STimeText>
+                        <FormattedMessage id="Min" /> :
+                      </STimeText>
                     </STimeNumber>
                     <STimeNumber>
                       {countdownTime.countdownSeconds}
-                      <STimeText>Sec</STimeText>
+                      <STimeText>
+                        <FormattedMessage id="Sec" />
+                      </STimeText>
                     </STimeNumber>
                   </SBoxTime>
                 </STimeClaim>
@@ -311,7 +320,7 @@ function CountDownClaim({
                       disabled={valUnStake === 0 || valUnStake === ''}
                       onClick={handleUnStake}
                     >
-                      Unstake
+                      <FormattedMessage id="Unstake" />
                     </SBtnUnstake>
                     <Tooltip
                       placement="right"
@@ -325,7 +334,7 @@ function CountDownClaim({
                 <>
                   <SBoxAproving>
                     <SApproving onClick={handleApproveVstrk}>
-                      Approve Staking
+                      <FormattedMessage id="Approve_Staking" />
                     </SApproving>
                   </SBoxAproving>
                 </>
@@ -334,7 +343,9 @@ function CountDownClaim({
           )}
           {type === CLAIMBASE && (
             <SUntake>
-              <SClaim onClick={handleClainBaseReward}>Claim</SClaim>
+              <SClaim onClick={handleClainBaseReward}>
+                <FormattedMessage id="Claim" />
+              </SClaim>
               <Tooltip
                 placement="right"
                 title="You can only claim reward once daily"
@@ -345,7 +356,9 @@ function CountDownClaim({
           )}
           {type === CLAIMBOOST && (
             <SUntake>
-              <SClaim onClick={handleClainBootReward}>Claim</SClaim>
+              <SClaim onClick={handleClainBootReward}>
+                <FormattedMessage id="Claim" />
+              </SClaim>
               <Tooltip
                 placement="right"
                 title="You can only claim reward once monthly"
@@ -356,7 +369,9 @@ function CountDownClaim({
           )}
           {type === UNSTAKENFT && (
             <SUntake>
-              <SSUnTaked onClick={handleUnStakeNFT}>UnStake</SSUnTaked>
+              <SSUnTaked onClick={handleUnStakeNFT}>
+                <FormattedMessage id="UnStake" />
+              </SSUnTaked>
             </SUntake>
           )}
         </>

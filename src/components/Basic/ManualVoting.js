@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { Spin, Icon } from 'antd';
 import styled from 'styled-components';
 
@@ -60,21 +61,25 @@ function ManualVoting({ address, balance, isLoading }) {
   return (
     <ManualVotingWrapper>
       <div className="flex align-center just-center header-content">
-        <p>Confirm Transaction</p>
+        <p>
+          <FormattedMessage id="Confirm_Transaction" />
+        </p>
       </div>
       <div className="flex flex-column align-center just-center manual-voting-section">
         <p className="voting-count">
           {getBefore(balance)}
           <span>{getAfter(balance)}</span>
           {` `}
-          Votes
+          <FormattedMessage id="Votes" />
         </p>
         <span className="voting-address">
-          Manual Voting from{' '}
+          <FormattedMessage id="Manual_Voting_from" />{' '}
           {`${address.substr(0, 4)}...${address.substr(address.length - 4, 4)}`}
         </span>
         {isLoading && <Spin className="voting-spinner" indicator={antIcon} />}
-        <span className="voting-confirm">Confirm the transaction.</span>
+        <span className="voting-confirm">
+          <FormattedMessage id="Confirm_the_transaction" />
+        </span>
       </div>
     </ManualVotingWrapper>
   );
