@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -48,7 +48,7 @@ import {
 } from './style';
 import './overide.scss';
 
-function History({ settings, setSetting }) {
+function History({ settings, setSetting, intl }) {
   const [currentTab, setCurrentTab] = useState('all');
   const [dataTransactions, setDataTransaction] = useState([]);
   const [dataExportCSV, setDataExportCSV] = useState([]);
@@ -326,7 +326,9 @@ function History({ settings, setSetting }) {
           min={0}
           minLength={1}
           maxLength={79}
-          placeholder="Block Number"
+          placeholder={intl.formatMessage({
+            id: 'Block_Number'
+          })}
           onChange={e => handleInputBlockChange(e.target.value, 'from')}
           // block special character keypress
           onKeyPress={event => {
@@ -355,7 +357,9 @@ function History({ settings, setSetting }) {
           min={0}
           minLength={1}
           maxLength={79}
-          placeholder="Block Number"
+          placeholder={intl.formatMessage({
+            id: 'Block_Number'
+          })}
           onChange={e => handleInputBlockChange(e.target.value, 'to')}
           // block special character keypress
           onKeyPress={event => {
@@ -382,7 +386,7 @@ function History({ settings, setSetting }) {
         </Button>
         <Button
           className="button-clear"
-          danger
+          danger="true"
           ghost
           disabled={disabledFilterBlock}
           onClick={() => {
@@ -440,7 +444,7 @@ function History({ settings, setSetting }) {
         </Button>
         <Button
           className="button-clear"
-          danger
+          danger="true"
           ghost
           disabled={disabledBtnFilterAge}
           onClick={() => {
@@ -469,7 +473,9 @@ function History({ settings, setSetting }) {
         <Input
           className="input-address"
           value={fromAddressValue}
-          placeholder="Search by address e.g 0x..."
+          placeholder={intl.formatMessage({
+            id: 'Search_by_address'
+          })}
           onChange={e => handleInputAddressChange(e.target.value, 'from')}
         />
       </div>
@@ -483,7 +489,7 @@ function History({ settings, setSetting }) {
         </Button>
         <Button
           className="button-clear"
-          danger
+          danger="true"
           ghost
           disabled={disabledFilterFromAddress}
           onClick={() => {
@@ -509,7 +515,9 @@ function History({ settings, setSetting }) {
         <Input
           className="input-address"
           value={toAddressValue}
-          placeholder="Search by address e.g 0x..."
+          placeholder={intl.formatMessage({
+            id: 'Search_by_address'
+          })}
           onChange={e => handleInputAddressChange(e.target.value, 'to')}
         />
       </div>
@@ -523,7 +531,7 @@ function History({ settings, setSetting }) {
         </Button>
         <Button
           className="button-clear"
-          danger
+          danger="true"
           ghost
           disabled={disabledFilterToAddress}
           onClick={() => {
@@ -1071,7 +1079,8 @@ function History({ settings, setSetting }) {
 
 History.propTypes = {
   settings: PropTypes.object,
-  setSetting: PropTypes.func.isRequired
+  setSetting: PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
 History.defaultProps = {
@@ -1093,7 +1102,9 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, mapDispatchToProps)
-)(History);
+export default injectIntl(
+  compose(
+    withRouter,
+    connectAccount(mapStateToProps, mapDispatchToProps)
+  )(History)
+);

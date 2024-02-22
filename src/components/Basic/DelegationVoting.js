@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
@@ -88,36 +89,42 @@ const VotingWrapper = styled.div`
   }
 `;
 
-function DelegationVoting({ history, isLoading, onDelegate }) {
+function DelegationVoting({ history, isLoading, onDelegate, intl }) {
   const [delegateAddress, setDelegateAddress] = useState('');
   return (
     <VotingWrapper>
       <div className="flex align-center just-center header-content">
-        <p>Delegate Voting</p>
+        <p>
+          <FormattedMessage id="Delegate_Voting" />
+        </p>
       </div>
       <div className="flex flex-column voting-selection">
         <div className="flex align-center just-start">
-          <span className="address">Select and Address</span>
+          <span className="address">
+            <FormattedMessage id="Select_and_Address" />
+          </span>
         </div>
         <div className="detail">
-          If you know the address you wish to delegate to, enter it below. If
-          not, you can view the Delegate Leaderboard to find a political party
-          you wish to support.
+          <FormattedMessage id="Select_and_Address_desc" />
         </div>
       </div>
       <div className="flex flex-column voting-selection">
         <div className="flex align-center just-between">
-          <span className="address">Delegate Address</span>
+          <span className="address">
+            <FormattedMessage id="Delegate_Address" />
+          </span>
           <span
             className="leaderboard pointer"
             onClick={() => history.push('/vote/leaderboard')}
           >
-            Delegate Leaderboard
+            <FormattedMessage id="Delegate_Leaderboard" />
           </span>
         </div>
         <Input
           value={delegateAddress}
-          placeholder="Enter a 0x address"
+          placeholder={intl.formatMessage({
+            id: 'Enter_0x_address'
+          })}
           onChange={e => setDelegateAddress(e.target.value)}
         />
         <Button
@@ -125,7 +132,8 @@ function DelegationVoting({ history, isLoading, onDelegate }) {
           disabled={isLoading}
           onClick={() => onDelegate(delegateAddress)}
         >
-          {isLoading && <Icon type="loading" />} Delegate Votes
+          {isLoading && <Icon type="loading" />}{' '}
+          <FormattedMessage id="Delegate_Votes" />
         </Button>
       </div>
     </VotingWrapper>
@@ -135,7 +143,8 @@ function DelegationVoting({ history, isLoading, onDelegate }) {
 DelegationVoting.propTypes = {
   history: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  onDelegate: PropTypes.func.isRequired
+  onDelegate: PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
-export default compose(withRouter)(DelegationVoting);
+export default injectIntl(compose(withRouter)(DelegationVoting));

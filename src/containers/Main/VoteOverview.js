@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import React, { useState, useEffect, useCallback } from 'react';
-import { injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -405,9 +405,12 @@ function VoteOverview({ settings, getVoters, getProposalById, match, intl }) {
                       onClick={() => handleUpdateProposal('Cancel')}
                     >
                       {isCancelLoading && <Icon type="loading" />}{' '}
-                      {cancelStatus === 'pending' || cancelStatus === 'failure'
-                        ? 'Cancel'
-                        : 'Cancelled'}
+                      {cancelStatus === 'pending' ||
+                      cancelStatus === 'failure' ? (
+                        <FormattedMessage id="Cancel" />
+                      ) : (
+                        <FormattedMessage id="Cancelled" />
+                      )}
                     </Button>
                     {proposalInfo.state === 'Succeeded' && (
                       <Button
@@ -416,9 +419,11 @@ function VoteOverview({ settings, getVoters, getProposalById, match, intl }) {
                         onClick={() => handleUpdateProposal('Queue')}
                       >
                         {isLoading && <Icon type="loading" />}{' '}
-                        {status === 'pending' || status === 'failure'
-                          ? 'Queue'
-                          : 'Queued'}
+                        {status === 'pending' || status === 'failure' ? (
+                          <FormattedMessage id="Queue" />
+                        ) : (
+                          <FormattedMessage id="Queued" />
+                        )}
                       </Button>
                     )}
                     {proposalInfo.state === 'Queued' && (
@@ -432,9 +437,11 @@ function VoteOverview({ settings, getVoters, getProposalById, match, intl }) {
                         onClick={() => handleUpdateProposal('Execute')}
                       >
                         {isLoading && <Icon type="loading" />}{' '}
-                        {status === 'pending' || status === 'failure'
-                          ? 'Execute'
-                          : 'Executed'}
+                        {status === 'pending' || status === 'failure' ? (
+                          <FormattedMessage id="Execute" />
+                        ) : (
+                          <FormattedMessage id="Executed" />
+                        )}
                       </Button>
                     )}
                     {proposalInfo.state === 'Queued' && !isPossibleExcuted && (
@@ -453,8 +460,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match, intl }) {
                 proposalInfo.state !== 'Canceled' &&
                 proposerVotingWeight >= proposalThreshold && (
                   <p className="center warning">
-                    You can&apos;t cancel the proposal while the proposer voting
-                    weight meets proposal threshold
+                    <FormattedMessage id="You_can_not_cancel_proposal" />
                   </p>
                 )}
             </div>

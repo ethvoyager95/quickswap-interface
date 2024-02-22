@@ -313,6 +313,7 @@ const VaultContainer = styled.div`
   }
 
   .max-button {
+    white-space: nowrap;
     padding: 5px 20px;
     color: var(--color-text-main);
     background: linear-gradient(
@@ -860,7 +861,7 @@ const Staking = ({ settings, intl }) => {
             <div className="container">
               {overview.map((e, index) => (
                 <div key={`overview-${index}`}>
-                  <div className="info_row" key={e.name}>
+                  <div className="info_row">
                     <div>
                       <img className="subimage" src={e.img} alt={e.name} />
                       <p className="subtitle">{e.name}</p>
@@ -917,12 +918,10 @@ const Staking = ({ settings, intl }) => {
                 </div>
                 <div className="mb-3">
                   {e.text.map((it, i) => (
-                    <>
-                      <span key={i} className="lock-text">
-                        {it}
-                      </span>
+                    <div key={`e-text-${i}`}>
+                      <span className="lock-text">{it}</span>
                       <br />
-                    </>
+                    </div>
                   ))}
                 </div>
                 <div className="input-bg mb-2">
@@ -1013,7 +1012,9 @@ const Staking = ({ settings, intl }) => {
                       <FormattedMessage id="Pending..." />
                     </span>
                   ) : (
-                    <>{isApprove() ? 'Approve' : e.name}</>
+                    <>
+                      {isApprove() ? <FormattedMessage id="Approve" /> : e.name}
+                    </>
                   )}
                 </button>
               </div>

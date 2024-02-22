@@ -702,7 +702,7 @@ function Staking({ settings, setSetting, intl }) {
   useMemo(() => {
     if (Number(val) > +userInfo?.availableNumber) {
       setMessErr({
-        mess: 'The amount has exceeded your balance. Try again!',
+        mess: <FormattedMessage id="The_amount_has_exceeded_balance" />,
         show: true
       });
     }
@@ -710,7 +710,7 @@ function Staking({ settings, setSetting, intl }) {
   useMemo(() => {
     if (Number(valueNFTUnStake) > +userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceeded your balance. Try again!',
+        mess: <FormattedMessage id="The_amount_has_exceeded_balance" />,
         show: true
       });
     }
@@ -735,7 +735,7 @@ function Staking({ settings, setSetting, intl }) {
     }
     if (number !== '' && Number(number) === 0) {
       setMessErr({
-        mess: 'Invalid amount',
+        mess: <FormattedMessage id="Invalid_amount" />,
         show: true
       });
       setDisabledBtn(true);
@@ -748,14 +748,14 @@ function Staking({ settings, setSetting, intl }) {
     }
     if (Number(number) > +userInfo?.availableNumber) {
       setMessErr({
-        mess: 'The amount has exceeded your balance. Try again!',
+        mess: <FormattedMessage id="The_amount_has_exceeded_balance" />,
         show: true
       });
       setDisabledBtn(true);
     }
     if (Number(number) && !+userInfo?.availableNumber) {
       setMessErr({
-        mess: 'The amount has exceeded your balance. Try again!',
+        mess: <FormattedMessage id="The_amount_has_exceeded_balance" />,
         show: true
       });
       setDisabledBtn(true);
@@ -811,7 +811,7 @@ function Staking({ settings, setSetting, intl }) {
     }
     if (number !== '' && Number(number) === 0) {
       setMessErrUnStake({
-        mess: 'Invalid amount',
+        mess: <FormattedMessage id="Invalid_amount" />,
         show: true
       });
       setDisabledBtnUn(true);
@@ -824,14 +824,14 @@ function Staking({ settings, setSetting, intl }) {
     }
     if (number > +userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceeded your balance. Try again!',
+        mess: <FormattedMessage id="The_amount_has_exceeded_balance" />,
         show: true
       });
       setDisabledBtnUn(true);
     }
     if (number && !+userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceeded your balance. Try again!',
+        mess: <FormattedMessage id="The_amount_has_exceeded_balance" />,
         show: true
       });
       setDisabledBtnUn(true);
@@ -881,7 +881,7 @@ function Staking({ settings, setSetting, intl }) {
     if (valueDecimals < MINIMUM_VALUE) {
       setVal(0);
       setMessErr({
-        mess: 'Invalid amount',
+        mess: <FormattedMessage id="Invalid_amount" />,
         show: true
       });
     } else if (valueDecimals > MIXIMUM_IPUT) {
@@ -918,7 +918,7 @@ function Staking({ settings, setSetting, intl }) {
     if (valueDecimals < MINIMUM_VALUE) {
       setValUnStake(0);
       setMessErrUnStake({
-        mess: 'Invalid amount',
+        mess: <FormattedMessage id="Invalid_amount" />,
         show: true
       });
     } else if (valueDecimals > MIXIMUM_IPUT) {
@@ -1007,11 +1007,11 @@ function Staking({ settings, setSetting, intl }) {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Decline transaction');
+          setTextErr(<FormattedMessage id="Decline_transaction" />);
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Something went wrong!');
+          setTextErr(<FormattedMessage id="Something_went_wrong" />);
         }
         throw err;
       });
@@ -1038,11 +1038,11 @@ function Staking({ settings, setSetting, intl }) {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Decline transaction');
+          setTextErr(<FormattedMessage id="Decline_transaction" />);
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Something went wrong!');
+          setTextErr(<FormattedMessage id="Something_went_wrong" />);
         }
         throw err;
       });
@@ -1069,11 +1069,11 @@ function Staking({ settings, setSetting, intl }) {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Decline transaction');
+          setTextErr(<FormattedMessage id="Decline_transaction" />);
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Something went wrong!');
+          setTextErr(<FormattedMessage id="Something_went_wrong" />);
         }
         throw err;
       });
@@ -1083,14 +1083,14 @@ function Staking({ settings, setSetting, intl }) {
   const handleStake = async () => {
     if (val > +userInfo?.availableNumber) {
       setMessErr({
-        mess: 'The amount has exceeded your balance. Try again!',
+        mess: <FormattedMessage id="The_amount_has_exceeded_balance" />,
         show: true
       });
       return;
     }
     if (!val || val === 0) {
       setMessErr({
-        mess: 'Invalid amount',
+        mess: <FormattedMessage id="Invalid_amount" />,
         show: true
       });
     } else {
@@ -1106,7 +1106,7 @@ function Staking({ settings, setSetting, intl }) {
         : new BigNumber(val);
       if (valueBigNumber.isZero()) {
         setMessErr({
-          mess: 'Invalid amount',
+          mess: <FormattedMessage id="Invalid_amount" />,
           show: true
         });
         setiIsConfirm(false);
@@ -1129,7 +1129,9 @@ function Staking({ settings, setSetting, intl }) {
         .then(res => {
           if (res) {
             setTxhash(res.transactionHash);
-            setTextSuccess('Stake STRK-ETH successfully');
+            setTextSuccess(
+              <FormattedMessage id="Stake_STRK_ETH_successfully" />
+            );
             setiIsConfirm(false);
             setIsSuccess(true);
             setIsLoadingBtn(false);
@@ -1142,12 +1144,12 @@ function Staking({ settings, setSetting, intl }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingBtn(false);
-            setTextErr('Decline transaction');
+            setTextErr(<FormattedMessage id="Decline_transaction" />);
           } else {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingBtn(false);
-            setTextErr('Something went wrong!');
+            setTextErr(<FormattedMessage id="Something_went_wrong" />);
           }
           throw err;
         });
@@ -1161,14 +1163,14 @@ function Staking({ settings, setSetting, intl }) {
   const handleUnStake = async () => {
     if (valUnStake > +userInfo?.amountNumber) {
       setMessErrUnStake({
-        mess: 'The amount has exceeded your balance. Try again!',
+        mess: <FormattedMessage id="The_amount_has_exceeded_balance" />,
         show: true
       });
       return;
     }
     if (!valUnStake || valUnStake === 0) {
       setMessErrUnStake({
-        mess: 'Invalid amount',
+        mess: <FormattedMessage id="Invalid_amount" />,
         show: true
       });
     } else {
@@ -1201,7 +1203,9 @@ function Staking({ settings, setSetting, intl }) {
         )
         .then(res => {
           setTxhash(res.transactionHash);
-          setTextSuccess('Unstake STRK-ETH successfully');
+          setTextSuccess(
+            <FormattedMessage id="Unstake_STRK_ETH_successfully" />
+          );
           setiIsConfirm(false);
           setIsSuccess(true);
           setIsLoadingUnStake(false);
@@ -1213,12 +1217,12 @@ function Staking({ settings, setSetting, intl }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingUnStake(false);
-            setTextErr('Decline transaction');
+            setTextErr(<FormattedMessage id="Decline_transaction" />);
           } else {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingUnStake(false);
-            setTextErr('Something went wrong!');
+            setTextErr(<FormattedMessage id="Something_went_wrong" />);
           }
           throw err;
         });
@@ -1244,18 +1248,20 @@ function Staking({ settings, setSetting, intl }) {
           setTxhash(res.transactionHash);
           setiIsConfirm(false);
           setIsSuccess(true);
-          setTextSuccess('Claim Base Reward successfully');
+          setTextSuccess(
+            <FormattedMessage id="Claim_Base_Reward_successfully" />
+          );
         }
       })
       .catch(err => {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Decline transaction');
+          setTextErr(<FormattedMessage id="Decline_transaction" />);
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Something went wrong!');
+          setTextErr(<FormattedMessage id="Something_went_wrong" />);
         }
         throw err;
       });
@@ -1275,18 +1281,20 @@ function Staking({ settings, setSetting, intl }) {
           setTxhash(res.transactionHash);
           setiIsConfirm(false);
           setIsSuccess(true);
-          setTextSuccess('Claim Boost Reward successfully');
+          setTextSuccess(
+            <FormattedMessage id="Claim_Boost_Reward_successfully" />
+          );
         }
       })
       .catch(err => {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Decline transaction');
+          setTextErr(<FormattedMessage id="Decline_transaction" />);
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr('Something went wrong!');
+          setTextErr(<FormattedMessage id="Something_went_wrong" />);
         }
         throw err;
       });
@@ -1309,9 +1317,7 @@ function Staking({ settings, setSetting, intl }) {
         setiIsConfirm(true);
         setIsStakeNFT(false);
         setIsDisableStakeNFTDialog(true);
-        setMessConfirm(
-          'Do not close the popup while the transaction is being executed'
-        );
+        setMessConfirm(<FormattedMessage id="Do_not_close_popup_while" />);
         const lstAllIdsStake = _.map(lstAllIds, 'token_id');
         await methods
           .send(
@@ -1333,7 +1339,9 @@ function Staking({ settings, setSetting, intl }) {
                 setiIsConfirm(false);
                 setIsDisableStakeNFTDialog(false);
                 setIsSuccess(true);
-                setTextSuccess('Stake NFT successfully');
+                setTextSuccess(
+                  <FormattedMessage id="Stake_NFT_successfully" />
+                );
                 setMessConfirm('');
               }, TIME_UPDATE_NFT);
             }
@@ -1343,14 +1351,14 @@ function Staking({ settings, setSetting, intl }) {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setIsDisableStakeNFTDialog(false);
-              setTextErr('Decline transaction');
+              setTextErr(<FormattedMessage id="Decline_transaction" />);
               setValueNFTStake('');
               setMessConfirm('');
             } else {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setIsDisableStakeNFTDialog(false);
-              setTextErr('Something went wrong!');
+              setTextErr(<FormattedMessage id="Something_went_wrong" />);
               setValueNFTStake('');
               setMessConfirm('');
             }
@@ -1374,9 +1382,7 @@ function Staking({ settings, setSetting, intl }) {
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
         setIsDisableUnStakeNFTDialog(true);
-        setMessConfirm(
-          'Do not close the popup while the transaction is being executed'
-        );
+        setMessConfirm(<FormattedMessage id="Do_not_close_popup_while" />);
         await methods
           .send(
             instance,
@@ -1395,7 +1401,9 @@ function Staking({ settings, setSetting, intl }) {
               setTimeout(() => {
                 setiIsConfirm(false);
                 setIsDisableUnStakeNFTDialog(false);
-                setTextSuccess('Unstake NFT successfully');
+                setTextSuccess(
+                  <FormattedMessage id="Unstake_NFT_successfully" />
+                );
                 setMessConfirm('');
 
                 setIsSuccess(true);
@@ -1408,14 +1416,14 @@ function Staking({ settings, setSetting, intl }) {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setIsDisableUnStakeNFTDialog(false);
-              setTextErr('Decline transaction');
+              setTextErr(<FormattedMessage id="Decline_transaction" />);
               setMessConfirm('');
             } else {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
               setIsDisableUnStakeNFTDialog(false);
-              setTextErr('Something went wrong!');
+              setTextErr(<FormattedMessage id="Something_went_wrong" />);
               setMessConfirm('');
             }
             throw err;

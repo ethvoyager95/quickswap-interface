@@ -456,12 +456,10 @@ function Liquidator({ settings, setSetting }) {
     const maxRepayBigNumber = new BigNumber(userInfo.maxRepayAmountEther);
 
     if (repayValueBigNumber.gt(balanceBigNumber)) {
-      setErrMess(
-        'You have input the number higher than your balance. Try again'
-      );
+      setErrMess(<FormattedMessage id="You_have_input_higher_than_balance" />);
     } else if (repayValueBigNumber.gt(maxRepayBigNumber)) {
       setErrMess(
-        'You have input the number higher than max repay amount. Try again'
+        <FormattedMessage id="You_have_input_higher_than_max_repay" />
       );
     } else {
       setErrMess('');
@@ -524,13 +522,13 @@ function Liquidator({ settings, setSetting }) {
         setMess('');
       }
       if (+userInfo.accHealth > 1) {
-        setMess('This account is healthy and can not be liquidated');
+        setMess(<FormattedMessage id="This_account_is_healthy" />);
       }
       if (+userInfo.accHealth <= 1) {
-        setMess('This account can be liquidated');
+        setMess(<FormattedMessage id="This_account_can_be_liquidated" />);
       }
     } else {
-      setMess('Please input a valid address');
+      setMess(<FormattedMessage id="Please_input_valid_address" />);
     }
   }, [selectedUserAddress, userInfo]);
 
@@ -810,7 +808,7 @@ function Liquidator({ settings, setSetting }) {
             </div>
             <div className="item">
               <div>
-                <FormattedMessage id="Asset_to_Repay" />
+                <FormattedMessage id="Asset_To_Repay" />
               </div>
               {isLoadingInfo ? (
                 <div>-</div>
@@ -847,7 +845,7 @@ function Liquidator({ settings, setSetting }) {
             </div>
             <div className="item">
               <div>
-                <FormattedMessage id="Asset_to_Seize" />
+                <FormattedMessage id="Asset_To_Seize" />
               </div>
               {isLoadingInfo ? (
                 <div>-</div>

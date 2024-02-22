@@ -423,7 +423,8 @@ function STRK({ settings }) {
             .dividedBy(
               new BigNumber(totalDistributed).plus(new BigNumber(remainAmount))
             )
-            .multipliedBy(100)}
+            .multipliedBy(100)
+            .toNumber()}
           strokeColor="#277ee6"
           strokeWidth={7}
           showInfo={false}

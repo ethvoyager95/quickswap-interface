@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
@@ -152,13 +153,13 @@ function ConnectModal({
     if (metamaskError && metamaskError.message === constants.NOT_INSTALLED) {
       return (
         <p className="center">
-          We could not locate a supported web3 browser extension.
+          <FormattedMessage id="We_could_not_locate" />
           <a
             href="https://metamask.io/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Download MetaMask here.
+            <FormattedMessage id="Download_MetaMask_here" />
           </a>
         </p>
       );
@@ -167,7 +168,11 @@ function ConnectModal({
       return <span>{metamaskError.message}</span>;
     }
     if (awaiting === 'metamask') {
-      return <span>MetaMask loading...</span>;
+      return (
+        <span>
+          <FormattedMessage id="MetaMask_loading" />
+        </span>
+      );
     }
     return null;
   };
@@ -176,13 +181,13 @@ function ConnectModal({
     if (bitkeepError && bitkeepError.message === constants.NOT_INSTALLED) {
       return (
         <p className="center">
-          We could not locate a supported web3 browser extension.
+          <FormattedMessage id="We_could_not_locate" />
           <a
             href="https://bitkeep.com/download"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Download Bitkeep here.
+            <FormattedMessage id="Download_Bitkeep_here" />
           </a>
         </p>
       );
@@ -191,7 +196,11 @@ function ConnectModal({
       return <span>{bitkeepError.message}</span>;
     }
     if (awaiting === 'bitkeep') {
-      return <span>Bitkepp loading...</span>;
+      return (
+        <span>
+          <FormattedMessage id="Bitkeep_loading" />
+        </span>
+      );
     }
     return null;
   };
@@ -203,13 +212,13 @@ function ConnectModal({
     ) {
       return (
         <p className="center">
-          We could not locate a supported web3 browser extension.
+          <FormattedMessage id="We_could_not_locate" />
           <a
             href="https://chrome.google.com/webstore/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Download Trust Wallet here.
+            <FormattedMessage id="Download_Trust_Wallet_here" />
           </a>
         </p>
       );
@@ -218,7 +227,11 @@ function ConnectModal({
       return <span>{trustwalletError.message}</span>;
     }
     if (awaiting === 'trustwallet') {
-      return <span>Trust Wallet loading...</span>;
+      return (
+        <span>
+          <FormattedMessage id="Trust_Wallet_loading" />
+        </span>
+      );
     }
     return null;
   };
@@ -230,13 +243,13 @@ function ConnectModal({
     ) {
       return (
         <p className="center">
-          We could not locate a supported web3 browser extension.
+          <FormattedMessage id="We_could_not_locate" />
           <a
             href="https://chrome.google.com/webstore/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Download Coinbase Wallet here.
+            <FormattedMessage id="Download_Coinbase_Wallet_here" />
           </a>
         </p>
       );
@@ -245,7 +258,11 @@ function ConnectModal({
       return <span>{coinbasewalletError.message}</span>;
     }
     if (awaiting === 'coinbase') {
-      return <span>Coinbase Wallet loading...</span>;
+      return (
+        <span>
+          <FormattedMessage id="Coinbase_Wallet_loading" />
+        </span>
+      );
     }
     return null;
   };
@@ -544,7 +561,7 @@ function ConnectModal({
           </div>
         </div>
         <div className="terms">
-          By connecting, I accept Strike’s{' '}
+          <FormattedMessage id="By_connecting" />{' '}
           <a href="https://strike.org/terms" target="_blank" rel="noreferrer">
             Terms of Service
           </a>

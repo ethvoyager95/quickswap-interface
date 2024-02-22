@@ -173,7 +173,9 @@ function DelegationTypeModal({
             <div className="flex align-center just-between">
               <div className="flex align-center">
                 <img src={greenCheckImg} alt="check" className="check-image" />
-                <span>Delegate Voting</span>
+                <span>
+                  <FormattedMessage id="Delegate_Voting" />
+                </span>
               </div>
               {delegateStatus !== 'delegate' ? (
                 <img src={arrowRightImg} alt="arrow" className="arrow-image" />
@@ -184,9 +186,7 @@ function DelegationTypeModal({
               )}
             </div>
             <div className="description">
-              This option allows you to delegate your votes to another Ethereum
-              address. You never send Strike, only your voting rights, and can
-              undelegate at any time.
+              <FormattedMessage id="Delegate_Voting_desc" />
             </div>
           </div>
         </div>

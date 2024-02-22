@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { connectAccount } from 'core';
@@ -70,7 +71,7 @@ function Footer({ settings }) {
             target="_blank"
             rel="noreferrer"
           >
-            Latest Block:{' '}
+            <FormattedMessage id="Latest_Block" />:{' '}
             <span className="block-number">
               {settings.latestBlockNumber || 0}
             </span>
