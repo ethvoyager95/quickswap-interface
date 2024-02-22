@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
@@ -192,7 +193,9 @@ function NftMintModal({ visible, onCancel, settings }) {
           rel="noreferrer"
         >
           <img src={DegenApeLogo} alt="degen_ape_logo" />
-          <span>Degen APE Strike Club</span>
+          <span>
+            <FormattedMessage id="Degen_APE_Strike_Club" />
+          </span>
         </a>
         <div className="flex align-center just-center header-content">
           {/* <span>Presale starts on 21th Jan at 12:00 am UTC</span> */}
@@ -200,7 +203,9 @@ function NftMintModal({ visible, onCancel, settings }) {
         </div>
         <div className="flex flex-column info-wrapper">
           <div className="item">
-            <span className="label">ETH BALANCE</span>
+            <span className="label">
+              <FormattedMessage id="ETH_BALANCE" />
+            </span>
             <span className="value">
               {ethBalance
                 .div(1e18)
@@ -211,7 +216,9 @@ function NftMintModal({ visible, onCancel, settings }) {
           </div>
 
           <div className="item">
-            <span className="label">AMOUNT</span>
+            <span className="label">
+              <FormattedMessage id="AMOUNT" />
+            </span>
             <div className="amount_area">
               <Icon
                 type="minus"
@@ -230,12 +237,14 @@ function NftMintModal({ visible, onCancel, settings }) {
               />
             </div>
             <Button className="max-btn" onClick={() => setAmount(30)}>
-              MAX
+              <FormattedMessage id="MAX" />
             </Button>
           </div>
 
           <div className="item">
-            <span className="label">TOTAL PRICE</span>
+            <span className="label">
+              <FormattedMessage id="TOTAL_PRICE" />
+            </span>
             <span className="value">
               {totalPrice
                 .div(1e18)
@@ -250,7 +259,8 @@ function NftMintModal({ visible, onCancel, settings }) {
             className="mint-btn"
             onClick={() => handleMint()}
           >
-            {isLoading && <Icon type="loading" />} MINT
+            {isLoading && <Icon type="loading" />}{' '}
+            <FormattedMessage id="MINT" />
           </Button>
         </div>
       </ModalContent>

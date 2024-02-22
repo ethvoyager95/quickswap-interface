@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { compose } from 'recompose';
@@ -325,7 +326,9 @@ function Rewards({ settings }) {
                         lg={{ span: 4 }}
                         className="per-day right"
                       >
-                        <p className="mobile-label">Per day</p>
+                        <p className="mobile-label">
+                          <FormattedMessage id="Per_Day" />
+                        </p>
                         <p>
                           {new BigNumber(item.supplierDailyStrike)
                             .plus(new BigNumber(item.borrowerDailyStrike))
@@ -339,7 +342,9 @@ function Rewards({ settings }) {
                         lg={{ span: 4 }}
                         className="supply-apy right"
                       >
-                        <p className="mobile-label">Supply APY</p>
+                        <p className="mobile-label">
+                          <FormattedMessage id="Supply_APY" />
+                        </p>
                         <p>
                           {shortenNumberFormatter(
                             new BigNumber(item.supplyStrikeApy).isLessThan(0.01)
@@ -356,7 +361,9 @@ function Rewards({ settings }) {
                         lg={{ span: 4 }}
                         className="borrow-apy right"
                       >
-                        <p className="mobile-label">Borrow APY</p>
+                        <p className="mobile-label">
+                          <FormattedMessage id="Borrow_APY" />
+                        </p>
                         <p>
                           {shortenNumberFormatter(
                             new BigNumber(item.borrowStrikeApy).isLessThan(0.01)

@@ -222,14 +222,16 @@ function Proposal({
           <Row>
             <Column xs="12" sm="7" className="description">
               <Label size="16">{proposal.id}</Label>
-              <Label size="16">{proposal.state}</Label>
+              <Label size="16">
+                <FormattedMessage id={proposal.state} />
+              </Label>
               <Label size="16">
                 {moment(proposal.createdAt).format('MMMM Do, YYYY')}
               </Label>
             </Column>
             <Column xs="12" sm="5" className="description">
               <div className={`orange-text ${getStatus(proposal)}-btn`}>
-                {getStatus(proposal)}
+                <FormattedMessage id={getStatus(proposal)} />
               </div>
               <Label size="16">{getRemainTime(proposal)}</Label>
             </Column>

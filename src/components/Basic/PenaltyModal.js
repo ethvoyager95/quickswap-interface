@@ -248,13 +248,18 @@ function PenaltyModal({ visible, onCancel, settings, intl }) {
           alt="close"
           onClick={onCancel}
         />
-        <p className="title">Claim with penalty</p>
+        <p className="title">
+          <FormattedMessage id="Claim_with_penalty" />
+        </p>
         <div className="modal-body">
           <div className="input-bg mb-2">
             <div className="flex align-center space-between balance_row">
-              <p className="amount">Amount</p>
+              <p className="amount">
+                <FormattedMessage id="Amount" />
+              </p>
               <p className="balance">
-                Max Claimable {withdrawableBalance.div(1e18).toFixed(3)}{' '}
+                <FormattedMessage id="Max_Claimable" />{' '}
+                {withdrawableBalance.div(1e18).toFixed(3)}{' '}
                 <span className="span-strk">STRK</span>
               </p>
             </div>
@@ -282,7 +287,7 @@ function PenaltyModal({ visible, onCancel, settings, intl }) {
                   setIsMax(true);
                 }}
               >
-                MAX
+                <FormattedMessage id="MAX" />
               </button>
             </div>
           </div>
@@ -308,7 +313,9 @@ function PenaltyModal({ visible, onCancel, settings, intl }) {
             </button>
           </div> */}
           <div className="info">
-            <p>Released STRK (Vested)</p>
+            <p>
+              <FormattedMessage id="Released_STRK_Vested" />
+            </p>
             <div className="flex">
               <span className="value">
                 {unlockedBalance.div(1e18).toFixed(3)}
@@ -317,14 +324,18 @@ function PenaltyModal({ visible, onCancel, settings, intl }) {
             </div>
           </div>
           <div className="info">
-            <p>Vesting STRK</p>
+            <p>
+              <FormattedMessage id="Vesting_STRK" />
+            </p>
             <div className="flex">
               <span className="value">{totalEarned.div(1e18).toFixed(3)}</span>
               <span className="span-strk">&nbsp;STRK</span>
             </div>
           </div>
           <div className="info">
-            <p>Early Claimed Penalty</p>
+            <p>
+              <FormattedMessage id="Early_Claimed_Penalty" />
+            </p>
             <div className="flex">
               <span className="value">
                 {calcPenaltyAmount(
@@ -339,7 +350,9 @@ function PenaltyModal({ visible, onCancel, settings, intl }) {
             </div>
           </div>
           <div className="info">
-            <p>You Will Receive</p>
+            <p>
+              <FormattedMessage id="You_Will_Receive" />
+            </p>
             <div className="flex">
               <span className="value">{claimAmount}</span>
               <span className="span-strk">&nbsp;STRK</span>
@@ -357,7 +370,7 @@ function PenaltyModal({ visible, onCancel, settings, intl }) {
             withdrawableBalance.lt(new BigNumber(claimAmount).times(1e18))
           }
         >
-          Confirm
+          <FormattedMessage id="Confirm" />
         </button>
       </ModalContent>
     </Modal>

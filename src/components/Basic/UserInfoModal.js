@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
@@ -92,17 +93,23 @@ function UserInfoModal({ visible, onCancel, available, settings }) {
           alt="close"
           onClick={onCancel}
         />
-        <div className="header">STRIKE Balance</div>
+        <div className="header">
+          <FormattedMessage id="STRIKE_Balance" />
+        </div>
         <div className="flex align-center just-center header-content">
           <img src={logoImg} alt="logo" className="logo-image" />
         </div>
         <div className="flex flex-column info-wrapper">
           <div className="description">
-            <p className="label">Available Credit</p>
+            <p className="label">
+              <FormattedMessage id="Available_Credit" />
+            </p>
             <p className="value">{available}</p>
           </div>
           <div className="description">
-            <p className="label">Supply Balance</p>
+            <p className="label">
+              <FormattedMessage id="Supply_Balance" />
+            </p>
             <p className="value">
               <AnimatedNumber
                 value={getBigNumber(settings.totalSupplyBalance)
@@ -114,7 +121,9 @@ function UserInfoModal({ visible, onCancel, available, settings }) {
             </p>
           </div>
           <div className="description">
-            <p className="label">Borrow Balance</p>
+            <p className="label">
+              <FormattedMessage id="Borrow_Balance" />
+            </p>
             <p className="value">
               <AnimatedNumber
                 value={getBigNumber(settings.totalBorrowBalance)

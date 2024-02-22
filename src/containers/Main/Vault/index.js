@@ -1007,11 +1007,11 @@ function Staking({ settings, setSetting, intl }) {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Decline_transaction" />);
+          setTextErr('Decline_transaction');
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Something_went_wrong" />);
+          setTextErr('Something_went_wrong');
         }
         throw err;
       });
@@ -1038,11 +1038,11 @@ function Staking({ settings, setSetting, intl }) {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Decline_transaction" />);
+          setTextErr('Decline_transaction');
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Something_went_wrong" />);
+          setTextErr('Something_went_wrong');
         }
         throw err;
       });
@@ -1069,11 +1069,11 @@ function Staking({ settings, setSetting, intl }) {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Decline_transaction" />);
+          setTextErr('Decline_transaction');
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Something_went_wrong" />);
+          setTextErr('Something_went_wrong');
         }
         throw err;
       });
@@ -1144,12 +1144,12 @@ function Staking({ settings, setSetting, intl }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingBtn(false);
-            setTextErr(<FormattedMessage id="Decline_transaction" />);
+            setTextErr('Decline_transaction');
           } else {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingBtn(false);
-            setTextErr(<FormattedMessage id="Something_went_wrong" />);
+            setTextErr('Something_went_wrong');
           }
           throw err;
         });
@@ -1217,12 +1217,12 @@ function Staking({ settings, setSetting, intl }) {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingUnStake(false);
-            setTextErr(<FormattedMessage id="Decline_transaction" />);
+            setTextErr('Decline_transaction');
           } else {
             setIsShowCancel(true);
             setiIsConfirm(false);
             setIsLoadingUnStake(false);
-            setTextErr(<FormattedMessage id="Something_went_wrong" />);
+            setTextErr('Something_went_wrong');
           }
           throw err;
         });
@@ -1257,11 +1257,11 @@ function Staking({ settings, setSetting, intl }) {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Decline_transaction" />);
+          setTextErr('Decline_transaction');
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Something_went_wrong" />);
+          setTextErr('Something_went_wrong');
         }
         throw err;
       });
@@ -1290,11 +1290,11 @@ function Staking({ settings, setSetting, intl }) {
         if (err.code === 4001 || err.message.includes('User denied')) {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Decline_transaction" />);
+          setTextErr('Decline_transaction');
         } else {
           setIsShowCancel(true);
           setiIsConfirm(false);
-          setTextErr(<FormattedMessage id="Something_went_wrong" />);
+          setTextErr('Something_went_wrong');
         }
         throw err;
       });
@@ -1317,7 +1317,7 @@ function Staking({ settings, setSetting, intl }) {
         setiIsConfirm(true);
         setIsStakeNFT(false);
         setIsDisableStakeNFTDialog(true);
-        setMessConfirm(<FormattedMessage id="Do_not_close_popup_while" />);
+        setMessConfirm('Do_not_close_popup_while');
         const lstAllIdsStake = _.map(lstAllIds, 'token_id');
         await methods
           .send(
@@ -1351,14 +1351,14 @@ function Staking({ settings, setSetting, intl }) {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setIsDisableStakeNFTDialog(false);
-              setTextErr(<FormattedMessage id="Decline_transaction" />);
+              setTextErr('Decline_transaction');
               setValueNFTStake('');
               setMessConfirm('');
             } else {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setIsDisableStakeNFTDialog(false);
-              setTextErr(<FormattedMessage id="Something_went_wrong" />);
+              setTextErr('Something_went_wrong');
               setValueNFTStake('');
               setMessConfirm('');
             }
@@ -1382,7 +1382,7 @@ function Staking({ settings, setSetting, intl }) {
         setiIsConfirm(true);
         setIsUnStakeNFT(false);
         setIsDisableUnStakeNFTDialog(true);
-        setMessConfirm(<FormattedMessage id="Do_not_close_popup_while" />);
+        setMessConfirm('Do_not_close_popup_while');
         await methods
           .send(
             instance,
@@ -1416,14 +1416,14 @@ function Staking({ settings, setSetting, intl }) {
               setIsShowCancel(true);
               setiIsConfirm(false);
               setIsDisableUnStakeNFTDialog(false);
-              setTextErr(<FormattedMessage id="Decline_transaction" />);
+              setTextErr('Decline_transaction');
               setMessConfirm('');
             } else {
               setValueNFTUnStake('');
               setIsShowCancel(true);
               setiIsConfirm(false);
               setIsDisableUnStakeNFTDialog(false);
-              setTextErr(<FormattedMessage id="Something_went_wrong" />);
+              setTextErr('Something_went_wrong');
               setMessConfirm('');
             }
             throw err;

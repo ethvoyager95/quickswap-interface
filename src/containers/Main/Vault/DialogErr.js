@@ -1,6 +1,7 @@
 import { Dialog, makeStyles } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import PropTypes, { func } from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
@@ -123,9 +124,13 @@ function DialogErr({ isShow, text, close }) {
               <SIconClose src={IconClose} onClick={close} />
             </SIcon>
             <SImg src={ErrIcon} />
-            <STitle>{text}</STitle>
+            <STitle>
+              <FormattedMessage id={text} />
+            </STitle>
             {!notDeclined ? (
-              <SText>You have declined the transaction in your wallet</SText>
+              <SText>
+                <FormattedMessage id="You_have_declined_transaction_wallet" />
+              </SText>
             ) : (
               <SText />
             )}
