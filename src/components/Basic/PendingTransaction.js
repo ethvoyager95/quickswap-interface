@@ -27,6 +27,7 @@ const PendingTransactionWrapper = styled.div`
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      white-space: nowrap;
     }
 
     .content-date {
@@ -57,7 +58,7 @@ function PendingTransaction({ settings }) {
         <div className="content-info">
           <LoadingSpinner size={20} />
           <Label size="16" primary>
-            {settings.pendingInfo.type}
+            <FormattedMessage id={settings.pendingInfo.type} />
           </Label>
           <Label size="16" primary>
             {settings.pendingInfo && settings.pendingInfo.amount}

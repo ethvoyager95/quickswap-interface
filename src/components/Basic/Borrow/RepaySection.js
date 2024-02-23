@@ -112,7 +112,7 @@ function RepayBorrowTab({ asset, settings, setSetting, hideModal }) {
       setIsLoading(true);
       setSetting({
         pendingInfo: {
-          type: 'Repay Borrow',
+          type: 'Repay_Borrow',
           status: true,
           amount: amount.dp(8, 1).toString(10),
           symbol: asset.symbol
