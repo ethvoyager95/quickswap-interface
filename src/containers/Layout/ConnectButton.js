@@ -515,7 +515,7 @@ function ConnectButton({
               else setIsOpenDisclaimerModal(true);
             }}
           >
-            Connect
+            <FormattedMessage id="Connect" />
           </Button>
         )}
       </StyledConnectButton>

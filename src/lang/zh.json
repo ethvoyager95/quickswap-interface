@@ -320,5 +320,12 @@
   "Succeeded": "成功了",
   "Succeed": "成功",
   "addresses": "地址",
-  "For": "为了"
+  "For": "为了",
+  "Connect": "连接",
+  "Liquidate_failed": "平仓失败",
+  "Your_transaction_has_been_failed": "您的交易已失败",
+  "View_on_explorer": "在资源管理器上查看",
+  "Liquidate_successfully": "平仓成功",
+  "Your_transaction_successfully": "您的交易已成功执行",
+  "You_have_not_claimable_Reward": "您没有可领取的奖励。"
 }
