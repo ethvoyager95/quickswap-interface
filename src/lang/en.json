@@ -320,5 +320,12 @@
   "Succeeded": "Succeeded",
   "Succeed": "Succeed",
   "addresses": "addresses",
-  "For": "For"
+  "For": "For",
+  "Connect": "Connect",
+  "Liquidate_failed": "Liquidate failed",
+  "Your_transaction_has_been_failed": "Your transaction has been failed",
+  "View_on_explorer": "View on explorer",
+  "Liquidate_successfully": "Liquidate successfully",
+  "Your_transaction_successfully": "Your transaction has been executed successfully",
+  "You_have_not_claimable_Reward": "You have not claimable Reward."
 }

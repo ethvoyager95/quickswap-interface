@@ -652,6 +652,20 @@ const Staking = ({ settings, intl }) => {
     if (fees.length < 1) {
       return;
     }
+    if (
+      fees[0]
+        .div(1e18)
+        .times(strkPrice)
+        .plus(fees[1].div(1e6).times(1))
+        .eq(0)
+    ) {
+      toast.info(
+        intl.formatMessage({
+          id: 'You_have_not_claimable_Reward'
+        })
+      );
+      return;
+    }
 
     const tx = await handleGetReward();
     if (tx) {
@@ -1185,7 +1199,7 @@ const Staking = ({ settings, intl }) => {
                       {moment.unix(e.unlockTime).format('DD/MM HH:mm')}
                     </p> */}
                     <p className="desktop-show">
-                      Expired at{' '}
+                      <FormattedMessage id="Expired_at" />{' '}
                       {moment.unix(e.unlockTime).format('DD/MM/YYYY HH:mm:ss')}
                     </p>
                   </div>

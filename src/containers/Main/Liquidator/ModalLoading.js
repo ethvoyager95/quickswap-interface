@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -38,16 +39,20 @@ function ModalLoading({ isOpenModal, onCancel, action, type, txh }) {
         {type === 'loading' && (
           <>
             <LoadingSpinner size={80} />
-            <div className="title">{action}</div>
+            <div className="title">
+              <FormattedMessage id={action} />
+            </div>
           </>
         )}
         {type === 'reject' && (
           <>
             <img src={errorIcon} alt="" />
             <div className="content">
-              <div className="title">Decline transaction</div>
+              <div className="title">
+                <FormattedMessage id="Decline_transaction" />
+              </div>
               <div className="sub-title">
-                You have declined the transaction in your wallet
+                <FormattedMessage id="You_have_declined_transaction_wallet" />
               </div>
             </div>
           </>
@@ -56,7 +61,9 @@ function ModalLoading({ isOpenModal, onCancel, action, type, txh }) {
           <>
             <img src={errorIcon} alt="" />
             <div className="content">
-              <div className="title">Something went wrong</div>
+              <div className="title">
+                <FormattedMessage id="Something_went_wrong" />
+              </div>
             </div>
           </>
         )}
@@ -64,39 +71,11 @@ function ModalLoading({ isOpenModal, onCancel, action, type, txh }) {
           <>
             <img src={errorIcon} alt="" />
             <div className="content">
-              <div className="title">Liquidate failed</div>
-              <div className="sub-title">Your transaction has been failed</div>
-            </div>
-            <div className="txh-wrapper">
-              {getShortAddress(txh)}
-              <CopyToClipboard
-                text={txh}
-                onCopy={() => {
-                  copyToClipBoard();
-                }}
-              >
-                <img className="icon-copy" src={iconCopy} alt="" />
-              </CopyToClipboard>
-              {copySuccess && <div>{copySuccess}</div>}
-            </div>
-            <a
-              className="link"
-              target="_blank"
-              rel="noreferrer"
-              href={`${process.env.REACT_APP_ETH_EXPLORER}/tx/${txh}`}
-            >
-              View on explorer
-              <img src={iconLink} alt="" />
-            </a>
-          </>
-        )}
-        {type === 'transaction success' && (
-          <>
-            <img src={iconSuccess} alt="" />
-            <div className="content">
-              <div className="title">Liquidate successfully</div>
+              <div className="title">
+                <FormattedMessage id="Liquidate_failed" />
+              </div>
               <div className="sub-title">
-                Your transaction has been executed successfully
+                <FormattedMessage id="Your_transaction_has_been_failed" />
               </div>
             </div>
             <div className="txh-wrapper">
@@ -117,7 +96,41 @@ function ModalLoading({ isOpenModal, onCancel, action, type, txh }) {
               rel="noreferrer"
               href={`${process.env.REACT_APP_ETH_EXPLORER}/tx/${txh}`}
             >
-              View on explorer
+              <FormattedMessage id="View_on_explorer" />
+              <img src={iconLink} alt="" />
+            </a>
+          </>
+        )}
+        {type === 'transaction success' && (
+          <>
+            <img src={iconSuccess} alt="" />
+            <div className="content">
+              <div className="title">
+                <FormattedMessage id="Liquidate_successfully" />
+              </div>
+              <div className="sub-title">
+                <FormattedMessage id="Your_transaction_successfully" />
+              </div>
+            </div>
+            <div className="txh-wrapper">
+              {getShortAddress(txh)}
+              <CopyToClipboard
+                text={txh}
+                onCopy={() => {
+                  copyToClipBoard();
+                }}
+              >
+                <img className="icon-copy" src={iconCopy} alt="" />
+              </CopyToClipboard>
+              {copySuccess && <div>{copySuccess}</div>}
+            </div>
+            <a
+              className="link"
+              target="_blank"
+              rel="noreferrer"
+              href={`${process.env.REACT_APP_ETH_EXPLORER}/tx/${txh}`}
+            >
+              <FormattedMessage id="View_on_explorer" />
               <img src={iconLink} alt="" />
             </a>
           </>

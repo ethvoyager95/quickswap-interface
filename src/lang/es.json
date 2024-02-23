@@ -320,5 +320,12 @@
   "Succeeded": "Tuvo éxito",
   "Succeed": "Tener éxito",
   "addresses": "direcciones",
-  "For": "Para"
+  "For": "Para",
+  "Connect": "Conectar",
+  "Liquidate_failed": "Liquidar falló",
+  "Your_transaction_has_been_failed": "Su transacción ha sido fallida",
+  "View_on_explorer": "Ver en el explorador",
+  "Liquidate_successfully": "Liquidar con éxito",
+  "Your_transaction_successfully": "Su transacción se ha ejecutado con éxito",
+  "You_have_not_claimable_Reward": "No tienes recompensa reclamable."
 }
