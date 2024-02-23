@@ -240,7 +240,7 @@ function BorrowMarket({
       )}
       {settings.pendingInfo &&
         settings.pendingInfo.status &&
-        ['Borrow', 'Repay Borrow'].includes(settings.pendingInfo.type) && (
+        ['Borrow', 'Repay_Borrow'].includes(settings.pendingInfo.type) && (
           <PendingTransaction />
         )}
       {remainAssets.length > 0 && (
