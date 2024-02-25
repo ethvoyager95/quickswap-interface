@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { Tooltip, Icon } from 'antd';
@@ -238,12 +239,16 @@ function VotingWallet({
       <VotingWalletWrapper pageType={pageType}>
         {pageType !== 'strk' && (
           <div className="flex align-center header">
-            <p className="title">Voting Wallet</p>
+            <p className="title">
+              <FormattedMessage id="Voting_Wallet" />
+            </p>
           </div>
         )}
         <div className="flex flex-column content">
           <p className="content-label balance">
-            <span>STRK Balance</span>
+            <span>
+              <FormattedMessage id="STRK_Balance" />
+            </span>
             <img
               className="add-token pointer"
               src={metaMaskImg}
@@ -268,7 +273,9 @@ function VotingWallet({
           {!isLoadingEarn && (
             <div className="flex align-center just-between">
               <div className="flex flex-column">
-                <p className="content-label">STRK Earned</p>
+                <p className="content-label">
+                  <FormattedMessage id="STRK_Earned" />
+                </p>
                 <div className="flex align-center balance-info">
                   <img className="coin-img" src={coinImg} alt="coin" />
                   <p className="content-value">
@@ -280,18 +287,14 @@ function VotingWallet({
               {settings.selectedAddress && (
                 <div className="flex align-center">
                   <p className="pointer" onClick={handleCollect}>
-                    {isLoading && <Icon type="loading" />} Collect&nbsp;
+                    {isLoading && <Icon type="loading" />}{' '}
+                    <FormattedMessage id="Collect" />
+                    &nbsp;
                     <Tooltip
                       placement="bottom"
                       title={
                         <span>
-                          Distributed STRK rewards have an 12-week vesting
-                          period. During the vesting period tokens count as
-                          staked tokens and earn platform fees. User must claim
-                          the accumulated STRK rewards on the Rewards page in
-                          order to put them into the 12-week vesting. Rewards
-                          can be claimed during the vesting period for a 25-90%
-                          penalty fee
+                          <FormattedMessage id="Collect_desc" />
                         </span>
                       }
                     >
@@ -305,7 +308,9 @@ function VotingWallet({
         </div>
         {pageType !== 'strk' && delegateStatus && (
           <div className="flex flex-column content delegate-change">
-            <p className="content-label">Delegating To</p>
+            <p className="content-label">
+              <FormattedMessage id="Delegating_To" />
+            </p>
             <div className="flex align-center just-between">
               <div className="flex align-center">
                 <a
@@ -330,7 +335,7 @@ function VotingWallet({
                   className="change pointer"
                   onClick={() => setIsOpenModal(true)}
                 >
-                  Change
+                  <FormattedMessage id="Change" />
                 </p>
               </div>
             </div>
@@ -338,12 +343,11 @@ function VotingWallet({
         )}
         {pageType !== 'strk' && settings.selectedAddress && !delegateStatus && (
           <div className="flex flex-column setup">
-            <p className="setup-header">Setup Voting</p>
+            <p className="setup-header">
+              <FormattedMessage id="Setup_Voting" />
+            </p>
             <p className="setup-content">
-              You can either vote on each proposal yourself or delegate your
-              votes to a third party. Strike Governance puts you in charge of
-              the future of Strike.
-              {/* <a href="/#">Learn more.</a> */}
+              <FormattedMessage id="Setup_Voting_desc" />
             </p>
           </div>
         )}
@@ -353,7 +357,7 @@ function VotingWallet({
               className="started-btn"
               onClick={() => setIsOpenModal(true)}
             >
-              Get Started
+              <FormattedMessage id="Get_Started" />
             </Button>
           </div>
         )}

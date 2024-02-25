@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { compose } from 'recompose';
 import styled from 'styled-components';
 import ReactApexChart from 'react-apexcharts';
@@ -26,16 +27,30 @@ const ChartWrapper = styled.div`
 `;
 
 const format = commaNumber.bindWith(',', '.');
-function OverviewChart({ marketType, marketInfo, data, graphType }) {
+function OverviewChart({ marketType, marketInfo, data, graphType, intl }) {
   const [areaSeries, setAreaSeries] = useState([
     {
-      name: marketType === 'supply' ? 'Supply APY' : 'Borrow APY',
+      name:
+        marketType === 'supply'
+          ? intl.formatMessage({
+              id: 'Supply_APY'
+            })
+          : intl.formatMessage({
+              id: 'Borrow_APY'
+            }),
       data: []
     }
   ]);
   const [barSeries, setBarSeries] = useState([
     {
-      name: marketType === 'supply' ? 'Total Supply' : 'Total Borrow',
+      name:
+        marketType === 'supply'
+          ? intl.formatMessage({
+              id: 'Total_Supply'
+            })
+          : intl.formatMessage({
+              id: 'Total_Borrow'
+            }),
       data: []
     }
   ]);
@@ -179,7 +194,14 @@ function OverviewChart({ marketType, marketInfo, data, graphType }) {
 
     setAreaSeries([
       {
-        name: marketType === 'supply' ? 'Supply APY' : 'Borrow APY',
+        name:
+          marketType === 'supply'
+            ? intl.formatMessage({
+                id: 'Supply_APY'
+              })
+            : intl.formatMessage({
+                id: 'Borrow_APY'
+              }),
         data: data.map(item => {
           const temp = {};
           temp.x = moment(item.createdAt).format('LLL');
@@ -196,7 +218,14 @@ function OverviewChart({ marketType, marketInfo, data, graphType }) {
     if (graphType === 'composed') {
       setBarSeries([
         {
-          name: marketType === 'supply' ? 'Total Supply' : 'Total Borrow',
+          name:
+            marketType === 'supply'
+              ? intl.formatMessage({
+                  id: 'Total_Supply'
+                })
+              : intl.formatMessage({
+                  id: 'Total_Borrow'
+                }),
           data: data.map(item => {
             const temp = {};
             temp.x = moment(item.createdAt).format('LLL');
@@ -217,7 +246,13 @@ function OverviewChart({ marketType, marketInfo, data, graphType }) {
       <div className="info-bar">
         <div className="total-supply">
           <p className="label">
-            Total {marketType === 'supply' ? 'Supply' : 'Borrow'}
+            {marketType === 'supply'
+              ? intl.formatMessage({
+                  id: 'Total_Supply'
+                })
+              : intl.formatMessage({
+                  id: 'Total_Borrow'
+                })}
           </p>
           <p className="value">
             $
@@ -234,7 +269,9 @@ function OverviewChart({ marketType, marketInfo, data, graphType }) {
         </div>
 
         <div className="supply-apy">
-          <p className="label">APY</p>
+          <p className="label">
+            <FormattedMessage id="APY" />
+          </p>
           <p className="value">
             {marketType === 'supply'
               ? new BigNumber(
@@ -252,7 +289,9 @@ function OverviewChart({ marketType, marketInfo, data, graphType }) {
         </div>
 
         <div className="distribution-apy">
-          <p className="label">Distribution APY</p>
+          <p className="label">
+            <FormattedMessage id="Distribution_APY" />
+          </p>
           <p className="value">
             {marketType === 'supply'
               ? new BigNumber(
@@ -323,7 +362,8 @@ OverviewChart.propTypes = {
       name: PropTypes.string,
       apy: PropTypes.number
     })
-  )
+  ),
+  intl: intlShape.isRequired
 };
 
 OverviewChart.defaultProps = {
@@ -337,6 +377,6 @@ const mapStateToProps = ({ account }) => ({
   settings: account.setting
 });
 
-export default compose(connectAccount(mapStateToProps, undefined))(
-  OverviewChart
+export default injectIntl(
+  compose(connectAccount(mapStateToProps, undefined))(OverviewChart)
 );

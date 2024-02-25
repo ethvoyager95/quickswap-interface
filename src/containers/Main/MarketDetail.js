@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-escape */
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -245,7 +246,7 @@ function MarketDetail({
                         }`}
                         onClick={() => setMarketType('supply')}
                       >
-                        Supply Info
+                        <FormattedMessage id="Supply_Info" />
                       </div>
                       <div
                         className={`tab-item pointer ${
@@ -253,7 +254,7 @@ function MarketDetail({
                         }`}
                         onClick={() => setMarketType('borrow')}
                       >
-                        Borrow Info
+                        <FormattedMessage id="Borrow_Info" />
                       </div>
                     </div>
                     <OverviewChart

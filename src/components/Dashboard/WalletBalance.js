@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
@@ -295,13 +296,13 @@ function WalletBalance({ settings, setSetting }) {
       <div className="apy-area">
         <div className="flex align-center">
           <p className="pointer label">
-            Net APY&nbsp;
+            <FormattedMessage id="Net_APY" />
+            &nbsp;
             <Tooltip
               placement="bottom"
               title={
                 <span>
-                  Percentage of your total supply balance received as yearly
-                  interests
+                  <FormattedMessage id="Net_APY_desc" />
                 </span>
               }
             >
@@ -314,7 +315,9 @@ function WalletBalance({ settings, setSetting }) {
       <div className="divider" />
       <div className="balance-value">
         <div className="balance-area">
-          <div className="label">Daily Earnings</div>
+          <div className="label">
+            <FormattedMessage id="Daily_Earnings" />
+          </div>
           <div className="value">
             <AnimatedNumber
               value={dailyEarning}
@@ -327,7 +330,9 @@ function WalletBalance({ settings, setSetting }) {
         <div className="divider" />
 
         <div className="balance-area">
-          <div className="label">Supply Balance</div>
+          <div className="label">
+            <FormattedMessage id="Supply_Balance" />
+          </div>
           <div className="value">
             <AnimatedNumber
               value={getBigNumber(settings.totalSupplyBalance)
@@ -342,7 +347,9 @@ function WalletBalance({ settings, setSetting }) {
         <div className="divider" />
 
         <div className="balance-area">
-          <div className="label">Borrow Balance</div>
+          <div className="label">
+            <FormattedMessage id="Borrow_Balance" />
+          </div>
           <div className="value">
             <AnimatedNumber
               value={getBigNumber(settings.totalBorrowBalance)

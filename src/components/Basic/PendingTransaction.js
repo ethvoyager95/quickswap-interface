@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import moment from 'moment';
@@ -26,6 +27,7 @@ const PendingTransactionWrapper = styled.div`
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      white-space: nowrap;
     }
 
     .content-date {
@@ -49,12 +51,14 @@ function PendingTransaction({ settings }) {
 
   return (
     <PendingTransactionWrapper>
-      <div className="title">Pending Transactions</div>
+      <div className="title">
+        <FormattedMessage id="Pending_Transactions" />
+      </div>
       <div className="content">
         <div className="content-info">
           <LoadingSpinner size={20} />
           <Label size="16" primary>
-            {settings.pendingInfo.type}
+            <FormattedMessage id={settings.pendingInfo.type} />
           </Label>
           <Label size="16" primary>
             {settings.pendingInfo && settings.pendingInfo.amount}

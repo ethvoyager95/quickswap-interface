@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import BigNumber from 'bignumber.js';
@@ -107,7 +108,7 @@ const InterestRateModelWrapper = styled.div`
 
 let flag = false;
 
-function InterestRateModel({ settings, currentAsset, history }) {
+function InterestRateModel({ settings, currentAsset, history, intl }) {
   const [series, setSeries] = useState([
     {
       name: 'Supply Apy',
@@ -341,7 +342,9 @@ function InterestRateModel({ settings, currentAsset, history }) {
     setGraphData(data);
     setSeries([
       {
-        name: 'Supply Apy',
+        name: intl.formatMessage({
+          id: 'Supply_APY'
+        }),
         data: data.map(item => {
           const temp = [];
           temp.push(item.percent * 100);
@@ -350,7 +353,9 @@ function InterestRateModel({ settings, currentAsset, history }) {
         })
       },
       {
-        name: 'Borrow Apy',
+        name: intl.formatMessage({
+          id: 'Borrow_APY'
+        }),
         data: data.map(item => {
           const temp = [];
           temp.push(item.percent * 100);
@@ -398,8 +403,12 @@ function InterestRateModel({ settings, currentAsset, history }) {
 
   return (
     <InterestRateModelWrapper>
-      <p className="title">Interest Rate Model</p>
-      <p className="description">Utilization vs. APY</p>
+      <p className="title">
+        <FormattedMessage id="Interest_Rate_Model" />
+      </p>
+      <p className="description">
+        <FormattedMessage id="Utilization_vs_APY" />
+      </p>
       <div
         id="percent-wrapper"
         className="percent-wrapper"
@@ -408,7 +417,9 @@ function InterestRateModel({ settings, currentAsset, history }) {
         <div id="line" className="line" />
         {graphData.length !== 0 && (
           <div className="current-percent" style={{ left: currentPos || 30 }}>
-            <p>Current</p>
+            <p>
+              <FormattedMessage id="Current" />
+            </p>
           </div>
         )}
         <div
@@ -439,7 +450,8 @@ function InterestRateModel({ settings, currentAsset, history }) {
 InterestRateModel.propTypes = {
   history: PropTypes.object,
   currentAsset: PropTypes.string,
-  settings: PropTypes.object
+  settings: PropTypes.object,
+  intl: intlShape.isRequired
 };
 
 InterestRateModel.defaultProps = {
@@ -452,7 +464,9 @@ const mapStateToProps = ({ account }) => ({
   settings: account.setting
 });
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, undefined)
-)(InterestRateModel);
+export default injectIntl(
+  compose(
+    withRouter,
+    connectAccount(mapStateToProps, undefined)
+  )(InterestRateModel)
+);

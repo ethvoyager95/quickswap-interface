@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { FormattedMessage } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -221,14 +222,16 @@ function Proposal({
           <Row>
             <Column xs="12" sm="7" className="description">
               <Label size="16">{proposal.id}</Label>
-              <Label size="16">{proposal.state}</Label>
+              <Label size="16">
+                <FormattedMessage id={proposal.state} />
+              </Label>
               <Label size="16">
                 {moment(proposal.createdAt).format('MMMM Do, YYYY')}
               </Label>
             </Column>
             <Column xs="12" sm="5" className="description">
               <div className={`orange-text ${getStatus(proposal)}-btn`}>
-                {getStatus(proposal)}
+                <FormattedMessage id={getStatus(proposal)} />
               </div>
               <Label size="16">{getRemainTime(proposal)}</Label>
             </Column>
@@ -241,12 +244,16 @@ function Proposal({
               proposal.state !== 'Active' && (
                 <div className="flex align-center">
                   <img src={dashImg} alt="dash" />
-                  <p className="orange-text">NO VOTE</p>
+                  <p className="orange-text">
+                    <FormattedMessage id="NO_VOTE" />
+                  </p>
                 </div>
               )}
             {voteStatus && voteStatus === 'voted' && (
               <div className="flex align-center">
-                <p className="orange-text">VOTED</p>
+                <p className="orange-text">
+                  <FormattedMessage id="VOTED" />
+                </p>
               </div>
             )}
             {voteStatus &&

@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape */
 import React, { useState, useEffect, useCallback } from 'react';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -111,7 +112,7 @@ const CardWrapper = styled.div`
   padding: 38px 41px;
 `;
 
-function VoteOverview({ settings, getVoters, getProposalById, match }) {
+function VoteOverview({ settings, getVoters, getProposalById, match, intl }) {
   const instance = useInstance(settings.walletConnected);
   const [proposalInfo, setProposalInfo] = useState({});
   const [agreeVotes, setAgreeVotes] = useState({});
@@ -243,7 +244,11 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
         .then(() => {
           setIsLoading(false);
           setStatus('success');
-          message.success(`Proposal list will update within a few seconds`);
+          message.success(
+            intl.formatMessage({
+              id: 'Proposal_list_will_update'
+            })
+          );
         })
         .catch(() => {
           setIsLoading(false);
@@ -261,7 +266,11 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
         .then(res => {
           setIsLoading(false);
           setStatus('success');
-          message.success(`Proposal list will update within a few seconds`);
+          message.success(
+            intl.formatMessage({
+              id: 'Proposal_list_will_update'
+            })
+          );
         })
         .catch(err => {
           setIsLoading(false);
@@ -280,7 +289,9 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
           setIsCancelLoading(false);
           setCancelStatus('success');
           message.success(
-            `Current proposal is cancelled successfully. Proposal list will update within a few seconds`
+            intl.formatMessage({
+              id: 'Current_proposal_is_cancelled_successfully'
+            })
           );
         })
         .catch(() => {
@@ -394,9 +405,12 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                       onClick={() => handleUpdateProposal('Cancel')}
                     >
                       {isCancelLoading && <Icon type="loading" />}{' '}
-                      {cancelStatus === 'pending' || cancelStatus === 'failure'
-                        ? 'Cancel'
-                        : 'Cancelled'}
+                      {cancelStatus === 'pending' ||
+                      cancelStatus === 'failure' ? (
+                        <FormattedMessage id="Cancel" />
+                      ) : (
+                        <FormattedMessage id="Cancelled" />
+                      )}
                     </Button>
                     {proposalInfo.state === 'Succeeded' && (
                       <Button
@@ -405,9 +419,11 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                         onClick={() => handleUpdateProposal('Queue')}
                       >
                         {isLoading && <Icon type="loading" />}{' '}
-                        {status === 'pending' || status === 'failure'
-                          ? 'Queue'
-                          : 'Queued'}
+                        {status === 'pending' || status === 'failure' ? (
+                          <FormattedMessage id="Queue" />
+                        ) : (
+                          <FormattedMessage id="Queued" />
+                        )}
                       </Button>
                     )}
                     {proposalInfo.state === 'Queued' && (
@@ -421,9 +437,11 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                         onClick={() => handleUpdateProposal('Execute')}
                       >
                         {isLoading && <Icon type="loading" />}{' '}
-                        {status === 'pending' || status === 'failure'
-                          ? 'Execute'
-                          : 'Executed'}
+                        {status === 'pending' || status === 'failure' ? (
+                          <FormattedMessage id="Execute" />
+                        ) : (
+                          <FormattedMessage id="Executed" />
+                        )}
                       </Button>
                     )}
                     {proposalInfo.state === 'Queued' && !isPossibleExcuted && (
@@ -442,8 +460,7 @@ function VoteOverview({ settings, getVoters, getProposalById, match }) {
                 proposalInfo.state !== 'Canceled' &&
                 proposerVotingWeight >= proposalThreshold && (
                   <p className="center warning">
-                    You can&apos;t cancel the proposal while the proposer voting
-                    weight meets proposal threshold
+                    <FormattedMessage id="You_can_not_cancel_proposal" />
                   </p>
                 )}
             </div>
@@ -466,7 +483,8 @@ VoteOverview.propTypes = {
   match: PropTypes.object,
   settings: PropTypes.object,
   getProposalById: PropTypes.func.isRequired,
-  getVoters: PropTypes.func.isRequired
+  getVoters: PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
 VoteOverview.defaultProps = {
@@ -490,7 +508,9 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, mapDispatchToProps)
-)(VoteOverview);
+export default injectIntl(
+  compose(
+    withRouter,
+    connectAccount(mapStateToProps, mapDispatchToProps)
+  )(VoteOverview)
+);

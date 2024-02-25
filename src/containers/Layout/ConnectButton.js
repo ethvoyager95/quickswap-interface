@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -64,7 +65,13 @@ const coinbaseWatcher = null;
 const abortController = new AbortController();
 let doneFlag = false;
 
-function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
+function ConnectButton({
+  history,
+  settings,
+  setSetting,
+  getGovernanceStrike,
+  intl
+}) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenAccountModal, setIsOpenAccountModal] = useState(false);
   const [isOpenDisclaimerModal, setIsOpenDisclaimerModal] = useState(false);
@@ -85,11 +92,15 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
       if (netId === 1 || netId === 5) {
         if (netId === 5 && process.env.REACT_APP_ENV === 'prod') {
           message.error(
-            'You are currently visiting the Goerli Test Network for Strike Finance. Please change your metamask to access the Ethereum Mainnet.'
+            intl.formatMessage({
+              id: 'Incorrect_Network'
+            })
           );
         } else if (netId === 1 && process.env.REACT_APP_ENV === 'dev') {
           message.error(
-            'You are currently visiting the Main Network for Strike Finance. Please change your metamask to access the Goerli Test Network.'
+            intl.formatMessage({
+              id: 'Incorrect_Network_1'
+            })
           );
         } else {
           setSetting({
@@ -98,7 +109,9 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
         }
       } else {
         message.error(
-          'You are currently connected to another network. Please connect to Ethereum Network'
+          intl.formatMessage({
+            id: 'Incorrect_Network_2'
+          })
         );
       }
     }
@@ -502,7 +515,7 @@ function ConnectButton({ history, settings, setSetting, getGovernanceStrike }) {
               else setIsOpenDisclaimerModal(true);
             }}
           >
-            Connect
+            <FormattedMessage id="Connect" />
           </Button>
         )}
       </StyledConnectButton>
@@ -545,7 +558,8 @@ ConnectButton.propTypes = {
   history: PropTypes.object,
   settings: PropTypes.object,
   setSetting: PropTypes.func.isRequired,
-  getGovernanceStrike: PropTypes.func.isRequired
+  getGovernanceStrike: PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
 ConnectButton.defaultProps = {
@@ -569,7 +583,9 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, mapDispatchToProps)
-)(ConnectButton);
+export default injectIntl(
+  compose(
+    withRouter,
+    connectAccount(mapStateToProps, mapDispatchToProps)
+  )(ConnectButton)
+);

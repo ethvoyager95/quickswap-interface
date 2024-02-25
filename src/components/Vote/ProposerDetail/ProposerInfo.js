@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-escape */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl, intlShape } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -34,7 +35,7 @@ const ProposerInfoWrapper = styled.div`
   }
 `;
 
-function ProposerInfo({ address, history }) {
+function ProposerInfo({ address, history, intl }) {
   const handleLink = () => {
     window.open(
       `${process.env.REACT_APP_ETH_EXPLORER}/address/${address}`,
@@ -54,7 +55,11 @@ function ProposerInfo({ address, history }) {
           <CopyToClipboard
             text={address}
             onCopy={() => {
-              message.success(`Copied address`);
+              message.success(
+                intl.formatMessage({
+                  id: 'Copied_address'
+                })
+              );
             }}
           >
             <Icon className="pointer copy-btn" type="copy" />
@@ -67,7 +72,8 @@ function ProposerInfo({ address, history }) {
 
 ProposerInfo.propTypes = {
   address: PropTypes.string,
-  history: PropTypes.object
+  history: PropTypes.object,
+  intl: intlShape.isRequired
 };
 
 ProposerInfo.defaultProps = {
@@ -75,4 +81,4 @@ ProposerInfo.defaultProps = {
   history: {}
 };
 
-export default compose(withRouter)(ProposerInfo);
+export default injectIntl(compose(withRouter)(ProposerInfo));

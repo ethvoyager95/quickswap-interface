@@ -1,6 +1,7 @@
 import { Dialog, makeStyles } from '@material-ui/core';
 import React from 'react';
 import PropTypes, { func } from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
@@ -121,9 +122,17 @@ function DialogConfirm({ isConfirm, close, messConfirm }) {
             <SLoading>
               <Loadding />
             </SLoading>
-            <STitle>Waiting for confirmation</STitle>
-            <SText>Confirming the transaction...</SText>
-            {messConfirm && <SText>{messConfirm}</SText>}
+            <STitle>
+              <FormattedMessage id="Waiting_for_confirmation" />
+            </STitle>
+            <SText>
+              <FormattedMessage id="Confirming_the_transaction" />
+            </SText>
+            {messConfirm && (
+              <SText>
+                <FormattedMessage id={messConfirm} />
+              </SText>
+            )}
           </SMain>
         </Dialog>
       </React.Fragment>

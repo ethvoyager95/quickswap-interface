@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import styled from 'styled-components';
 import Web3 from 'web3';
 import { compose } from 'recompose';
@@ -14,7 +15,6 @@ import { connectAccount } from 'core';
 import Proposal from 'components/Basic/Proposal';
 import ProposalModal from 'components/Vote/ProposalModal';
 import LoadingSpinner from 'components/Basic/LoadingSpinner';
-import arrowRightImg from 'assets/img/arrow-right.png';
 import { Card } from 'components/Basic/Card';
 import { useInstance } from 'hooks/useContract';
 
@@ -170,7 +170,8 @@ function Proposals({
   pageNumber,
   proposals,
   total,
-  onChangePage
+  onChangePage,
+  intl
 }) {
   const instance = useInstance(settings.walletConnected);
 
@@ -228,7 +229,12 @@ function Proposals({
   const handleShowProposalModal = () => {
     if (+votingWeight < +proposalThreshold) {
       message.error(
-        `You can't create proposal. Your voting power should be ${proposalThreshold} STRK at least`
+        intl.formatMessage(
+          {
+            id: 'You_can_not_create_proposal'
+          },
+          { proposalThreshold }
+        )
       );
       return;
     }
@@ -241,7 +247,9 @@ function Proposals({
           methods.call(voteContract.methods.state, [pId]).then(status => {
             if (status === '0' || status === '1') {
               message.error(
-                `You can't create proposal. there is proposal in progress!`
+                intl.formatMessage({
+                  id: 'You_can_not_create_proposal_1'
+                })
               );
             } else {
               setProposalModal(true);
@@ -259,13 +267,16 @@ function Proposals({
     <Card>
       <ProposalsWrapper className="flex flex-column">
         <div className="flex align-center just-between proposal-head">
-          <p className="header">Governance Proposals</p>
+          <p className="header">
+            <FormattedMessage id="Governance_Proposals" />
+          </p>
           {address && (
             <Button
               className="create-proposal-btn"
               onClick={handleShowProposalModal}
             >
-              {isLoading && <Icon type="loading" />} Create Proposal
+              {isLoading && <Icon type="loading" />}{' '}
+              <FormattedMessage id="Create_Proposal" />
             </Button>
           )}
         </div>
@@ -286,7 +297,9 @@ function Proposals({
             })
           ) : (
             <NoProposalWrapper className="flex just-center align-center">
-              <div className="title">No Proposals</div>
+              <div className="title">
+                <FormattedMessage id="No_Proposals" />
+              </div>
             </NoProposalWrapper>
           )}
         </div>
@@ -337,7 +350,8 @@ Proposals.propTypes = {
   proposals: PropTypes.array,
   pageNumber: PropTypes.number,
   total: PropTypes.number,
-  onChangePage: PropTypes.func.isRequired
+  onChangePage: PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
 Proposals.defaultProps = {
@@ -350,4 +364,6 @@ const mapStateToProps = ({ account }) => ({
   settings: account.setting
 });
 
-export default compose(connectAccount(mapStateToProps, undefined))(Proposals);
+export default injectIntl(
+  compose(connectAccount(mapStateToProps, undefined))(Proposals)
+);

@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-indent */
-import React, { useState } from 'react';
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
 import { compose } from 'recompose';
 import commaNumber from 'comma-number';
 import { connectAccount } from 'core';
@@ -32,7 +32,7 @@ function BorrowMarket({
 }) {
   const remainColumns = [
     {
-      title: 'Asset',
+      title: <FormattedMessage id="Asset" />,
       dataIndex: 'img',
       key: 'img',
       render(img, asset) {
@@ -54,7 +54,7 @@ function BorrowMarket({
       }
     },
     {
-      title: 'APY',
+      title: <FormattedMessage id="APY" />,
       dataIndex: 'borrowApy',
       key: 'borrowApy',
       render(borrowApy, asset) {
@@ -100,7 +100,7 @@ function BorrowMarket({
       }
     },
     {
-      title: 'Wallet',
+      title: <FormattedMessage id="Wallet" />,
       dataIndex: 'walletBalance',
       key: 'walletBalance',
       render(walletBalance, asset) {
@@ -114,7 +114,7 @@ function BorrowMarket({
       }
     },
     {
-      title: 'Liquidity',
+      title: <FormattedMessage id="Liquidity" />,
       dataIndex: 'liquidity',
       key: 'liquidity',
       render(liquidity) {
@@ -131,7 +131,7 @@ function BorrowMarket({
 
   const borrowColumns = [
     {
-      title: 'Asset',
+      title: <FormattedMessage id="Asset" />,
       dataIndex: 'img',
       key: 'img',
       render(img, asset) {
@@ -153,7 +153,7 @@ function BorrowMarket({
       }
     },
     {
-      title: 'APY / Accrued',
+      title: <FormattedMessage id="APY_Accrued" />,
       dataIndex: 'borrowApy',
       key: 'borrowApy',
       render(borrowApy, asset) {
@@ -191,7 +191,7 @@ function BorrowMarket({
       }
     },
     {
-      title: 'Balance',
+      title: <FormattedMessage id="Balance" />,
       dataIndex: 'borrowBalance',
       key: 'borrowBalance',
       render(borrowBalance, asset) {
@@ -210,7 +210,7 @@ function BorrowMarket({
       }
     },
     {
-      title: '% Of Limit',
+      title: <FormattedMessage id="Of_Limit" />,
       dataIndex: 'percentOfLimit',
       key: 'percentOfLimit',
       render(percentOfLimit) {
@@ -240,7 +240,7 @@ function BorrowMarket({
       )}
       {settings.pendingInfo &&
         settings.pendingInfo.status &&
-        ['Borrow', 'Repay Borrow'].includes(settings.pendingInfo.type) && (
+        ['Borrow', 'Repay_Borrow'].includes(settings.pendingInfo.type) && (
           <PendingTransaction />
         )}
       {remainAssets.length > 0 && (

@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape */
 import React, { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
@@ -57,13 +58,13 @@ function Dashboard({ setSetting }) {
               <Label size="14" primary className="toggel-label">
                 <div className="flex align-center">
                   <p className="pointer">
-                    APY with STRK&nbsp;
+                    <FormattedMessage id="APY_with_STRK" />
+                    &nbsp;
                     <Tooltip
                       placement="bottom"
                       title={
                         <span>
-                          Choose whether to include the STRK distribution APR in
-                          calculations
+                          <FormattedMessage id="APY_with_STRK_desc" />
                         </span>
                       }
                     >

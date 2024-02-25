@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -50,7 +51,9 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
   return (
     <MarketSummaryWrapper>
       <div className="description">
-        <p className="label">Price</p>
+        <p className="label">
+          <FormattedMessage id="Price" />
+        </p>
         <p className="value">
           {`$${new BigNumber(marketInfo.underlyingPrice || 0)
             .div(
@@ -63,7 +66,9 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
         </p>
       </div>
       <div className="description">
-        <p className="label">Market Liquidity</p>
+        <p className="label">
+          <FormattedMessage id="Market_Liquidity" />
+        </p>
         <p className="value">
           {`${format(
             new BigNumber(marketInfo.cash || 0)
@@ -74,15 +79,21 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
         </p>
       </div>
       <div className="description">
-        <p className="label"># of Suppliers</p>
+        <p className="label">
+          <FormattedMessage id="of_Suppliers" />
+        </p>
         <p className="value">{format(marketInfo.supplierCount)}</p>
       </div>
       <div className="description">
-        <p className="label"># of Borrowers</p>
+        <p className="label">
+          <FormattedMessage id="of_Borrowers" />
+        </p>
         <p className="value">{format(marketInfo.borrowerCount)}</p>
       </div>
       <div className="description">
-        <p className="label">Supply Cap</p>
+        <p className="label">
+          <FormattedMessage id="Supply_Cap" />
+        </p>
         <p className="value">
           {marketInfo.supplyCaps === '0'
             ? 'Uncapped'
@@ -92,7 +103,9 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
         </p>
       </div>
       <div className="description">
-        <p className="label">Borrow Cap</p>
+        <p className="label">
+          <FormattedMessage id="Borrow_Cap" />
+        </p>
         <p className="value">
           {marketInfo.borrowCaps === '0'
             ? 'Uncapped'
@@ -102,7 +115,9 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
         </p>
       </div>
       <div className="description">
-        <p className="label">Interest Paid/Day</p>
+        <p className="label">
+          <FormattedMessage id="Interest_Paid_Day" />
+        </p>
         <p className="value">
           $
           {format(
@@ -116,7 +131,9 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
         </p>
       </div>
       <div className="description">
-        <p className="label">Reserves</p>
+        <p className="label">
+          <FormattedMessage id="Reserves" />
+        </p>
         <p className="value">
           {`${new BigNumber(marketInfo.totalReserves || 0)
             .div(new BigNumber(10).pow(settings.decimals[currentAsset].token))
@@ -125,7 +142,9 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
         </p>
       </div>
       <div className="description">
-        <p className="label">Reserve Factor</p>
+        <p className="label">
+          <FormattedMessage id="Reserve_Factor" />
+        </p>
         <p className="value">
           {`${new BigNumber(marketInfo.reserveFactor || 0)
             .div(new BigNumber(10).pow(18))
@@ -135,7 +154,9 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
         </p>
       </div>
       <div className="description">
-        <p className="label">Collateral Factor</p>
+        <p className="label">
+          <FormattedMessage id="Collateral_Factor" />
+        </p>
         <p className="value">
           {`${new BigNumber(marketInfo.collateralFactor || 0)
             .div(new BigNumber(10).pow(18))
@@ -145,19 +166,27 @@ function MarketSummary({ marketInfo, currentAsset, settings }) {
         </p>
       </div>
       <div className="description">
-        <p className="label">Total Supply</p>
+        <p className="label">
+          <FormattedMessage id="Total_Supply" />
+        </p>
         <p className="value">{currencyFormatter(marketInfo.totalSupplyUsd)}</p>
       </div>
       <div className="description">
-        <p className="label">Total Borrow</p>
+        <p className="label">
+          <FormattedMessage id="Total_Borrow" />
+        </p>
         <p className="value">{currencyFormatter(marketInfo.totalBorrowsUsd)}</p>
       </div>
       <div className="description">
-        <p className="label">s{marketInfo.underlyingSymbol} Minted</p>
+        <p className="label">
+          s{marketInfo.underlyingSymbol} <FormattedMessage id="Minted" />
+        </p>
         <p className="value">{format(marketInfo.totalSupply2)}</p>
       </div>
       <div className="description">
-        <p className="label">Exchange Rate</p>
+        <p className="label">
+          <FormattedMessage id="Exchange_Rate" />
+        </p>
         <p className="value">
           {`1 ${marketInfo.underlyingSymbol || ''} = ${Number(
             new BigNumber(1)

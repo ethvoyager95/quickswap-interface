@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import Markdown from 'react-remarkable';
 import moment from 'moment';
@@ -112,7 +113,9 @@ function ProposalInfo({ proposalInfo }) {
   return (
     <Card>
       <ProposalInfoWrapper>
-        <p className="title">Governance</p>
+        <p className="title">
+          <FormattedMessage id="Governance" />
+        </p>
         {proposalInfo.description && (
           <div className="description">
             <Markdown
@@ -130,7 +133,9 @@ function ProposalInfo({ proposalInfo }) {
               proposalInfo
             )}`}
           >
-            {getStatus(proposalInfo)}
+            {getStatus(proposalInfo) && (
+              <FormattedMessage id={getStatus(proposalInfo)} />
+            )}
           </div>
           <div className="left-time">{getRemainTime(proposalInfo)}</div>
         </div>

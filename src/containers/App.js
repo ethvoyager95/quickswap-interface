@@ -1,12 +1,19 @@
 import { hot } from 'react-hot-loader/root';
-import React from 'react';
+import React, { useEffect } from 'react';
+import moment from 'moment';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
+import es from 'react-intl/locale-data/es';
+import zh from 'react-intl/locale-data/zh';
+import tr from 'react-intl/locale-data/tr';
 import { ApolloProvider } from 'react-apollo';
 import { ToastContainer } from 'react-toastify';
 import enMessages from 'lang/en';
+import zhMessages from 'lang/zh';
+import esMessages from 'lang/es';
+import trMessages from 'lang/tr';
 import { store } from 'core';
 import Dashboard from 'containers/Main/Dashboard';
 import Faucet from 'containers/Main/Faucet';
@@ -29,87 +36,92 @@ import 'assets/styles/App.scss';
 import History from './Main/History/History';
 import 'react-toastify/dist/ReactToastify.css';
 
-addLocaleData([...en]);
-const initialLang = 'en';
+import 'moment/locale/es';
+import 'moment/locale/tr';
+import 'moment/locale/zh-cn';
 
+addLocaleData([...en, ...zh, ...es, ...tr]);
 const messages = {
-  en: enMessages
+  en: enMessages,
+  zh: zhMessages,
+  es: esMessages,
+  tr: trMessages
 };
 
 // eslint-disable-next-line global-require
 window.Buffer = window.Buffer || require('buffer').Buffer;
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      lang: initialLang
-    };
-  }
+function App() {
+  const lang = localStorage.getItem('language') || 'en';
+  const message = messages[localStorage.getItem('language') || 'en'];
 
-  render() {
-    const { lang } = this.state;
-    const message = messages[lang];
-    return (
-      <Theme>
-        <ApolloProvider client={client}>
-          <IntlProvider locale={lang} messages={message}>
-            <Provider store={store}>
-              <BrowserRouter>
-                <Switch
-                  atEnter={{ opacity: 0 }}
-                  atLeave={{ opacity: 0.5 }}
-                  atActive={{ opacity: 1 }}
-                  className="switch-wrapper"
-                >
-                  <Route exact path="/dashboard" component={Dashboard} />
-                  <Route exact path="/vote" component={Vote} />
-                  <Route exact path="/strk" component={STRK} />
-                  <Route exact path="/market" component={Market} />
-                  <Route exact path="/market/:asset" component={MarketDetail} />
-                  <Route
-                    exact
-                    path="/marketdeprecated"
-                    component={MarketDeprecated}
-                  />
-                  <Route
-                    exact
-                    path="/marketdeprecated/:asset"
-                    component={MarketDetailDeprecated}
-                  />
-                  <Route exact path="/forbidden" component={Forbidden} />
-                  <Route exact path="/history" component={History} />
-                  <Route exact path="/staking" component={Staking} />
-                  <Route exact path="/liquidator" component={Liquidator} />
-                  <Route exact path="/vault" component={Vault} />
-                  <Route
-                    exact
-                    path="/vote/leaderboard"
-                    component={VoterLeaderboard}
-                  />
-                  <Route
-                    exact
-                    path="/vote/proposal/:id"
-                    component={VoteOverview}
-                  />
-                  <Route
-                    exact
-                    path="/vote/address/:address"
-                    component={ProposerDetail}
-                  />
-                  {process.env.REACT_APP_ENV === 'dev' && (
-                    <Route exact path="/faucet" component={Faucet} />
-                  )}
-                  <Redirect from="/" to="/dashboard" />
-                </Switch>
-              </BrowserRouter>
-              <ToastContainer />
-            </Provider>
-          </IntlProvider>
-        </ApolloProvider>
-      </Theme>
-    );
-  }
+  useEffect(() => {
+    if (lang === 'zh') {
+      moment.locale('zh-cn');
+    } else {
+      moment.locale(lang);
+    }
+  }, [lang]);
+
+  return (
+    <Theme>
+      <ApolloProvider client={client}>
+        <IntlProvider locale={lang} messages={message}>
+          <Provider store={store}>
+            <BrowserRouter>
+              <Switch
+                atEnter={{ opacity: 0 }}
+                atLeave={{ opacity: 0.5 }}
+                atActive={{ opacity: 1 }}
+                className="switch-wrapper"
+              >
+                <Route exact path="/dashboard" component={Dashboard} />
+                <Route exact path="/vote" component={Vote} />
+                <Route exact path="/strk" component={STRK} />
+                <Route exact path="/market" component={Market} />
+                <Route exact path="/market/:asset" component={MarketDetail} />
+                <Route
+                  exact
+                  path="/marketdeprecated"
+                  component={MarketDeprecated}
+                />
+                <Route
+                  exact
+                  path="/marketdeprecated/:asset"
+                  component={MarketDetailDeprecated}
+                />
+                <Route exact path="/forbidden" component={Forbidden} />
+                <Route exact path="/history" component={History} />
+                <Route exact path="/staking" component={Staking} />
+                <Route exact path="/liquidator" component={Liquidator} />
+                <Route exact path="/vault" component={Vault} />
+                <Route
+                  exact
+                  path="/vote/leaderboard"
+                  component={VoterLeaderboard}
+                />
+                <Route
+                  exact
+                  path="/vote/proposal/:id"
+                  component={VoteOverview}
+                />
+                <Route
+                  exact
+                  path="/vote/address/:address"
+                  component={ProposerDetail}
+                />
+                {process.env.REACT_APP_ENV === 'dev' && (
+                  <Route exact path="/faucet" component={Faucet} />
+                )}
+                <Redirect from="/" to="/dashboard" />
+              </Switch>
+            </BrowserRouter>
+            <ToastContainer />
+          </Provider>
+        </IntlProvider>
+      </ApolloProvider>
+    </Theme>
+  );
 }
 
 export default App;

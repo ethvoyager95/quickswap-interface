@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Progress, Tooltip } from 'antd';
@@ -63,11 +64,13 @@ const SQuestion = styled.img`
   margin-left: 10px;
 `;
 
-function LineProgressBar({ label, percent, type, borrowLimit }) {
+function LineProgressBar({ id, label, percent, type, borrowLimit }) {
   return (
     <LineProgressBarWrapper>
       <div className="flex align-center just-between">
-        <p className={`label ${type === 'market' ? 'market' : ''}`}>{label}</p>
+        <p className={`label ${type === 'market' ? 'market' : ''}`}>
+          {id ? <FormattedMessage id={id} /> : label}
+        </p>
         <p className={`percent ${type === 'market' ? 'market' : ''}`}>
           {percent}%
         </p>
@@ -84,13 +87,14 @@ function LineProgressBar({ label, percent, type, borrowLimit }) {
       {type !== 'market' && (
         <div className="safe-line">
           <img src={safeImg} alt="safe" />
-          <span>Your safe limit: ${borrowLimit}</span>
+          <span>
+            <FormattedMessage id="Your_safe_limit" />: ${borrowLimit}
+          </span>
           <Tooltip
             placement="bottom"
             title={
               <span>
-                80% of your borrow limit. We consider borrowing above this
-                threshold unsafe.
+                <FormattedMessage id="Your_safe_limit_desc" />
               </span>
             }
           >
@@ -103,6 +107,7 @@ function LineProgressBar({ label, percent, type, borrowLimit }) {
 }
 
 LineProgressBar.propTypes = {
+  id: PropTypes.string,
   label: PropTypes.string,
   percent: PropTypes.number,
   type: PropTypes.string,
@@ -110,6 +115,7 @@ LineProgressBar.propTypes = {
 };
 
 LineProgressBar.defaultProps = {
+  id: '',
   label: 'Borrow Limit',
   percent: 0.0,
   type: 'borrow',

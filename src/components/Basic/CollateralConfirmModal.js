@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal, Spin, Icon } from 'antd';
@@ -59,10 +60,16 @@ function CollateralConfirmModal({ visible, isCollateralEnalbe, onCancel }) {
         />
         <img src={logoImg} alt="logo" className="logo-text" />
         <p className="title">
-          {`${isCollateralEnalbe ? 'Disable' : 'Enable'} as collateral`}
+          {isCollateralEnalbe ? (
+            <FormattedMessage id="Disable_as_collateral" />
+          ) : (
+            <FormattedMessage id="Enable_as_collateral" />
+          )}
         </p>
         <Spin className="voting-spinner" indicator={antIcon} />
-        <p className="confirm-text">Confirm the transaction</p>
+        <p className="confirm-text">
+          <FormattedMessage id="Confirm_the_transaction" />
+        </p>
       </ModalContent>
     </Modal>
   );

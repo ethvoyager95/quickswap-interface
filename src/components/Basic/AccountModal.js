@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 import React, { useEffect, useState, useRef } from 'react';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { initOnRamp } from '@coinbase/cbpay-js';
 // import { initOnRamp } from '@coinbase/cbpay-js';
 import styled from 'styled-components';
@@ -142,7 +144,7 @@ export const useOutside = (ref, onClick) => {
   }, [ref, onClick]);
 };
 
-function AccountModal({ visible, onCancel, onDisconnect, settings }) {
+function AccountModal({ visible, onCancel, onDisconnect, settings, intl }) {
   const onrampInstance = useRef();
   const [isReady, setIsReady] = useState(false);
 
@@ -199,7 +201,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
   const handleCoinbasePayClick = async () => {
     if (onrampInstance.current) onrampInstance.current.destroy();
 
-    await initOnRamp(
+    initOnRamp(
       {
         appId: process.env.REACT_APP_COINBASE_PAY_APP_ID,
         experienceLoggedIn: 'new_tab',
@@ -296,7 +298,11 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
           <CopyToClipboard
             text={settings.selectedAddress}
             onCopy={() => {
-              message.success(`Copied address`);
+              message.success(
+                intl.formatMessage({
+                  id: 'Copied_address'
+                })
+              );
             }}
           >
             <div className="item">
@@ -327,7 +333,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
               //   setOpenDropdown(!openDropdown);
               // }}
             >
-              Buy crypto with Fiat
+              <FormattedMessage id="Buy_crypto_with_Fiat" />
               {openDropdown ? (
                 <svg
                   width="15"
@@ -370,7 +376,8 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
                   }}
                 >
                   <StyledName>
-                    <img src={coinbaseImg} alt="token" /> Coinbase Pay
+                    <img src={coinbaseImg} alt="token" />{' '}
+                    <FormattedMessage id="Coinbase_Pay" />
                   </StyledName>
                 </StyledPaymentItem>
               </StyledPaymentSelect>
@@ -385,7 +392,7 @@ function AccountModal({ visible, onCancel, onDisconnect, settings }) {
             onCancel();
           }}
         >
-          Disconnect
+          <FormattedMessage id="Disconnect" />
         </div>
       </ModalContent>
     </Modal>
@@ -396,7 +403,8 @@ AccountModal.propTypes = {
   visible: PropTypes.bool,
   onCancel: PropTypes.func,
   onDisconnect: PropTypes.func,
-  settings: PropTypes.object
+  settings: PropTypes.object,
+  intl: intlShape.isRequired
 };
 
 AccountModal.defaultProps = {
@@ -410,4 +418,6 @@ const mapStateToProps = ({ account }) => ({
   settings: account.setting
 });
 
-export default compose(connectAccount(mapStateToProps, null))(AccountModal);
+export default injectIntl(
+  compose(connectAccount(mapStateToProps, null))(AccountModal)
+);

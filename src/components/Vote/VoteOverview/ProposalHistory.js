@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Steps, Icon } from 'antd';
@@ -85,11 +86,13 @@ function ProposalHistory({ proposalInfo }) {
   return (
     <Card>
       <ProposalHistoryWrapper>
-        <p className="title">Proposal history</p>
+        <p className="title">
+          <FormattedMessage id="Proposal_history" />
+        </p>
         <div className="history-steps-wrapper">
           <Steps direction="vertical" current={getStepNumber()}>
             <Step
-              title="Created"
+              title={<FormattedMessage id="Created" />}
               description={
                 proposalInfo.createdTimestamp
                   ? moment(proposalInfo.createdTimestamp * 1000).format('LLL')
@@ -104,7 +107,7 @@ function ProposalHistory({ proposalInfo }) {
               disabled
             />
             <Step
-              title="Active"
+              title={<FormattedMessage id="Active" />}
               description={
                 proposalInfo.startTimestamp
                   ? moment(proposalInfo.startTimestamp * 1000).format('LLL')
@@ -121,15 +124,17 @@ function ProposalHistory({ proposalInfo }) {
             <Step
               title={
                 proposalInfo.state === 'Canceled' ||
-                proposalInfo.state === 'Defeated'
-                  ? proposalInfo.state === 'Defeated'
-                    ? 'Failed'
-                    : 'Canceled'
-                  : `${
-                      proposalInfo.state === 'Succeeded'
-                        ? 'Succeeded'
-                        : 'Succeed'
-                    }`
+                proposalInfo.state === 'Defeated' ? (
+                  proposalInfo.state === 'Defeated' ? (
+                    <FormattedMessage id="Failed" />
+                  ) : (
+                    <FormattedMessage id="Canceled" />
+                  )
+                ) : proposalInfo.state === 'Succeeded' ? (
+                  <FormattedMessage id="Succeeded" />
+                ) : (
+                  <FormattedMessage id="Succeed" />
+                )
               }
               description={
                 proposalInfo.endTimestamp
@@ -145,7 +150,13 @@ function ProposalHistory({ proposalInfo }) {
               disabled
             />
             <Step
-              title={`${proposalInfo.state === 'Queued' ? 'Queued' : 'Queue'}`}
+              title={
+                proposalInfo.state === 'Queued' ? (
+                  <FormattedMessage id="Queued" />
+                ) : (
+                  <FormattedMessage id="Queue" />
+                )
+              }
               description={
                 proposalInfo.queuedTimestamp
                   ? moment(proposalInfo.queuedTimestamp * 1000).format('LLL')
@@ -161,11 +172,13 @@ function ProposalHistory({ proposalInfo }) {
             />
             <Step
               title={
-                proposalInfo.state === 'Expired'
-                  ? proposalInfo.state
-                  : `${
-                      proposalInfo.state === 'Executed' ? 'Executed' : 'Execute'
-                    }`
+                proposalInfo.state === 'Expired' ? (
+                  proposalInfo.state
+                ) : proposalInfo.state === 'Executed' ? (
+                  <FormattedMessage id="Executed" />
+                ) : (
+                  <FormattedMessage id="Execute" />
+                )
               }
               description={
                 proposalInfo.executedTimestamp

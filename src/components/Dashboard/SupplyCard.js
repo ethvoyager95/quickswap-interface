@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { Card } from 'components/Basic/Card';
@@ -195,7 +196,7 @@ function SupplyCard({ currentMarket, settings }) {
                     setCurrentTab('supply');
                   }}
                 >
-                  Supply
+                  <FormattedMessage id="Supply" />
                 </div>
               )}
               <div
@@ -206,7 +207,7 @@ function SupplyCard({ currentMarket, settings }) {
                   setCurrentTab('withdraw');
                 }}
               >
-                Withdraw
+                <FormattedMessage id="Withdraw" />
               </div>
             </Tabs>
             {!currentAsset || Object.keys(currentAsset).length === 0 ? (
@@ -236,7 +237,7 @@ function SupplyCard({ currentMarket, settings }) {
                     setCurrentTab('borrow');
                   }}
                 >
-                  Borrow
+                  <FormattedMessage id="Borrow" />
                 </div>
               )}
               <div
@@ -247,7 +248,7 @@ function SupplyCard({ currentMarket, settings }) {
                   setCurrentTab('repay');
                 }}
               >
-                Repay Borrow
+                <FormattedMessage id="Repay_Borrow" />
               </div>
             </Tabs>
             {!currentAsset || Object.keys(currentAsset).length === 0 ? (

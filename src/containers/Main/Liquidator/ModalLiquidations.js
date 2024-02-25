@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import axios from 'axios';
 import Web3 from 'web3';
 import PropTypes from 'prop-types';
@@ -25,7 +26,7 @@ import {
 import './overide.scss';
 import { formatRecentRecord } from './helper';
 
-function ModalLiquidations({ isOpenModal, onCancel }) {
+function ModalLiquidations({ isOpenModal, onCancel, intl }) {
   const [dataRecentTable, setDataRecentTable] = useState([]);
   const [borrower, setBorrower] = useState('');
   const [errorMess, setErrorMess] = useState('');
@@ -176,7 +177,9 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     {
       title: () => (
         <THeadWrapper sorted onClick={handleSortByTimestamp}>
-          <div>Timestamp</div>
+          <div>
+            <FormattedMessage id="Timestamp" />
+          </div>
           {!currentSortTimestamp && <img src={iconSort} alt="" />}
           {currentSortTimestamp === 'DESC' && (
             <img src={iconSortActive} alt="" />
@@ -197,7 +200,9 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     {
       title: () => (
         <THeadWrapper sorted onClick={handleSortBySeize}>
-          <div>Seized Tokens</div>
+          <div>
+            <FormattedMessage id="Seized_Tokens" />
+          </div>
           {!currentSortSeize && <img src={iconSort} alt="" />}
           {currentSortSeize === 'DESC' && <img src={iconSortActive} alt="" />}
           {currentSortSeize === 'ASC' && (
@@ -225,7 +230,9 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
     {
       title: () => (
         <THeadWrapper sorted onClick={handleSortByRepay}>
-          <div>Repay Amount</div>
+          <div>
+            <FormattedMessage id="Repay_Amount" />
+          </div>
           {!currentSortRepay && <img src={iconSort} alt="" />}
           {currentSortRepay === 'DESC' && <img src={iconSortActive} alt="" />}
           {currentSortRepay === 'ASC' && (
@@ -252,7 +259,11 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       }
     },
     {
-      title: () => <THeadWrapper>Borrower</THeadWrapper>,
+      title: () => (
+        <THeadWrapper>
+          <FormattedMessage id="Borrower" />
+        </THeadWrapper>
+      ),
       dataIndex: 'borrower',
       key: 'borrower',
       render(_, asset) {
@@ -271,7 +282,11 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       }
     },
     {
-      title: () => <THeadWrapper>Liquidator</THeadWrapper>,
+      title: () => (
+        <THeadWrapper>
+          <FormattedMessage id="Liquidator" />
+        </THeadWrapper>
+      ),
       dataIndex: 'liquidator',
       key: 'liquidator',
       render(_, asset) {
@@ -326,7 +341,9 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       <NoData>
         <>
           <img src={noData} alt="No data" />
-          <div>No record was found </div>
+          <div>
+            <FormattedMessage id="No_record_was_found" />
+          </div>
         </>
       </NoData>
     )
@@ -342,12 +359,18 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
       maskClosable={false}
     >
       <ModalContent>
-        <div className="title">Recent Liquidations</div>
-        <div className="search-label">Search by borrower address</div>
+        <div className="title">
+          <FormattedMessage id="Recent_Liquidations" />
+        </div>
+        <div className="search-label">
+          <FormattedMessage id="Search_by_borrower_address" />
+        </div>
         <div className="input-wrapper">
           <div className="search-input">
             <Input
-              placeholder="Search by address"
+              placeholder={intl.formatMessage({
+                id: 'Search_by_address'
+              })}
               onChange={e => handleInputChange(e.target.value)}
               value={borrower}
               onKeyDown={e => e.key === 'Enter' && handleSearchByBorrower()}
@@ -377,7 +400,7 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
             </div>
           </div>
           <Button className="search-btn" onClick={handleSearchByBorrower}>
-            Search
+            <FormattedMessage id="Search" />
           </Button>
         </div>
         {errorMess && <div className="error-mess">{errorMess}</div>}
@@ -401,7 +424,8 @@ function ModalLiquidations({ isOpenModal, onCancel }) {
 
 ModalLiquidations.propTypes = {
   isOpenModal: PropTypes.bool,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
+  intl: intlShape.isRequired
 };
 
 ModalLiquidations.defaultProps = {
@@ -424,7 +448,9 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default compose(
-  withRouter,
-  connectAccount(mapStateToProps, mapDispatchToProps)
-)(ModalLiquidations);
+export default injectIntl(
+  compose(
+    withRouter,
+    connectAccount(mapStateToProps, mapDispatchToProps)
+  )(ModalLiquidations)
+);

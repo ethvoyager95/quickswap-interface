@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
 import { NavLink, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { message, Dropdown, Menu, Icon } from 'antd';
+import { Dropdown, Menu, Icon } from 'antd';
 import BigNumber from 'bignumber.js';
 import Button from '@material-ui/core/Button';
 import { FaBars, FaTimes } from 'react-icons/fa';
@@ -24,8 +25,6 @@ import { connectAccount, accountActionCreators } from 'core';
 import logoImg from 'assets/img/logo.png';
 import { checkIsValidNetwork, getBigNumber } from 'utilities/common';
 import useWindowDimensions from 'hooks/useWindowDimensions';
-import { ACCOUNT_MARKET_INFO } from 'apollo/queries';
-import { client } from 'apollo/client';
 import { ReactComponent as DashboardImg } from 'assets/img/menu-dashboard.svg';
 import { ReactComponent as VoteImg } from 'assets/img/menu-vote.svg';
 import { ReactComponent as RewardsImg } from 'assets/img/menu-reward.svg';
@@ -35,7 +34,6 @@ import { ReactComponent as StakingImg } from 'assets/img/menu-staking.svg';
 import { ReactComponent as LiquidatorImg } from 'assets/img/menu-liquidator.svg';
 import { ReactComponent as VaultImg } from 'assets/img/menu-vault.svg';
 import { ReactComponent as AnalyticsImg } from 'assets/img/menu-analytics.svg';
-import { ReactComponent as ToolsImg } from 'assets/img/menu-tools.svg';
 import { ReactComponent as StatusImg } from 'assets/img/menu-status.svg';
 import { ReactComponent as DiscussionImg } from 'assets/img/menu-discussion.svg';
 import { ReactComponent as SnapshotImg } from 'assets/img/menu-snapshot.svg';
@@ -44,8 +42,11 @@ import { ReactComponent as MoreImg } from 'assets/img/menu-more.svg';
 import { ReactComponent as TelegramImg } from 'assets/img/menu-telegram.svg';
 import { ReactComponent as TwitterImg } from 'assets/img/menu-twitter.svg';
 import { ReactComponent as MediumImg } from 'assets/img/menu-medium.svg';
-import { ReactComponent as MarketDeprecatedImg } from 'assets/img/menu-marketdeprecated.svg';
 import { ReactComponent as DocsImg } from 'assets/img/menu-docs.svg';
+import EnImg from 'assets/img/lang/en.png';
+import EsImg from 'assets/img/lang/es.png';
+import ChImg from 'assets/img/lang/ch.png';
+import TrImg from 'assets/img/lang/tr.png';
 
 import ConnectButton from './ConnectButton';
 
@@ -207,6 +208,7 @@ const MobileIcon = styled.div`
     align-items: center;
     cursor: pointer;
     margin-right: 20px;
+    margin-left: 20px;
   }
 `;
 
@@ -270,7 +272,9 @@ const dao = (
         activeClassName="active"
       >
         <VoteImg />
-        <Label>Governance</Label>
+        <Label>
+          <FormattedMessage id="Governance" />
+        </Label>
       </NavLink>
     </Menu.Item>
     <Menu.Item key="1">
@@ -281,7 +285,9 @@ const dao = (
         rel="noreferrer"
       >
         <DiscussionImg />
-        <Label>Discussion</Label>
+        <Label>
+          <FormattedMessage id="Discussion" />
+        </Label>
       </a>
     </Menu.Item>
     <Menu.Item key="2">
@@ -292,7 +298,9 @@ const dao = (
         rel="noreferrer"
       >
         <SnapshotImg style={{ width: '16px', height: '16px' }} />
-        <Label>Snapshot</Label>
+        <Label>
+          <FormattedMessage id="Snapshot" />
+        </Label>
       </a>
     </Menu.Item>
   </Menu>
@@ -307,7 +315,9 @@ const manage = (
         activeClassName="active"
       >
         <LiquidatorImg />
-        <Label>Liquidator</Label>
+        <Label>
+          <FormattedMessage id="Liquidator" />
+        </Label>
       </NavLink>
     </Menu.Item>
     <Menu.Item key="1">
@@ -317,7 +327,9 @@ const manage = (
         activeClassName="active"
       >
         <RewardsImg />
-        <Label>Rewards</Label>
+        <Label>
+          <FormattedMessage id="Rewards" />
+        </Label>
       </NavLink>
     </Menu.Item>
     {/* <Menu.Item key="2">
@@ -364,7 +376,9 @@ const more = (
         rel="noreferrer"
       >
         <AnalyticsImg />
-        <Label>Analytics</Label>
+        <Label>
+          <FormattedMessage id="Analytics" />
+        </Label>
       </a>
     </Menu.Item>
     <Menu.Item key="2">
@@ -375,7 +389,9 @@ const more = (
         rel="noreferrer"
       >
         <StatusImg />
-        <Label>Status</Label>
+        <Label>
+          <FormattedMessage id="Status" />
+        </Label>
       </a>
     </Menu.Item>
     <Menu.Item key="3">
@@ -386,7 +402,9 @@ const more = (
         rel="noreferrer"
       >
         <DocsImg />
-        <Label>Docs</Label>
+        <Label>
+          <FormattedMessage id="Docs" />
+        </Label>
       </a>
     </Menu.Item>
     <Menu.Item key="4">
@@ -397,7 +415,9 @@ const more = (
         rel="noreferrer"
       >
         <TwitterImg />
-        <Label>Twitter</Label>
+        <Label>
+          <FormattedMessage id="Twitter" />
+        </Label>
       </a>
     </Menu.Item>
     <Menu.Item key="5">
@@ -408,7 +428,9 @@ const more = (
         rel="noreferrer"
       >
         <TelegramImg />
-        <Label>Telegram</Label>
+        <Label>
+          <FormattedMessage id="Telegram" />
+        </Label>
       </a>
     </Menu.Item>
     <Menu.Item key="6">
@@ -419,13 +441,23 @@ const more = (
         rel="noreferrer"
       >
         <MediumImg />
-        <Label>Medium</Label>
+        <Label>
+          <FormattedMessage id="Medium" />
+        </Label>
       </a>
     </Menu.Item>
   </Menu>
 );
 
+const languages = [
+  { id: 'en', label: <FormattedMessage id="English" />, icon: EnImg },
+  { id: 'es', label: <FormattedMessage id="Spanish" />, icon: EsImg },
+  { id: 'zh', label: <FormattedMessage id="Chinese" />, icon: ChImg },
+  { id: 'tr', label: <FormattedMessage id="Turkish" />, icon: TrImg }
+];
+
 function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
+  const lang = localStorage.getItem('language') || 'en';
   const instance = useInstance(settings.walletConnected);
   const multicall = useMulticall(instance);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
@@ -433,12 +465,74 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
   const [isOpenDaoMenu, setIsOpenDaoMenu] = useState(false);
   const [isOpenManageMenu, setIsOpenManageMenu] = useState(false);
   const [isOpenMoreMenu, setIsOpenMoreMenu] = useState(false);
+  const [isOpenLangMenu, setIsOpenLangMenu] = useState(false);
 
   const dropdownRef = useRef(null);
+  const dropdownRef1 = useRef(null);
 
   const [available, setAvailable] = useState('0');
   const [balance, setBalance] = useState('');
   const { width } = useWindowDimensions();
+
+  const selectedLan = useMemo(() => {
+    return languages.find(e => e.id === lang) || languages[0];
+  }, [lang, languages]);
+
+  const languageItems = useMemo(() => {
+    if (width < 768) {
+      return (
+        <Menu>
+          {languages.map((item, index) => (
+            <Menu.Item key={index}>
+              <div
+                className="flex flex-start align-center gap-menu"
+                style={item.id === lang ? { cursor: 'not-allowed' } : {}}
+                onClick={() => {
+                  if (item.id !== lang) {
+                    localStorage.setItem('language', item.id);
+                    // eslint-disable-next-line valid-typeof
+                    if (typeof window !== undefined) {
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 500);
+                    }
+                  }
+                }}
+              >
+                <img src={item.icon} alt="lang" />
+              </div>
+            </Menu.Item>
+          ))}
+        </Menu>
+      );
+    }
+    return (
+      <Menu>
+        {languages.map((item, index) => (
+          <Menu.Item key={index}>
+            <div
+              className="flex flex-start align-center gap-menu"
+              style={item.id === lang ? { cursor: 'not-allowed' } : {}}
+              onClick={() => {
+                if (item.id !== lang) {
+                  localStorage.setItem('language', item.id);
+                  // eslint-disable-next-line valid-typeof
+                  if (typeof window !== undefined) {
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 500);
+                  }
+                }
+              }}
+            >
+              <img src={item.icon} alt="lang" />
+              <Label>{item.label}</Label>
+            </div>
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+  }, [languages]);
 
   const setDecimals = async () => {
     const decimals = {};
@@ -887,15 +981,31 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
 
   useEffect(() => {
     const wheelHandler = event => {
-      if (isOpenDaoMenu || isOpenManageMenu || isOpenMoreMenu) {
+      if (
+        isOpenDaoMenu ||
+        isOpenManageMenu ||
+        isOpenMoreMenu ||
+        isOpenLangMenu
+      ) {
         event.preventDefault();
       }
     };
     const handleOutsideClick = event => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        width >= 768 &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
         setIsOpenDaoMenu(false);
         setIsOpenManageMenu(false);
         setIsOpenMoreMenu(false);
+        setIsOpenLangMenu(false);
+      } else if (
+        width < 768 &&
+        dropdownRef1.current &&
+        !dropdownRef1.current.contains(event.target)
+      ) {
+        setIsOpenLangMenu(false);
       }
     };
     document.addEventListener('wheel', wheelHandler, { passive: false });
@@ -906,7 +1016,7 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
       document.removeEventListener('wheel', wheelHandler);
       document.removeEventListener('click', handleOutsideClick);
     };
-  }, [isOpenDaoMenu, isOpenManageMenu, isOpenMoreMenu]);
+  }, [isOpenDaoMenu, isOpenManageMenu, isOpenMoreMenu, isOpenLangMenu]);
 
   const updateBalance = async () => {
     if (
@@ -938,9 +1048,25 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
             <img src={logoImg} alt="logo" className="logo-text" />
           </NavLink>
         </Logo>
-        <MobileIcon onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <FaTimes color="white" /> : <FaBars color="white" />}
-        </MobileIcon>
+        <div className="flex" ref={dropdownRef1}>
+          {width < 768 && (
+            <Dropdown overlay={languageItems} trigger={['click']}>
+              <span
+                className="flex flex-start align-center gap-menu dropdown-link"
+                onClick={e => {
+                  e.preventDefault();
+                  setIsOpenLangMenu(!isOpenLangMenu);
+                }}
+              >
+                <img src={selectedLan.icon} alt="lang" />
+                <Icon type="down" style={{ color: 'white' }} />
+              </span>
+            </Dropdown>
+          )}
+          <MobileIcon onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <FaTimes color="white" /> : <FaBars color="white" />}
+          </MobileIcon>
+        </div>
         <div className="right-area">
           {settings.selectedAddress && (
             <UserInfoButton>
@@ -963,7 +1089,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           activeClassName="active"
         >
           <DashboardImg />
-          <Label>Dashboard</Label>
+          <Label>
+            <FormattedMessage id="Dashboard" />
+          </Label>
         </NavLink>
         {!isMenuOpen && width >= 768 && (
           <Dropdown overlay={dao} trigger={['click']}>
@@ -974,7 +1102,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
                 setIsOpenDaoMenu(!isOpenDaoMenu);
               }}
             >
-              <VoteImg /> DAO <Icon type="down" /> &nbsp;
+              <VoteImg /> <FormattedMessage id="DAO" /> <Icon type="down" />{' '}
+              &nbsp;
             </span>
           </Dropdown>
         )}
@@ -986,7 +1115,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               activeClassName="active"
             >
               <VoteImg />
-              <Label>Governance</Label>
+              <Label>
+                <FormattedMessage id="Governance" />
+              </Label>
             </NavLink>
             <a
               className="flex flex-start align-center gap-menu"
@@ -995,7 +1126,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               rel="noreferrer"
             >
               <DiscussionImg />
-              <Label>Discussion</Label>
+              <Label>
+                <FormattedMessage id="Discussion" />
+              </Label>
             </a>
             <a
               className="flex flex-start align-center gap-menu"
@@ -1004,7 +1137,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               rel="noreferrer"
             >
               <SnapshotImg style={{ width: '16px', height: '16px' }} />
-              <Label>Snapshot</Label>
+              <Label>
+                <FormattedMessage id="Snapshot" />
+              </Label>
             </a>
           </>
         )}
@@ -1014,7 +1149,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           activeClassName="active"
         >
           <MarketImg />
-          <Label>Market</Label>
+          <Label>
+            <FormattedMessage id="Market" />
+          </Label>
         </NavLink>
         <NavLink
           className="flex flex-start align-center gap-menu"
@@ -1022,7 +1159,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           activeClassName="active"
         >
           <StakingImg />
-          <Label>Staking</Label>
+          <Label>
+            <FormattedMessage id="Staking" />
+          </Label>
         </NavLink>
         <NavLink
           className="flex flex-start align-center gap-menu"
@@ -1030,7 +1169,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           activeClassName="active"
         >
           <VaultImg />
-          <Label>DeFi Vault 3.0</Label>
+          <Label>
+            <FormattedMessage id="DeFi_Vault_3" />
+          </Label>
         </NavLink>
         <NavLink
           className="flex flex-start align-center gap-menu"
@@ -1038,7 +1179,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
           activeClassName="active"
         >
           <HistoryImg />
-          <Label>History</Label>
+          <Label>
+            <FormattedMessage id="History" />
+          </Label>
         </NavLink>
 
         {!isMenuOpen && width >= 768 && (
@@ -1050,7 +1193,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
                 setIsOpenManageMenu(!isOpenManageMenu);
               }}
             >
-              <ManageImg /> Manage <Icon type="down" /> &nbsp;
+              <ManageImg /> <FormattedMessage id="Manage" />{' '}
+              <Icon type="down" /> &nbsp;
             </span>
           </Dropdown>
         )}
@@ -1062,7 +1206,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               activeClassName="active"
             >
               <LiquidatorImg />
-              <Label>Liquidator</Label>
+              <Label>
+                <FormattedMessage id="Liquidator" />
+              </Label>
             </NavLink>
             <NavLink
               className="flex flex-start align-center gap-menu"
@@ -1070,7 +1216,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               activeClassName="active"
             >
               <RewardsImg />
-              <Label>Rewards</Label>
+              <Label>
+                <FormattedMessage id="Rewards" />
+              </Label>
             </NavLink>
             {/* <NavLink
               className="flex flex-start align-center gap-menu"
@@ -1092,7 +1240,8 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
                 setIsOpenMoreMenu(!isOpenMoreMenu);
               }}
             >
-              <MoreImg /> More <Icon type="down" />
+              <MoreImg /> <FormattedMessage id="More" /> <Icon type="down" />{' '}
+              &nbsp;
             </span>
           </Dropdown>
         )}
@@ -1105,7 +1254,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               rel="noreferrer"
             >
               <AnalyticsImg />
-              <Label>Analytics</Label>
+              <Label>
+                <FormattedMessage id="Analytics" />
+              </Label>
             </a>
 
             <a
@@ -1115,7 +1266,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               rel="noreferrer"
             >
               <StatusImg />
-              <Label>Status</Label>
+              <Label>
+                <FormattedMessage id="Status" />
+              </Label>
             </a>
             <a
               className="flex flex-start align-center gap-menu"
@@ -1124,7 +1277,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               rel="noreferrer"
             >
               <DocsImg />
-              <Label>Docs</Label>
+              <Label>
+                <FormattedMessage id="Docs" />
+              </Label>
             </a>
             <a
               className="flex flex-start align-center gap-menu"
@@ -1133,7 +1288,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               rel="noreferrer"
             >
               <TwitterImg />
-              <Label>Twitter</Label>
+              <Label>
+                <FormattedMessage id="Twitter" />
+              </Label>
             </a>
             <a
               className="flex flex-start align-center gap-menu"
@@ -1142,7 +1299,9 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               rel="noreferrer"
             >
               <TelegramImg />
-              <Label>Telegram</Label>
+              <Label>
+                <FormattedMessage id="Telegram" />
+              </Label>
             </a>
             <a
               className="flex flex-start align-center gap-menu"
@@ -1151,9 +1310,25 @@ function Sidebar({ history, settings, setSetting, getGovernanceStrike }) {
               rel="noreferrer"
             >
               <MediumImg />
-              <Label>Medium</Label>
+              <Label>
+                <FormattedMessage id="Medium" />
+              </Label>
             </a>
           </>
+        )}
+        {!isMenuOpen && width >= 768 && (
+          <Dropdown overlay={languageItems} trigger={['click']}>
+            <span
+              className="flex flex-start align-center gap-menu dropdown-link"
+              onClick={e => {
+                e.preventDefault();
+                setIsOpenLangMenu(!isOpenLangMenu);
+              }}
+            >
+              <img src={selectedLan.icon} alt="lang" /> {selectedLan.label}{' '}
+              <Icon type="down" />
+            </span>
+          </Dropdown>
         )}
         {/* {process.env.REACT_APP_ENV === 'dev' && (
           <NavLink

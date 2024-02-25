@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Multicall } from 'ethereum-multicall';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import { getProvider as getBW3WProvider } from '@binance/w3w-ethereum-provider';
@@ -56,7 +56,8 @@ const send = (web3, method, params, from) => {
           .times(1.5);
         if (estimatedGas.gt(new BigNumber(walletBalance))) {
           toast.error(
-            'Your ETH balance is insufficient to execute the transaction.'
+            // eslint-disable-next-line react/react-in-jsx-scope
+            <FormattedMessage id="Your_ETH_balance_is_insufficient" />
           );
           reject(
             Error(
