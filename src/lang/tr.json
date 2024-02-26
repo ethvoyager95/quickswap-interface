@@ -327,5 +327,13 @@
   "View_on_explorer": "Ver en el explorador",
   "Liquidate_successfully": "Liquidar con éxito",
   "Your_transaction_successfully": "Su transacción se ha ejecutado con éxito",
-  "You_have_not_claimable_Reward": "Talep edilebilir bir Ödülünüz yok."
+  "You_have_not_claimable_Reward": "Talep edilebilir bir Ödülünüz yok.",
+  "Lending_Risk": "Kredi riski konusunda açık sözlü olmayı seviyoruz",
+  "Lending_Risk_desc_1": "Piyasalarımız birbirinden izole olsa da, yatırdığınız piyasaların tüm dayanak varlıklarına hâlâ maruz kalıyorsunuz.",
+  "Lending_Risk_desc_2": "Manipüle edilebilecek veya hatalı fiyatlar bildirebilecek, bu da fon kaybına yol açabilecek 3. taraf oracle'lara güveniyoruz. Protokolün oracle riskini takip etme veya önleme yolu yoktur.",
+  "Lending_Risk_desc_3": "Zincir içi likidite eksikliği veya tasfiye memurlarının arızalanması, iflas eden pozisyonların tasfiyesini önleyebilir ve bu da şüpheli borçla sonuçlanabilir.",
+  "Lending_Risk_desc_4": "Tüm temel varlıklara ve kehanetlere güvendiğiniz piyasaları kullanarak riskinizi yönetebilirsiniz.",
+  "Lending_Risk_link_1": "Telegram'da yardım almak için ekiple konuşun",
+  "Lending_Risk_link_2": "Riski anlayın ve daha iyi kararlar alın",
+  "Continue": "Devam etmek"
 }
