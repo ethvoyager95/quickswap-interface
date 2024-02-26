@@ -942,12 +942,12 @@ export const SDetailsColor = styled.div`
 `;
 export const SDetailsColorBold = styled.div`
   font-weight: 900;
-  color: #000000;
+  color: #ffffff;
   margin-left: 5px;
 `;
 export const SDetailsColorNotBold = styled.div`
   font-weight: 400;
-  color: #000000;
+  color: #ffffff;
   margin-left: 5px;
 `;
 export const SRowFlex = styled.div`

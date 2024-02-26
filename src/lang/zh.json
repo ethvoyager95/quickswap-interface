@@ -327,5 +327,13 @@
   "View_on_explorer": "在资源管理器上查看",
   "Liquidate_successfully": "平仓成功",
   "Your_transaction_successfully": "您的交易已成功执行",
-  "You_have_not_claimable_Reward": "您没有可领取的奖励。"
+  "You_have_not_claimable_Reward": "您没有可领取的奖励。",
+  "Lending_Risk": "我们喜欢提前了解贷款风险",
+  "Lending_Risk_desc_1": "虽然我们的市场彼此隔离，但您仍然面临着您存入市场的所有基础资产的风险。",
+  "Lending_Risk_desc_2": "我们依赖的第三方预言机可能会被操纵或报告错误的价格，从而导致资金损失。 该协议无法跟踪或预防预言机风险。",
+  "Lending_Risk_desc_3": "缺乏链上流动性或清算人失灵可能会阻止无力偿债头寸的清算，从而导致坏账。",
+  "Lending_Risk_desc_4": "您可以通过使用您信任所有基础资产和预言机的市场来管理风险。",
+  "Lending_Risk_link_1": "通过 Telegram 向团队寻求帮助",
+  "Lending_Risk_link_2": "了解风险并做出更好的决策",
+  "Continue": "继续"
 }

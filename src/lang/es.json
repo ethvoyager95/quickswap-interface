@@ -327,5 +327,13 @@
   "View_on_explorer": "Ver en el explorador",
   "Liquidate_successfully": "Liquidar con éxito",
   "Your_transaction_successfully": "Su transacción se ha ejecutado con éxito",
-  "You_have_not_claimable_Reward": "No tienes recompensa reclamable."
+  "You_have_not_claimable_Reward": "No tienes recompensa reclamable.",
+  "Lending_Risk": "Nos gusta ser sinceros sobre el riesgo crediticio",
+  "Lending_Risk_desc_1": "Si bien nuestros mercados están aislados unos de otros, usted todavía está expuesto a todos los activos subyacentes de los mercados en los que deposita.",
+  "Lending_Risk_desc_2": "Dependemos de oráculos de terceros que pueden ser manipulados o informar precios erróneos, lo que resulta en la pérdida de fondos. El protocolo no tiene forma de rastrear el riesgo de Oracle o prevenirlo.",
+  "Lending_Risk_desc_3": "La falta de liquidez en la cadena o el mal funcionamiento de los liquidadores pueden impedir la liquidación de posiciones insolventes, lo que resulta en deudas incobrables.",
+  "Lending_Risk_desc_4": "Puede gestionar su riesgo utilizando mercados en los que confíe en todos los activos y oráculos subyacentes.",
+  "Lending_Risk_link_1": "Habla con el equipo para obtener ayuda en Telegram.",
+  "Lending_Risk_link_2": "Comprender el riesgo y tomar mejores decisiones",
+  "Continue": "Continuar"
 }

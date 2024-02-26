@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { initOnRamp } from '@coinbase/cbpay-js';
 // import { initOnRamp } from '@coinbase/cbpay-js';
 import styled from 'styled-components';
@@ -137,25 +138,19 @@ function DisclaimerModal({ visible, onCancel, onContinue, settings }) {
 
         <div className="content">
           <span className="title">
-            We like to be upfront about lending risk
+            <FormattedMessage id="Lending_Risk" />
           </span>
           <span>
-            While our markets are isolated from each other, you are still
-            exposed to all the underlying assets of the markets you deposit
-            into.
+            <FormattedMessage id="Lending_Risk_desc_1" />
           </span>
           <span>
-            We rely on 3rd-party oracles that may be manipulated or report
-            erroneous prices, resulting in the loss of funds. The protocol has
-            no way to track oracle risk or prevent it.
+            <FormattedMessage id="Lending_Risk_desc_2" />
           </span>
           <span>
-            Lack of on-chain liquidity, or liquidators malfunctioning, may
-            prevent liquidation of insolvent positions, resulting in bad debt.
+            <FormattedMessage id="Lending_Risk_desc_3" />
           </span>
           <span>
-            You can manage your risk by using markets where you trust all
-            underlying assets and oracles.
+            <FormattedMessage id="Lending_Risk_desc_4" />
           </span>
           <div className="link-group">
             <div className="link">
@@ -164,7 +159,7 @@ function DisclaimerModal({ visible, onCancel, onContinue, settings }) {
                 target="_blank"
                 rel="noreferrer"
               >
-                Speak to the team for help at Telegram
+                <FormattedMessage id="Lending_Risk_link_1" />
               </a>
               <img src={IconLinkBlue} alt="link" />
             </div>
@@ -175,7 +170,7 @@ function DisclaimerModal({ visible, onCancel, onContinue, settings }) {
                 target="_blank"
                 rel="noreferrer"
               >
-                Understand risk and make better decisions
+                <FormattedMessage id="Lending_Risk_link_2" />
               </a>
               <img src={IconLinkBlue} alt="link" />
             </div>
@@ -187,7 +182,7 @@ function DisclaimerModal({ visible, onCancel, onContinue, settings }) {
                 onCancel();
               }}
             >
-              Cancel
+              <FormattedMessage id="Cancel" />
             </div>
 
             <div
@@ -198,7 +193,7 @@ function DisclaimerModal({ visible, onCancel, onContinue, settings }) {
                 onContinue();
               }}
             >
-              Continue
+              <FormattedMessage id="Continue" />
             </div>
           </div>
         </div>

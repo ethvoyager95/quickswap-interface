@@ -327,5 +327,13 @@
   "View_on_explorer": "View on explorer",
   "Liquidate_successfully": "Liquidate successfully",
   "Your_transaction_successfully": "Your transaction has been executed successfully",
-  "You_have_not_claimable_Reward": "You have not claimable Reward."
+  "You_have_not_claimable_Reward": "You have not claimable Reward.",
+  "Lending_Risk": "We like to be upfront about lending risk",
+  "Lending_Risk_desc_1": "While our markets are isolated from each other, you are still exposed to all the underlying assets of the markets you deposit into.",
+  "Lending_Risk_desc_2": "We rely on 3rd-party oracles that may be manipulated or report erroneous prices, resulting in the loss of funds. The protocol has no way to track oracle risk or prevent it.",
+  "Lending_Risk_desc_3": "Lack of on-chain liquidity, or liquidators malfunctioning, may prevent liquidation of insolvent positions, resulting in bad debt.",
+  "Lending_Risk_desc_4": "You can manage your risk by using markets where you trust all underlying assets and oracles.",
+  "Lending_Risk_link_1": "Speak to the team for help at Telegram",
+  "Lending_Risk_link_2": "Understand risk and make better decisions",
+  "Continue": "Continue"
 }
