@@ -23,7 +23,15 @@ export const useProvider = walletType => {
 };
 
 export const useInstance = walletType => {
-  return useMemo(() => new Web3(getProvider(walletType)), [walletType]);
+  return useMemo(
+    () =>
+      new Web3(
+        getProvider(walletType)
+          ? getProvider(walletType)
+          : process.env.REACT_APP_MAIN_RPC
+      ),
+    [walletType]
+  );
 };
 
 export const useMulticall = instance => {
