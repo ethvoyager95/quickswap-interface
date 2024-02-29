@@ -258,7 +258,7 @@ function CountDownClaim({
                     <STimeNumber>
                       {countdownTime.countdownDays}
                       <STimeText>
-                        <FormattedMessage id="test" /> :
+                        <FormattedMessage id="Days" /> :
                       </STimeText>
                     </STimeNumber>
                     <STimeNumber>
