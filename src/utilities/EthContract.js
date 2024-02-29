@@ -168,7 +168,7 @@ export const nftMint = async (web3, from, totalPrice, amount) => {
       web3,
       contract.methods.mint,
       [from, amount],
-      amount,
+      totalPrice,
       from
     );
 
