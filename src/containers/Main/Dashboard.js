@@ -155,12 +155,7 @@ function Dashboard({ setSetting }) {
                   <FormattedMessage id="Reward_Banner_Description" />
                 </div>
                 <div className="buttons flex">
-                  <a
-                    href="https://app.strike.org/vault"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn-calc"
-                  >
+                  <a href="/vault" className="btn-calc">
                     <span>
                       <FormattedMessage id="Reward_Banner_Go" />
                     </span>
