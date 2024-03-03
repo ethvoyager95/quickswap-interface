@@ -29,6 +29,10 @@
   "Of_Limit": "限制百分比",
   "Wallet": "钱包",
   "Collateral": "抵押物",
+  "Reward_Banner_Title": "通过 Strike Prime 奖励释放 DeFi 的潜力",
+  "Reward_Banner_Description": "通过质押 STRK LP, 用您的稳定币赚取协议费, 并赚取基础和增加 STRK 奖励",
+  "Reward_Banner_Go": "前往Defi 3.0金库",
+  "Reward_Banner_Learn": "了解更多",
   "APY_with_STRK": "APY 与 STRK",
   "APY_with_STRK_desc": "选择是否在计算中包含 STRK 分布 APR",
   "Net_APY": "净年利率",
@@ -335,5 +339,9 @@
   "Lending_Risk_desc_4": "您可以通过使用您信任所有基础资产和预言机的市场来管理风险。",
   "Lending_Risk_link_1": "通过 Telegram 向团队寻求帮助",
   "Lending_Risk_link_2": "了解风险并做出更好的决策",
-  "Continue": "继续"
+  "Continue": "继续",
+  "Staking_Point": "质押点",
+  "Estimated_Reward": "预计奖励",
+  "Total_Reserve_Reward": "总储备奖励",
+  "Reserve_APY": "预订 APY"
 }
