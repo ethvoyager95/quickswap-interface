@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'recompose';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { Tooltip } from 'antd';
 import MainLayout from 'containers/Layout/MainLayout';
@@ -155,11 +155,11 @@ function Dashboard({ setSetting }) {
                   <FormattedMessage id="Reward_Banner_Description" />
                 </div>
                 <div className="buttons flex">
-                  <a href="/vault" className="btn-calc">
+                  <Link to="/vault" className="btn-calc">
                     <span>
                       <FormattedMessage id="Reward_Banner_Go" />
                     </span>
-                  </a>
+                  </Link>
                   <a
                     href="https://strike-finance.medium.com/unleashing-the-potential-of-defi-with-strike-prime-rewards-a-strategic-leap-forward-01176f33c851"
                     target="_blank"
