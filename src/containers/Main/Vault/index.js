@@ -33,6 +33,7 @@ import {
 import * as constants from 'utilities/constants';
 import NftMintModal from 'components/Basic/NftMintModal';
 import { checkIsValidNetwork } from 'utilities/common';
+import { useRewardData } from 'hooks/useReward';
 import {
   DECIMALS_INPUT,
   MIXIMUM_IPUT,
@@ -82,6 +83,7 @@ import IConNext from '../../../assets/img/arrow-next.svg';
 import IConPrev from '../../../assets/img/arrow-prev.svg';
 import IconFlashSmall from '../../../assets/img/flash_small.svg';
 import IconLpSmall from '../../../assets/img/lp_small.svg';
+import dividerImg from '../../../assets/img/divider.svg';
 import { THE_GRAPH, HEADER } from '../../../utilities/constants';
 
 // eslint-disable-next-line import/order
@@ -179,6 +181,32 @@ function Staking({ settings, setSetting, intl }) {
   const [valueNFTUnStake, setValueNFTUnStake] = useState('');
   const [fakeImgNFT, setFakeImgNFT] = useState('');
   const [isOpenNftMintModal, setIsOpenNftMintModal] = useState(false);
+
+  const [strkPrice, setStrkPrice] = useState(0);
+  const [ethPrice, setEthPrice] = useState(0);
+
+  const {
+    stakingPoint,
+    estimatedReward,
+    totalReserveReward,
+    reserveApy
+  } = useRewardData(instance, address, strkPrice, ethPrice);
+
+  useEffect(() => {
+    const strkMarket = settings.markets.find(
+      ele => ele.underlyingSymbol === 'STRK'
+    );
+    if (strkMarket) {
+      setStrkPrice(Number(strkMarket.tokenPrice));
+    }
+
+    const ethMarket = settings.markets.find(
+      ele => ele.underlyingSymbol === 'ETH'
+    );
+    if (ethMarket) {
+      setEthPrice(Number(ethMarket.tokenPrice));
+    }
+  }, [settings.markets]);
 
   // contract
   const farmingContract = useFarmingContract(instance);
@@ -1572,6 +1600,44 @@ function Staking({ settings, setSetting, intl }) {
           {/* <ST.SHr /> */}
           <Row className="all-section">
             <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+              <ST.SRewardInfo>
+                <div className="info">
+                  <div className="label">
+                    <FormattedMessage id="Staking_Point" />
+                  </div>
+                  <div className="value">{stakingPoint}</div>
+                </div>
+
+                <img src={dividerImg} className="divider" />
+
+                <div className="info">
+                  <div className="label">
+                    <FormattedMessage id="Estimated_Reward" />
+                  </div>
+                  <div className="value">${estimatedReward}</div>
+                </div>
+
+                <img src={dividerImg} className="divider" />
+
+                <div className="info">
+                  <div className="label">
+                    <FormattedMessage id="Total_Reserve_Reward" />
+                  </div>
+                  <div className="value">${totalReserveReward}</div>
+                </div>
+
+                <img src={dividerImg} className="divider" />
+
+                <div className="info">
+                  <div className="label">
+                    <FormattedMessage id="Reserve_APY" />
+                  </div>
+                  <div className="value">{reserveApy}%</div>
+                </div>
+              </ST.SRewardInfo>
+
+              <ST.SHr />
+
               <DashboardStaking
                 instance={instance}
                 amount={countNFT}

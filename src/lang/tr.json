@@ -29,6 +29,10 @@
   "Of_Limit": "Limitin Yüzdesi",
   "Wallet": "Cüzdan",
   "Collateral": "Teminat",
+  "Reward_Banner_Title": "Strike Prime Rewards ile DeFi Potansiyelini Ortaya Çıkarın",
+  "Reward_Banner_Description": "STRK LP'yi stake ederek stabil coininizle protokol ücretleri kazanın, taban kazanın ve STRK ödüllerini artırın",
+  "Reward_Banner_Go": "Defi 3.0 Kasasına gidin",
+  "Reward_Banner_Learn": "Daha fazla bilgi edin",
   "APY_with_STRK": "STRK ile APY",
   "APY_with_STRK_desc": "Hesaplamalara STRK dağıtımı APR'sinin dahil edilip edilmeyeceğini seçin.",
   "Net_APY": "Net APY",
@@ -327,5 +331,9 @@
   "View_on_explorer": "Explorer'da görüntüle",
   "Liquidate_successfully": "Başarılı bir şekilde tasfiye et",
   "Your_transaction_successfully": "İşleminiz başarıyla gerçekleştirildi",
-  "You_have_not_claimable_Reward": "Talep edilebilir bir Ödülünüz yok."
+  "You_have_not_claimable_Reward": "Talep edilebilir bir Ödülünüz yok.",
+  "Staking_Point": "Bahis Noktası",
+  "Estimated_Reward": "Tahmini Ödül",
+  "Total_Reserve_Reward": "Toplam Rezerv Ödülü",
+  "Reserve_APY": "Rezerv APY"
 }
