@@ -15,6 +15,7 @@ import { Row, Column } from 'components/Basic/Style';
 import Toggle from 'components/Basic/Toggle';
 import { Label } from 'components/Basic/Label';
 import IconQuestion from 'assets/img/question.png';
+import rewardBanner from 'assets/img/reward_banner.svg';
 
 const DashboardWrapper = styled.div`
   height: 100%;
@@ -27,6 +28,97 @@ const DashboardWrapper = styled.div`
 
     .toggel-label {
       margin: 5px 10px;
+    }
+  }
+
+  .divider {
+    margin: 5px 10px;
+    border-bottom: 1px solid #34384c;
+  }
+`;
+
+const RewardBanner = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background: #1e1f25;
+  color: white;
+  border-radius: 6px;
+  margin: 10px 15px;
+
+  .left {
+    padding: 24px;
+
+    .title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .description {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #999;
+    }
+
+    .buttons {
+      align-items: center;
+      margin-top: 16px;
+      gap: 24px;
+    }
+
+    .btn-calc {
+      display: inline-block;
+      color: white;
+      border: 1px solid white;
+      border-radius: 6px;
+      padding: 8px 32px;
+    }
+
+    .btn-learn {
+      color: white;
+    }
+  }
+
+  @media screen and (max-width: 1280px) {
+    .left {
+      padding: 24px;
+
+      .title {
+        font-size: 20px;
+      }
+
+      .description {
+        font-size: 12px;
+      }
+
+      .btn-calc {
+        font-size: 14px;
+        padding: 8px 20px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1110px) {
+    .left {
+      padding: 24px;
+
+      .title {
+        font-size: 16px;
+      }
+
+      .description {
+        font-size: 12px;
+      }
+
+      .btn-calc {
+        font-size: 12px;
+        padding: 8px 20px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 996px) {
+    img {
+      display: none;
     }
   }
 `;
@@ -53,6 +145,44 @@ function Dashboard({ setSetting }) {
     <MainLayout title="Dashboard">
       <DashboardWrapper className="flex">
         <Row>
+          <Column xs="12">
+            <RewardBanner>
+              <div className="left">
+                <div className="title">
+                  <FormattedMessage id="Reward_Banner_Title" />
+                </div>
+                <div className="description">
+                  <FormattedMessage id="Reward_Banner_Description" />
+                </div>
+                <div className="buttons flex">
+                  <a
+                    href="https://app.strike.org/vault"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-calc"
+                  >
+                    <span>
+                      <FormattedMessage id="Reward_Banner_Go" />
+                    </span>
+                  </a>
+                  <a
+                    href="https://strike-finance.medium.com/unleashing-the-potential-of-defi-with-strike-prime-rewards-a-strategic-leap-forward-01176f33c851"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-learn"
+                  >
+                    <span>
+                      <FormattedMessage id="Reward_Banner_Learn" />
+                    </span>
+                  </a>
+                </div>
+              </div>
+              <img src={rewardBanner} alt="reward-banner" />
+            </RewardBanner>
+          </Column>
+          <Column xs="12">
+            <div className="divider" />
+          </Column>
           <Column xs="12">
             <div className="apy-toggle">
               <Label size="14" primary className="toggel-label">

@@ -3,7 +3,13 @@ import styled from 'styled-components';
 export const SHr = styled.div`
   width: 100%;
   height: 1px;
-  background: #e5e5e5;
+  background: #34384c;
+  box-sizing: content-box;
+  margin: 25px 0px 25px 10px;
+
+  @media only screen and (max-width: 768px) {
+    margin: 25px 0px;
+  }
 `;
 export const SMain = styled.div`
   width: 100%;
@@ -1231,4 +1237,91 @@ export const SSUnSTakedMobile = styled.button`
 export const SWrapperUnStake = styled.div`
   display: flex;
   justify-content: flex-end;
+`;
+
+export const SRewardInfo = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 24px 15px;
+  background: #107def1a;
+  border: 1px solid #107def;
+  border-radius: 6px;
+  box-sizing: content-box;
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .label {
+      color: rgba(256, 256, 256, 0.6);
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .value {
+      color: white;
+      font-size: 36px;
+      font-weight: bold;
+    }
+  }
+
+  @media only screen and (max-width: 1280px) {
+    .info {
+      .label {
+        font-size: 20px;
+      }
+
+      .value {
+        font-size: 30px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .info {
+      .label {
+        font-size: 16px;
+      }
+
+      .value {
+        font-size: 24px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    gap: 20px;
+    padding: 0;
+
+    .info {
+      .label {
+        font-size: 16px;
+      }
+
+      .value {
+        font-size: 22px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 576px) {
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 20px;
+    gap: 10px;
+    .info {
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .divider {
+      display: none;
+    }
+  }
 `;

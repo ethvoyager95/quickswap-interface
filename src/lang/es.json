@@ -29,6 +29,10 @@
   "Of_Limit": "% del límite",
   "Wallet": "Billetera",
   "Collateral": "Colateral",
+  "Reward_Banner_Title": "Liberando el potencial de DeFi con Strike Prime Rewards",
+  "Reward_Banner_Description": "Gane tarifas de protocolo con su moneda estable apostando STRK LP y gane base y aumente las recompensas de STRK",
+  "Reward_Banner_Go": "Ir a la bóveda Defi 3.0",
+  "Reward_Banner_Learn": "Aprende más",
   "APY_with_STRK": "APY con STRK",
   "APY_with_STRK_desc": "Elija si desea incluir la APR de distribución STRK en los cálculos.",
   "Net_APY": "APY neto",
@@ -335,5 +339,9 @@
   "Lending_Risk_desc_4": "Puede gestionar su riesgo utilizando mercados en los que confíe en todos los activos y oráculos subyacentes.",
   "Lending_Risk_link_1": "Habla con el equipo para obtener ayuda en Telegram.",
   "Lending_Risk_link_2": "Comprender el riesgo y tomar mejores decisiones",
-  "Continue": "Continuar"
+  "Continue": "Continuar",
+  "Staking_Point": "Punto de replanteo",
+  "Estimated_Reward": "Recompensa estimada",
+  "Total_Reserve_Reward": "Recompensa de reserva total",
+  "Reserve_APY": "Reservar APY"
 }
