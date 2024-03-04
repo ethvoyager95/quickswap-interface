@@ -1630,7 +1630,7 @@ function Staking({ settings, setSetting, intl }) {
 
                 <div className="info">
                   <div className="label">
-                    <FormattedMessage id="Reserve_APY" />
+                    <FormattedMessage id="Prime_APR" />
                   </div>
                   <div className="value">{reserveApy}%</div>
                 </div>
