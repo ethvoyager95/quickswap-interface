@@ -149,9 +149,7 @@ export const useRewardData = (instance, account, strkPrice, ethPrice) => {
           const currentDate = moment();
 
           if (currentDate.month() === depositDate.month()) {
-            rewardDate = Math.floor(
-              (currentDate.unix() - userDepositedDate) / 86400
-            );
+            rewardDate = (currentDate.unix() - userDepositedDate) / 86400;
           } else {
             rewardDate = currentDate.date();
           }
@@ -172,7 +170,7 @@ export const useRewardData = (instance, account, strkPrice, ethPrice) => {
               .div(1e18)
               .times(1e6)
               .toNumber()
-              .toFixed(1)
+              .toFixed(2)
           );
 
           setEstimatedReward(
@@ -180,13 +178,13 @@ export const useRewardData = (instance, account, strkPrice, ethPrice) => {
               .div(totalLockedPrice)
               .times(MONTHLY_REWARD)
               .toNumber()
-              .toFixed(1)
+              .toFixed(2)
           );
         }
 
         setReserveApy(
           Number(
-            (MONTHLY_REWARD * 12 * 100) / totalLockedPrice.toNumber()
+            (MONTHLY_REWARD * 4 * 12 * 100) / totalLockedPrice.toNumber()
           ).toFixed(1)
         );
       } catch (e) {
