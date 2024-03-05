@@ -37,13 +37,20 @@ const DashboardWrapper = styled.div`
   }
 `;
 
+const RewardBannerWrapper = styled.div`
+  position: relative;
+  background: linear-gradient(to right, #3fd5c6, #3ea7fb);
+  padding: 2px;
+  border-radius: 10px;
+  margin: 10px 15px;
+`;
+
 const RewardBanner = styled.div`
   display: flex;
   justify-content: space-between;
   background: #1e1f25;
   color: white;
-  border-radius: 6px;
-  margin: 10px 15px;
+  border-radius: 10px;
 
   .left {
     padding: 24px;
@@ -146,34 +153,36 @@ function Dashboard({ setSetting }) {
       <DashboardWrapper className="flex">
         <Row>
           <Column xs="12">
-            <RewardBanner>
-              <div className="left">
-                <div className="title">
-                  <FormattedMessage id="Reward_Banner_Title" />
+            <RewardBannerWrapper>
+              <RewardBanner>
+                <div className="left">
+                  <div className="title">
+                    <FormattedMessage id="Reward_Banner_Title" />
+                  </div>
+                  <div className="description">
+                    <FormattedMessage id="Reward_Banner_Description" />
+                  </div>
+                  <div className="buttons flex">
+                    <Link to="/vault" className="btn-calc">
+                      <span>
+                        <FormattedMessage id="Reward_Banner_Go" />
+                      </span>
+                    </Link>
+                    <a
+                      href="https://strike-finance.medium.com/unleashing-the-potential-of-defi-with-strike-prime-rewards-a-strategic-leap-forward-01176f33c851"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn-learn"
+                    >
+                      <span>
+                        <FormattedMessage id="Reward_Banner_Learn" />
+                      </span>
+                    </a>
+                  </div>
                 </div>
-                <div className="description">
-                  <FormattedMessage id="Reward_Banner_Description" />
-                </div>
-                <div className="buttons flex">
-                  <Link to="/vault" className="btn-calc">
-                    <span>
-                      <FormattedMessage id="Reward_Banner_Go" />
-                    </span>
-                  </Link>
-                  <a
-                    href="https://strike-finance.medium.com/unleashing-the-potential-of-defi-with-strike-prime-rewards-a-strategic-leap-forward-01176f33c851"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn-learn"
-                  >
-                    <span>
-                      <FormattedMessage id="Reward_Banner_Learn" />
-                    </span>
-                  </a>
-                </div>
-              </div>
-              <img src={rewardBanner} alt="reward-banner" />
-            </RewardBanner>
+                <img src={rewardBanner} alt="reward-banner" />
+              </RewardBanner>
+            </RewardBannerWrapper>
           </Column>
           <Column xs="12">
             <div className="divider" />
