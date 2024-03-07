@@ -204,9 +204,7 @@ export const useRewardData = (
   return {
     stakingPoint,
     estimatedReward: numberFormat.format(estimatedReward),
-    totalReserveReward: numberFormat.format(
-      ethPrice ? totalReserve / ethPrice : 0
-    ),
+    totalReserveReward: numberFormat.format(totalReserve),
     reserveApy
   };
 };
