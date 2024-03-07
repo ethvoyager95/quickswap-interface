@@ -6,9 +6,15 @@ import * as constants from 'utilities/constants';
 import useRefresh from './useRefresh';
 import { useMulticall } from './useContract';
 
-const MONTHLY_REWARD = 10000; //  $10,000
+// const MONTHLY_REWARD = 10000; //  $10,000
 
-export const useRewardData = (instance, account, strkPrice, ethPrice) => {
+export const useRewardData = (
+  instance,
+  account,
+  strkPrice,
+  ethPrice,
+  totalReserve
+) => {
   const numberFormat = Intl.NumberFormat('en-US');
 
   const multicall = useMulticall(instance);
@@ -176,7 +182,7 @@ export const useRewardData = (instance, account, strkPrice, ethPrice) => {
           setEstimatedReward(
             userLockedPrice
               .div(totalLockedPrice)
-              .times(MONTHLY_REWARD)
+              .times(totalReserve)
               .toNumber()
               .toFixed(2)
           );
@@ -184,7 +190,7 @@ export const useRewardData = (instance, account, strkPrice, ethPrice) => {
 
         setReserveApy(
           Number(
-            (MONTHLY_REWARD * 4 * 12 * 100) / totalLockedPrice.toNumber()
+            (totalReserve * 12 * 100) / totalLockedPrice.toNumber()
           ).toFixed(1)
         );
       } catch (e) {
@@ -198,7 +204,9 @@ export const useRewardData = (instance, account, strkPrice, ethPrice) => {
   return {
     stakingPoint,
     estimatedReward: numberFormat.format(estimatedReward),
-    totalReserveReward: numberFormat.format(MONTHLY_REWARD),
+    totalReserveReward: numberFormat.format(
+      ethPrice ? totalReserve / ethPrice : 0
+    ),
     reserveApy
   };
 };
