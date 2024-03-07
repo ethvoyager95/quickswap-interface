@@ -184,13 +184,14 @@ function Staking({ settings, setSetting, intl }) {
 
   const [strkPrice, setStrkPrice] = useState(0);
   const [ethPrice, setEthPrice] = useState(0);
+  const [totalReserve, setTotalReserve] = useState(0);
 
   const {
     stakingPoint,
     estimatedReward,
     totalReserveReward,
     reserveApy
-  } = useRewardData(instance, address, strkPrice, ethPrice);
+  } = useRewardData(instance, address, strkPrice, ethPrice, totalReserve);
 
   useEffect(() => {
     const strkMarket = settings.markets.find(
@@ -206,6 +207,20 @@ function Staking({ settings, setSetting, intl }) {
     if (ethMarket) {
       setEthPrice(Number(ethMarket.tokenPrice));
     }
+
+    let tempTotalReserve = new BigNumber(0);
+    settings.markets.forEach(ele => {
+      tempTotalReserve = tempTotalReserve.plus(
+        new BigNumber(ele.totalReserves || 0)
+          .div(
+            new BigNumber(10).pow(
+              settings.decimals[ele.underlyingSymbol.toLowerCase()].token
+            )
+          )
+          .times(ele.tokenPrice)
+      );
+    });
+    setTotalReserve(tempTotalReserve.toNumber());
   }, [settings.markets]);
 
   // contract
@@ -1623,7 +1638,7 @@ function Staking({ settings, setSetting, intl }) {
                   <div className="label">
                     <FormattedMessage id="Total_Reserve_Reward" />
                   </div>
-                  <div className="value">${totalReserveReward}</div>
+                  <div className="value">{totalReserveReward} ETH</div>
                 </div>
 
                 <img src={dividerImg} className="divider" />
