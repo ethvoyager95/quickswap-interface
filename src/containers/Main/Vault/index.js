@@ -1638,7 +1638,7 @@ function Staking({ settings, setSetting, intl }) {
                   <div className="label">
                     <FormattedMessage id="Total_Reserve_Reward" />
                   </div>
-                  <div className="value">{totalReserveReward} ETH</div>
+                  <div className="value">${totalReserveReward}</div>
                 </div>
 
                 <img src={dividerImg} className="divider" />
