@@ -343,5 +343,10 @@
   "Staking_Point": "质押点",
   "Estimated_Reward": "预计奖励",
   "Total_Reserve_Reward": "总储备奖励",
-  "Prime_APR": "主要的 APR"
+  "Prime_APR": "主要的 APR",
+  "Countdown_Tooltip1": "如果您投注更多但未领取奖励，倒计时时间将被重置",
+  "Countdown_Tooltip2": "如果您在未领取奖励的情况下取消部分质押，倒计时时间将被重置",
+  "Countdown_Tooltip3": "您每天只能领取一次奖励",
+  "Countdown_Tooltip4": "您每月只能领取一次奖励",
+  "MustStake_Tooltip": "在质押 NFT 之前必须质押 STRK-ETH LP Token"
 }

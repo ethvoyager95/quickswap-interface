@@ -124,16 +124,6 @@ export const useRewardData = (
         const nftPrice = new BigNumber(
           data.results.nftPrice.callsReturnContext[0].returnValues[0].hex
         );
-        const userLp = new BigNumber(
-          data.results.userInfo.callsReturnContext[0].returnValues[0].hex
-        );
-        const userNftCount =
-          data.results.userInfo.callsReturnContext[0].returnValues[4].length;
-
-        const userDepositedDate = new BigNumber(
-          data.results.userInfo.callsReturnContext[0].returnValues[3].hex
-        ).toNumber();
-
         const lpPrice = strkBalanceInLp
           .times(strkPrice)
           .times(2)
@@ -150,6 +140,16 @@ export const useRewardData = (
           );
 
         if (account) {
+          const userLp = new BigNumber(
+            data.results.userInfo.callsReturnContext[0].returnValues[0].hex
+          );
+          const userNftCount =
+            data.results.userInfo.callsReturnContext[0].returnValues[4].length;
+
+          const userDepositedDate = new BigNumber(
+            data.results.userInfo.callsReturnContext[0].returnValues[3].hex
+          ).toNumber();
+
           let rewardDate = 0;
           const depositDate = moment.unix(userDepositedDate);
           const currentDate = moment();

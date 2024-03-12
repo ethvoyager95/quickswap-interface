@@ -284,7 +284,7 @@ function CountDownClaim({
                 {type === UNSTAKE && (
                   <Tooltip
                     placement="right"
-                    title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                    title={<FormattedMessage id="Countdown_Tooltip2" />}
                   >
                     <SQuestion src={IconQuestion} />
                   </Tooltip>
@@ -292,7 +292,7 @@ function CountDownClaim({
                 {type === CLAIMBASE && (
                   <Tooltip
                     placement="right"
-                    title="You can only claim reward once daily"
+                    title={<FormattedMessage id="Countdown_Tooltip3" />}
                   >
                     <SQuestion src={IconQuestion} />
                   </Tooltip>
@@ -300,7 +300,7 @@ function CountDownClaim({
                 {type === CLAIMBOOST && (
                   <Tooltip
                     placement="right"
-                    title="You can only claim reward once monthly"
+                    title={<FormattedMessage id="Countdown_Tooltip4" />}
                   >
                     <SQuestion src={IconQuestion} />
                   </Tooltip>
@@ -324,7 +324,7 @@ function CountDownClaim({
                     </SBtnUnstake>
                     <Tooltip
                       placement="right"
-                      title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                      title={<FormattedMessage id="Countdown_Tooltip2" />}
                     >
                       <SQuestion src={IconQuestion} />
                     </Tooltip>
@@ -348,7 +348,7 @@ function CountDownClaim({
               </SClaim>
               <Tooltip
                 placement="right"
-                title="You can only claim reward once daily"
+                title={<FormattedMessage id="Countdown_Tooltip3" />}
               >
                 <SQuestion src={IconQuestion} />
               </Tooltip>
@@ -361,7 +361,7 @@ function CountDownClaim({
               </SClaim>
               <Tooltip
                 placement="right"
-                title="You can only claim reward once monthly"
+                title={<FormattedMessage id="Countdown_Tooltip4" />}
               >
                 <SQuestion src={IconQuestion} />
               </Tooltip>

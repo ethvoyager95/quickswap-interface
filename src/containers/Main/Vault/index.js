@@ -124,7 +124,6 @@ function Staking({ settings, setSetting, intl }) {
   const [isMaxValue, setIsMaxValue] = useState(false);
   const [isMaxValueUnStake, setIsMaxValueUnStake] = useState(false);
   const [valUnStake, setValUnStake] = useState('');
-  const [timeDelay, setTimeDelay] = useState(0);
   const [messErr, setMessErr] = useState({
     mess: '',
     show: false,
@@ -185,6 +184,10 @@ function Staking({ settings, setSetting, intl }) {
   const [strkPrice, setStrkPrice] = useState(0);
   const [ethPrice, setEthPrice] = useState(0);
   const [totalReserve, setTotalReserve] = useState(0);
+
+  const [claimBaseRewardTime, setClaimBaseRewardTime] = useState(0);
+  const [claimBoostRewardTime, setClaimBoostRewardTime] = useState(0);
+  const [unstakableTime, setUnstakableTime] = useState(0);
 
   const {
     stakingPoint,
@@ -313,27 +316,27 @@ function Staking({ settings, setSetting, intl }) {
               noLP: false
             });
           }
-          const currentTime = Math.floor(new Date().getTime() / 1000);
           const timeBaseUnstake = +res.depositedDate;
           const timeBootsUnstake = +res.boostedDate;
-          const overTimeBaseReward = currentTime - timeBaseUnstake;
-          const overTimeBootReward = currentTime - timeBootsUnstake;
-          if (timeBaseUnstake === 0) {
-            setisClaimBaseReward(false);
-            setIsUnStakeLp(false);
-          } else {
-            setisClaimBaseReward(overTimeBaseReward >= SECOND24H);
-            if (overTimeBaseReward >= SECOND2DAY) {
-              setIsUnStakeLp(true);
-            } else {
-              setIsUnStakeLp(false);
-            }
-          }
-          if (timeBootsUnstake === 0) {
-            setIsClaimBootReward(false);
-          } else {
-            setIsClaimBootReward(overTimeBootReward >= SECOND30DAY);
-          }
+          // const currentTime = Math.floor(new Date().getTime() / 1000);
+          // const overTimeBaseReward = currentTime - timeBaseUnstake;
+          // const overTimeBootReward = currentTime - timeBootsUnstake;
+          // if (timeBaseUnstake === 0) {
+          //   setisClaimBaseReward(false);
+          //   setIsUnStakeLp(false);
+          // } else {
+          //   setisClaimBaseReward(overTimeBaseReward >= SECOND24H);
+          //   if (overTimeBaseReward >= SECOND2DAY) {
+          //     setIsUnStakeLp(true);
+          //   } else {
+          //     setIsUnStakeLp(false);
+          //   }
+          // }
+          // if (timeBootsUnstake === 0) {
+          //   setIsClaimBootReward(false);
+          // } else {
+          //   setIsClaimBootReward(overTimeBootReward >= SECOND30DAY);
+          // }
           if (accBaseRewardString > 0) {
             setisClaimBaseReward(true);
           } else {
@@ -382,6 +385,44 @@ function Staking({ settings, setSetting, intl }) {
       }
     }
   }, [address, txhash]);
+
+  useEffect(() => {
+    const fetchTimes = async () => {
+      await methods
+        .call(farmingContract.methods.unstakableTime, [])
+        .then(res => {
+          if (res) {
+            setUnstakableTime(res);
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+
+      await methods
+        .call(farmingContract.methods.claimBaseRewardTime, [])
+        .then(res => {
+          if (res) {
+            setClaimBaseRewardTime(res);
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+
+      await methods
+        .call(farmingContract.methods.claimBoostRewardTime, [])
+        .then(res => {
+          if (res) {
+            setClaimBoostRewardTime(res);
+          }
+        })
+        .catch(err => {
+          throw err;
+        });
+    };
+    fetchTimes();
+  }, []);
 
   // get base boost available realtime
   const getBaseBoostRealTime = async () => {
@@ -465,6 +506,57 @@ function Staking({ settings, setSetting, intl }) {
       setUserInfo({ ...objUser });
     }
   };
+
+  const fetchNfts = async () => {
+    let nftName = '';
+    await methods
+      .call(nFtContract.methods.name, [])
+      .then(res => {
+        if (res) {
+          nftName = res;
+        }
+      })
+      .catch(err => {
+        throw err;
+      });
+    await axios
+      .post(
+        THE_GRAPH,
+        {
+          query: `{
+                  tokens(first: 1000, orderBy: id, orderDirection:desc , where:{user:"${address?.toLowerCase()}"})  {
+                    id
+                    tokenId
+                    user
+                  }
+                }`
+        },
+        {
+          headers: HEADER
+        }
+      )
+      .then(res => {
+        const result = res?.data?.data?.tokens;
+        if (result && result.length > 0) {
+          const dataConvert = _.cloneDeep(result);
+          if (dataConvert.length > 0) {
+            // eslint-disable-next-line array-callback-return
+            dataConvert.map(item => {
+              item.active = false;
+              item.name = `${nftName}${' #'}${item.id}`;
+              item.id = +item.id;
+              item.img = `${constants.URL_LOGO_NFT}/${item.id}.png`;
+              item.token_id = item.id;
+            });
+            const dataStakeClone = _.cloneDeep(dataConvert);
+            setDataNFT(dataStakeClone);
+          }
+          setIsLoading(false);
+        } else {
+          setDataNFT([]);
+        }
+      });
+  };
   // get data NFT stake
   useMemo(async () => {
     if (!address) {
@@ -473,64 +565,61 @@ function Staking({ settings, setSetting, intl }) {
       return;
     }
     setIsLoading(true);
-    let nameNFT = null;
     try {
-      await methods
-        .call(nFtContract.methods.name, [])
-        .then(res => {
-          if (res) {
-            nameNFT = res;
-          }
-        })
-        .catch(err => {
-          throw err;
-        });
-      setTimeout(() => {
-        axios
-          .post(
-            THE_GRAPH,
-            {
-              query: `{
-                  tokens(first: 1000, orderBy: id, orderDirection:desc , where:{user:"${address?.toLowerCase()}"})  {
-                    id
-                    tokenId
-                    user
-                  }
-                }`
-            },
-            {
-              headers: HEADER
-            }
-          )
-          .then(res => {
-            const result = res?.data?.data?.tokens;
-            if (result && result.length > 0) {
-              const dataConvert = _.cloneDeep(result);
-              if (dataConvert.length > 0) {
-                // eslint-disable-next-line array-callback-return
-                dataConvert.map(item => {
-                  item.active = false;
-                  item.name = `${nameNFT}${' #'}${item.id}`;
-                  item.id = +item.id;
-                  item.img = `${constants.URL_LOGO_NFT}/${item.id}.png`;
-                  item.token_id = item.id;
-                });
-                const dataStakeClone = _.cloneDeep(dataConvert);
-                setDataNFT(dataStakeClone);
-                setTimeDelay(0);
-              }
-              setIsLoading(false);
-            } else {
-              setDataNFT([]);
-            }
-          });
-      }, timeDelay);
+      await fetchNfts();
     } catch (err) {
       setIsLoading(false);
       throw err;
     }
-  }, [address, txhash, timeDelay, isSuccess]);
+  }, [address]);
   // get data NFT staked
+  const fetchStakedNfts = async () => {
+    let newArray = null;
+    let nftName = '';
+    await methods
+      .call(nFtContract.methods.name, [])
+      .then(res => {
+        if (res) {
+          nftName = res;
+        }
+      })
+      .catch(err => {
+        throw err;
+      });
+    await methods
+      .call(farmingContract.methods.getUserInfo, [0, address])
+      .then(res => {
+        if (res && res.boostFactors.length > 0) {
+          const lstStakedId = res.boostFactors;
+          const dataCovert = [...lstStakedId];
+          setCounNFT(dataCovert.length);
+          newArray = dataCovert?.map(item => {
+            // eslint-disable-next-line no-return-assign
+            return (item = {
+              name: `${nftName} ` + `#${item}`,
+              token_id: item,
+              id: +item,
+              active: false,
+              img: `${constants.URL_LOGO_NFT}/${item}.png`
+            });
+          });
+          const lengthArr = newArray.length;
+          if (lengthArr === 0 || lengthArr === 1) {
+            setYourBoostAPR(0);
+          } else {
+            const yourBoostAPRPer = PERCENT_APR * lengthArr;
+            setYourBoostAPR(yourBoostAPRPer);
+          }
+          setDataNFTUnState(newArray);
+          setIsLoading(false);
+        } else {
+          setDataNFTUnState([]);
+          setCounNFT(0);
+          setYourBoostAPR(0);
+        }
+      });
+  };
+
   useMemo(async () => {
     if (!address) {
       setIsLoading(false);
@@ -538,74 +627,24 @@ function Staking({ settings, setSetting, intl }) {
       return;
     }
     setIsLoading(true);
-    let newArray = null;
-    let nameNFT = null;
     try {
-      await methods
-        .call(nFtContract.methods.name, [])
-        .then(res => {
-          if (res) {
-            nameNFT = res;
-          }
-        })
-        .catch(err => {
-          throw err;
-        });
-      await methods
-        .call(farmingContract.methods.getUserInfo, [0, address])
-        .then(res => {
-          if (res && res.boostFactors.length > 0) {
-            const lstStakedId = res.boostFactors;
-            const dataCovert = [...lstStakedId];
-            setCounNFT(dataCovert.length);
-            newArray = dataCovert?.map(item => {
-              // eslint-disable-next-line no-return-assign
-              return (item = {
-                name: `${nameNFT} ` + `#${item}`,
-                token_id: item,
-                id: +item,
-                active: false,
-                img: `${constants.URL_LOGO_NFT}/${item}.png`
-              });
-            });
-            const lengthArr = newArray.length;
-            if (lengthArr === 0 || lengthArr === 1) {
-              setYourBoostAPR(0);
-            } else {
-              const yourBoostAPRPer = PERCENT_APR * lengthArr;
-              setYourBoostAPR(yourBoostAPRPer);
-            }
-            setDataNFTUnState(newArray);
-            setIsLoading(false);
-          } else {
-            setDataNFTUnState([]);
-            setCounNFT(0);
-            setYourBoostAPR(0);
-          }
-        });
+      await fetchStakedNfts();
     } catch (err) {
       setIsLoading(false);
       throw err;
     }
     setIsLoading(false);
-  }, [address, txhash]);
+  }, [address]);
 
   const expiryTimeUnstakeLP = useMemo(() => {
-    if (userInfo) {
-      const overOneDate = new Date(userInfo.depositedDate * 1000);
-      let result = null;
-      if (process.env.REACT_APP_ENV === 'prod') {
-        result = overOneDate.setDate(overOneDate.getDate() + 2); // 2 day
-      } else {
-        result = overOneDate.setMinutes(overOneDate.getMinutes() + 4); // 4 minute
-      }
+    if (userInfo.depositedDate && unstakableTime) {
+      const result = new Date(
+        userInfo.depositedDate * 1000 + unstakableTime * 1000
+      );
+
       const currentDateTime = new Date();
-      const resultInSecondsCurrent = Math.floor(
-        currentDateTime.getTime() / 1000
-      );
-      const afterStakeSeconds = Math.floor(
-        resultInSecondsCurrent - result / 1000
-      );
+      const afterStakeSeconds =
+        currentDateTime.getTime() / 1000 - result.getTime() / 1000;
       if (afterStakeSeconds > 0) {
         setIsShowCountDownUnStake(false);
       } else {
@@ -619,25 +658,18 @@ function Staking({ settings, setSetting, intl }) {
       }, 2000);
       return result;
     }
-  }, [address, txhash, isApproveLP, userInfo]);
+  }, [address, txhash, isApproveLP, userInfo, unstakableTime]);
 
   // time claim base reward countdown
   const expiryTimeBase = useMemo(() => {
-    if (userInfo) {
-      const overOneDate = new Date(userInfo.depositedDate * 1000);
-      let result = null;
-      if (process.env.REACT_APP_ENV === 'prod') {
-        result = overOneDate.setDate(overOneDate.getDate() + 1); // 1 dâys
-      } else {
-        result = overOneDate.setMinutes(overOneDate.getMinutes() + 3); // 3 minute
-      }
+    if (userInfo.depositedDate && claimBaseRewardTime) {
+      const result = new Date(
+        userInfo.depositedDate * 1000 + claimBaseRewardTime * 1000
+      );
       const currentDateTime = new Date();
-      const resultInSecondsCurrent = Math.floor(
-        currentDateTime.getTime() / 1000
-      );
-      const afterStakeSeconds = Math.floor(
-        resultInSecondsCurrent - result / 1000
-      );
+      const afterStakeSeconds =
+        currentDateTime.getTime() / 1000 - result.getTime() / 1000;
+
       if (afterStakeSeconds > 0) {
         setIsShowCountDownClaimBase(false);
       } else {
@@ -651,25 +683,18 @@ function Staking({ settings, setSetting, intl }) {
       }, 2000);
       return result;
     }
-  }, [address, txhash, isApproveLP, userInfo]);
+  }, [address, txhash, isApproveLP, userInfo, claimBaseRewardTime]);
 
   // time claim boost reward count down
   const expiryTimeBoost = useMemo(() => {
-    if (userInfo) {
-      let result = null;
-      const over30days = new Date(userInfo.boostedDate * 1000);
-      if (process.env.REACT_APP_ENV === 'prod') {
-        result = over30days.setDate(over30days.getDate() + 30); // 30 days
-      } else {
-        result = over30days.setMinutes(over30days.getMinutes() + 5); // 3 minute
-      }
+    if (userInfo.boostedDate && claimBoostRewardTime) {
+      const result = new Date(
+        userInfo.boostedDate * 1000 + claimBoostRewardTime * 1000
+      );
       const currentDateTime = new Date();
-      const resultInSecondsCurrent = Math.floor(
-        currentDateTime.getTime() / 1000
-      );
-      const afterStakeSeconds = Math.floor(
-        resultInSecondsCurrent - result / 1000
-      );
+      const afterStakeSeconds =
+        currentDateTime.getTime() / 1000 - result / 1000;
+
       if (afterStakeSeconds > 0) {
         setIsShowCountDownClaimBoost(false);
       } else {
@@ -683,7 +708,7 @@ function Staking({ settings, setSetting, intl }) {
       }, 2000);
       return result;
     }
-  }, [address, txhash, isApproveLP, userInfo]);
+  }, [address, txhash, isApproveLP, userInfo, claimBoostRewardTime]);
 
   const expiryTimeUnstakeNFT = useMemo(() => {
     if (userInfo) {
@@ -1374,11 +1399,12 @@ function Staking({ settings, setSetting, intl }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
-              setTimeDelay(TIME_UPDATE_NFT);
               setValueNFTStake('');
               setItemStaking([]);
               // begin time out
-              setTimeout(() => {
+              setTimeout(async () => {
+                await fetchNfts();
+                await fetchStakedNfts();
                 setiIsConfirm(false);
                 setIsDisableStakeNFTDialog(false);
                 setIsSuccess(true);
@@ -1438,17 +1464,17 @@ function Staking({ settings, setSetting, intl }) {
           .then(res => {
             if (res) {
               setTxhash(res.transactionHash);
-              setTimeDelay(TIME_UPDATE_NFT);
               setValueNFTUnStake('');
               setItemStaked([]);
-              setTimeout(() => {
+              setTimeout(async () => {
+                await fetchNfts();
+                await fetchStakedNfts();
                 setiIsConfirm(false);
                 setIsDisableUnStakeNFTDialog(false);
                 setTextSuccess(
                   <FormattedMessage id="Unstake_NFT_successfully" />
                 );
                 setMessConfirm('');
-
                 setIsSuccess(true);
               }, TIME_UPDATE_NFT);
             }
@@ -1773,7 +1799,9 @@ function Staking({ settings, setSetting, intl }) {
                                             </ST.SBtnStake>
                                             <Tooltip
                                               placement="right"
-                                              title="Countdown time will be reset if you stake more without claiming the rewards"
+                                              title={
+                                                <FormattedMessage id="Countdown_Tooltip1" />
+                                              }
                                             >
                                               <ST.SQuestion
                                                 src={IconQuestion}
@@ -1796,7 +1824,9 @@ function Staking({ settings, setSetting, intl }) {
                                                 </ST.SBtnLoadding>
                                                 <Tooltip
                                                   placement="right"
-                                                  title="Countdown time will be reset if you stake more without claiming the rewards"
+                                                  title={
+                                                    <FormattedMessage id="Countdown_Tooltip1" />
+                                                  }
                                                 >
                                                   <ST.SQuestion
                                                     src={IconQuestion}
@@ -1823,7 +1853,9 @@ function Staking({ settings, setSetting, intl }) {
                                                 </ST.SBtnStake>
                                                 <Tooltip
                                                   placement="right"
-                                                  title="Countdown time will be reset if you stake more without claiming the rewards"
+                                                  title={
+                                                    <FormattedMessage id="Countdown_Tooltip1" />
+                                                  }
                                                 >
                                                   <ST.SQuestion
                                                     src={IconQuestion}
@@ -1964,7 +1996,9 @@ function Staking({ settings, setSetting, intl }) {
                                                 </ST.SBtnLoadding>
                                                 <Tooltip
                                                   placement="right"
-                                                  title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                                  title={
+                                                    <FormattedMessage id="Countdown_Tooltip2" />
+                                                  }
                                                 >
                                                   <ST.SQuestion
                                                     src={IconQuestion}
@@ -1992,7 +2026,9 @@ function Staking({ settings, setSetting, intl }) {
                                                 </ST.SBtnUnstake>
                                                 <Tooltip
                                                   placement="right"
-                                                  title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                                  title={
+                                                    <FormattedMessage id="Countdown_Tooltip2" />
+                                                  }
                                                 >
                                                   <ST.SQuestion
                                                     src={IconQuestion}
@@ -2062,7 +2098,9 @@ function Staking({ settings, setSetting, intl }) {
                                               </ST.SSUnTake>
                                               <Tooltip
                                                 placement="right"
-                                                title="Countdown time will be reset if you unstake a part without claiming the rewards"
+                                                title={
+                                                  <FormattedMessage id="Countdown_Tooltip2" />
+                                                }
                                               >
                                                 <ST.SQuestion
                                                   src={IconQuestion}
@@ -2174,7 +2212,9 @@ function Staking({ settings, setSetting, intl }) {
                               )}
                               <Tooltip
                                 placement="right"
-                                title="You can only claim reward once daily"
+                                title={
+                                  <FormattedMessage id="Countdown_Tooltip3" />
+                                }
                               >
                                 <ST.SQuestionClaim src={IconQuestion} />
                               </Tooltip>
@@ -2258,7 +2298,9 @@ function Staking({ settings, setSetting, intl }) {
                                       )}
                                       <Tooltip
                                         placement="right"
-                                        title="You can only claim reward once monthly"
+                                        title={
+                                          <FormattedMessage id="Countdown_Tooltip4" />
+                                        }
                                       >
                                         <ST.SQuestion src={IconQuestion} />
                                       </Tooltip>
@@ -2342,7 +2384,9 @@ function Staking({ settings, setSetting, intl }) {
                             </ST.SSTake>
                             <Tooltip
                               placement="top"
-                              title="You must stake STRK-ETH LP Token before staking NFT"
+                              title={
+                                <FormattedMessage id="MustStake_Tooltip" />
+                              }
                             >
                               <ST.SQuestionNFT src={IconQuestion} />
                             </Tooltip>
@@ -2449,7 +2493,7 @@ function Staking({ settings, setSetting, intl }) {
                             isApproveNFT ? (
                               <ST.SWrapperCountDownWeb>
                                 <CountDownClaim
-                                  times={expiryTimeUnstakeLP}
+                                  times={expiryTimeUnstakeNFT}
                                   address={address}
                                   type={UNSTAKENFT}
                                   handleUnStakeNFT={handleUnStakeNFT}
