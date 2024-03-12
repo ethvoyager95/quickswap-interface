@@ -343,5 +343,10 @@
   "Staking_Point": "Staking Point",
   "Estimated_Reward": "Estimated Reward",
   "Total_Reserve_Reward": "Total Reserve Reward",
-  "Prime_APR": "Prime APR"
+  "Prime_APR": "Prime APR",
+  "Countdown_Tooltip1": "Countdown time will be reset if you stake more without claiming the rewards",
+  "Countdown_Tooltip2": "Countdown time will be reset if you unstake a part without claiming the rewards",
+  "Countdown_Tooltip3": "You can only claim reward once daily",
+  "Countdown_Tooltip4": "You can only claim reward once monthly",
+  "MustStake_Tooltip": "You must stake STRK-ETH LP Token before staking NFT"
 }

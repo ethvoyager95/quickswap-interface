@@ -343,5 +343,10 @@
   "Staking_Point": "Punto de replanteo",
   "Estimated_Reward": "Recompensa estimada",
   "Total_Reserve_Reward": "Recompensa de reserva total",
-  "Prime_APR": "Principal APR"
+  "Prime_APR": "Principal APR",
+  "Countdown_Tooltip1": "El tiempo de cuenta regresiva se restablecerá si apuestas más sin reclamar las recompensas.",
+  "Countdown_Tooltip2": "El tiempo de cuenta regresiva se restablecerá si retiras una parte sin reclamar las recompensas.",
+  "Countdown_Tooltip3": "Solo puedes reclamar la recompensa una vez al día.",
+  "Countdown_Tooltip4": "Solo puedes reclamar la recompensa una vez al mes",
+  "MustStake_Tooltip": "Debes apostar el token STRK-ETH LP antes de apostar NFT"
 }
