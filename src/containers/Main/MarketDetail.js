@@ -226,63 +226,60 @@ function MarketDetail({
             <LoadingSpinner />
           </SpinnerWrapper>
         )} */}
-        {settings.markets &&
-          settings.decimals &&
-          currentAsset &&
-          !settings.accountLoading && (
-            <div className="flex market-detail-content">
-              {/* <div className="column1">
+        {settings.markets && settings.decimals && currentAsset && (
+          <div className="flex market-detail-content">
+            {/* <div className="column1">
                 <CardWrapper>
                   <MarketInfo marketInfo={marketInfo} marketType={marketType} />
                 </CardWrapper>
               </div> */}
-              <div className="column1">
-                <div className="row1">
-                  <CardWrapper>
-                    <div className="flex align-center market-tab-wrapper">
-                      <div
-                        className={`tab-item pointer ${
-                          marketType === 'supply' ? 'tab-active' : ''
-                        }`}
-                        onClick={() => setMarketType('supply')}
-                      >
-                        <FormattedMessage id="Supply_Info" />
-                      </div>
-                      <div
-                        className={`tab-item pointer ${
-                          marketType === 'borrow' ? 'tab-active' : ''
-                        }`}
-                        onClick={() => setMarketType('borrow')}
-                      >
-                        <FormattedMessage id="Borrow_Info" />
-                      </div>
+            <div className="column1">
+              <div className="row1">
+                <CardWrapper>
+                  <div className="flex align-center market-tab-wrapper">
+                    <div
+                      className={`tab-item pointer ${
+                        marketType === 'supply' ? 'tab-active' : ''
+                      }`}
+                      onClick={() => setMarketType('supply')}
+                    >
+                      <FormattedMessage id="Supply_Info" />
                     </div>
-                    <OverviewChart
-                      marketType={marketType}
-                      marketInfo={marketInfo}
-                      graphType="composed"
-                      data={data}
-                    />
-                  </CardWrapper>
-                </div>
-
-                <div className="flex row2">
-                  <div className="interest-rate-modal">
-                    <InterestRateModel currentAsset={currentAsset} />
+                    <div
+                      className={`tab-item pointer ${
+                        marketType === 'borrow' ? 'tab-active' : ''
+                      }`}
+                      onClick={() => setMarketType('borrow')}
+                    >
+                      <FormattedMessage id="Borrow_Info" />
+                    </div>
                   </div>
-                </div>
-              </div>
-
-              <div className="column2">
-                <CardWrapper className="market-summary">
-                  <MarketSummary
+                  <OverviewChart
+                    marketType={marketType}
                     marketInfo={marketInfo}
-                    currentAsset={currentAsset}
+                    graphType="composed"
+                    data={data}
                   />
                 </CardWrapper>
               </div>
+
+              <div className="flex row2">
+                <div className="interest-rate-modal">
+                  <InterestRateModel currentAsset={currentAsset} />
+                </div>
+              </div>
             </div>
-          )}
+
+            <div className="column2">
+              <CardWrapper className="market-summary">
+                <MarketSummary
+                  marketInfo={marketInfo}
+                  currentAsset={currentAsset}
+                />
+              </CardWrapper>
+            </div>
+          </div>
+        )}
       </MarketDetailWrapper>
     </MainLayout>
   );

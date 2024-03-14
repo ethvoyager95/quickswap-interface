@@ -1662,7 +1662,7 @@ function Staking({ settings, setSetting, intl }) {
 
                 <div className="info">
                   <div className="label">
-                    <FormattedMessage id="Total_Reserve_Reward" />
+                    <FormattedMessage id="Prime_Reward_Pool" />
                   </div>
                   <div className="value">${totalReserveReward}</div>
                 </div>
