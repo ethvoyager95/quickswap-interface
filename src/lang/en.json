@@ -342,7 +342,7 @@
   "Continue": "Continue",
   "Staking_Point": "Staking Point",
   "Estimated_Reward": "Estimated Reward",
-  "Total_Reserve_Reward": "Total Reserve Reward",
+  "Prime_Reward_Pool": "Prime Reward Pool",
   "Prime_APR": "Prime APR",
   "Countdown_Tooltip1": "Countdown time will be reset if you stake more without claiming the rewards",
   "Countdown_Tooltip2": "Countdown time will be reset if you unstake a part without claiming the rewards",
