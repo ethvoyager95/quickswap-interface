@@ -344,6 +344,7 @@
   "Estimated_Reward": "Recompensa estimada",
   "Prime_Reward_Pool": "Fondo de recompensas Prime",
   "Prime_APR": "Máximo Principal APR",
+  "Max_Prime_APR": "Principal APR",
   "Countdown_Tooltip1": "El tiempo de cuenta regresiva se restablecerá si apuestas más sin reclamar las recompensas.",
   "Countdown_Tooltip2": "El tiempo de cuenta regresiva se restablecerá si retiras una parte sin reclamar las recompensas.",
   "Countdown_Tooltip3": "Solo puedes reclamar la recompensa una vez al día.",

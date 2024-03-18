@@ -286,7 +286,7 @@ function Dashboard({ settings, setSetting }) {
 
                   <div className="info">
                     <div className="label">
-                      <FormattedMessage id="Prime_APR" />
+                      <FormattedMessage id="Max_Prime_APR" />
                     </div>
                     <div className="value">{reserveApy}%</div>
                   </div>
