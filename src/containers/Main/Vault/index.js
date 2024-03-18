@@ -181,10 +181,6 @@ function Staking({ settings, setSetting, intl }) {
   const [fakeImgNFT, setFakeImgNFT] = useState('');
   const [isOpenNftMintModal, setIsOpenNftMintModal] = useState(false);
 
-  const [strkPrice, setStrkPrice] = useState(0);
-  const [ethPrice, setEthPrice] = useState(0);
-  const [totalReserve, setTotalReserve] = useState(0);
-
   const [claimBaseRewardTime, setClaimBaseRewardTime] = useState(0);
   const [claimBoostRewardTime, setClaimBoostRewardTime] = useState(0);
   const [unstakableTime, setUnstakableTime] = useState(0);
@@ -194,37 +190,7 @@ function Staking({ settings, setSetting, intl }) {
     estimatedReward,
     totalReserveReward,
     reserveApy
-  } = useRewardData(instance, address, strkPrice, ethPrice, totalReserve);
-
-  useEffect(() => {
-    const strkMarket = settings.markets.find(
-      ele => ele.underlyingSymbol === 'STRK'
-    );
-    if (strkMarket) {
-      setStrkPrice(Number(strkMarket.tokenPrice));
-    }
-
-    const ethMarket = settings.markets.find(
-      ele => ele.underlyingSymbol === 'ETH'
-    );
-    if (ethMarket) {
-      setEthPrice(Number(ethMarket.tokenPrice));
-    }
-
-    let tempTotalReserve = new BigNumber(0);
-    settings.markets.forEach(ele => {
-      tempTotalReserve = tempTotalReserve.plus(
-        new BigNumber(ele.totalReserves || 0)
-          .div(
-            new BigNumber(10).pow(
-              settings.decimals[ele.underlyingSymbol.toLowerCase()].token
-            )
-          )
-          .times(ele.tokenPrice)
-      );
-    });
-    setTotalReserve(tempTotalReserve.toNumber());
-  }, [settings.markets]);
+  } = useRewardData(address);
 
   // contract
   const farmingContract = useFarmingContract(instance);

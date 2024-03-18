@@ -7,7 +7,6 @@ import { compose } from 'recompose';
 import { Link, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { Tooltip } from 'antd';
-import BigNumber from 'bignumber.js';
 import MainLayout from 'containers/Layout/MainLayout';
 import Overview from 'components/Dashboard/Overview';
 import Market from 'components/Dashboard/Market';
@@ -18,7 +17,6 @@ import { Label } from 'components/Basic/Label';
 import IconQuestion from 'assets/img/question.png';
 import rewardBanner from 'assets/img/reward_banner.svg';
 import dividerImg from 'assets/img/divider.svg';
-import { useInstance } from 'hooks/useContract';
 import { useRewardData } from 'hooks/useReward';
 
 const DashboardWrapper = styled.div`
@@ -229,50 +227,10 @@ const SQuestion = styled.img`
 `;
 
 function Dashboard({ settings, setSetting }) {
-  const instance = useInstance(settings.walletConnected);
   const [currentMarket, setCurrentMarket] = useState('');
   const [withSTRK, setWithSTRK] = useState(true);
 
-  const [strkPrice, setStrkPrice] = useState(0);
-  const [ethPrice, setEthPrice] = useState(0);
-  const [totalReserve, setTotalReserve] = useState(0);
-
-  const {
-    stakingPoint,
-    estimatedReward,
-    totalReserveReward,
-    reserveApy
-  } = useRewardData(instance, '', strkPrice, ethPrice, totalReserve);
-
-  useEffect(() => {
-    const strkMarket = settings.markets.find(
-      ele => ele.underlyingSymbol === 'STRK'
-    );
-    if (strkMarket) {
-      setStrkPrice(Number(strkMarket.tokenPrice));
-    }
-
-    const ethMarket = settings.markets.find(
-      ele => ele.underlyingSymbol === 'ETH'
-    );
-    if (ethMarket) {
-      setEthPrice(Number(ethMarket.tokenPrice));
-    }
-
-    let tempTotalReserve = new BigNumber(0);
-    settings.markets.forEach(ele => {
-      tempTotalReserve = tempTotalReserve.plus(
-        new BigNumber(ele.totalReserves || 0)
-          .div(
-            new BigNumber(10).pow(
-              settings.decimals[ele.underlyingSymbol.toLowerCase()].token
-            )
-          )
-          .times(ele.tokenPrice)
-      );
-    });
-    setTotalReserve(tempTotalReserve.toNumber());
-  }, [settings.markets]);
+  const { totalReserveReward, reserveApy } = useRewardData('');
 
   useEffect(() => {
     setCurrentMarket('supply');
