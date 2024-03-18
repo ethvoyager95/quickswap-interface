@@ -343,7 +343,7 @@
   "Staking_Point": "Staking Point",
   "Estimated_Reward": "Estimated Reward",
   "Prime_Reward_Pool": "Prime Reward Pool",
-  "Prime_APR": "Prime APR",
+  "Prime_APR": "Max Prime APR",
   "Countdown_Tooltip1": "Countdown time will be reset if you stake more without claiming the rewards",
   "Countdown_Tooltip2": "Countdown time will be reset if you unstake a part without claiming the rewards",
   "Countdown_Tooltip3": "You can only claim reward once daily",
