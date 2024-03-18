@@ -189,7 +189,7 @@ function Staking({ settings, setSetting, intl }) {
     stakingPoint,
     estimatedReward,
     totalReserveReward,
-    reserveApy
+    reservePrimeApy
   } = useRewardData(address);
 
   // contract
@@ -1639,7 +1639,7 @@ function Staking({ settings, setSetting, intl }) {
                   <div className="label">
                     <FormattedMessage id="Prime_APR" />
                   </div>
-                  <div className="value">{reserveApy}%</div>
+                  <div className="value">{reservePrimeApy}%</div>
                 </div>
               </ST.SRewardInfo>
 
