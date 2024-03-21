@@ -143,7 +143,8 @@ const ChainId = {
   MAINNET: 1,
   ROPSTEN: 3,
   RINKEBY: 4,
-  GOERLI: 5
+  GOERLI: 5,
+  SEPOLIA: 11155111
 };
 const explorers = {
   etherscan: (link, data, type) => {
@@ -170,6 +171,10 @@ const chains = {
   },
   [ChainId.GOERLI]: {
     link: 'https://goerli.etherscan.io',
+    builder: explorers.etherscan
+  },
+  [ChainId.SEPOLIA]: {
+    link: 'https://sepolia.etherscan.io',
     builder: explorers.etherscan
   }
 };
