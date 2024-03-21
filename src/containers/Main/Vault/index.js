@@ -186,6 +186,7 @@ function Staking({ settings, setSetting, intl }) {
   const [claimBaseRewardTime, setClaimBaseRewardTime] = useState(0);
   const [claimBoostRewardTime, setClaimBoostRewardTime] = useState(0);
   const [unstakableTime, setUnstakableTime] = useState(0);
+  const [refresh, setRefresh] = useState(0);
 
   const {
     stakingPoint,
@@ -193,7 +194,7 @@ function Staking({ settings, setSetting, intl }) {
     claimableReward,
     totalReserveReward,
     reservePrimeApy
-  } = useRewardData(address);
+  } = useRewardData(address, refresh);
 
   // contract
   const farmingContract = useFarmingContract(instance);
@@ -1365,6 +1366,7 @@ function Staking({ settings, setSetting, intl }) {
         )
         .then(res => {
           if (res) {
+            setRefresh(prevState => prevState + 1);
             setTxhash(res.transactionHash);
             setiIsConfirm(false);
             setIsSuccess(true);

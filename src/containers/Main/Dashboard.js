@@ -230,7 +230,7 @@ function Dashboard({ settings, setSetting }) {
   const [currentMarket, setCurrentMarket] = useState('');
   const [withSTRK, setWithSTRK] = useState(true);
 
-  const { totalReserveReward, reserveApy } = useRewardData('');
+  const { totalReserveReward, reserveApy } = useRewardData('', 0);
 
   useEffect(() => {
     setCurrentMarket('supply');
