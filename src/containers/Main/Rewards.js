@@ -214,20 +214,20 @@ function Rewards({ settings }) {
                 className="highlight"
                 href={`${process.env.REACT_APP_ETH_EXPLORER}/token/${
                   process.env.REACT_APP_ENV === 'dev'
-                    ? '0xEbb87EB4E69ef55257af1AB13929E12c243efC97'
+                    ? '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2'
                     : '0x74232704659ef37c08995e386A2E26cc27a8d7B1'
                 }`}
                 target="_blank"
                 rel="noreferrer"
               >
                 {process.env.REACT_APP_ENV === 'dev'
-                  ? '0xEbb87EB4E69ef55257af1AB13929E12c243efC97'
+                  ? '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2'
                   : '0x74232704659ef37c08995e386A2E26cc27a8d7B1'}
               </a>
               <CopyToClipboard
                 text={
                   process.env.REACT_APP_ENV === 'dev'
-                    ? '0xEbb87EB4E69ef55257af1AB13929E12c243efC97'
+                    ? '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2'
                     : '0x74232704659ef37c08995e386A2E26cc27a8d7B1'
                 }
                 onCopy={() => {}}
