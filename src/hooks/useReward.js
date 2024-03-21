@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { restService } from 'utilities';
 import useRefresh from './useRefresh';
 
-export const useRewardData = address => {
+export const useRewardData = (address, refresh) => {
   const numberFormat = Intl.NumberFormat('en-US');
 
   const { slowRefresh } = useRefresh();
@@ -47,6 +47,7 @@ export const useRewardData = address => {
         setStakingPoint(
           Number(scoreData.data.data.pending.userScore) * 1000000
         );
+
         if (scoreData.data.data.pending.totalScore > 0)
           setEstimatedReward(
             (Number(scoreData.data.data.pending.totalReward) *
@@ -54,18 +55,12 @@ export const useRewardData = address => {
               Number(scoreData.data.data.pending.totalScore)
           );
 
-        let tempClaimableReward = 0;
-        scoreData.data.data.claimable.forEach(item => {
-          if (item.totalScore > 0)
-            tempClaimableReward +=
-              (item.userScore * item.totalReward) / item.totalScore;
-        });
-        setClaimableReward(tempClaimableReward);
+        setClaimableReward(Number(scoreData.data.data.claimableAmount));
       }
     };
 
     fetchRewardData();
-  }, [slowRefresh, address]);
+  }, [slowRefresh, address, refresh]);
 
   return {
     stakingPoint: stakingPoint.toFixed(2),
