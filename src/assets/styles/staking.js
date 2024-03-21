@@ -890,6 +890,23 @@ export const SClaim = styled.button`
     width: 100%;
   }
 `;
+export const SPrimeRewardClaim = styled.button`
+  cursor: pointer;
+  background: #107def;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 8px 20px;
+  width: 120px;
+  text-align: center;
+  margin-right: 15px;
+  outline: none;
+  border: none;
+  :disabled {
+    cursor: not-allowed;
+    color: #fff !important;
+  }
+`;
 export const SUnClaim = styled.div`
   cursor: pointer;
   background: #9d9fa7;
@@ -1251,6 +1268,20 @@ export const SRewardInfo = styled.div`
   border-radius: 6px;
   box-sizing: content-box;
 
+  .info_part {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .claim_part {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+  }
+
   .info {
     display: flex;
     flex-direction: column;
@@ -1259,25 +1290,34 @@ export const SRewardInfo = styled.div`
 
     .label {
       color: rgba(256, 256, 256, 0.6);
-      font-size: 24px;
+      font-size: 18px;
       font-weight: bold;
     }
 
     .value {
       color: white;
-      font-size: 36px;
+      font-size: 30px;
       font-weight: bold;
     }
   }
 
   @media only screen and (max-width: 1280px) {
+    flex-direction: column;
+    gap: 20px;
+
+    .claim_part {
+      .divider {
+        display: none;
+      }
+    }
+
     .info {
       .label {
-        font-size: 20px;
+        font-size: 16px;
       }
 
       .value {
-        font-size: 30px;
+        font-size: 24px;
       }
     }
   }
@@ -1314,6 +1354,19 @@ export const SRewardInfo = styled.div`
     box-sizing: border-box;
     padding: 20px;
     gap: 10px;
+
+    .info_part {
+      width: 100%;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .claim_part {
+      width: 100%;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .info {
       width: 100%;
       flex-direction: row;

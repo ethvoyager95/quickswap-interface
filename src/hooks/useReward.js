@@ -12,6 +12,7 @@ export const useRewardData = address => {
   const [totalReserve, setTotalReserve] = useState(0);
   const [reserveApy, setReserveApy] = useState(0);
   const [reservePrimeApy, setReservePrimeApy] = useState(0);
+  const [claimableReward, setClaimableReward] = useState(0);
 
   useEffect(() => {
     const fetchRewardData = async () => {
@@ -24,16 +25,17 @@ export const useRewardData = address => {
       setTotalReserve(data.data.data.totalReservesUsd);
 
       setReserveApy(
-        ((Number(data.data.data.totalReservesUsd) * 12 * 100) /
-          Number(data.data.data.totalLockedUsd) +
-          Number(data.data.data.baseApr) * 100) *
-          2
+        (Number(data.data.data.totalLockedUsd) > 0
+          ? (Number(data.data.data.totalReservesUsd) * 12 * 100) /
+            Number(data.data.data.totalLockedUsd)
+          : 0 + Number(data.data.data.baseApr) * 100) * 2
       );
 
-      setReservePrimeApy(
-        (Number(data.data.data.totalReservesUsd) * 12 * 100) /
-          Number(data.data.data.totalLockedUsd)
-      );
+      if (Number(data.data.data.totalLockedUsd) > 0)
+        setReservePrimeApy(
+          (Number(data.data.data.totalReservesUsd) * 12 * 100) /
+            Number(data.data.data.totalLockedUsd)
+        );
 
       if (address) {
         const scoreData = await restService({
@@ -51,6 +53,14 @@ export const useRewardData = address => {
               Number(scoreData.data.data.pending.userScore)) /
               Number(scoreData.data.data.pending.totalScore)
           );
+
+        let tempClaimableReward = 0;
+        scoreData.data.data.claimable.forEach(item => {
+          if (item.totalScore > 0)
+            tempClaimableReward +=
+              (item.userScore * item.totalReward) / item.totalScore;
+        });
+        setClaimableReward(tempClaimableReward);
       }
     };
 
@@ -60,6 +70,7 @@ export const useRewardData = address => {
   return {
     stakingPoint: stakingPoint.toFixed(2),
     estimatedReward: numberFormat.format(estimatedReward),
+    claimableReward: numberFormat.format(claimableReward),
     totalReserveReward: numberFormat.format(totalReserve),
     reserveApy: reserveApy.toFixed(1),
     reservePrimeApy: reservePrimeApy.toFixed(1)

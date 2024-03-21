@@ -15,7 +15,8 @@ import {
   getNFTContract,
   getVSTRKContract,
   getSTRKClaimContract,
-  getSTRKContract
+  getSTRKContract,
+  getPrimeRewardPoolContract
 } from 'utilities/ContractService';
 
 export const useProvider = walletType => {
@@ -94,4 +95,8 @@ export const useSTRKClaimContract = instance => {
 
 export const useSTRKContract = instance => {
   return useMemo(() => getSTRKContract(instance), [instance]);
+};
+
+export const usePrimeRewardPoolContract = instance => {
+  return useMemo(() => getPrimeRewardPoolContract(instance), [instance]);
 };
