@@ -225,6 +225,12 @@ export const getStakingContract = instance => {
     constants.STAKING_ADDRESS
   );
 };
+export const getPrimeRewardPoolContract = instance => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.PRIME_REWARD_POOL_ABI),
+    constants.CONTRACT_PRIME_REWARD_POOL_ADDRESS
+  );
+};
 export const methods = {
   call,
   send

@@ -26,6 +26,7 @@ import {
   useInstance,
   useLPContract,
   useNFTContract,
+  usePrimeRewardPoolContract,
   useProvider,
   useSTRKClaimContract,
   useVSTRKContract
@@ -34,6 +35,7 @@ import * as constants from 'utilities/constants';
 import NftMintModal from 'components/Basic/NftMintModal';
 import { checkIsValidNetwork } from 'utilities/common';
 import { useRewardData } from 'hooks/useReward';
+import { restService } from 'utilities';
 import {
   DECIMALS_INPUT,
   MIXIMUM_IPUT,
@@ -184,13 +186,15 @@ function Staking({ settings, setSetting, intl }) {
   const [claimBaseRewardTime, setClaimBaseRewardTime] = useState(0);
   const [claimBoostRewardTime, setClaimBoostRewardTime] = useState(0);
   const [unstakableTime, setUnstakableTime] = useState(0);
+  const [refresh, setRefresh] = useState(0);
 
   const {
     stakingPoint,
     estimatedReward,
+    claimableReward,
     totalReserveReward,
     reservePrimeApy
-  } = useRewardData(address);
+  } = useRewardData(address, refresh);
 
   // contract
   const farmingContract = useFarmingContract(instance);
@@ -198,6 +202,7 @@ function Staking({ settings, setSetting, intl }) {
   const vStrkContract = useVSTRKContract(instance);
   const nFtContract = useNFTContract(instance);
   const strkContract = useSTRKClaimContract(instance);
+  const primeRewardPoolContract = usePrimeRewardPoolContract(instance);
   // get userInfor
   useMemo(async () => {
     let sTokenBalance = null;
@@ -1267,7 +1272,7 @@ function Staking({ settings, setSetting, intl }) {
     }
   };
   // handleClaim
-  const handleClainBaseReward = async () => {
+  const handleClaimBaseReward = async () => {
     setiIsConfirm(true);
     const zero = 0;
     await methods
@@ -1300,7 +1305,7 @@ function Staking({ settings, setSetting, intl }) {
         throw err;
       });
   };
-  const handleClainBootReward = async () => {
+  const handleClaimBootReward = async () => {
     setiIsConfirm(true);
     const zero = 0;
     await methods
@@ -1332,6 +1337,62 @@ function Staking({ settings, setSetting, intl }) {
         }
         throw err;
       });
+  };
+  const handleClaimPrimeReward = async () => {
+    try {
+      setiIsConfirm(true);
+      const paramData = await restService({
+        api: `/prime/claim`,
+        method: 'POST',
+        params: {
+          address
+        }
+      });
+
+      await methods
+        .send(
+          instance,
+          primeRewardPoolContract.methods.claim,
+          [
+            paramData.data.data.user,
+            paramData.data.data.amount,
+            paramData.data.data.nonce,
+            paramData.data.data.epochId,
+            paramData.data.data.v,
+            paramData.data.data.r,
+            paramData.data.data.s
+          ],
+          address
+        )
+        .then(res => {
+          if (res) {
+            setRefresh(prevState => prevState + 1);
+            setTxhash(res.transactionHash);
+            setiIsConfirm(false);
+            setIsSuccess(true);
+            setTextSuccess(
+              <FormattedMessage id="Claim_Prime_Reward_successfully" />
+            );
+          }
+        })
+        .catch(err => {
+          if (err.code === 4001 || err.message.includes('User denied')) {
+            setIsShowCancel(true);
+            setiIsConfirm(false);
+            setTextErr('Decline_transaction');
+          } else {
+            setIsShowCancel(true);
+            setiIsConfirm(false);
+            setTextErr('Something_went_wrong');
+          }
+          throw err;
+        });
+    } catch (error) {
+      setIsShowCancel(true);
+      setiIsConfirm(false);
+      setTextErr('Something_went_wrong');
+      throw error;
+    }
   };
 
   // Stake NFT
@@ -1608,38 +1669,58 @@ function Staking({ settings, setSetting, intl }) {
           <Row className="all-section">
             <Col xs={{ span: 24 }} lg={{ span: 24 }}>
               <ST.SRewardInfo>
-                <div className="info">
-                  <div className="label">
-                    <FormattedMessage id="Staking_Point" />
+                <div className="info_part">
+                  <div className="info">
+                    <div className="label">
+                      <FormattedMessage id="Staking_Point" />
+                    </div>
+                    <div className="value">{stakingPoint}</div>
                   </div>
-                  <div className="value">{stakingPoint}</div>
+
+                  <img src={dividerImg} className="divider" />
+
+                  <div className="info">
+                    <div className="label">
+                      <FormattedMessage id="Estimated_Reward" />
+                    </div>
+                    <div className="value">${estimatedReward}</div>
+                  </div>
+
+                  <img src={dividerImg} className="divider" />
+
+                  <div className="info">
+                    <div className="label">
+                      <FormattedMessage id="Prime_Reward_Pool" />
+                    </div>
+                    <div className="value">${totalReserveReward}</div>
+                  </div>
+
+                  <img src={dividerImg} className="divider" />
+
+                  <div className="info">
+                    <div className="label">
+                      <FormattedMessage id="Prime_APR" />
+                    </div>
+                    <div className="value">{reservePrimeApy}%</div>
+                  </div>
                 </div>
 
-                <img src={dividerImg} className="divider" />
+                <div className="claim_part">
+                  <img src={dividerImg} className="divider" />
 
-                <div className="info">
-                  <div className="label">
-                    <FormattedMessage id="Estimated_Reward" />
+                  <div className="info">
+                    <div className="label">
+                      <FormattedMessage id="Claimable_Reward" />
+                    </div>
+                    <div className="value">${claimableReward}</div>
                   </div>
-                  <div className="value">${estimatedReward}</div>
-                </div>
 
-                <img src={dividerImg} className="divider" />
-
-                <div className="info">
-                  <div className="label">
-                    <FormattedMessage id="Prime_Reward_Pool" />
-                  </div>
-                  <div className="value">${totalReserveReward}</div>
-                </div>
-
-                <img src={dividerImg} className="divider" />
-
-                <div className="info">
-                  <div className="label">
-                    <FormattedMessage id="Prime_APR" />
-                  </div>
-                  <div className="value">{reservePrimeApy}%</div>
+                  <ST.SPrimeRewardClaim
+                    disabled={!Number(claimableReward)}
+                    onClick={handleClaimPrimeReward}
+                  >
+                    <FormattedMessage id="Claim" />
+                  </ST.SPrimeRewardClaim>
                 </div>
               </ST.SRewardInfo>
 
@@ -2160,7 +2241,7 @@ function Staking({ settings, setSetting, intl }) {
                           <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                             <ST.SBtnClaim>
                               {isClaimBaseReward ? (
-                                <ST.SClaim onClick={handleClainBaseReward}>
+                                <ST.SClaim onClick={handleClaimBaseReward}>
                                   <FormattedMessage id="Claim" />
                                 </ST.SClaim>
                               ) : (
@@ -2170,7 +2251,7 @@ function Staking({ settings, setSetting, intl }) {
                                       isShowCountDownClaimBase ||
                                       Number(userInfo.accBaseReward) === 0
                                     }
-                                    onClick={handleClainBaseReward}
+                                    onClick={handleClaimBaseReward}
                                   >
                                     <FormattedMessage id="Claim" />
                                   </ST.SClaim>
@@ -2202,7 +2283,7 @@ function Staking({ settings, setSetting, intl }) {
                                 times={expiryTimeBase}
                                 address={address}
                                 type={CLAIMBASE}
-                                handleClainBaseReward={handleClainBaseReward}
+                                handleClaimBaseReward={handleClaimBaseReward}
                                 isClaimBaseReward={isClaimBaseReward}
                               />
                             </ST.SCountDown>
@@ -2246,7 +2327,7 @@ function Staking({ settings, setSetting, intl }) {
                                     <ST.SBtnClaimStart>
                                       {isClaimBootReward ? (
                                         <ST.SClaim
-                                          onClick={handleClainBootReward}
+                                          onClick={handleClaimBootReward}
                                         >
                                           <FormattedMessage id="Claim" />
                                         </ST.SClaim>
@@ -2257,7 +2338,7 @@ function Staking({ settings, setSetting, intl }) {
                                             Number(userInfo.accBoostReward) ===
                                               0
                                           }
-                                          onClick={handleClainBootReward}
+                                          onClick={handleClaimBootReward}
                                         >
                                           <FormattedMessage id="Claim" />
                                         </ST.SClaim>
@@ -2288,8 +2369,8 @@ function Staking({ settings, setSetting, intl }) {
                                     times={expiryTimeBoost}
                                     address={address}
                                     type={CLAIMBOOST}
-                                    handleClainBootReward={
-                                      handleClainBootReward
+                                    handleClaimBootReward={
+                                      handleClaimBootReward
                                     }
                                     isClaimBootReward={isClaimBootReward}
                                   />

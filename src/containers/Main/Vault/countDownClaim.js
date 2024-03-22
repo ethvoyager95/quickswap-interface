@@ -176,8 +176,8 @@ function CountDownClaim({
   address,
   type,
   handleUnStake,
-  handleClainBaseReward,
-  handleClainBootReward,
+  handleClaimBaseReward,
+  handleClaimBootReward,
   handleUnStakeNFT,
   valUnStake,
   isAprroveVstrk,
@@ -343,7 +343,7 @@ function CountDownClaim({
           )}
           {type === CLAIMBASE && (
             <SUntake>
-              <SClaim onClick={handleClainBaseReward}>
+              <SClaim onClick={handleClaimBaseReward}>
                 <FormattedMessage id="Claim" />
               </SClaim>
               <Tooltip
@@ -356,7 +356,7 @@ function CountDownClaim({
           )}
           {type === CLAIMBOOST && (
             <SUntake>
-              <SClaim onClick={handleClainBootReward}>
+              <SClaim onClick={handleClaimBootReward}>
                 <FormattedMessage id="Claim" />
               </SClaim>
               <Tooltip
@@ -384,8 +384,8 @@ CountDownClaim.propTypes = {
   address: PropTypes.string,
   type: PropTypes.string,
   handleUnStake: PropTypes.func,
-  handleClainBaseReward: PropTypes.func,
-  handleClainBootReward: PropTypes.func,
+  handleClaimBaseReward: PropTypes.func,
+  handleClaimBootReward: PropTypes.func,
   handleUnStakeNFT: PropTypes.func,
   valUnStake: PropTypes.number,
   isAprroveVstrk: PropTypes.bool,
@@ -397,8 +397,8 @@ CountDownClaim.defaultProps = {
   address: '',
   type: '',
   handleUnStake: '',
-  handleClainBaseReward: '',
-  handleClainBootReward: '',
+  handleClaimBaseReward: '',
+  handleClaimBootReward: '',
   handleUnStakeNFT: '',
   valUnStake: 0,
   isAprroveVstrk: false,

@@ -89,8 +89,8 @@ function ConnectButton({
       accountLoading: true
     });
     if (netId) {
-      if (netId === 1 || netId === 5) {
-        if (netId === 5 && process.env.REACT_APP_ENV === 'prod') {
+      if (netId === 1 || netId === 11155111) {
+        if (netId === 11155111 && process.env.REACT_APP_ENV === 'prod') {
           message.error(
             intl.formatMessage({
               id: 'Incorrect_Network'
@@ -158,7 +158,7 @@ function ConnectButton({
       }
       tempWeb3 = await metamask.getWeb3();
       const currentChainId = await metamask.getChainId();
-      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0xaa36a7';
       if (currentChainId !== Number(chainId))
         await provider.request({
           method: 'wallet_switchEthereumChain',
@@ -231,7 +231,7 @@ function ConnectButton({
       }
       tempWeb3 = await bitkeep.getWeb3();
       const currentChainId = await bitkeep.getChainId();
-      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0xaa36a7';
       if (currentChainId !== Number(chainId))
         await provider.request({
           method: 'wallet_switchEthereumChain',
@@ -304,7 +304,7 @@ function ConnectButton({
       }
       tempWeb3 = await trustwallet.getWeb3();
       const currentChainId = await trustwallet.getChainId();
-      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0xaa36a7';
       if (currentChainId !== Number(chainId))
         await provider.request({
           method: 'wallet_switchEthereumChain',
@@ -377,7 +377,7 @@ function ConnectButton({
       }
       tempWeb3 = await coinbase.getWeb3();
       const currentChainId = await coinbase.getChainId();
-      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0x5';
+      const chainId = process.env.REACT_APP_ENV === 'prod' ? '0x1' : '0xaa36a7';
       if (currentChainId !== Number(chainId))
         await provider.request({
           method: 'wallet_switchEthereumChain',

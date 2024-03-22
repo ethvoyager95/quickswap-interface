@@ -41,22 +41,22 @@ export const TIMEOUT = 'Timeout';
 
 export const NFT_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0x4265E099Ae7e50B7bc34db0B97F2A08de1d7Cd26'
+    ? '0xaa5C49D80A4d24B876407F6cfB2e94150AD7bd51'
     : '0x474D72f1a6A7884B62edAcC8D24d0815d01A65a2';
 
 export const VSTRK_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0x386a2a1062E434970c515dFdaa9668E7E1B0f288'
+    ? '0xEd8D0e238abcDfEce6dFCaE1a5eD7703b969060e'
     : '0xf966E86d31751f005C6932fcFFd91fCD7907ABF7';
 
 export const STRK_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0x56cee334f6B002b8DEA832ba540F45fDbF9AbE40'
+    ? '0x4a5237Ae811b8a9323a566d3900de8740D848Af6'
     : '0xff734dcb7fd6517caed5c6c8720992a0c676c800';
 
 export const STRK_CLAIM_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0xEbb87EB4E69ef55257af1AB13929E12c243efC97'
+    ? '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2'
     : '0x74232704659ef37c08995e386A2E26cc27a8d7B1';
 
 export const THE_GRAPH =
@@ -71,7 +71,7 @@ export const SALE_THE_GRAPH =
 
 export const STAKING_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0x151cb2a26a8aa14e4da2b52f47e8eeecdedebc6e'
+    ? '0x95f3aeD8327Ef9c7b126b965D8495a044596C4dB'
     : '0x453a8f1c6d60aa487af1e21203001017a4f45fa3';
 
 export const HEADER = {
@@ -84,94 +84,94 @@ export const URL_LOGO_NFT =
 // Contract ABI
 
 export const CONTRACT_NAMES = {
-  '0x95318a7f680427d323ef617bbdf0eb6617bff610': 'Comptroller',
+  '0x2DbE46250Ca565F549a9D1044dda28a884f46202': 'Comptroller',
   '0xe2e17b2cbbf48211fa7eb8a875360e5e39ba2602': 'Comptroller',
   '0xd01ce4a7368cf81c34b1257691eedf34d825a694': 'ComptrollerIMP',
 
-  '0x151cb2a26a8aa14e4da2b52f47e8eeecdedebc6e': 'StrkStakingProxy',
+  '0x95f3aeD8327Ef9c7b126b965D8495a044596C4dB': 'StrkStakingProxy',
   '0x453a8f1c6d60aa487af1e21203001017a4f45fa3': 'StrkStakingProxy',
   '0x4b000392f494a0962574913139071a5af49ea078': 'StrkStaking',
   '0xc8167659ff247ecd9b09333685ddf70091c96ca4': 'Treasury',
 
-  '0x964a39D94DCe0b41e981475630744D92D74C8F4F': 'USDC',
+  '0x94453f176A3d0AA3041a8fCB795878C752104c17': 'USDC',
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 'USDC',
-  '0xd7d63c0Ff31c8B8d674563C34D3A79f5536Ff0b8': 'sUSDC',
+  '0x157719490057fa63D5c93a1aE6Fd02C9D2691791': 'sUSDC',
   '0x3774E825d567125988Fb293e926064B6FAa71DAB': 'sUSDC',
 
-  '0xd651b14E0363ce297ab767F8B43BA98E00F303AB': 'USDT',
+  '0xc5B9467f5D06e408dC5319E360c5C799F9b840B5': 'USDT',
   '0xdAC17F958D2ee523a2206206994597C13D831ec7': 'USDT',
-  '0x6Df60f95422f3B261A1D253cADC985557f105967': 'sUSDT',
+  '0xB6A1095f3067D17627d7EaBd22bB15F6cC67BB22': 'sUSDT',
   '0x69702cfd7DAd8bCcAA24D6B440159404AAA140F5': 'sUSDT',
 
-  '0x25FF0C18Ccc61caF9D7F92D1D1E539697F7AC791': 'BUSD',
+  '0xEDC33141eBBdb0423ea6f15aed794d6fa9797C46': 'BUSD',
   '0x4Fabb145d64652a948d72533023f6E7A623C7C53': 'BUSD',
-  '0x2544a5846E5a4FFfCBD8e9E3340C44C2A73FE74E': 'sBUSD',
+  '0x6Ca5b9e5bc4A9d9938E61bCE9511ce4a87bC88e0': 'sBUSD',
   '0x18A908eD663823C908A900b934D6249d4befbE44': 'sBUSD',
 
-  '0xEbb87EB4E69ef55257af1AB13929E12c243efC97': 'STRK',
+  '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2': 'STRK',
   '0x74232704659ef37c08995e386A2E26cc27a8d7B1': 'STRK',
-  '0x9a7C2b469e2d65074e145EA173FC161096b9012B': 'sSTRK',
+  '0x4E3EcE8b879F1ca1bC6f7410AB8F6e637a7B1102': 'sSTRK',
   '0x4164e5b047842Ad7dFf18fc6A6e63a1e40610f46': 'sSTRK',
 
-  '0x552C0CEF77E97EDE3c913AC1F391b517Aff2d6f5': 'SXP',
+  '0xe0BE28f4ffC0EC92f9E1f5609C02A15746687641': 'SXP',
   '0x8CE9137d39326AD0cD6491fb5CC0CbA0e089b6A9': 'SXP',
-  '0x9B630bdbb755513fe6d0a42A1a3f6edbaA0e7C7a': 'sSXP',
+  '0xfc16f39E04a4B808bab22359cf83da1592c2E5Af': 'sSXP',
   '0xdBee1d8C452c781C17Ea20115CbaD0d5f627a680': 'sSXP',
 
-  '0x34AE08CB3e70f0B1587b8188bF45FfaDBa80f8ea': 'WBTC',
+  '0x95318A7f680427D323ef617Bbdf0Eb6617bff610': 'WBTC',
   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599': 'WBTC',
-  '0x70E90e9D11Ad89743A1e8d7256E15daa34409d6e': 'sWBTC',
+  '0x664Ad458C3E0CcE6Af60441e67039b13C43833B0': 'sWBTC',
   '0x9d1C2A187cf908aEd8CFAe2353Ef72F06223d54D': 'sWBTC',
 
-  '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2': 'sETH',
+  '0xd7d63c0Ff31c8B8d674563C34D3A79f5536Ff0b8': 'sETH',
   '0xbEe9Cf658702527b0AcB2719c1FAA29EdC006a92': 'sETH',
 
-  '0xEDC33141eBBdb0423ea6f15aed794d6fa9797C46': 'COMP',
+  '0x04E8dEE65E07B0C878b54A5dB2B07aC141e21384': 'COMP',
   '0xc00e94Cb662C3520282E6f5717214004A7f26888': 'COMP',
-  '0x3dEb4FE003e6b6691053f43F777654bFdCa6adeE': 'sCOMP',
+  '0x06934dF2442b56E21EAf9e8a998E1BD775a69Ddb': 'sCOMP',
   '0xb7E11002228D599F2a64b0C44D2299C9c644ff26': 'sCOMP',
 
-  '0xdfaF42B6e715bA05D2df72BA98B9ff681a9D2040': 'UNI',
+  '0x964a39D94DCe0b41e981475630744D92D74C8F4F': 'UNI',
   '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984': 'UNI',
-  '0x6E01780f4d75843872035e257d8644DfBF342A42': 'sUNI',
+  '0x2D23461dA251aF9332a19513CD792af0422F41Dc': 'sUNI',
   '0x280f76a218DDC8d56B490B5835e251E55a2e8F8d': 'sUNI',
 
-  '0x04E8dEE65E07B0C878b54A5dB2B07aC141e21384': 'LINK',
+  '0xB71DaFCC3c73BFB758a94725594f593F7Db7043e': 'LINK',
   '0x514910771AF9Ca656af840dff83E8264EcF986CA': 'LINK',
-  '0x1Ca164223279e8Ad227289Ab5b942D058f56167d': 'sLINK',
+  '0x405bFbd29CfaD8CD5513de848064e96fD3db890b': 'sLINK',
   '0x3F3B3B269d9f7088B022290906acff8710914be1': 'sLINK',
 
   '0xa693B19d2931d498c5B318dF961919BB4aee87a5': 'UST',
   '0xa9bA206cfb0548bF93eF1040dDDD5121da9eaf85': 'sUST',
 
-  '0x994E6aE9CBFC03499Bc8883Ce1Fa1DD35460E323': 'APE',
+  '0x05ED9669856cbEC8C9e0f1278a5322609F39dFa6': 'APE',
   '0x4d224452801ACEd8B2F0aebE155379bb5D594381': 'APE',
-  '0xD0E75ED120D7277A7F373c95A8020cd364A6F046': 'sAPE',
+  '0x8e72f1E8222e744F129D69c39a3353216041391B': 'sAPE',
   '0xf24A7D2077285E192Aa7dF957a4a699c144510d8': 'sAPE',
 
-  '0xF3fe651310917425bd15d3a9dD9f521F8BDF2386': 'DAI',
+  '0xFd7942F6F11A22463Fd493FB94B9fb9F97A2e59F': 'DAI',
   '0x6B175474E89094C44Da98b954EedeAC495271d0F': 'DAI',
-  '0xBcA2A7a64636781877A8c4Bd7E899F75b8F0D6aD': 'sDAI',
+  '0x0365e88215Df8190b4d2d1CEab903a9519177B1e': 'sDAI',
   '0x54A0ed40abEa082ed62C3a4f92621b8ed47732a2': 'sDAI',
 
-  '0x7720367E7a684e77F359f11977EAE409ee504c0a': 'XCN',
+  '0xeF76e44F45197b35333Fa55DF7F081207C7A4439': 'XCN',
   '0xA2cd3D43c775978A96BdBf12d733D5A1ED94fb18': 'XCN',
-  '0x7bfc13c192cA52e2a9832e26Fb932A5eF8C9688C': 'sXCN',
+  '0xf2dE9e63d084bD27616107549a8941A747f2F260': 'sXCN',
   '0xC13FDF3aF7ec87dcA256d9C11Ff96405D360F522': 'sXCN',
 
-  '0xada42c161Fd0dBebCc1e3394cE0deCc72395180b': 'wstETH',
+  '0x80EeB46dc6Dea72EAdF9134A50313690C010bF81': 'wstETH',
   '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0': 'wstETH',
-  '0x6585772d429e33494106B3Ca0110407bFE3C27FA': 'sWSTETH',
+  '0x08F7bF47Ff447118B7FCBe3E5bfaadE301e77999': 'sWSTETH',
   '0x1EBfD36223079dC79FefC62260dB9E25f3F5e2C7': 'sWSTETH',
 
+  '0xe0be0CD8404c2Fdd9965FF6e0cea78e8B104f3D0': 'rETH',
   '0xae78736Cd615f374D3085123A210448E74Fc6393': 'rETH',
-  '0xaF03817bbFa2b0a91A04FAFfA464b1ae0D064836': 'rETH',
+  '0xDB8eDC799d6F53fd12e77098527895B15cd9C307': 'sRETH',
   '0x34c93f84181f566A642Aa6Bc2Af6caC29c3246e3': 'sRETH',
-  '0x959614Ea28E56ce577865D7e2b7Ef38e83927a44': 'sRETH',
 
-  '0x64905e1e6aBA8bec5543Fc97965786F938605ca2': 'crvUSD',
+  '0xA49a594168ae823DfAA0E0855C35b2905C674F89': 'crvUSD',
   '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E': 'crvUSD',
-  '0x3C29C8935BAbdBf50D753fb38b9307BDcB1bff31': 'sCRVUSD',
+  '0xc686D236B395Df8158DdAE5Ac876Ae5A148F5484': 'sCRVUSD',
   '0xFd814C643d389EC095389DA6a5c99684bEB7F905': 'sCRVUSD'
 };
 
@@ -181,7 +181,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdc: {
           id: 'usdc',
           symbol: 'USDC',
-          address: '0x964a39D94DCe0b41e981475630744D92D74C8F4F',
+          address: '0x94453f176A3d0AA3041a8fCB795878C752104c17',
           asset: usdc,
           sasset: susdc,
           decimals: 6
@@ -189,7 +189,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         usdt: {
           id: 'usdt',
           symbol: 'USDT',
-          address: '0xd651b14E0363ce297ab767F8B43BA98E00F303AB',
+          address: '0xc5B9467f5D06e408dC5319E360c5C799F9b840B5',
           asset: usdt,
           sasset: susdt,
           decimals: 6
@@ -197,7 +197,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         busd: {
           id: 'busd',
           symbol: 'BUSD',
-          address: '0x25FF0C18Ccc61caF9D7F92D1D1E539697F7AC791',
+          address: '0xEDC33141eBBdb0423ea6f15aed794d6fa9797C46',
           asset: busd,
           sasset: sbusd,
           decimals: 18
@@ -205,7 +205,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         strk: {
           id: 'strk',
           symbol: 'STRK',
-          address: '0xEbb87EB4E69ef55257af1AB13929E12c243efC97',
+          address: '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2',
           asset: strk,
           sasset: sstrk,
           decimals: 18
@@ -213,7 +213,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wbtc: {
           id: 'wbtc',
           symbol: 'WBTC',
-          address: '0x34AE08CB3e70f0B1587b8188bF45FfaDBa80f8ea',
+          address: '0x95318A7f680427D323ef617Bbdf0Eb6617bff610',
           asset: btc,
           sasset: swbtc,
           decimals: 18
@@ -229,7 +229,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         link: {
           id: 'link',
           symbol: 'LINK',
-          address: '0x04E8dEE65E07B0C878b54A5dB2B07aC141e21384',
+          address: '0xB71DaFCC3c73BFB758a94725594f593F7Db7043e',
           asset: link,
           sasset: slink,
           decimals: 18
@@ -237,7 +237,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         comp: {
           id: 'comp',
           symbol: 'COMP',
-          address: '0xEDC33141eBBdb0423ea6f15aed794d6fa9797C46',
+          address: '0x04E8dEE65E07B0C878b54A5dB2B07aC141e21384',
           asset: comp,
           sasset: scomp,
           decimals: 18
@@ -245,7 +245,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         uni: {
           id: 'uni',
           symbol: 'UNI',
-          address: '0xdfaF42B6e715bA05D2df72BA98B9ff681a9D2040',
+          address: '0x964a39D94DCe0b41e981475630744D92D74C8F4F',
           asset: uni,
           sasset: suni,
           decimals: 18
@@ -253,7 +253,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         ape: {
           id: 'ape',
           symbol: 'APE',
-          address: '0x994E6aE9CBFC03499Bc8883Ce1Fa1DD35460E323',
+          address: '0x05ED9669856cbEC8C9e0f1278a5322609F39dFa6',
           asset: ape,
           sasset: sape,
           decimals: 18
@@ -261,7 +261,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         sxp: {
           id: 'sxp',
           symbol: 'SXP',
-          address: '0x552C0CEF77E97EDE3c913AC1F391b517Aff2d6f5',
+          address: '0xe0BE28f4ffC0EC92f9E1f5609C02A15746687641',
           asset: sxp,
           sasset: ssxp,
           decimals: 18
@@ -269,7 +269,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         dai: {
           id: 'dai',
           symbol: 'DAI',
-          address: '0xF3fe651310917425bd15d3a9dD9f521F8BDF2386',
+          address: '0xFd7942F6F11A22463Fd493FB94B9fb9F97A2e59F',
           asset: dai,
           sasset: sdai,
           decimals: 18
@@ -277,7 +277,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         xcn: {
           id: 'xcn',
           symbol: 'XCN',
-          address: '0x7720367E7a684e77F359f11977EAE409ee504c0a',
+          address: '0xeF76e44F45197b35333Fa55DF7F081207C7A4439',
           asset: xcn,
           sasset: sxcn,
           decimals: 18
@@ -285,7 +285,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         wsteth: {
           id: 'wsteth',
           symbol: 'wstETH',
-          address: '0xada42c161Fd0dBebCc1e3394cE0deCc72395180b',
+          address: '0x80EeB46dc6Dea72EAdF9134A50313690C010bF81',
           asset: wsteth,
           sasset: swsteth,
           decimals: 18
@@ -293,7 +293,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         reth: {
           id: 'reth',
           symbol: 'rETH',
-          address: '0xaF03817bbFa2b0a91A04FAFfA464b1ae0D064836',
+          address: '0xe0be0CD8404c2Fdd9965FF6e0cea78e8B104f3D0',
           asset: reth,
           sasset: sreth,
           decimals: 18
@@ -301,19 +301,11 @@ export const CONTRACT_TOKEN_ADDRESS =
         crvusd: {
           id: 'crvusd',
           symbol: 'crvUSD',
-          address: '0x64905e1e6aBA8bec5543Fc97965786F938605ca2',
+          address: '0xA49a594168ae823DfAA0E0855C35b2905C674F89',
           asset: crvusd,
           sasset: scrvusd,
           decimals: 18
         }
-        // ust: {
-        //   id: 'ust',
-        //   symbol: 'UST',
-        //   address: process.env.REACT_APP_TEST_UST_TOKEN_ADDRESS,
-        //   asset: ust,
-        //   sasset: sust,
-        //   decimals: 18
-        // }
       }
     : {
         usdc: {
@@ -508,82 +500,82 @@ export const CONTRACT_SBEP_ADDRESS =
         usdc: {
           id: 'usdc',
           symbol: 'sUSDC',
-          address: '0xd7d63c0Ff31c8B8d674563C34D3A79f5536Ff0b8'
+          address: '0x157719490057fa63D5c93a1aE6Fd02C9D2691791'
         },
         usdt: {
           id: 'usdt',
           symbol: 'sUSDT',
-          address: '0x6Df60f95422f3B261A1D253cADC985557f105967'
+          address: '0xB6A1095f3067D17627d7EaBd22bB15F6cC67BB22'
         },
         busd: {
           id: 'busd',
           symbol: 'sBUSD',
-          address: '0x2544a5846E5a4FFfCBD8e9E3340C44C2A73FE74E'
+          address: '0x6Ca5b9e5bc4A9d9938E61bCE9511ce4a87bC88e0'
         },
         strk: {
           id: 'strk',
           symbol: 'sSTRK',
-          address: '0x9a7C2b469e2d65074e145EA173FC161096b9012B'
+          address: '0x4E3EcE8b879F1ca1bC6f7410AB8F6e637a7B1102'
         },
         wbtc: {
           id: 'wbtc',
           symbol: 'sWBTC',
-          address: '0x70E90e9D11Ad89743A1e8d7256E15daa34409d6e'
+          address: '0x664Ad458C3E0CcE6Af60441e67039b13C43833B0'
         },
         eth: {
           id: 'eth',
           symbol: 'sETH',
-          address: '0x8f87B9C14a7D8eEABa36B155FdA6f57747B041A2'
+          address: '0xd7d63c0Ff31c8B8d674563C34D3A79f5536Ff0b8'
         },
         link: {
           id: 'link',
           symbol: 'sLINK',
-          address: '0x1Ca164223279e8Ad227289Ab5b942D058f56167d'
+          address: '0x405bFbd29CfaD8CD5513de848064e96fD3db890b'
         },
         comp: {
           id: 'comp',
           symbol: 'sCOMP',
-          address: '0x3dEb4FE003e6b6691053f43F777654bFdCa6adeE'
+          address: '0x06934dF2442b56E21EAf9e8a998E1BD775a69Ddb'
         },
         uni: {
           id: 'uni',
           symbol: 'sUNI',
-          address: '0x6E01780f4d75843872035e257d8644DfBF342A42'
+          address: '0x2D23461dA251aF9332a19513CD792af0422F41Dc'
         },
         ape: {
           id: 'ape',
           symbol: 'sAPE',
-          address: '0xD0E75ED120D7277A7F373c95A8020cd364A6F046'
+          address: '0x8e72f1E8222e744F129D69c39a3353216041391B'
         },
         sxp: {
           id: 'sxp',
           symbol: 'sSXP',
-          address: '0x9B630bdbb755513fe6d0a42A1a3f6edbaA0e7C7a'
+          address: '0xfc16f39E04a4B808bab22359cf83da1592c2E5Af'
         },
         dai: {
           id: 'dai',
           symbol: 'sDAI',
-          address: '0xBcA2A7a64636781877A8c4Bd7E899F75b8F0D6aD'
+          address: '0x0365e88215Df8190b4d2d1CEab903a9519177B1e'
         },
         xcn: {
           id: 'xcn',
           symbol: 'sXCN',
-          address: '0x7bfc13c192cA52e2a9832e26Fb932A5eF8C9688C'
+          address: '0xf2dE9e63d084bD27616107549a8941A747f2F260'
         },
         wsteth: {
           id: 'wsteth',
           symbol: 'sWSTETH',
-          address: '0x6585772d429e33494106B3Ca0110407bFE3C27FA'
+          address: '0x08F7bF47Ff447118B7FCBe3E5bfaadE301e77999'
         },
         reth: {
           id: 'reth',
           symbol: 'sRETH',
-          address: '0x959614Ea28E56ce577865D7e2b7Ef38e83927a44'
+          address: '0xDB8eDC799d6F53fd12e77098527895B15cd9C307'
         },
         crvusd: {
           id: 'crvusd',
           symbol: 'sCRVUSD',
-          address: '0x3C29C8935BAbdBf50D753fb38b9307BDcB1bff31'
+          address: '0xc686D236B395Df8158DdAE5Ac876Ae5A148F5484'
         }
       }
     : {
@@ -682,7 +674,7 @@ export const CONTRACT_SETH_ABI = `
 
 export const CONTRACT_COMPTROLLER_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0x95318a7f680427d323ef617bbdf0eb6617bff610'
+    ? '0x2DbE46250Ca565F549a9D1044dda28a884f46202'
     : '0xe2e17b2cbbf48211fa7eb8a875360e5e39ba2602';
 
 export const CONTRACT_COMPTROLLER_ABI =
@@ -690,7 +682,7 @@ export const CONTRACT_COMPTROLLER_ABI =
 
 export const CONTRACT_PRICE_ORACLE_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0xA49a594168ae823DfAA0E0855C35b2905C674F89'
+    ? '0x5dC90ab3508e414A78D25E0cB8Af6ca44fd68467'
     : '0x2257bA009E8d2f9B342E80968992d5A3abf2Fd51';
 
 export const CONTRACT_PRICE_ORACLE_ABI =
@@ -698,7 +690,7 @@ export const CONTRACT_PRICE_ORACLE_ABI =
 
 export const CONTRACT_VOTE_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0x1ad2a8826756E6a30bFDa81A729A9AEAb367b705'
+    ? '0xdfaF42B6e715bA05D2df72BA98B9ff681a9D2040'
     : '0x29e2A3aF8eC2d537cBD484c6eC430AbE1C7fe2d8';
 
 export const CONTRACT_VOTE_ABI =
@@ -711,7 +703,7 @@ export const CONTRACT_INTEREST_MODEL_ABI =
 
 export const CONTRACT_LP_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0x56cee334f6B002b8DEA832ba540F45fDbF9AbE40'
+    ? '0x4a5237Ae811b8a9323a566d3900de8740D848Af6'
     : '0xfF734dcB7fD6517CAEd5C6C8720992A0C676C800';
 
 export const CONTRACT_LP_TOKEN_ABI =
@@ -721,7 +713,7 @@ export const CONTRACT_LP_TOKEN_ABI =
 
 export const CONTRACT_FARMING_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0xdDeCfa86834C4fA04298c5301Ddfa0E264A4C569'
+    ? '0x974204a7cFd699f6e8904bE1F0a466F1957457Db'
     : '0xACb8D462Ad11374AbFFaDf2C3a1C145D0673ce56';
 
 export const FARMING_ABI =
@@ -749,3 +741,11 @@ export const STRK_ABI =
 
 export const STAKING_ABI =
   '[{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"oldAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"NewAdmin","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"oldPendingAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newPendingAdmin","type":"address"}],"name":"NewPendingAdmin","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Recovered","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"RewardAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"rewardAddress","type":"address"},{"indexed":true,"internalType":"address","name":"distributor","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"RewardDistributorApproved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"rewardsToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"RewardPaid","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"rewardTokenAddress","type":"address"}],"name":"RewardTokenAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Staked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Withdrawn","type":"event"},{"constant":true,"inputs":[],"name":"HALF","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"MAX_REWARD_TOKENS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"QUART","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"WHOLE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"_acceptAdminInImplementation","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract StrikeStakingProxy","name":"stakingProxy","type":"address"}],"name":"_become","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_rewardsToken","type":"address"},{"internalType":"address","name":"_distributor","type":"address"}],"name":"addReward","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_rewardsToken","type":"address"},{"internalType":"address","name":"_distributor","type":"address"},{"internalType":"bool","name":"_approved","type":"bool"}],"name":"approveRewardDistributor","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"claimableRewards","outputs":[{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"struct StrikeStaking.RewardData[]","name":"_rewards","type":"tuple[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"earnedBalances","outputs":[{"internalType":"uint256","name":"total","type":"uint256"},{"components":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"unlockTime","type":"uint256"}],"internalType":"struct StrikeStaking.LockedBalance[]","name":"earningsData","type":"tuple[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"emergencyWithdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_rewardsToken","type":"address"},{"internalType":"address","name":"user","type":"address"},{"internalType":"bool","name":"excluded","type":"bool"}],"name":"excludeFromPenalty","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"getReward","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"_rewardsToken","type":"address"}],"name":"getRewardForDuration","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"groupDuration","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_stakingToken","type":"address"},{"internalType":"address[]","name":"_minters","type":"address[]"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"isExcludedFromPenalty","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"_rewardsToken","type":"address"}],"name":"lastTimeRewardApplicable","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"lockDuration","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"lockedBalances","outputs":[{"internalType":"uint256","name":"total","type":"uint256"},{"internalType":"uint256","name":"unlockable","type":"uint256"},{"internalType":"uint256","name":"locked","type":"uint256"},{"components":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"unlockTime","type":"uint256"}],"internalType":"struct StrikeStaking.LockedBalance[]","name":"lockData","type":"tuple[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"lockedSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"minters","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"mintersArray","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_rewardsToken","type":"address"},{"internalType":"uint256","name":"reward","type":"uint256"}],"name":"notifyRewardAmount","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"pendingAdmin","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"pendingStrikeStakingImplementation","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"tokenAddress","type":"address"},{"internalType":"uint256","name":"tokenAmount","type":"uint256"}],"name":"recoverERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"address","name":"_rewardsToken","type":"address"},{"internalType":"address","name":"to","type":"address"}],"name":"removeBlacklistedLocks","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"rewardData","outputs":[{"internalType":"uint256","name":"periodFinish","type":"uint256"},{"internalType":"uint256","name":"rewardRate","type":"uint256"},{"internalType":"uint256","name":"lastUpdateTime","type":"uint256"},{"internalType":"uint256","name":"rewardPerTokenStored","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"rewardDistributors","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"_rewardsToken","type":"address"}],"name":"rewardPerToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rewardTokens","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"rewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"rewardsDuration","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bool","name":"lock","type":"bool"}],"name":"stake","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"stakingToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"strikeStakingImplementation","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"totalBalance","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"unlockedBalance","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"userRewardPerTokenPaid","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"withdrawExpiredLocks","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"withdrawableBalance","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"penaltyAmount","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}]';
+
+export const CONTRACT_PRIME_REWARD_POOL_ADDRESS =
+  process.env.REACT_APP_ENV === 'dev'
+    ? '0x5527e02cA0c968461f9800095f9731f17632Ce16'
+    : '0xEb35aFB10881F10ba65dD601f18cD00076EdBdb1';
+
+export const PRIME_REWARD_POOL_ABI =
+  '[{"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"address","name":"_admin","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"nonce","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"epochId","type":"uint256"}],"name":"Claim","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Notify","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Recover","type":"event"},{"inputs":[],"name":"CLAIM_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"CONTRACT_NAME","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DOMAIN_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"uint256","name":"_nonce","type":"uint256"},{"internalType":"uint256","name":"_epochId","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"claim","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"notifyReward","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenAmount","type":"uint256"}],"name":"recoverBEP20","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"rewardToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_admin","type":"address"}],"name":"setAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"}],"name":"setRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"userNonce","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]';
