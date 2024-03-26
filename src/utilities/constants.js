@@ -690,7 +690,7 @@ export const CONTRACT_PRICE_ORACLE_ABI =
 
 export const CONTRACT_VOTE_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? '0xdfaF42B6e715bA05D2df72BA98B9ff681a9D2040'
+    ? '0x902beCB1fce12cA3405687B1966dD7e3deca985c'
     : '0x29e2A3aF8eC2d537cBD484c6eC430AbE1C7fe2d8';
 
 export const CONTRACT_VOTE_ABI =
